@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": ";AAAA,OAAQ;EACP,QAAQ;;;AACR,WAAM;EACL,UAAU;;;AAEX,WAAM;EACL,UAAU",
+"sources": ["../src/sass/folio-ie.scss"],
+"names": [],
+"file": "folio-ie.css"
+}
