@@ -92,8 +92,8 @@ module.exports = function(grunt) {
 			files: {
 				"./": [
 					"index.html",
-					"<%= paths.destAssets %>/css/*.css",
-					"<%= paths.destAssets %>/js/*.js"
+					"<%= paths.destAssets %>/css/*",
+					"<%= paths.destAssets %>/js/*"
 				]
 			},
 			options: {
