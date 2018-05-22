@@ -72,7 +72,7 @@ module.exports = function(grunt) {
 			ignoreErrors: true
 		},
 		index: {
-			options: { url: "<%= paths.srcRoot %>/" },
+			options: { url: "<%= paths.srcRoot %>/?force-debug" },
 			dest: "index.html"
 		},
 		data: {
