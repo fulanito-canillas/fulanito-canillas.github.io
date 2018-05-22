@@ -14,43 +14,7 @@ module.exports = function(grunt) {
 		"destRoot": "./",
 	});
 
-	// grunt.loadNpmTasks('grunt-git');
-	// grunt.config("gitcommit")
-
 	grunt.loadNpmTasks("grunt-http");
-	/*grunt.config("http", {
-		options: {
-			ignoreErrors: true
-		},
-		index: {
-			options: { url: "<%= paths.srcRoot %>/" },
-			dest: "index.html"
-		},
-		data: {
-			options: { url: "<%= paths.srcRoot %>/json" },
-			dest: "<%= paths.destAssets %>/js/data.js"
-		},
-		"styles-ie": {
-			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/css/folio-ie.css" },
-			dest: "<%= paths.destAssets %>/css/folio-ie.css"
-		},
-		"styles": {
-			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/css/folio-debug.css" },
-			dest: "<%= paths.destAssets %>/css/folio-debug.css"
-		},
-		"fonts": {
-			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/css/fonts.css" },
-			dest: "<%= paths.destAssets %>/css/fonts.css"
-		},
-		"scripts-vendor": {
-			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/js/folio-debug-vendor.js" },
-			dest: "<%= paths.destAssets %>/js/folio-debug-vendor.js"
-		},
-		"scripts-client": {
-			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/js/folio-debug-client.js" },
-			dest: "<%= paths.destAssets %>/js/folio-debug-client.js"
-		},
-	});*/
 	grunt.config("http", [
 		"css/fonts.css",
 		"css/folio-debug.css",
