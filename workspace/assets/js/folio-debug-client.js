@@ -12324,9 +12324,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<div class=\"top-bar control-box\">\n			<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n				<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n					<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n				</svg>\n			</a>\n		</div>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video preload=\"none\"></video>\n		<img class=\"poster default\" alt=\""
+  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<div class=\"top-bar control-box\">\n			<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n				<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n					<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n				</svg>\n			</a>\n		</div>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video preload=\"none\" width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
     + container.escapeExpression(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"text","hash":{},"data":data}) : helper)))
-    + "\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
+    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":21}],98:[function(require,module,exports){
@@ -13118,7 +13118,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {};
 
-  return "	<li class=\""
+  return "		<li class=\""
     + ((stack1 = helpers["if"].call(alias1,depth0,{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
     + "\">"
     + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
@@ -13134,11 +13134,11 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
-    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-markdown\">\n		<a href=\"#toggle-markdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n<p>"
+    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-markdown\">\n		<a href=\"#toggle-markdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
     + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
-    + "</p>\n<ul>\n"
+    + "</p>\n	<ul>\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "</ul>\n</div>\n";
+    + "	</ul>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":21}],102:[function(require,module,exports){
