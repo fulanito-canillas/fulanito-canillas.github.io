@@ -3108,8 +3108,8 @@ var AppViewProto = {
 	cidPrefix: "app",
 	/** @override */
 	el: "body",
-	/** @override */
-	className: "without-bundle without-media",
+	// /** @override */
+	className: "without-bundle without-media without-article",
 	/** @override */
 	model: AppState,
 
@@ -3126,7 +3126,14 @@ var AppViewProto = {
 	/** @override */
 	initialize: function(options) {
 		/* create single hammerjs manager */
-		this.touch = TouchManager.init(this.el);
+		this.touch = TouchManager.init(document.getElementById("container"));
+		this.touch.set({
+			enable: (function() {
+				// console.log("%s:[hammerjs enable] withBundle: %o",
+				// 	this.cid, this.model.get("withBundle"));
+				return this.model.get("withBundle");
+			}).bind(this)
+		});
 
 		/* render on resize, onorientationchange, visibilitychange */
 		this._onResize = this._onResize.bind(this); // _.bindAll(this, "_onResize");
