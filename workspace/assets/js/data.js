@@ -1,4 +1,5 @@
-{'root':'http://localhost/projects/folio-sym','workspace':'./workspace',
+{
+	'params': {'website-name':'Portfolio','root':'http://localhost/projects/folio-sym','workspace':'./workspace','uploads':'./workspace/uploads'},
 	'articles-all': [
 		{'id':949,'handle':'about','name':'Pablo Canillas','text':'<h2>A few lines about who I am and what I do. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi.</h2><p>Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. Etiam sollicitudin, ipsum eu pulvinar rutrum,  tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. Proin magna. Duis vel nibh at velit scelerisque suscipit. Curabitur turpis. Vestibulum suscipit nulla quis orci. Fusce ac felis sit amet ligula pharetra condimentum. Maecenas egestas arcu quis ligula mattis placerat.</p><h3>A few ways of getting in contact with me</h3><p>Phasellus volutpat, metus eget egestas mollis, <a href="mailto:nobody@nullhost.tld">nobody@nullhost.tld</a> lacus lacus blandit dui, id egestas quam mauris ut lacus. Fusce vel dui. Sed in libero ut nibh placerat accumsan. Proin faucibus arcu quis ante. In consectetuer turpis ut velit. Nulla sit amet est. <a href="#">Praesent metus</a> tellus, <a href="http://google.com/" target="_blank">elementum eu</a>, semper a, adipiscing nec, purus. Jump to <a href="#bundles/le-meridien">Le Meridien</a>.</p>'}
 	],
@@ -64,8 +65,8 @@
 		{'bId':120,'id':107,'o':70,'name':'Video playback','srcset':[{'src':'ivy-lemeridien_0000_playback.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':63,'id':106,'o':52,'name':'Channel content list','srcset':[{'src':'ivy-laredoute_0004_full-channels-tiles.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':63,'id':105,'o':51,'name':'Channels interface','srcset':[{'src':'ivy-laredoute_0003_full-channels.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
-		{'bId':63,'id':104,'o':50,'name':'Related content, alternate 2','srcset':[{'src':'ivy-laredoute_0002_full-relatedcontent-floating.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
-		{'bId':63,'id':103,'o':49,'name':'Related content,','srcset':[{'src':'ivy-laredoute_0001_full-relatedcontent-fullframe.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
+		{'bId':63,'id':104,'o':50,'name':'Related content, <em>Alternate 2</em>','srcset':[{'src':'ivy-laredoute_0002_full-relatedcontent-floating.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
+		{'bId':63,'id':103,'o':49,'name':'Related content, <em>Alternate 1</em>','srcset':[{'src':'ivy-laredoute_0001_full-relatedcontent-fullframe.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':63,'id':102,'o':48,'name':'Playback state','srcset':[{'src':'ivy-laredoute_0000_full-playback.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':62,'id':101,'o':47,'name':'Related content','srcset':[{'src':'ivy-garnier_0006_video-related-content.png','mime':'image/png','w':1100,'h':924}],'srcIdx':0},
 		{'bId':62,'id':96,'o':46,'name':'The Shade Game','srcset':[{'src':'ivy-garnier_0001_wizard-1.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0002_wizard-2.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0003_wizard-3.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0004_wizard-4.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0005_wizard-5.png','mime':'image/png','w':1100,'h':924}],'attrs':['@renderer:sequence'],'srcIdx':0},
@@ -126,4 +127,5 @@
 		{'id':7,'handle':'role','name':'Role'},
 		{'id':11,'handle':'technology','name':'Technology'},
 		{'id':914,'handle':'private','name':'Private'}
-	]}
+	]
+}

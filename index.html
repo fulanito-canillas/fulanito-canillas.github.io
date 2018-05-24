@@ -4,36 +4,36 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>Portfolio</title>
-    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
 <!--msapplication begin-->
-    <meta name="msapplication-square70x70logo" content="./workspace/assets/images/favicons/windows-tile-70x70.png?1527077873" />
-    <meta name="msapplication-square150x150logo" content="./workspace/assets/images/favicons/windows-tile-150x150.png?1527077873" />
-    <meta name="msapplication-square310x310logo" content="./workspace/assets/images/favicons/windows-tile-310x310.png?1527077873" />
-    <meta name="msapplication-TileImage" content="./workspace/assets/images/favicons/windows-tile-144x144.png?1527077873" />
+    <meta name="msapplication-square70x70logo" content="./workspace/assets/images/favicons/windows-tile-70x70.png?1527193813" />
+    <meta name="msapplication-square150x150logo" content="./workspace/assets/images/favicons/windows-tile-150x150.png?1527193813" />
+    <meta name="msapplication-square310x310logo" content="./workspace/assets/images/favicons/windows-tile-310x310.png?1527193813" />
+    <meta name="msapplication-TileImage" content="./workspace/assets/images/favicons/windows-tile-144x144.png?1527193813" />
     <meta name="msapplication-TileColor" content="#000000" />
 <!--msapplication end-->
 <!--apple-touch-icon begin-->
-    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-152x152.png?1527077873" sizes="152x152" />
-    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-144x144.png?1527077873" sizes="144x144" />
-    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-120x120.png?1527077873" sizes="120x120" />
-    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-114x114.png?1527077873" sizes="114x114" />
-    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-72x72.png?1527077873" sizes="72x72" />
-    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-57x57.png?1527077873" />
-    <link rel="apple-touch-icon-precomposed" href="./workspace/assets/images/favicons/apple-touch-icon-57x57.png?1527077873" />
+    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-152x152.png?1527193813" sizes="152x152" />
+    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-144x144.png?1527193813" sizes="144x144" />
+    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-120x120.png?1527193813" sizes="120x120" />
+    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-114x114.png?1527193813" sizes="114x114" />
+    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-72x72.png?1527193813" sizes="72x72" />
+    <link rel="apple-touch-icon" href="./workspace/assets/images/favicons/apple-touch-icon-57x57.png?1527193813" />
+    <link rel="apple-touch-icon-precomposed" href="./workspace/assets/images/favicons/apple-touch-icon-57x57.png?1527193813" />
 <!--apple-touch-icon end-->
 <!--favicon begin-->
-    <link rel="shortcut icon" href="./workspace/assets/images/favicons/favicon.ico?1527077873" />
-    <link rel="icon" type="image/png?1527077873" sizes="64x64" href="./workspace/assets/images/favicons/favicon.png?1527077873" />
+    <link rel="shortcut icon" href="./workspace/assets/images/favicons/favicon.ico?1527193813" />
+    <link rel="icon" type="image/png?1527193813" sizes="64x64" href="./workspace/assets/images/favicons/favicon.png?1527193813" />
 <!--favicon end-->
     <link rel="alternate" type="application/rss+xml" href="./rss" />
     <link id="fonts" rel="stylesheet" type="text/css" href="./workspace/assets/css/fonts.css" />
-    <link id="folio" rel="stylesheet" type="text/css" href="./workspace/assets/css/folio-debug.css?1527077873" />
+    <link id="folio" rel="stylesheet" type="text/css" href="./workspace/assets/css/folio-debug.css?1527193813" />
 <!--[if lte IE 9]>
 	<link rel="stylesheet" type="text/css" href="./workspace/assets/css/folio-ie.css"/>
 <![endif]-->
-    <script src="./workspace/assets/js/folio-debug-vendor.js?1527077873"></script>
-    <script src="./workspace/assets/js/folio-debug-client.js?1527077873"></script>
-    <script type="text/javascript" async="true" src="https://www.google-analytics.com/analytics.js"></script>
+    <script src="./workspace/assets/js/folio-debug-vendor.js?1527193813"></script>
+    <script src="./workspace/assets/js/folio-debug-client.js?1527193813"></script>
+    <script src="https://www.google-analytics.com/analytics.js" async="true"></script>
   </head>
 <!--IE conditional comments-->
 <!--[if lt IE 9]>
@@ -56,7 +56,7 @@
           </h1>
         </div>
         <div id="article-list-wrapper" class="transform-wrapper">
-          <h2 id="about" class="article-button">
+          <h2 id="about-button" class="article-button" data-handle="about">
             <a href="./#about">About</a>
           </h2>
         </div>
@@ -179,28 +179,28 @@
                 <span>Type</span>
               </span>
             </dt>
-            <dd class="list-item" data-id="25">
-              <a href="./#keywords/services-portal">
+            <dd class="list-item" data-id="25" data-handle="services-portal">
+              <a href="">
                 <span class="name label">Services Portal</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="21">
-              <a href="./#keywords/corporate-website">
+            <dd class="list-item" data-id="21" data-handle="corporate-website">
+              <a href="">
                 <span class="name label">Corporate Website</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="24">
-              <a href="./#keywords/video-delivery-platform">
+            <dd class="list-item" data-id="24" data-handle="video-delivery-platform">
+              <a href="">
                 <span class="name label">Video Delivery Platform</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="22">
-              <a href="./#keywords/desktop-application">
+            <dd class="list-item" data-id="22" data-handle="desktop-application">
+              <a href="">
                 <span class="name label">Desktop Application</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="20">
-              <a href="./#keywords/web-application">
+            <dd class="list-item" data-id="20" data-handle="web-application">
+              <a href="">
                 <span class="name label">Web Application</span>
               </a>
             </dd>
@@ -209,43 +209,43 @@
                 <span>Role</span>
               </span>
             </dt>
-            <dd class="list-item" data-id="127">
-              <a href="./#keywords/animation">
+            <dd class="list-item" data-id="127" data-handle="animation">
+              <a href="">
                 <span class="name label">Animation</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="13">
-              <a href="./#keywords/identity">
+            <dd class="list-item" data-id="13" data-handle="identity">
+              <a href="">
                 <span class="name label">Identity</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="15">
-              <a href="./#keywords/interaction-design">
+            <dd class="list-item" data-id="15" data-handle="interaction-design">
+              <a href="">
                 <span class="name label">Interaction Design</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="14">
-              <a href="./#keywords/information-architecture">
+            <dd class="list-item" data-id="14" data-handle="information-architecture">
+              <a href="">
                 <span class="name label">Information Architecture</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="147">
-              <a href="./#keywords/web-design">
+            <dd class="list-item" data-id="147" data-handle="web-design">
+              <a href="">
                 <span class="name label">Web Design</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="16">
-              <a href="./#keywords/visual-design">
+            <dd class="list-item" data-id="16" data-handle="visual-design">
+              <a href="">
                 <span class="name label">Visual Design</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="951">
-              <a href="./#keywords/animation-design">
+            <dd class="list-item" data-id="951" data-handle="animation-design">
+              <a href="">
                 <span class="name label">Animation Design</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="952">
-              <a href="./#keywords/animation-development">
+            <dd class="list-item" data-id="952" data-handle="animation-development">
+              <a href="">
                 <span class="name label">Animation Development</span>
               </a>
             </dd>
@@ -254,18 +254,18 @@
                 <span>Technology</span>
               </span>
             </dt>
-            <dd class="list-item" data-id="19">
-              <a href="./#keywords/web-standards">
+            <dd class="list-item" data-id="19" data-handle="web-standards">
+              <a href="">
                 <span class="name label">Web Standards</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="18">
-              <a href="./#keywords/adobe-flash">
+            <dd class="list-item" data-id="18" data-handle="adobe-flash">
+              <a href="">
                 <span class="name label">Adobe Flash</span>
               </a>
             </dd>
-            <dd class="list-item" data-id="17">
-              <a href="./#keywords/adobe-air">
+            <dd class="list-item" data-id="17" data-handle="adobe-air">
+              <a href="">
                 <span class="name label">Adobe Air</span>
               </a>
             </dd>
@@ -274,8 +274,8 @@
                 <span>Private</span>
               </span>
             </dt>
-            <dd class="list-item" data-id="915">
-              <a href="./#keywords/error-testing">
+            <dd class="list-item" data-id="915" data-handle="error-testing">
+              <a href="">
                 <span class="name label">Error Testing</span>
               </a>
             </dd>
@@ -290,36 +290,18 @@
       </div>
     </div>
     <script type="text/javascript">
-			window.DEBUG = true;
-			window.approot = './';
-			window.mediadir = './workspace/uploads';
-			window.bootstrap = {
-			'types-all': [
-		{'id':8,'handle':'type','name':'Type'},
-		{'id':7,'handle':'role','name':'Role'},
-		{'id':11,'handle':'technology','name':'Technology'},
-		{'id':914,'handle':'private','name':'Private'}
+	window.DEBUG = true;
+	window.approot = './';
+	window.mediadir = './workspace/uploads';
+	window.GA_ID = 'UA-9123564-7';
+
+	window.bootstrap = {
+		
+	'params': {'website-name':'Portfolio','root':'http://localhost/projects/folio-sym','workspace':'./workspace','uploads':'./workspace/uploads'},
+	'articles-all': [
+		{'id':949,'handle':'about','name':'Pablo Canillas','text':'<h2>A few lines about who I am and what I do. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi.</h2><p>Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. Etiam sollicitudin, ipsum eu pulvinar rutrum,  tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. Proin magna. Duis vel nibh at velit scelerisque suscipit. Curabitur turpis. Vestibulum suscipit nulla quis orci. Fusce ac felis sit amet ligula pharetra condimentum. Maecenas egestas arcu quis ligula mattis placerat.</p><h3>A few ways of getting in contact with me</h3><p>Phasellus volutpat, metus eget egestas mollis, <a href="mailto:nobody@nullhost.tld">nobody@nullhost.tld</a> lacus lacus blandit dui, id egestas quam mauris ut lacus. Fusce vel dui. Sed in libero ut nibh placerat accumsan. Proin faucibus arcu quis ante. In consectetuer turpis ut velit. Nulla sit amet est. <a href="#">Praesent metus</a> tellus, <a href="http://google.com/" target="_blank">elementum eu</a>, semper a, adipiscing nec, purus. Jump to <a href="#bundles/le-meridien">Le Meridien</a>.</p>'}
 	],
-			'keywords-all': [
-		{'id':915,'handle':'error-testing','name':'Error Testing','tId':914},
-		{'id':127,'handle':'animation','name':'Animation','tId':7},
-		{'id':13,'handle':'identity','name':'Identity','tId':7},
-		{'id':15,'handle':'interaction-design','name':'Interaction Design','tId':7},
-		{'id':14,'handle':'information-architecture','name':'Information Architecture','tId':7},
-		{'id':147,'handle':'web-design','name':'Web Design','tId':7},
-		{'id':16,'handle':'visual-design','name':'Visual Design','tId':7},
-		{'id':19,'handle':'web-standards','name':'Web Standards','tId':11},
-		{'id':18,'handle':'adobe-flash','name':'Adobe Flash','tId':11},
-		{'id':17,'handle':'adobe-air','name':'Adobe Air','tId':11},
-		{'id':25,'handle':'services-portal','name':'Services Portal','tId':8},
-		{'id':21,'handle':'corporate-website','name':'Corporate Website','tId':8},
-		{'id':24,'handle':'video-delivery-platform','name':'Video Delivery Platform','tId':8},
-		{'id':22,'handle':'desktop-application','name':'Desktop Application','tId':8},
-		{'id':20,'handle':'web-application','name':'Web Application','tId':8},
-		{'id':951,'handle':'animation-design','name':'Animation Design','tId':7},
-		{'id':952,'handle':'animation-development','name':'Animation Development','tId':7}
-	],
-			'bundles-all': [
+	'bundles-all': [
 		{'id':123,'handle':'sap','name':'SAP Ten Reasons','completed':'2012-09-30','kIds':[18,125,951,952],'desc':'<p><span class="lorem">A few words of introduction for this project are coming very soon… </span></p>','attrs':['background-color:hsl(45; 5%; 95%)','color:hsl(45; 5%; 35%)']},
 		{'id':67,'handle':'coopervision','name':'CooperVision','completed':'2012-09-19','kIds':[147,19,21,125],'desc':'<p><span class="lorem">A few words of introduction for this project are coming very soon… </span></p>','attrs':['@classname:browser-safari']},
 		{'id':122,'handle':'o-co','name':'O+CO','completed':'2011-09-20','kIds':[18,21,126,951,952],'desc':'<p>For their company website, O+CO, a brand consultancy in New York City, was looking for a unique experience of their own brand.</p><p>Using vector shapes to define particle boundaries, grey-scale bitmaps for particle densities, voronoi diagrams for circle-packing areas and collision, in partnership with the team at O+CO, we devised a fully parametric animation. The result was subtle but striking, a brand experience that only the digital medium could provide.</p>','attrs':['background-color:hsl(224; 4%; 17%)','border:0px solid hsl(224; 3%; 20%)','box-shadow:none','color:hsl(224; 3%; 55%)']},
@@ -339,7 +321,7 @@
 		{'id':121,'handle':'sva','name':'School of Visual Arts','completed':'2003-09-20','sub':'<p>Graduate Computer Art Department</p>','kIds':[15,16,19,18,21],'desc':'<h6>When an update for the Graduate Computer Art Department at SVA website was required, one of their most important recruiting tools, I tried to let shine one of their most important assets, past student work.</h6><p>All while avoiding being overwhelmed by SVA’s already powerful brand, yet allowing to transpire the spirit of the department in the small details.</p>'},
 		{'id':912,'handle':'error-testing','name':'Error Testing','completed':'1990-09-22','sub':'<p><em>Lorem ipsum dolor sit amet</em></p>','kIds':[915,16,19,21],'desc':'<h5>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</h5><p>Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.</p>','attrs':['--link-color:#ffffff','@private:private','background-color:hsl(210; 1%; 80%)','color:hsl(210; 0%; 30%)']}
 	],
-			'media-all': [
+	'media-all': [
 		{'bId':912,'id':943,'o':4,'name':'<em>Alice in Wonderland</em>','sub':'<p><em>4 × 0.4Mb @ 1.5fps</em></p>','srcset':[{'src':'mad-hatter_400kb.jpg','mime':'image/jpeg','w':1638,'h':1024},{'src':'red-queen_400kb.jpg','mime':'image/jpeg','w':1638,'h':1024},{'src':'alice_400kb.jpg','mime':'image/jpeg','w':1638,'h':1024},{'src':'tweedledee_400kb.jpg','mime':'image/jpeg','w':1638,'h':1024}],'attrs':['@renderer:sequence','@sequence-interval:1500ms'],'srcIdx':0},
 		{'bId':912,'id':936,'o':5,'name':'Alice in Wonderland','sub':'<p><em>3 × 3.5Mb @ 500kbps / 1.5fps</em></p>','srcset':[{'src':'mad-hatter_3500kb.jpg','mime':'image/jpeg','w':2560,'h':1600},{'src':'red-queen_3500kb.jpg','mime':'image/jpeg','w':2560,'h':1600},{'src':'tweedledee_3500kb.jpg','mime':'image/jpeg','w':2560,'h':1600}],'attrs':['@classname:browser-generic','@debug-bandwidth:500','@renderer:sequence','@sequence-interval:1500ms','border-radius:3px'],'srcIdx':0},
 		{'bId':912,'id':931,'o':2,'name':'477 Metropolitan Ave, Brooklyn','sub':'<p><em>Timelapse Loop</em></p>','srcset':[{'src':'477_metropolitan_ave_timelapse_int_33_66.png','mime':'image/png','w':1280,'h':720},{'src':'477_metropolitan_ave_timelapse_int_33_66.mp4','mime':'video/mp4'}],'attrs':['@renderer:video','@video-loop:loop'],'srcIdx':0},
@@ -381,8 +363,8 @@
 		{'bId':120,'id':107,'o':70,'name':'Video playback','srcset':[{'src':'ivy-lemeridien_0000_playback.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':63,'id':106,'o':52,'name':'Channel content list','srcset':[{'src':'ivy-laredoute_0004_full-channels-tiles.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':63,'id':105,'o':51,'name':'Channels interface','srcset':[{'src':'ivy-laredoute_0003_full-channels.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
-		{'bId':63,'id':104,'o':50,'name':'Related content, alternate 2','srcset':[{'src':'ivy-laredoute_0002_full-relatedcontent-floating.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
-		{'bId':63,'id':103,'o':49,'name':'Related content,','srcset':[{'src':'ivy-laredoute_0001_full-relatedcontent-fullframe.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
+		{'bId':63,'id':104,'o':50,'name':'Related content, <em>Alternate 2</em>','srcset':[{'src':'ivy-laredoute_0002_full-relatedcontent-floating.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
+		{'bId':63,'id':103,'o':49,'name':'Related content, <em>Alternate 1</em>','srcset':[{'src':'ivy-laredoute_0001_full-relatedcontent-fullframe.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':63,'id':102,'o':48,'name':'Playback state','srcset':[{'src':'ivy-laredoute_0000_full-playback.png','mime':'image/png','w':1100,'h':850}],'srcIdx':0},
 		{'bId':62,'id':101,'o':47,'name':'Related content','srcset':[{'src':'ivy-garnier_0006_video-related-content.png','mime':'image/png','w':1100,'h':924}],'srcIdx':0},
 		{'bId':62,'id':96,'o':46,'name':'The Shade Game','srcset':[{'src':'ivy-garnier_0001_wizard-1.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0002_wizard-2.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0003_wizard-3.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0004_wizard-4.png','mime':'image/png','w':1100,'h':924},{'src':'ivy-garnier_0005_wizard-5.png','mime':'image/png','w':1100,'h':924}],'attrs':['@renderer:sequence'],'srcIdx':0},
@@ -419,11 +401,40 @@
 		{'bId':26,'id':28,'o':18,'name':'Trail summary','srcset':[{'src':'milo_0001_trail-summary.png','mime':'image/png','w':1024,'h':1021}],'srcIdx':0},
 		{'bId':26,'id':27,'o':17,'name':'Homepage, <em>Wellpage</em>','srcset':[{'src':'milo_0000_wellpage.png','mime':'image/png','w':1024,'h':1021}],'srcIdx':0}
 	],
-			'articles-all': [
-		{'id':949,'handle':'about','name':'Pablo Canillas','text':'<h2>A few lines about who I am and what I do. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi.</h2><p>Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. Etiam sollicitudin, ipsum eu pulvinar rutrum,  tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. Proin magna. Duis vel nibh at velit scelerisque suscipit. Curabitur turpis. Vestibulum suscipit nulla quis orci. Fusce ac felis sit amet ligula pharetra condimentum. Maecenas egestas arcu quis ligula mattis placerat.</p><h3>A few ways of getting in contact with me</h3><p>Phasellus volutpat, metus eget egestas mollis, <a href="mailto:nobody@nullhost.tld">nobody@nullhost.tld</a> lacus lacus blandit dui, id egestas quam mauris ut lacus. Fusce vel dui. Sed in libero ut nibh placerat accumsan. Proin faucibus arcu quis ante. In consectetuer turpis ut velit. Nulla sit amet est. <a href="#">Praesent metus</a> tellus, <a href="http://google.com/" target="_blank">elementum eu</a>, semper a, adipiscing nec, purus. Jump to <a href="#bundles/le-meridien">Le Meridien</a>.</p>'}
+	'keywords-all': [
+		{'id':915,'handle':'error-testing','name':'Error Testing','tId':914},
+		{'id':127,'handle':'animation','name':'Animation','tId':7},
+		{'id':13,'handle':'identity','name':'Identity','tId':7},
+		{'id':15,'handle':'interaction-design','name':'Interaction Design','tId':7},
+		{'id':14,'handle':'information-architecture','name':'Information Architecture','tId':7},
+		{'id':147,'handle':'web-design','name':'Web Design','tId':7},
+		{'id':16,'handle':'visual-design','name':'Visual Design','tId':7},
+		{'id':19,'handle':'web-standards','name':'Web Standards','tId':11},
+		{'id':18,'handle':'adobe-flash','name':'Adobe Flash','tId':11},
+		{'id':17,'handle':'adobe-air','name':'Adobe Air','tId':11},
+		{'id':25,'handle':'services-portal','name':'Services Portal','tId':8},
+		{'id':21,'handle':'corporate-website','name':'Corporate Website','tId':8},
+		{'id':24,'handle':'video-delivery-platform','name':'Video Delivery Platform','tId':8},
+		{'id':22,'handle':'desktop-application','name':'Desktop Application','tId':8},
+		{'id':20,'handle':'web-application','name':'Web Application','tId':8},
+		{'id':951,'handle':'animation-design','name':'Animation Design','tId':7},
+		{'id':952,'handle':'animation-development','name':'Animation Development','tId':7}
+	],
+	'types-all': [
+		{'id':8,'handle':'type','name':'Type'},
+		{'id':7,'handle':'role','name':'Role'},
+		{'id':11,'handle':'technology','name':'Technology'},
+		{'id':914,'handle':'private','name':'Private'}
 	]
-			};
-			window.GA_ID = 'UA-9123564-7';
-		</script>
+
+	};
+
+	window.params = {
+		'website-name': 'Portfolio',
+		'media-dir': './workspace/uploads',
+		'root': 'http://localhost/projects/folio-sym',
+		
+	};
+</script>
   </body>
 </html>
