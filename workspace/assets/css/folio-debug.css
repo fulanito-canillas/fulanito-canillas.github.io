@@ -877,8 +877,8 @@ html {
   box-sizing: content-box;
   padding: 0;
   width: 660px;
-  -webkit-transition: opacity 0.366s ease 0.034s;
-          transition: opacity 0.366s ease 0.034s;
+  -webkit-transition: opacity 0.366s ease 0.034s, height 0.366s step-end 0.034s;
+          transition: opacity 0.366s ease 0.034s, height 0.366s step-end 0.034s;
   opacity: 0;
 }
 /* line 377, ../src/sass/views/_default.scss */
@@ -2790,5 +2790,4 @@ html {
 .unsupported .breakpoint::after {
   content: 'unsupported';
 }
-
 /*# sourceMappingURL=folio-debug.css.map */
