@@ -12,6 +12,8 @@ module.exports = function(grunt) {
 		"destAssets": "workspace/assets",
 		"srcRoot": "http://localhost/projects/folio-sym",
 		"destRoot": "./",
+		"fontFiles": "{eot,otf,svg,ttf,woff,woff2}",
+		"mediaFiles": "{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
 	});
 
 	/* --------------------------------
@@ -45,8 +47,8 @@ module.exports = function(grunt) {
 				dest: "workspace/assets/",
 				cwd: "node_modules/@folio/workspace-assets/",
 				src: [
-					"fonts/**/*.{eot,otf,svg,ttf,woff,woff2}",
-					"images/**/*.{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
+					"fonts/**/*.<%= paths.fontFiles %>",
+					"images/**/*.<%= paths.mediaFiles %>",
 				]
 			}]
 		},
@@ -55,7 +57,7 @@ module.exports = function(grunt) {
 				expand: true,
 				dest: "workspace/uploads/",
 				cwd: "node_modules/@folio/workspace-uploads/",
-				src: "*.{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}"
+				src: "*.<%= paths.mediaFiles %>"
 			}]
 		},
 	});
