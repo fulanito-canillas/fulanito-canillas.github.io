@@ -14,16 +14,85 @@ module.exports = function(grunt) {
 		"destRoot": "./",
 	});
 
+	/* --------------------------------
+	/* clean:resources
+	/* -------------------------------- */
+
+	grunt.loadNpmTasks("grunt-contrib-clean");
+	grunt.config("clean", {
+		resources: {
+			src: [
+				"workspace/assets/fonts",
+				"workspace/assets/images"
+			]
+		},
+		uploads: {
+			src: [
+				"workspace/uploads"
+			]
+		},
+	});
+
+	/* --------------------------------
+	 * copy:resources
+	 * -------------------------------- */
+
+	grunt.loadNpmTasks("grunt-contrib-copy");
+	grunt.config("copy", {
+		resources: {
+			files: [{
+				expand: true,
+				dest: "workspace/assets/",
+				cwd: "node_modules/@folio/workspace-assets/",
+				src: [
+					"fonts/**/*.{eot,otf,svg,ttf,woff,woff2}",
+					"images/**/*.{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
+				]
+			}]
+		},
+		uploads: {
+			files: [{
+				expand: true,
+				dest: "workspace/uploads/",
+				cwd: "node_modules/@folio/workspace-uploads/",
+				src: "*.{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}"
+			}]
+		},
+	});
+
+	// grunt.config("copy", {
+	// 	sources: {
+	// 		options: {
+	// 			process: function(content, srcpath) {
+	// 				return content.replace(/(\s)url\((['"]).*?(?=[^\/]*['"])/g, "$1font-url($2");
+	// 			}
+	// 		},
+	// 		files: [{
+	// 			expand: true,
+	// 			dest: "./build/generated/sass/fonts",
+	// 			cwd: "./node_modules/@folio/workspace-assets/css/",
+	// 			src: [
+	// 				"_folio-figures.scss",
+	// 				"_franklin-gothic-itc-cp.scss",
+	// 			]
+	// 		}]
+	// 	}
+	// });
+
+	/* --------------------------------
+	 * grunt-http
+	 * -------------------------------- */
+
 	grunt.loadNpmTasks("grunt-http");
 	grunt.config("http", [
 		"css/fonts.css",
 		"css/folio-debug.css",
-		"css/folio-ie.css",
-		"js/folio-debug-client.js",
-		"js/folio-debug-vendor.js",
 		"css/folio-debug.css.map",
+		"css/folio-ie.css",
 		"css/folio-ie.css.map",
+		"js/folio-debug-client.js",
 		"js/folio-debug-client.js.map",
+		"js/folio-debug-vendor.js",
 		"js/folio-debug-vendor.js.map",
 	].reduce(function(o, s, i, a) {
 		o[s.replace(/[\/\.]/g, "-")] = {
@@ -45,6 +114,10 @@ module.exports = function(grunt) {
 		}
 	}));
 
+	/* --------------------------------
+	 * copy
+	 * -------------------------------- */
+
 	function toPattern(s) {
 		s = grunt.template.process(s, grunt.config());
 		s = s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -65,12 +138,15 @@ module.exports = function(grunt) {
 					// { pattern: "<%= paths.srcAssets %>", replacement: "<%= paths.destAssets %>"},
 					// { pattern: /https?:\/\/[^\/\"\']+/g}, replacement: "./" },
 					// { pattern: /https?:\/\/folio\.(local\.|localhost)/g}, replacement: "./" },
-					{ pattern: toPattern("<%= paths.srcRoot %>/"), replacement: "<%= paths.destRoot %>" },
+					{
+						pattern: toPattern("<%= paths.srcRoot %>/"),
+						replacement: "<%= paths.destRoot %>"
+					},
 				]
 			}
 		}
 	});
 
-	grunt.registerTask("build", ["http", "string-replace:http-root"]);
+	grunt.registerTask("build", ["clean", "copy", "http", "string-replace:http-root"]);
 	grunt.registerTask("default", ["build"]);
 };
