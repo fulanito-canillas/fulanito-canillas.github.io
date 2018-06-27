@@ -3,15 +3,14 @@ module.exports = function(grunt) {
 	"use strict";
 
 	grunt.config("pkg", grunt.file.readJSON("package.json"));
-	// grunt.config("properties.ga", grunt.file.readJSON("ga.json"));
-	grunt.config("properties.CNAME", grunt.file.read("CNAME", { encoding: 'utf8' }));
-
+	grunt.config("properties", grunt.file.readJSON("properties.json"));
+	grunt.config("CNAME", grunt.file.read("CNAME", { encoding: 'utf8' }));
 
 	grunt.config("paths", {
-		"srcAssets": "workspace/assets",
 		"destAssets": "workspace/assets",
+		"srcAssets": "workspace/assets",
+		"destRoot": "/",
 		"srcRoot": "http://localhost/projects/folio-sym",
-		"destRoot": "./",
 		"fontFiles": "{eot,otf,svg,ttf,woff,woff2}",
 		"mediaFiles": "{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
 	});
@@ -143,6 +142,10 @@ module.exports = function(grunt) {
 					{
 						pattern: toPattern("<%= paths.srcRoot %>/"),
 						replacement: "<%= paths.destRoot %>"
+					},
+					{
+						pattern: "UA-0000000-0",
+						replacement: "<%= properties.ga.id %>"
 					},
 				]
 			}

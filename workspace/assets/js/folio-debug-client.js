@@ -1545,11 +1545,12 @@ window.addEventListener("load", function(ev) {
 	/** @type {module:webfontloader} */
 	var WebFont = require("webfontloader");
 	WebFont.load({
-		// async: true,
+		async: true,
 		classes: false,
 		custom: {
 			families: [
-				"Franklin Gothic FS:n4,i4,n7,i7",
+				"Franklin Gothic FS:n4,n7",
+				// "Franklin Gothic FS:n4,i4,n7,i7",
 				"FolioFigures:n4",
 			],
 			testStrings: {
@@ -1962,6 +1963,8 @@ module.exports = (function() {
 
 	delete window.approot;
 	delete window.mediadir;
+
+	g.GA_TAGS = {};
 
 	// hardcoded font data
 	// - - - - - - - - - - - - - - - - -
@@ -2506,7 +2509,11 @@ module.exports = function(bootstrap) {
 	/** @type {module:app/control/Globals} */
 	var Globals = require("app/control/Globals");
 
-	Globals.PARAMS = bootstrap["params"];
+	// Globals.GA_TAGS = bootstrap["ga-tags"];
+	// Globals.PARAMS = bootstrap["params"];
+	// Globals.APP_ROOT = bootstrap["params"]["root"];
+	// Globals.MEDIA_DIR = bootstrap["params"]["uploads"];
+	Globals.APP_NAME = bootstrap["params"]["website-name"];
 
 	/** @type {module:app/model/collection/TypeCollection} */
 	var typeList = require("app/model/collection/TypeCollection");
@@ -3088,12 +3095,23 @@ var AppViewProto = {
 		"fullscreenchange": function(ev) {
 			console.log(ev.type);
 		},
+		// "scroll #container": function(ev) {
+		// 	console.log(ev.type, ev);
+		// }
+	},
+
+	properties: {
+		container: {
+			get: function() {
+				return this._container || (this._container = document.getElementById("container"));
+			}
+		}
 	},
 
 	/** @override */
 	initialize: function(options) {
 		/* create single hammerjs manager */
-		this.touch = TouchManager.init(document.getElementById("container"));
+		this.touch = TouchManager.init(this.container);
 		this.touch.set({
 			enable: (function() {
 				return this.model.get("collapsed") && this.model.get("withBundle");
@@ -3106,6 +3124,10 @@ var AppViewProto = {
 		/* render on resize, onorientationchange, visibilitychange */
 		window.addEventListener("orientationchange", this._onResize, false);
 		window.addEventListener("resize", _.debounce(this._onResize, 100, false /* immediate? */ ), false);
+
+		// var h = function(ev) { console.log(ev.type, ev) };
+		// window.addEventListener("scroll", h, false);
+		// window.addEventListener("wheel", h, false);
 
 		/* TODO: replace resize w/ mediaquery listeners. Caveat: some components
 		(vg. Carousel) require update on resize */
@@ -3133,9 +3155,14 @@ var AppViewProto = {
 		if (window.ga) {
 			controller
 				.once("route", function() {
-					window.ga("create", window.GA_ID, "auto");
-					if (/(?:(localhost|\.local))$/.test(location.hostname))
+					// if (/(?:(localhost|\.local))$/.test(location.hostname)) {}
+					var gaTag = Globals.GA_TAGS[location.hostname];
+					if (gaTag) {
+						window.ga("create", gaTag, "auto");
+					} else {
+						window.ga("create", "UA-9123564-8", "auto");
 						window.ga("set", "sendHitTask", null);
+					}
 				})
 				.on("route", function(name) {
 					var page = Backbone.history.getFragment();
@@ -3220,7 +3247,11 @@ var AppViewProto = {
 
 	_onResize: function() {
 		console.log("%s::_onResize", this.cid);
+		this.el.classList.add("skip-transitions");
 		this.requestRender(View.SIZE_INVALID).renderNow();
+		this.requestAnimationFrame(function() {
+			this.el.classList.remove("skip-transitions");
+		}.bind(this));
 	},
 
 	// _onBreakpointChange: function(ev) {
@@ -3261,7 +3292,8 @@ var AppViewProto = {
 	},
 
 	renderResize: function(flags) {
-		document.body.scrollTop = 0;
+		// document.body.scrollTop = 0;
+		window.scroll({ top: 0, behavior: "smooth" });
 
 		_.each(Globals.BREAKPOINTS, function(o, s) {
 			this.toggle(s, o.matches);
@@ -3290,8 +3322,7 @@ var AppViewProto = {
 		var media = this.model.get("media");
 
 		var docTitle = []
-		docTitle.push("Portfolio");
-		// docTitle.push("Pablo Canillas");
+		docTitle.push(Globals.APP_NAME);
 		if (bundle) {
 			docTitle.push(stripTags(bundle.get("name")));
 			if (media) {
@@ -4220,19 +4251,14 @@ var NavigationView = View.extend({
 		// });
 
 		this.listenTo(this.graph, "view:render:before", function(view, flags) {
-			// console.info("%s:[%s view:render:before]", this.cid, view.cid);
 			if (flags & View.SIZE_INVALID | View.MODEL_INVALID) {
-				// console.info("%s:[%s view:render:before] heights: %s %s (bundleList,keywordList)",
-				// 	this.cid, view.cid,
-				// 	this.bundleList._metrics.height,
-				// 	this.keywordList._metrics.height
-				// );
-				this.graph.el.style.height = Math.max(
+				var vmax = Math.max(
 					this.bundleList._metrics.height,
 					this.keywordList._metrics.height
-				) + "px";
-				// this.graph.el.style.opacity = this.bundleList.collapsed? "0": "1";
-				// view.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID).renderNow();
+				);
+				console.log("%s:%s[view:render:before] flags: %s] height: %o",
+					this.cid, view.cid, View.flagsToString(flags), vmax);
+				view.el.style.height = vmax + "px";
 			}
 		});
 		// this.listenTo(this.bundleList, "view:render:after", function(view, flags) {
@@ -4321,15 +4347,15 @@ var NavigationView = View.extend({
 			var vmax = arr.reduce(function(a, o) {
 				return Math.max(a, o._metrics.height);
 			}, 0);
-			// if (vmax !== this._metrics.minHeight) {
 			console.log("%s:[whenRendered flags: %s] height: %o",
-				this.cid, View.flagsToString(flags), vmax); //, this._metrics.minHeight);
+				this.cid, View.flagsToString(flags), vmax);
+			// if (vmax !== this._metrics.minHeight) {
 			// 	this._metrics.minHeight = vmax;
 			// this.el.style.minHeight = vmax + "px";
 			// }
 			this.graph.el.style.height = vmax + "px";
-			this.el.style.height = vmax + "px";
-			document.body.scrollTop = 0;
+			this.el.style.minHeight = vmax + "px";
+			// document.body.scrollTop = 0;
 			// window.scrollTo(0, 1)
 			// this.requestAnimationFrame(function() {
 			// 	window.scrollTo(0, 0);
@@ -4470,6 +4496,11 @@ var NavigationView = View.extend({
 			// 		this.transforms.runTransition(withArticle ? tx.BETWEEN : tx.LAST, this.bundleList.wrapper);
 			// 	}
 			// }
+		} else if (Globals.BREAKPOINTS["fullwidth"].matches) {
+			if (collapsedChanged) {
+				this.transforms.runTransition(tx.BETWEEN,
+					this.sitename.el, this.about.el);
+			}
 		} else {
 			if (withBundleChanged) {
 				this.transforms.runTransition(tx.BETWEEN,
@@ -4502,6 +4533,8 @@ var NavigationView = View.extend({
 			// this.graph && this.graph.requestRender(View.SIZE_INVALID);
 		}
 		if (this.model.hasChanged("withBundle")) {
+
+			// this.keywordList.refresh()
 			if (this.model.get("withBundle")) {
 				this.touch.on("vpanstart", this._onVPanStart);
 				this.touch.on("hpanstart", this._onHPanStart);
@@ -4509,6 +4542,7 @@ var NavigationView = View.extend({
 			} else {
 				this.touch.off("vpanstart", this._onVPanStart);
 				this.touch.off("hpanstart", this._onHPanStart);
+				keywords.deselect();
 				// this.touch.off("tap", this._onTap);
 			}
 			// this.graph.valueTo()
@@ -4967,12 +5001,7 @@ var CanvasView = View.extend({
 		options.maxValues = _.defaults(options.maxValues, this.defaults.maxValues);
 
 		this._interpolator = new Interpolator(options.values, options.maxValues);
-
-		// render props
-		// this._color = options.color;
-		// this._backgroundColor = options.backgroundColor;
 		this._useOpaque = options.useOpaque;
-
 		this._options = _.pick(options, "color", "backgroundColor");
 
 		// opaque background
@@ -5027,17 +5056,24 @@ var CanvasView = View.extend({
 		// adjust canvas size to pixel ratio
 		// upscale the canvas if the two ratios don't match
 		// --------------------------------
-		var s, m, w, h, edgeW, edgeH;
 
-		s = getComputedStyle(this.el);
-		m = getBoxEdgeStyles(s);
-		edgeW = m.paddingLeft + m.paddingRight + m.borderLeftWidth + m.borderRightWidth;
-		edgeH = m.paddingTop + m.paddingBottom + m.borderTopWidth + m.borderBottomWidth;
-		w = this.el.offsetWidth;
-		h = this.el.offsetHeight;
+		var s = getComputedStyle(this.el);
 
-		this.el.width = this._canvasWidth = (w - edgeW) * this._canvasRatio;
-		this.el.height = this._canvasHeight = (h - edgeH) * this._canvasRatio;
+		this._canvasWidth = this.el.offsetWidth;
+		this._canvasHeight = this.el.offsetHeight;
+
+		if (s.boxSizing === "border-box") {
+			var m = getBoxEdgeStyles(s);
+			this._canvasWidth -= m.paddingLeft + m.paddingRight + m.borderLeftWidth + m.borderRightWidth;
+			this._canvasHeight -= m.paddingTop + m.paddingBottom + m.borderTopWidth + m.borderBottomWidth;
+		}
+
+		this._canvasWidth *= this._canvasRatio;
+		this._canvasHeight *= this._canvasRatio;
+
+		this.measureCanvas(this._canvasWidth, this._canvasHeight);
+		this.el.width = this._canvasWidth;
+		this.el.height = this._canvasHeight;
 		// this.el.style.height = h + "px";
 		// this.el.style.width = w + "px";
 
@@ -5083,7 +5119,11 @@ var CanvasView = View.extend({
 	},
 
 	updateCanvas: function() {
+		/* abstract */
+	},
 
+	measureCanvas: function() {
+		/* abstract */
 	},
 
 	_getFontMetrics: function(str) {
@@ -5106,6 +5146,10 @@ var CanvasView = View.extend({
 			this._ctx.fillRect(x, y, w, h);
 			this._ctx.restore();
 		}
+	},
+
+	_setStyle: function(s) {
+		CanvasView.setStyle(this._ctx, s);
 	},
 
 	/* --------------------------- *
@@ -5167,6 +5211,22 @@ var CanvasView = View.extend({
 
 	redraw: function(context, changed) {},
 
+}, {
+	setStyle: function(ctx, s) {
+		if (typeof s != "object") return;
+		for (var p in s) {
+			switch (typeof ctx[p]) {
+				case "undefined":
+					break;
+				case "function":
+					if (Array.isArray(s[p])) ctx[p].apply(ctx, s[p]);
+					else ctx[p].call(ctx, s[p]);
+					break;
+				default:
+					ctx[p] = s[p];
+			}
+		}
+	}
 });
 
 if (DEBUG) {
@@ -5174,7 +5234,6 @@ if (DEBUG) {
 }
 
 module.exports = CanvasView;
-
 }).call(this,true)
 
 },{"app/control/Globals":34,"app/view/base/Interpolator":55,"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":106}],54:[function(require,module,exports){
@@ -6550,10 +6609,18 @@ var ViewProto = {
 	/* render: public / abstract methods
 	/* ------------------------------- */
 
-	requestRender: function(flags) {
+	invalidate: function(flags) {
 		if (flags !== void 0) {
 			this._renderFlags |= flags;
 		}
+		return this;
+	},
+
+	requestRender: function(flags) {
+		// if (flags !== void 0) {
+		// 	this._renderFlags |= flags;
+		// }
+		this.invalidate(flags);
 		this._requestRender();
 		return this;
 	},
@@ -8240,32 +8307,24 @@ module.exports = FilterableListView;
 
 /** @type {module:underscore} */
 var _ = require("underscore");
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");
 
 /** @type {Function} */
 var Color = require("color");
 
-/** @type {module:app/view/base/View} */
+/** @type {module:app/view/base/CanvasView} */
 var CanvasView = require("app/view/base/CanvasView");
+
 /** @type {module:app/control/Globals} */
 var Globals = require("app/control/Globals");
-
-// /** @type {module:app/model/collection/TypeCollection} */
-// var types = require("app/model/collection/TypeCollection");
-// /** @type {module:app/model/collection/BundleCollection} */
-// var bundles = require("app/model/collection/BundleCollection");
-// /** @type {module:app/model/collection/KeywordCollection} */
-// var keywords = require("app/model/collection/KeywordCollection");
 
 /** @type {module:utils/canvas/calcArcHConnector} */
 var calcArcHConnector = require("utils/canvas/calcArcHConnector");
 
+/** @type {module:utils/canvas/CanvasHelper} */
+var CanvasHelper = require("utils/canvas/CanvasHelper");
+
 /** @type {module:utils/geom/inflateRect} */
 var inflateRect = require("utils/geom/inflateRect");
-
-/** @type {module:utils/canvas/calcArcHConnector} */
-var CanvasHelper = require("utils/canvas/CanvasHelper");
 
 // var BEZIER_CIRCLE = 0.551915024494;
 // var MIN_CANVAS_RATIO = 2;
@@ -8278,47 +8337,43 @@ var styleBase = {
 	setLineDash: [[]],
 	radiusBase: 0.75,
 	/* factored to rem unit */ //6,
-	radiusIncrement: 3, //0.25,
+	radiusIncrement: 0.21, //3, //0.25,
 	/* factored to rem unit */ //4,
-	outlineWidth: 4.5,
-	// margin: 20,
+	outlineWidth: 2.5, // in px
+	arrowSize: 0.3
 };
 
 if (DEBUG) {
 	/* eslint-disable no-unused-vars */
-	var _dStyles = {
-		red: {
-			lineWidth: 1,
-			fillStyle: "rgba(255,127,127,0.75)",
-			strokeStyle: "rgba(255,127,127,0.75)",
-			lineDashOffset: 0,
-			setLineDash: [[]]
-		},
-		blue: {
-			lineWidth: 1,
-			fillStyle: "rgba(127,127,255,0.75)",
-			strokeStyle: "rgba(127,127,255,0.75)",
-			lineDashOffset: 0,
-			setLineDash: [[]]
-		}
+	var _dStyles = {};
+	_dStyles["defaults"] = {
+		lineWidth: 0,
+		fillStyle: "transparent",
+		strokeStyle: "transparent",
+		lineDashOffset: 0,
+		setLineDash: [[]]
 	};
-	/* eslint-enable no-unused-vars */
-}
 
-function setStyle(ctx, s) {
-	if (typeof s != "object") return;
-	for (var p in s) {
-		switch (typeof ctx[p]) {
-			case "undefined":
-				break;
-			case "function":
-				if (Array.isArray(s[p])) ctx[p].apply(ctx, s[p]);
-				else ctx[p].call(ctx, s[p]);
-				break;
-			default:
-				ctx[p] = s[p];
-		}
-	}
+	/* Stroke */
+	[
+		"red", "salmon", "sienna",
+		"green", "yellowgreen", "olive",
+		"blue", "lightskyblue", "midnightblue",
+		"grey", "silver"
+	]
+	.forEach(function(colorName) {
+		var rgbaValue = Color(colorName).alpha(0.75).rgbaString();
+
+		_dStyles[colorName] = _.defaults({
+			lineWidth: 0.75,
+			strokeStyle: rgbaValue
+		}, _dStyles["defaults"]);
+
+		_dStyles[colorName + "_fill"] = _.defaults({
+			fillStyle: rgbaValue
+		}, _dStyles["defaults"]);
+	})
+	/* eslint-enable no-unused-vars */
 }
 
 /**
@@ -8364,7 +8419,8 @@ var GraphView = CanvasView.extend({
 			srcView: options.listA,
 			destView: options.listB,
 			s: _.defaults({
-				lineWidth: 1.5
+				lineWidth: 1.25
+				// radiusIncrement: 0.25,
 			}, styleBase),
 			strokeStyleFn: function(fg, bg, ln) {
 				return Color(ln).mix(bg, 0.9).hexString();
@@ -8376,14 +8432,20 @@ var GraphView = CanvasView.extend({
 			destView: options.listA,
 			s: _.defaults({
 				lineWidth: 0.7,
-				// radiusIncrement: 1,
-				// outlineWidth: 6,
+				// arrowSize: 0.25,
+				// radiusIncrement: 0,
+				// outlineWidth: 0,
 			}, styleBase),
 			strokeStyleFn: function(fg, bg, ln) {
-				return Color(fg).mix(bg, 0.8).hexString();
+				return Color(fg).mix(bg, 0.6).hexString();
 			}
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
+
+		// this._viewportChanged = _.debounce(this._viewportChanged.bind(this), 100, false);
+		// window.addEventListener("scroll", this._viewportChanged, false);
+		// window.addEventListener("wheel", this._viewportChanged, false);
+
 		// this._addListListeners(this._a2b);
 		// this._addListListeners(this._b2a);
 	},
@@ -8404,7 +8466,12 @@ var GraphView = CanvasView.extend({
 	// },
 
 	/** @override */
-	updateCanvas: function(ctx) {
+	measureCanvas: function(w, h) {
+		console.log("%s::measureCanvas s:%o o:%o h:%o", this.cid, this.el.style.height, this.el.offsetHeight, h);
+	},
+
+	/** @override */
+	updateCanvas: function() {
 		this._updateMetrics();
 		this._updateStyles();
 	},
@@ -8441,7 +8508,7 @@ var GraphView = CanvasView.extend({
 		if (typeof s == "string") {
 			s = this._styleData[s];
 		}
-		setStyle(this._ctx, s);
+		CanvasView.setStyle(this._ctx, s);
 	},
 
 	/* --------------------------- *
@@ -8501,19 +8568,25 @@ var GraphView = CanvasView.extend({
 	/* redraw
 	/* --------------------------- */
 
+	_viewportChanged: function(ev) {
+		// this.requestRender(CanvasView.SIZE_INVALID);
+		// this.requestRender(CanvasView.LAYOUT_INVALID);
+		console.log("%s::_viewportChanged %o %o", this.cid);
+	},
+
 	_beforeViewRender: function(view, flags) {
 		if (flags & (CanvasView.SIZE_INVALID | CanvasView.MODEL_INVALID)) {
 			console.log("%s::_beforeViewRender [flags: %s]", this.cid, CanvasView.flagsToString(flags));
 
 			this._a2b.pointsOut = this._a2b.points;
-			this._a2b.maxLengthOut = this._a2b.maxLength;
+			this._a2b.rootOut = this._a2b.root;
 			this._a2b.points = null;
-			this._a2b.maxLength = null;
+			this._a2b.root = null;
 
 			this._b2a.pointsOut = this._b2a.points;
-			this._b2a.maxLengthOut = this._b2a.maxLength;
+			this._b2a.rootOut = this._b2a.root;
 			this._b2a.points = null;
-			this._b2a.maxLength = null;
+			this._b2a.root = null;
 
 			this._groupRects = null;
 		}
@@ -8528,59 +8601,23 @@ var GraphView = CanvasView.extend({
 		ctx.restore();
 	},
 
-	_drawConnectors: function(pp, s, lMax, lVal, dir) {
-		var i, ii;
-		if (pp && (ii = pp.length) && (lVal > 0)) {
-			var ra1 = s.radiusIncrement + s.lineWidth;
-			var ra2 = ra1 + (s.outlineWidth - s.lineWidth);
-			this._setStyle(s);
-			if (lVal < 1) {
-				this._ctx.lineDashOffset = lMax * (1 + lVal);
-				this._ctx.setLineDash([lMax, lMax]);
-			}
-			for (i = 0; i < ii; i++) {
-				this._ctx.save();
-				this._ctx.globalCompositeOperation = "destination-out";
-				this._ctx.lineWidth = s.outlineWidth;
-				// for (i = 0; i < ii; i++) {
-				this._drawConnector(pp[i]);
-				if (lVal == 1) {
-					CanvasHelper.arrowhead(this._ctx, pp[i].x2, pp[i].y2, ra2, Math.PI * dir, true, s);
-					// CanvasHelper.circle(this._ctx, pp[i].x2, pp[i].y2, 2.5, true, s);
-				}
-				// }
-				this._ctx.restore();
-				// for (i = 0; i < ii; i++) {
-				this._drawConnector(pp[i]);
-				if (lVal == 1) {
-					CanvasHelper.arrowhead(this._ctx, pp[i].x2, pp[i].y2, ra1, Math.PI * dir, true, s);
-					// CanvasHelper.circle(this._ctx, pp[i].x2, pp[i].y2, 1.5, true, s);
-				}
-				// }
-			}
-		}
-	},
-
 	_redraw_fromElements: function(ctx, interpolator) {
 		// b2a: keyword to bundles, right to left
 		// a2b: bundle to keywords, left to right
 		if (this._b2a.points === null) {
-			this._computeConnectors2(this._b2a); //, this._listB, this._listA);
+			this._computeConnectors(this._b2a); //, this._listB, this._listA);
 		}
 		if (this._a2b.points === null) {
-			this._computeConnectors2(this._a2b); //, this._listA, this._listB);
+			this._computeConnectors(this._a2b); //, this._listA, this._listB);
 		}
 
 		/* line dash value interpolation */
 		var lVal = interpolator._valueData["amount"]._renderedValue / interpolator._valueData["amount"]._maxVal;
 
 		/* draw */
-		this._drawConnectors(this._b2a.points, this._b2a.s,
-			this._b2a.maxLength, lVal, 1);
-		this._drawConnectors(this._b2a.pointsOut, this._b2a.s,
-			this._b2a.maxLengthOut, 1 - lVal, 1);
-		this._drawConnectors(this._a2b.points, this._a2b.s,
-			this._a2b.maxLength, 1, 2);
+		this._drawConnectors(this._b2a.root, this._b2a.points, this._b2a.s, lVal, 1);
+		this._drawConnectors(this._b2a.rootOut, this._b2a.pointsOut, this._b2a.s, 1 - lVal, 1);
+		this._drawConnectors(this._a2b.root, this._a2b.points, this._a2b.s, 1, 2);
 
 		// clear some label backgrounds
 		if (this._groupRects === null) {
@@ -8621,16 +8658,22 @@ var GraphView = CanvasView.extend({
 		// }
 	},
 
-	_computeConnectors2: function(d) {
-		var rBase = d.s.radiusBase * this._rootFontSize;
-		var rInc = d.s.radiusIncrement; // * this._rootFontSize;
+	_roundTo: function(n, p) {
+		if (p > 1) p = 1 / p;
+		return Math.round(n / p) * p;
+	},
+
+	_computeConnectors: function(d) {
 		var sMin = d.xMin;
 		var dMin = d.destMinX;
 
-		var lMax = 0;
+		var root = {};
 		var p, points = [];
 		var qx, x1, y1, tx;
-		var si; // ssEl's number of items above in the Y axis
+		var rBase, rInc;
+
+		rBase = this._roundTo(d.s.radiusBase * this._rootFontSize, 0.5);
+		rInc = this._roundTo(d.s.radiusIncrement * this._rootFontSize, 0.5);
 
 		if (d.rect.right < d.destRect.left) {
 			qx = 1;
@@ -8640,49 +8683,57 @@ var GraphView = CanvasView.extend({
 			qx = 0;
 		}
 
-		var sView, ddView, ddItems, ddNum, i;
+		var sView, ddView, ddItems, ddNum, i, rect;
 		if (d.srcView.collection.selected && d.destView.filteredItems) {
 			sView = d.srcView.itemViews.findByModel(d.srcView.collection.selected);
-			x1 = d.rect.left + sView.transform.tx + sView._metrics.textLeft;
-			y1 = d.rect.top + sView.transform.ty + sView._metrics.offsetHeight / 2;
+
+			// rect = sView.label.getBoundingClientRect();
+			// x1 = rect.left;
+			// y1 = rect.top + rect.height / 2;
+			// if (qx > 0) x1 += rect.width;
+			// x1 += document.body.scrollLeft;
+			// y1 += document.body.scrollTop;
+
+			x1 = d.rect.left + sView.transform.tx
+				+ sView._metrics.textLeft;
+			y1 = d.rect.top + sView.transform.ty
+				+ sView._metrics.offsetHeight / 2;
 			if (qx > 0) x1 += sView._metrics.textWidth;
 
 			ddItems = d.destView.filteredItems;
 			ddNum = d.destView.filteredItems.length;
+
 			for (i = 0; i < ddNum; i++) {
-				ddView = d.destView.itemViews.findByModel(ddItems[i]);
 				p = {};
-				p.x2 = d.destRect.left + ddView.transform.tx + ddView._metrics.textLeft;
-				p.y2 = d.destRect.top + ddView.transform.ty + ddView._metrics.offsetHeight / 2;
+				ddView = d.destView.itemViews.findByModel(ddItems[i]);
+
+				// rect = ddView.label.getBoundingClientRect();
+				// p.x2 = rect.left;
+				// p.y2 = rect.top + rect.height / 2;
+				// if (qx < 0) p.x2 += rect.width;
+				// p.x2 += document.body.scrollLeft;
+				// p.y2 += document.body.scrollTop;
+
+				p.x2 = d.destRect.left + ddView.transform.tx
+					+ ddView._metrics.textLeft;
+				p.y2 = d.destRect.top + ddView.transform.ty
+					+ ddView._metrics.offsetHeight / 2;
 				if (qx < 0) p.x2 += ddView._metrics.textWidth;
 
 				p.x1 = x1;
 				p.y1 = y1;
-				p.dx = x1 - p.x2;
-				p.dy = y1 - p.y2;
 				p.qx = qx;
 				points[i] = p;
 			}
 			points.sort(function(a, b) {
 				return a.y2 - b.y2;
 			});
-			si = 0;
+			var si = 0; // ssEl's number of items above in the Y axis
+			var rMax0 = ddNum * 0.5 * rInc; // first arc (r0) max radius (cx0)
+			var a; // cy1 offset from y1
+
 			for (i = 0; i < ddNum; i++) {
 				p = points[i];
-				p.di = p.dy > 0 ? i : ddNum - (i + 1);
-				si = Math.max(si, p.di);
-			}
-
-			var a, rMax0 = ddNum * 0.5 * rInc;
-			for (i = 0; i < ddNum; i++) {
-				p = points[i];
-				p.r1 = p.di * rInc + rBase;
-				p.r2 = rBase;
-				// p.r2 = (si - p.di) * rInc + rBase;
-
-				p.cx1 = sMin;
-				p.cx2 = dMin - ((si - p.di) * rInc) * qx;
-				// p.cx2 = dMin;
 
 				a = (i - (ddNum - 1) / 2) * rInc;
 				p.cy1 = p.y1 + a;
@@ -8692,6 +8743,26 @@ var GraphView = CanvasView.extend({
 				p.r0 = a;
 				p.cx0 = p.x1 + (rMax0 - a) * qx;
 
+				// p.dx = x1 - p.x2;
+				// p.dy = y1 - p.y2;
+
+				p.di = ((p.cy1 - p.y2) > 0) ? i : ddNum - (i + 1);
+				si = Math.max(si, p.di);
+			}
+
+			// NOTE
+			//sMin = p.x1 + (rMax0 * qx);
+
+			for (i = 0; i < ddNum; i++) {
+				p = points[i];
+				p.r1 = p.di * rInc + rBase;
+				p.r2 = rBase;
+				// p.r2 = rBase + (si - p.di) * rInc;
+
+				p.cx1 = sMin + (rMax0 * qx);
+				p.cx2 = dMin - ((si - p.di) * rInc) * qx;
+				// p.cx2 = dMin;
+
 				tx = calcArcHConnector(p.cx1, p.cy1, p.r1, p.cx2, p.cy2, p.r2, 0.9);
 				if (tx) {
 					p.tx1 = tx[0];
@@ -8700,38 +8771,25 @@ var GraphView = CanvasView.extend({
 					p.tx1 = p.cx1;
 					p.tx2 = p.cx2;
 				}
+				p.length = Math.abs(p.x1 - p.x2) + Math.abs(p.cy1 - p.cy2);
 
 				// Find out longest node connection for setLineDash
-				lMax = Math.max(lMax, Math.abs(p.x1 - p.x2) + Math.abs(p.cy1 - p.cy2));
+				root.maxLength = Math.max(root.maxLength, p.length);
 			}
 			points.sort(function(a, b) {
-				return b.di - a.di; // Sort by distance to selected view
+				return a.di - b.di; // Sort by distance to selected view
 			});
+
+			root.x = x1;
+			root.y = y1;
+			root.qx = qx;
+			root.r0 = si * rInc;
 		}
 		d.points = points;
-		d.maxLength = lMax;
-		d.xDir = qx;
+		d.root = root;
 	},
 
-	_drawConnector: function(p) {
-		this._ctx.beginPath();
-		this._ctx.moveTo(p.x2, p.cy2);
-		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
-		this._ctx.arcTo(p.tx1, p.cy1, p.cx1, p.cy1, p.r1);
-		// this._ctx.quadraticCurveTo(p.cx0, p.cy1, p.cx0, p.y1)
-		this._ctx.arcTo(p.cx0, p.cy1, p.cx0, p.y1, p.r0);
-		// this._ctx.lineTo(p.cx0, p.y1);
-		this._ctx.stroke();
-
-		// CanvasHelper.circle(this._ctx, p.cx0, p.cy1, 1, _dStyles["blue"], true);
-		// CanvasHelper.circle(this._ctx, p.cx1, p.cy1, 1, _dStyles["blue"], true);
-		// CanvasHelper.crosshair(this._ctx, p.tx1, p.cy1, 8, _dStyles["blue"], true);
-		// CanvasHelper.crosshair(this._ctx, p.tx2, p.cy2, 8, _dStyles["red"], true);
-		// CanvasHelper.circle(this._ctx, p.cx2, p.cy2, 2, _dStyles["red"], true);
-		// CanvasHelper.circle(this._ctx, p.x1 - (p.r3 * p.qx * 2), p.cy1, 2, _dStyles["blue"], true);
-	},
-
-	/*_computeConnectors: function(d) {
+	/* _computeConnectors: function(d) {
 		var rBase = d.s.radiusBase;
 		var rInc = d.s.radiusIncrement;
 		var sMin = d.xMin;
@@ -8818,167 +8876,117 @@ var GraphView = CanvasView.extend({
 		}
 		d.points = points;
 		d.maxLength = lMax;
-		d.xDir = qx;
-	},*/
+		d.maxLength = qx;
+	}, */
 
-	/*_redraw_fromMetrics: function(ctx, interpolator) {
-		var i, ii, model, mCids;
+	_drawConnectors: function(root, pp, s, lVal, dir) {
+		var i, ii, p;
+		var ra1, ra2, ta;
+		if (!(pp && pp.length && lVal)) return;
 
-		var idx, metrics;
-		var x1, y1, x2, y2, xMin1, xMin2;
-		var cx1, cy1, r1;
-		var cx2, cy2, r2;
-		var s, rInc, rBase, xMargin; // connector-to-element margin in px
-
-		// keyword to bundles, left to right
-		if (model = this._listB.collection.selected) {
-			mCids = model.get("bIds");
-			ii = mCids.length;
-		}
-		// bundle to keywords, right to left
-		if (model = this.model.get("bundle")) {
-			mCids = model.get("bIds");
-			ii = mCids.length;
-
-			s = this._b2a.s;
-			rInc = s.radiusIncrement;
-			rBase = s.radiusBase;
-			xMargin = s.margin;
-
-			xMin1 = this._a2b.xMin;
-			xMin2 = this._b2a.xMin;
-			idx = _.findIndex(this._targetsA, { mId: model.id });
-			metrics = this._targetsA[idx];
-			x1 = metrics.after - xMargin;
-			y1 = metrics.y;
-			r2 = rBase;
-			cx1 = Math.min(x1, xMin1);
-
-			ii = this._targetsB.length;
-			for (i = 0; i < ii; i++); {}
-		}
-	},*/
-
-	/*_redraw_fromViews: function(ctx, interpolator) {
-		var i, numItems, view, rect, model, mCids;
-		var yMin, yMax, dx;
-		var s, roInc, m;
-
-		// var xMid = (this._a2b.xMin + this._b2a.xMin) / 2;
-		yMin = Math.min(this._a2b.rect.top, this._b2a.rect.top);
-		yMax = Math.max(this._a2b.rect.bottom, this._b2a.rect.bottom);
-		dx = Math.abs(this._a2b.xMin - this._b2a.xMin);
-
-		s = this._b2a.s;
-		roInc = s.radiusIncrement;
-		m = s.margin; // connector-to-element margin in px
-
-		var rr = 0.6; // r1 to r2 ratio
-		var r1, r2;
-		r1 = (dx / 4) * rr;
-		r2 = (dx / 4) * (1 / rr);
-		r1 = Math.floor(r1);
-		r2 = Math.floor(r2);
-
-		var x1, y1, x2, y2; // connector start/end
-		var cx1, cy1, cx2, cy2; // connector anchors
-		var xMin1, xMin2;
-		var ro; // radius offset
-
-		xMin1 = this._a2b.xMin;
-		xMin2 = this._b2a.xMin;
+		// if (pp && pp.length && lVal) {
+		ii = pp.length;
+		ra1 = s.arrowSize * this._rootFontSize;
+		// ra1 = (s.radiusIncrement * this._rootFontSize) + s.lineWidth;
+		ra2 = ra1 + (s.outlineWidth - s.lineWidth);
+		ta = Math.PI * dir;
 
 		this._setStyle(s);
+		// if (lVal < 1) {
+		// 	this._ctx.lineDashOffset = lMax * (1 + lVal);
+		// 	this._ctx.setLineDash([lMax, lMax])
+		// 	// this._ctx.lineDashOffset = lMax * (1 + lVal);;
+		// 	// this._ctx.setLineDash([lMax * (1 - lVal), lMax]);
+		// }
 
-		// bundle to keywords
-		if (model = this.model.get("bundle")) {
-			view = this._listA.itemViews.findByModel(model);
-			if (view._metrics) {
-				mCids = model.get("kIds");
-				numItems = mCids.length;
+		for (i = 0; i < ii; i++) {
+			p = pp[i];
+			if (s.outlineWidth) {
+				this._ctx.save();
+				this._ctx.globalCompositeOperation = "destination-out";
+				this._ctx.lineWidth = s.lineWidth + s.outlineWidth;
+				// for (i = 0; i < ii; i++) {
+				// p = pp[i];
 
-				x1 = this._a2b.rect.left + view.transform.tx + view._metrics.textLeft + view._metrics.textWidth;
-				y1 = this._a2b.rect.top + view.transform.ty + view._metrics.offsetHeight / 2;
-				cx1 = Math.max(x1, xMin1);
-				ro = mCids.length * roInc * 0.5;
-
-				for (i = 0; i < numItems; i++) {
-					view = this._listB.itemViews.findByModel(keywords.get(mCids[i]));
-					if (view._metrics) {
-						x2 = this._b2a.rect.left + view.transform.tx + view._metrics.textLeft;
-						y2 = this._b2a.rect.top + view.transform.ty + view._metrics.offsetHeight / 2;
-						cx2 = Math.min(x2, xMin2);
-						cy1 = y1 + i * roInc;
-						cy2 = y2; // - i*roInc;
-						ro += y1 > y2 ? roInc : -roInc;
-
-						ctx.beginPath();
-						ctx.moveTo(x1, cy1);
-						drawArcHConnector(ctx, cx1, cy1, cx2, cy2, r1 + ro, r2 - ro);
-						ctx.lineTo(x2, cy2);
-						ctx.stroke();
-					}
+				if (lVal < 1) {
+					this._ctx.lineDashOffset = p.length * (1 + lVal);
+					this._ctx.setLineDash([p.length, p.length])
 				}
-			}
-		}
-
-		xMin1 = this._b2a.xMin;
-		xMin2 = this._a2b.xMin;
-
-		// keyword to bundles
-		if (model = this._listB.collection.selected) {
-			view = this._listB.itemViews.findByModel(model);
-			if (view._metrics) {
-				mCids = model.get("bIds");
-				numItems = mCids.length;
-
-				x1 = this._b2a.rect.left + view.transform.tx + view._metrics.textLeft;
-				y1 = this._b2a.rect.top + view.transform.ty + view._metrics.offsetHeight / 2;
-				cx1 = Math.min(x1, xMin1);
-				ro = mCids.length * roInc * 0.5;
-
-				// ctx.setLineDash([]);
-				for (i = 0; i < numItems; i++) {
-					view = this._listA.itemViews.findByModel(this._listA.collection.get(mCids[i]));
-					if (view._metrics) {
-						x2 = this._a2b.rect.left + view.transform.tx + view._metrics.textLeft + view._metrics.textWidth;
-						y2 = this._a2b.rect.top + view.transform.ty + view._metrics.offsetHeight / 2;
-						cx2 = Math.max(x2, xMin2);
-						cy1 = y1 + i * roInc;
-						cy2 = y2; // + i*roInc;
-						ro += y1 > y2 ? roInc : -roInc;
-
-						ctx.beginPath();
-						ctx.moveTo(x1, cy1);
-						drawArcHConnector(ctx, cx1, cy1, cx2, cy2, r1 + ro, r2 - ro);
-						ctx.lineTo(x2, cy2);
-						ctx.stroke();
-					}
+				this._drawConnector(p, i, pp);
+				if (lVal == 1) {
+					CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra2, ta);
+					this._ctx.fill();
 				}
+				// }
+				this._ctx.restore();
 			}
+
+			// for (i = 0; i < ii; i++) {
+			// p = pp[i];
+			if (lVal < 1) {
+				this._ctx.lineDashOffset = p.length * (1 + lVal);
+				this._ctx.setLineDash([p.length, p.length])
+			}
+			this._drawConnector(p, i, pp);
+			if (lVal == 1) {
+				CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra1, ta);
+				this._ctx.fill();
+			}
+			// }
 		}
-	},*/
+		// this._ctx.save();
+		// this._ctx.globalCompositeOperation = "destination-out";
+		// this._ctx.translate(root.x, root.y);
+		// // this._ctx.scale(0.5, 1);
+		// CanvasHelper.circle(this._ctx, 0, 0, root.r0);
+		// this._ctx.fill()
+		// this._ctx.restore();
+	},
 
-	/*_measureListItems: function(listView) {
-		var listRect, retval;
+	_drawConnector: function(p, i, pp) {
 
-		listRect = listView.el.getBoundingClientRect();
-		retval = listView.itemViews.map(function(view, i) {
-			return {
-				vId: view.id,
-				mId: view.model.id,
-				left: listRect.left + view.transform.tx + view._metrics.textLeft,
-				right: listRect.left + view.transform.tx + view._metrics.textLeft + view._metrics.textWidth,
-				y: listRect.top + view.transform.ty + view._metrics.offsetHeight / 2,
-			};
-		}, this);
-		retval.sort(function(a, b) {
-			return a.y - b.y;
-		});
-		retval.before = listRect.left;
-		retval.after = listRect.left + listRect.width;
-		return retval;
-	},*/
+		this._ctx.beginPath();
+		this._ctx.moveTo(p.x2, p.cy2);
+		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
+		this._ctx.arcTo(p.tx1, p.cy1, p.cx1, p.cy1, p.r1);
+		this._ctx.arcTo(p.cx0, p.cy1, p.cx0, p.y1, p.r0);
+
+		// p.cx00 = p.x1 + ((p.r0 + p.di) * p.qx);
+		// p.cy00 = (p.cy1 + p.y1) / 2;
+		// this._ctx.arcTo(p.cx00, p.cy1, p.cx00, p.cy00, p.r0 / 2);
+		// this._ctx.arcTo(p.cx00, p.y1, p.x1, p.y1, p.r0 / 2);
+		// this._ctx.lineTo(p.x1, p.y1);
+
+		// p.cx00 = p.x1 + (p.r0 * p.qx * 2);
+		// this._ctx.lineTo(p.cx00, p.cy1);
+		// this._ctx.quadraticCurveTo(p.cx0, p.cy1, p.cx0, p.y1);
+
+		// this._ctx.lineTo(p.cx0, p.y1);
+
+		this._ctx.stroke();
+
+		// if (DEBUG) {
+		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
+		// 		p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
+		// 	if (i === 0) {
+		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["blue"], p.x1);
+		// 		CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
+		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["lightskyblue"], p.cx1);
+		// 		CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
+		// 	}
+		// 	CanvasHelper.drawHGuide(this._ctx, _dStyles["silver"], p.cy2);
+		// 	// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
+		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
+		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
+		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
+		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
+		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
+		//
+		// 	CanvasHelper.drawVGuide(this._ctx, _dStyles["yellowgreen"], p.cx2);
+		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
+		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
+		// }
+	},
 });
 
 if (DEBUG) {
@@ -9350,25 +9358,25 @@ module.exports = SelectableListView;
  * @module app/view/component/progress/CanvasProgressMeter
  */
 
-/** @type {module:underscore} */
-var _ = require("underscore");
+// /** @type {module:underscore} */
+// var _ = require("underscore");
 
-/** @type {module:app/control/Globals} */
-var Globals = require("app/control/Globals");
+// /** @type {module:app/control/Globals} */
+// var Globals = require("app/control/Globals");
 /** @type {module:app/view/base/CanvasView} */
 var CanvasView = require("app/view/base/CanvasView");
 // /** @type {module:app/view/base/Interpolator} */
 // var Interpolator = require("app/view/base/Interpolator");
 
-var ARC_ERR = 0.00001;
+// var ARC_ERR = 0.00001;
 // var ARC_ERR = 0.0;
-var PI = Math.PI;
+// var PI = Math.PI;
 var PI2 = Math.PI * 2;
 
 var GAP_ARC = PI2 / 48;
-var CAP_SCALE = 2; // cap arc = GAP_ARC * CAP_SCALE
-var WAIT_CYCLE_VALUE = 1;
-var WAIT_CYCLE_MS = 300; // milliseconds per interpolation loop 
+// var CAP_SCALE = 2; // cap arc = GAP_ARC * CAP_SCALE
+// var WAIT_CYCLE_VALUE = 1;
+// var WAIT_CYCLE_MS = 300; // milliseconds per interpolation loop
 
 var ARC_DEFAULTS = {
 	"amount": {
@@ -9430,6 +9438,10 @@ var CanvasProgressMeter = CanvasView.extend({
 		this._canvasOrigin = null;
 	},
 
+	measureCanvas: function(w, h) {
+		this._canvasHeight = this._canvasWidth = Math.min(this._canvasWidth, this._canvasHeight);
+	},
+
 	_updateCanvas: function() {
 		CanvasView.prototype._updateCanvas.apply(this, arguments);
 
@@ -9443,7 +9455,7 @@ var CanvasProgressMeter = CanvasView.extend({
 			return s + n;
 		};
 
-		this._canvasSize = Math.min(this._canvasWidth, this._canvasWidth); // / this._canvasRatio;
+		this._canvasSize = Math.min(this._canvasWidth, this._canvasHeight); // / this._canvasRatio;
 		this._maxDashArc = 0;
 
 		for (arcName in ARC_DEFAULTS) {
@@ -9629,7 +9641,7 @@ module.exports = CanvasProgressMeter;
 
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":53,"underscore":"underscore"}],72:[function(require,module,exports){
+},{"app/view/base/CanvasView":53}],72:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {Function} */
@@ -10848,7 +10860,7 @@ var MediaRenderer = CarouselRenderer.extend({
 		}
 	},
 }, {
-	LOG_TO_SCREEN: false,
+	LOG_TO_SCREEN: true,
 
 	/** @type {module:app/view/promise/whenSelectionIsContiguous} */
 	whenSelectionIsContiguous: require("app/view/promise/whenSelectionIsContiguous"),
@@ -13155,7 +13167,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
 
-  return "<dl class=\"debug-links\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span>\n		<span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span>\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span>\n	</dt>\n"
+  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span>\n		<span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span>\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span>\n	</dt>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
@@ -14238,6 +14250,9 @@ module.exports = TransformItem;
 },{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":110,"utils/prefixedProperty":111,"utils/prefixedStyleName":112,"utils/strings/camelToDashed":115}],104:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
+var splice = Array.prototype.splice;
+// var concat = Array.prototype.concat;
+
 var setStyle = function(ctx, s) {
 	if (typeof s != "object") return;
 	for (var p in s) {
@@ -14254,70 +14269,72 @@ var setStyle = function(ctx, s) {
 	}
 };
 
+var _drawShape = function(fn, s, ctx) {
+	ctx.save();
+	if (s) setStyle(ctx, s);
+	fn.apply(null, splice.call(arguments, 2));
+	if (ctx.lineWidth !== "transparent") ctx.stroke();
+	if (ctx.fillStyle !== "transparent") ctx.fill();
+	ctx.restore();
+};
+
 module.exports = {
 	setStyle: setStyle,
 
-	vGuide: function(ctx, x, s) {
-		ctx.save();
-		if (s) setStyle(ctx, s);
+	vGuide: function(ctx, x) {
 		ctx.beginPath();
-		ctx.moveTo(x, ctx.canvas.offsetTop);
-		ctx.lineTo(x, ctx.canvas.offsetHeight);
-		ctx.stroke();
-		ctx.restore();
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, ctx.canvas.height);
+	},
+	drawVGuide: function(ctx, s, x) {
+		_drawShape(this.vGuide, s, ctx, x);
 	},
 
-	crosshair: function(ctx, x, y, r, s) {
+	hGuide: function(ctx, y) {
+		ctx.beginPath();
+		ctx.moveTo(0, y);
+		ctx.lineTo(ctx.canvas.width, y);
+	},
+	drawHGuide: function(ctx, s, y) {
+		_drawShape(this.hGuide, s, ctx, y);
+	},
+
+	crosshair: function(ctx, x, y, r) {
 		ctx.save();
-		if (s) {
-			setStyle(ctx, s);
-		}
-		// if (s && s.style != "vertical") {
 		ctx.translate(x, y);
 		ctx.rotate(Math.PI / 4);
-		// }
 		ctx.beginPath();
 		ctx.moveTo(0, -r);
 		ctx.lineTo(0, r);
 		ctx.moveTo(-r, 0);
 		ctx.lineTo(r, 0);
-		ctx.stroke();
 		ctx.restore();
 	},
+	drawCrosshair: function(ctx, s, x, y, r) {
+		_drawShape(this.crosshair, s, ctx, x, y, r);
+	},
 
-	circle: function(ctx, x, y, r, s, solid) {
-		ctx.save();
-		if (s) setStyle(ctx, s);
+	circle: function(ctx, x, y, r) {
 		ctx.beginPath();
 		ctx.arc(x, y, r, 0, PI2);
-		ctx.closePath();
-		if (solid) ctx.fill();
-		else ctx.stroke();
-		ctx.restore();
+	},
+	drawCircle: function(ctx, s, x, y, r) {
+		_drawShape(this.circle, s, ctx, x, y, r);
 	},
 
-	square: function(ctx, x, y, r, s, solid) {
+	square: function(ctx, x, y, r) {
 		r = Math.floor(r / 2) * 2;
-		if (solid) r += 0.5;
-		ctx.save();
-		if (s) setStyle(ctx, s);
 		ctx.beginPath();
 		ctx.rect(x - r, y - r, r * 2, r * 2);
-		if (solid) ctx.fill();
-		else ctx.stroke();
-		ctx.restore();
+	},
+	drawSquare: function(ctx, s, x, y, r) {
+		_drawShape(this.square, s, ctx, x, y, r);
 	},
 
-	arrowhead: function(ctx, x, y, r, a, solid, s) {
+	arrowhead: function(ctx, x, y, r, t) {
 		ctx.save();
-		if (s) {
-			setStyle(ctx, s);
-		}
-		if (r < 10) {
-			ctx.setLineDash([]);
-		}
 		ctx.translate(x, y);
-		ctx.rotate(a); // - Math.PI * 0.5);
+		ctx.rotate(t); // - Math.PI * 0.5);
 		ctx.translate(r * 0.5, 0);
 		ctx.beginPath();
 		ctx.moveTo(0, 0);
@@ -14327,10 +14344,12 @@ module.exports = {
 		ctx.arcTo(0, 0, -r * Math.SQRT2, -r * Math.SQRT1_2, r);
 		// ctx.quadraticCurveTo(0, 0, -r * Math.SQRT2, -r * Math.SQRT1_2);
 		ctx.lineTo(0, 0);
-		if (solid) ctx.fill();
-		else ctx.stroke();
+		ctx.closePath();
 		ctx.restore();
-	}
+	},
+	drawArrowhead: function(ctx, s, x, y, r, t) {
+		_drawShape(this.arrowhead, s, ctx, x, y, r, t);
+	},
 };
 },{}],105:[function(require,module,exports){
 /**
@@ -15083,6 +15102,8 @@ module.exports={
 		"ease": "ease"
 	},
 	"breakpoints": {
+		"fullwidth-small": "'not screen and (min-width: 460px)'",
+		"fullwidth": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 		"mobile": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 		"desktop-small": "'only screen and (min-width: 1024px) and (min-height: 540px)'",
 		"desktop-medium": "'only screen and (min-width: 1224px) and (min-height: 704px)'",
