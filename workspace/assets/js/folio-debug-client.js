@@ -8445,18 +8445,18 @@ var GraphView = CanvasView.extend({
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
 
-		// this._viewportChanged = function(ev) {
-		// 	// this.requestRender(CanvasView.SIZE_INVALID);
-		// 	// this.requestRender(CanvasView.LAYOUT_INVALID);
-		// 	console.log("%s:[%s]:_viewportChanged window.scrollY:%s document.body.scrollTop:%s document.documentElement.scrollTop:%s", this.cid, ev.type,
-		// 		window.scrollY, document.body.scrollTop, document.documentElement.scrollTop);
-		// 	this._groupRects = null;
-		// };
-		//
-		// this._viewportChanged = this._viewportChanged.bind(this);
-		// // this._viewportChanged = _.debounce(this._viewportChanged.bind(this), 100, false);
-		// window.addEventListener("scroll", this._viewportChanged, false);
-		// window.addEventListener("wheel", this._viewportChanged, false);
+		this._viewportChanged = function(ev) {
+			// this.requestRender(CanvasView.SIZE_INVALID);
+			// this.requestRender(CanvasView.LAYOUT_INVALID);
+			console.log("%s:[%s]:_viewportChanged window.scrollY:%s document.body.scrollTop:%s document.documentElement.scrollTop:%s", this.cid, ev.type,
+				window.scrollY, document.body.scrollTop, document.documentElement.scrollTop, ev);
+			this._groupRects = null;
+		};
+
+		this._viewportChanged = this._viewportChanged.bind(this);
+		// this._viewportChanged = _.debounce(this._viewportChanged, 100, false);
+		window.addEventListener("scroll", _.debounce(this._viewportChanged, 100, false), false);
+		window.addEventListener("wheel", _.debounce(this._viewportChanged, 100, false), false);
 
 		// this._addListListeners(this._a2b);
 		// this._addListListeners(this._b2a);
@@ -8633,12 +8633,28 @@ var GraphView = CanvasView.extend({
 				this._groupRects[i] = els[i].getBoundingClientRect(els[i]);
 			}
 		}
+		if (lVal === 1) {
+			console.log("%s::_redraw " +
+				"window.scrollY: %s " +
+				"window.pageYOffset: %s " +
+				"body.scrollTop: %s " +
+				"html.scrollTop: %s " +
+				"#container.scrollTop: %s",
+				this.cid,
+				window.scrollY,
+				window.pageYOffset,
+				document.documentElement.scrollTop,
+				document.body.scrollTop,
+				document.documentElement.firstElementChild.scrollTop
+			);
+		}
+
 		this._groupRects.forEach(function(r) {
 			// TODO: implement DOMRect.inflate()
-			// CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
-			// 	r.left + document.body.scrollLeft,
-			// 	r.top + document.body.scrollTop,
-			// 	r.width, r.height);
+			CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
+				r.left + document.body.scrollLeft,
+				r.top + document.body.scrollTop,
+				r.width, r.height);
 
 			r = inflateRect(r, -8.5, -4.5);
 			this._ctx.clearRect(
