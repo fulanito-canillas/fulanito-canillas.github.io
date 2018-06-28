@@ -2080,7 +2080,7 @@ module.exports = (function() {
 }());
 }).call(this,true)
 
-},{"../../../sass/variables.json":118,"underscore":"underscore"}],35:[function(require,module,exports){
+},{"../../../sass/variables.json":119,"underscore":"underscore"}],35:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2708,7 +2708,7 @@ module.exports = BaseItem.extend({
 	},
 });
 
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":116}],45:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],45:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -2896,7 +2896,7 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":116}],47:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],47:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3062,8 +3062,6 @@ var View = require("app/view/base/View");
 var NavigationView = require("app/view/NavigationView");
 /** @type {module:app/view/ContentView} */
 var ContentView = require("app/view/ContentView");
-
-// var DOC_TITLE_PREFIX = "Portfolio";
 
 var AppView = {
 	getInstance: function() {
@@ -3292,8 +3290,8 @@ var AppViewProto = {
 	},
 
 	renderResize: function(flags) {
-		// document.body.scrollTop = 0;
-		window.scroll({ top: 0, behavior: "smooth" });
+		document.body.scrollTop = 0;
+		// window.scroll({ top: 0, behavior: "smooth" });
 
 		_.each(Globals.BREAKPOINTS, function(o, s) {
 			this.toggle(s, o.matches);
@@ -3439,7 +3437,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":116}],50:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":117}],50:[function(require,module,exports){
 /**
  * @module app/view/NavigationView
  */
@@ -4251,14 +4249,14 @@ var NavigationView = View.extend({
 		// });
 
 		this.listenTo(this.graph, "view:render:before", function(view, flags) {
-			if (flags & View.SIZE_INVALID | View.MODEL_INVALID) {
+			if (flags & (View.SIZE_INVALID | View.MODEL_INVALID)) {
 				var vmax = Math.max(
 					this.bundleList._metrics.height,
 					this.keywordList._metrics.height
 				);
+				view.el.style.height = vmax + "px";
 				console.log("%s:%s[view:render:before] flags: %s] height: %o",
 					this.cid, view.cid, View.flagsToString(flags), vmax);
-				view.el.style.height = vmax + "px";
 			}
 		});
 		// this.listenTo(this.bundleList, "view:render:after", function(view, flags) {
@@ -5741,7 +5739,7 @@ Interpolator.prototype = Object.create({
 
 module.exports = Interpolator;
 
-},{"utils/ease/linear":107}],56:[function(require,module,exports){
+},{"utils/ease/linear":108}],56:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -5783,7 +5781,7 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":110}],57:[function(require,module,exports){
+},{"utils/prefixedEvent":111}],57:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
@@ -5994,7 +5992,7 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
-},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":117}],58:[function(require,module,exports){
+},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":118}],58:[function(require,module,exports){
 /* global HTMLElement, MutationObserver */
 /**
  * @module app/view/base/View
@@ -6688,7 +6686,7 @@ var ViewProto = {
 };
 
 module.exports = Backbone.View.extend(ViewProto, View);
-},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":110,"utils/prefixedProperty":111,"utils/prefixedStyleName":112}],59:[function(require,module,exports){
+},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113}],59:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -7798,7 +7796,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":111,"utils/prefixedStyleName":112}],64:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":112,"utils/prefixedStyleName":113}],64:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -7919,7 +7917,7 @@ module.exports = View.extend({
 	},
 });
 
-},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":114}],66:[function(require,module,exports){
+},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":115}],66:[function(require,module,exports){
 /**
 /* @module app/view/component/FilterableListView
 /*/
@@ -7940,11 +7938,11 @@ var prefixedProperty = require("utils/prefixedProperty");
 /** @type {module:utils/css/getBoxEdgeStyles} */
 var getBoxEdgeStyles = require("utils/css/getBoxEdgeStyles");
 
-var diff = function(a1, a2) {
+var diff = function(a1, a2, dest) {
 	return a1.reduce(function(res, o, i, a) {
 		if (a2.indexOf(o) == -1) res.push(o);
 		return res;
-	}, []);
+	}, dest || []);
 };
 
 /** @type {module:app/control/Globals.TRANSLATE_TEMPLATE} */
@@ -8015,6 +8013,7 @@ var FilterableListView = View.extend({
 		_.defaults(options, this.defaults);
 		this.renderer = options.renderer;
 		this._filterFn = options.filterFn;
+		this._filteredItems = [];
 
 		this.collection.each(this.createItemView, this);
 		this.refresh();
@@ -8299,7 +8298,7 @@ var FilterableListView = View.extend({
 });
 
 module.exports = FilterableListView;
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":106,"utils/prefixedProperty":111}],67:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":106,"utils/prefixedProperty":112}],67:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -8325,6 +8324,10 @@ var CanvasHelper = require("utils/canvas/CanvasHelper");
 
 /** @type {module:utils/geom/inflateRect} */
 var inflateRect = require("utils/geom/inflateRect");
+
+/** @type {module:utils/dom/getAbsoluteClientRect} */
+var getAbsoluteClientRect = require("utils/dom/getAbsoluteClientRect");
+
 
 // var BEZIER_CIRCLE = 0.551915024494;
 // var MIN_CANVAS_RATIO = 2;
@@ -8442,7 +8445,16 @@ var GraphView = CanvasView.extend({
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
 
-		// this._viewportChanged = _.debounce(this._viewportChanged.bind(this), 100, false);
+		// this._viewportChanged = function(ev) {
+		// 	// this.requestRender(CanvasView.SIZE_INVALID);
+		// 	// this.requestRender(CanvasView.LAYOUT_INVALID);
+		// 	console.log("%s:[%s]:_viewportChanged window.scrollY:%s document.body.scrollTop:%s document.documentElement.scrollTop:%s", this.cid, ev.type,
+		// 		window.scrollY, document.body.scrollTop, document.documentElement.scrollTop);
+		// 	this._groupRects = null;
+		// };
+		//
+		// this._viewportChanged = this._viewportChanged.bind(this);
+		// // this._viewportChanged = _.debounce(this._viewportChanged.bind(this), 100, false);
 		// window.addEventListener("scroll", this._viewportChanged, false);
 		// window.addEventListener("wheel", this._viewportChanged, false);
 
@@ -8481,21 +8493,15 @@ var GraphView = CanvasView.extend({
 	/* --------------------------- */
 
 	_updateStyles: function() {
-		var b, bgColor, lnColor; //, altBgColor;
+		var b, bgColor, lnColor;
 		if (this.model.get("withBundle")) {
 			b = this.model.get("bundle");
 			lnColor = b.colors.lnColor.clone();
 			bgColor = b.colors.bgColor.clone();
-			// altBgColor = b.attrs["--alt-background-color"];
 		} else {
 			bgColor = Color(Globals.DEFAULT_COLORS["background-color"]);
 			lnColor = Color(Globals.DEFAULT_COLORS["--link-color"]);
 		}
-		// bgColor = Color(window.getComputedStyle(this.el).getPropertyValue("background-color"));
-		// console.log("%s::_updateStyles bg: %s", this.cid, window.getComputedStyle(this.el).getPropertyValue("background-color"));
-		// var bgColor = this.model.get("withBundle") ? this.model.get("bundle").colors.bgColor : Color(Globals.DEFAULT_COLORS["background-color"]);
-		// var lnColor = this.model.get("withBundle") ? this.model.get("bundle").colors.lnColor : Color(Globals.DEFAULT_COLORS["--link-color"]);
-		// var altBgColor = this.model.get("bundle").attrs["--alt-background-color"];
 
 		this._a2b.s.strokeStyle = this._a2b.s.fillStyle =
 			this._a2b.strokeStyleFn(this._color, bgColor, lnColor);
@@ -8504,7 +8510,6 @@ var GraphView = CanvasView.extend({
 	},
 
 	_setStyle: function(s) {
-		// var ctx = this._ctx;
 		if (typeof s == "string") {
 			s = this._styleData[s];
 		}
@@ -8516,12 +8521,17 @@ var GraphView = CanvasView.extend({
 	/* --------------------------- */
 
 	_updateMetrics: function() {
-		var bounds = this.el.getBoundingClientRect();
-		this._ctx.setTransform(this._canvasRatio, 0, 0, this._canvasRatio, -bounds.left * this._canvasRatio - 0.5, -bounds.top * this._canvasRatio - 0.5);
-
+		var bounds;
 		var i, ii, els;
 		var aRect, bRect;
 		var aMin, bMin;
+
+		bounds = this.el.getBoundingClientRect();
+		// bounds = getAbsoluteClientRect(this.el);
+		this._ctx.setTransform(this._canvasRatio, 0, 0, this._canvasRatio,
+			(-bounds.left * this._canvasRatio) - 0.5,
+			(-bounds.top * this._canvasRatio) - 0.5
+		);
 
 		aRect = this._listA.el.getBoundingClientRect();
 		aMin = aRect.left;
@@ -8568,12 +8578,6 @@ var GraphView = CanvasView.extend({
 	/* redraw
 	/* --------------------------- */
 
-	_viewportChanged: function(ev) {
-		// this.requestRender(CanvasView.SIZE_INVALID);
-		// this.requestRender(CanvasView.LAYOUT_INVALID);
-		console.log("%s::_viewportChanged %o %o", this.cid);
-	},
-
 	_beforeViewRender: function(view, flags) {
 		if (flags & (CanvasView.SIZE_INVALID | CanvasView.MODEL_INVALID)) {
 			console.log("%s::_beforeViewRender [flags: %s]", this.cid, CanvasView.flagsToString(flags));
@@ -8619,48 +8623,52 @@ var GraphView = CanvasView.extend({
 		this._drawConnectors(this._b2a.rootOut, this._b2a.pointsOut, this._b2a.s, 1 - lVal, 1);
 		this._drawConnectors(this._a2b.root, this._a2b.points, this._a2b.s, 1, 2);
 
+		// this._drawOverlays(this._a2b.destView, this._a2b.destRect);
+
 		// clear some label backgrounds
 		if (this._groupRects === null) {
 			this._groupRects = [];
 			var els = this._listB.el.querySelectorAll(".list-group .label span");
 			for (var i = 0, ii = els.length; i < ii; i++) {
-				this._groupRects[i] = inflateRect(els[i].getBoundingClientRect(), -8.5, -4.5);
+				this._groupRects[i] = els[i].getBoundingClientRect(els[i]);
 			}
 		}
 		this._groupRects.forEach(function(r) {
 			// TODO: implement DOMRect.inflate()
-			this._ctx.clearRect(r.left, r.top, r.width - 1, r.height - 1);
-			// this._ctx.strokeRect(r.left, r.top, r.width, r.height);
-			// var ro = r.original;
-			// this._ctx.strokeRect(ro.left, ro.top, ro.width, ro.height);
+			// CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
+			// 	r.left + document.body.scrollLeft,
+			// 	r.top + document.body.scrollTop,
+			// 	r.width, r.height);
+
+			r = inflateRect(r, -8.5, -4.5);
+			this._ctx.clearRect(
+				r.left + document.body.scrollLeft,
+				r.top + document.body.scrollTop,
+				r.width, r.height);
+
 		}, this);
-
-		// var i, ii, r;
-		// if (this._a2b.points || this._b2a.points || this._a2b.pointsOut || this._b2a.pointsOut) {
-		// 	ii = this._groupRects.length;
-		// 	for (i = 0; i < ii; i++) {
-		// 		r = this._groupRects[i];
-		// 		ctx.clearRect(r.left, r.top, r.width, r.height);
-		// 	}
-		// }
-
-		// if (DEBUG) {
-		// 	if (!interpolator._valuesChanged) {
-		// 		var p;
-		// 		for (i = 0; i < ii; i++) {
-		// 			p = this._b2a.points[i];
-		// 			CanvasHelper.crosshair(ctx, p.cx2, p.cy2, 5, _dStyles.red);
-		// 			CanvasHelper.circle(ctx, p.cx1, p.cy1, 1, true, _dStyles.blue);
-		// 		}
-		// 	}
-		// 	CanvasHelper.vGuide(ctx, this._a2b.xMin, _dStyles.red);
-		// 	CanvasHelper.vGuide(ctx, this._b2a.xMin, _dStyles.blue);
-		// }
 	},
 
-	_roundTo: function(n, p) {
-		if (p > 1) p = 1 / p;
-		return Math.round(n / p) * p;
+	_drawOverlays: function(list, rect) {
+		var items = list.groups;
+		for (var i = 0, num = items.length, item; i < num; i++) {
+			item = list.itemViews.findByModel(items[i]);
+			if (item._metrics && item.transform) {
+				console.log("list.filteredGroups.length[%o] %o", i,
+					item._metrics, item.transform);
+				this._ctx.clearRect(
+					rect.left + item.transform.tx + item._metrics.offsetLeft,
+					rect.top + item.transform.ty + item._metrics.offsetTop - 5,
+					item._metrics.offsetWidth,
+					10 // item._metrics.offsetHeight
+				);
+				// CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
+				// 	rect.left + item.transform.tx + item._metrics.offsetLeft,
+				// 	rect.top + item.transform.ty + item._metrics.offsetTop - 5,
+				// 	item._metrics.offsetWidth, 10
+				// );
+			}
+		}
 	},
 
 	_computeConnectors: function(d) {
@@ -8683,16 +8691,17 @@ var GraphView = CanvasView.extend({
 			qx = 0;
 		}
 
-		var sView, ddView, ddItems, ddNum, i, rect;
+		var sView, ddView, ddItems, ddNum, i;
 		if (d.srcView.collection.selected && d.destView.filteredItems) {
 			sView = d.srcView.itemViews.findByModel(d.srcView.collection.selected);
 
-			// rect = sView.label.getBoundingClientRect();
+			// var rect = sView.label.getBoundingClientRect();
 			// x1 = rect.left;
 			// y1 = rect.top + rect.height / 2;
 			// if (qx > 0) x1 += rect.width;
 			// x1 += document.body.scrollLeft;
 			// y1 += document.body.scrollTop;
+			if (!sView._metrics) return;
 
 			x1 = d.rect.left + sView.transform.tx
 				+ sView._metrics.textLeft;
@@ -8789,6 +8798,113 @@ var GraphView = CanvasView.extend({
 		d.root = root;
 	},
 
+	_drawConnectors: function(root, pp, s, lVal, dir) {
+		var i, ii, p;
+		var ra1, ra2, ta;
+		if (!(pp && pp.length && lVal)) return;
+
+		// if (pp && pp.length && lVal) {
+		ii = pp.length;
+		ra1 = s.arrowSize * this._rootFontSize;
+		// ra1 = (s.radiusIncrement * this._rootFontSize) + s.lineWidth;
+		ra2 = ra1 + (s.outlineWidth - s.lineWidth);
+		ta = Math.PI * dir;
+
+		this._setStyle(s);
+		// if (lVal < 1) {
+		// 	this._ctx.lineDashOffset = lMax * (1 + lVal);
+		// 	this._ctx.setLineDash([lMax, lMax])
+		// 	// this._ctx.lineDashOffset = lMax * (1 + lVal);;
+		// 	// this._ctx.setLineDash([lMax * (1 - lVal), lMax]);
+		// }
+
+		for (i = 0; i < ii; i++) {
+			p = pp[i];
+			if (s.outlineWidth) {
+				this._ctx.save();
+				this._ctx.globalCompositeOperation = "destination-out";
+				this._ctx.lineWidth = s.lineWidth + s.outlineWidth;
+				// for (i = 0; i < ii; i++) {
+				// p = pp[i];
+
+				if (lVal < 1) {
+					this._ctx.lineDashOffset = p.length * (1 + lVal);
+					this._ctx.setLineDash([p.length, p.length])
+				}
+				this._drawConnector(p, i, pp);
+				if (lVal == 1) {
+					CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra2, ta);
+					this._ctx.fill();
+				}
+				// }
+				this._ctx.restore();
+			}
+
+			// for (i = 0; i < ii; i++) {
+			// p = pp[i];
+			if (lVal < 1) {
+				this._ctx.lineDashOffset = p.length * (1 + lVal);
+				this._ctx.setLineDash([p.length, p.length])
+			}
+			this._drawConnector(p, i, pp);
+			if (lVal == 1) {
+				CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra1, ta);
+				this._ctx.fill();
+			}
+			// }
+		}
+	},
+
+	_drawConnector: function(p, i, pp) {
+
+		this._ctx.beginPath();
+		this._ctx.moveTo(p.x2, p.cy2);
+		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
+		this._ctx.arcTo(p.tx1, p.cy1, p.cx1, p.cy1, p.r1);
+		this._ctx.arcTo(p.cx0, p.cy1, p.cx0, p.y1, p.r0);
+
+		// p.cx00 = p.x1 + ((p.r0 + p.di) * p.qx);
+		// p.cy00 = (p.cy1 + p.y1) / 2;
+		// this._ctx.arcTo(p.cx00, p.cy1, p.cx00, p.cy00, p.r0 / 2);
+		// this._ctx.arcTo(p.cx00, p.y1, p.x1, p.y1, p.r0 / 2);
+		// this._ctx.lineTo(p.x1, p.y1);
+
+		// p.cx00 = p.x1 + (p.r0 * p.qx * 2);
+		// this._ctx.lineTo(p.cx00, p.cy1);
+		// this._ctx.quadraticCurveTo(p.cx0, p.cy1, p.cx0, p.y1);
+
+		// this._ctx.lineTo(p.cx0, p.y1);
+
+		this._ctx.stroke();
+
+		// if (DEBUG) {
+		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
+		// 		p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
+		// 	if (i === 0) {
+		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["blue"], p.x1);
+		// 		CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
+		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["lightskyblue"], p.cx1);
+		// 		CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
+		// 	}
+		// 	CanvasHelper.drawHGuide(this._ctx, _dStyles["silver"], p.cy2);
+		// 	// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
+		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
+		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
+		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
+		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
+		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
+		//
+		// 	CanvasHelper.drawVGuide(this._ctx, _dStyles["yellowgreen"], p.cx2);
+		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
+		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
+		// }
+	},
+
+	_roundTo: function(n, p) {
+		if (p > 1) p = 1 / p;
+		return Math.round(n / p) * p;
+	},
+
 	/* _computeConnectors: function(d) {
 		var rBase = d.s.radiusBase;
 		var rInc = d.s.radiusIncrement;
@@ -8879,142 +8995,32 @@ var GraphView = CanvasView.extend({
 		d.maxLength = qx;
 	}, */
 
-	_drawConnectors: function(root, pp, s, lVal, dir) {
-		var i, ii, p;
-		var ra1, ra2, ta;
-		if (!(pp && pp.length && lVal)) return;
-
-		// if (pp && pp.length && lVal) {
-		ii = pp.length;
-		ra1 = s.arrowSize * this._rootFontSize;
-		// ra1 = (s.radiusIncrement * this._rootFontSize) + s.lineWidth;
-		ra2 = ra1 + (s.outlineWidth - s.lineWidth);
-		ta = Math.PI * dir;
-
-		this._setStyle(s);
-		// if (lVal < 1) {
-		// 	this._ctx.lineDashOffset = lMax * (1 + lVal);
-		// 	this._ctx.setLineDash([lMax, lMax])
-		// 	// this._ctx.lineDashOffset = lMax * (1 + lVal);;
-		// 	// this._ctx.setLineDash([lMax * (1 - lVal), lMax]);
-		// }
-
-		for (i = 0; i < ii; i++) {
-			p = pp[i];
-			if (s.outlineWidth) {
-				this._ctx.save();
-				this._ctx.globalCompositeOperation = "destination-out";
-				this._ctx.lineWidth = s.lineWidth + s.outlineWidth;
-				// for (i = 0; i < ii; i++) {
-				// p = pp[i];
-
-				if (lVal < 1) {
-					this._ctx.lineDashOffset = p.length * (1 + lVal);
-					this._ctx.setLineDash([p.length, p.length])
-				}
-				this._drawConnector(p, i, pp);
-				if (lVal == 1) {
-					CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra2, ta);
-					this._ctx.fill();
-				}
-				// }
-				this._ctx.restore();
-			}
-
-			// for (i = 0; i < ii; i++) {
-			// p = pp[i];
-			if (lVal < 1) {
-				this._ctx.lineDashOffset = p.length * (1 + lVal);
-				this._ctx.setLineDash([p.length, p.length])
-			}
-			this._drawConnector(p, i, pp);
-			if (lVal == 1) {
-				CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra1, ta);
-				this._ctx.fill();
-			}
-			// }
-		}
-		// this._ctx.save();
-		// this._ctx.globalCompositeOperation = "destination-out";
-		// this._ctx.translate(root.x, root.y);
-		// // this._ctx.scale(0.5, 1);
-		// CanvasHelper.circle(this._ctx, 0, 0, root.r0);
-		// this._ctx.fill()
-		// this._ctx.restore();
-	},
-
-	_drawConnector: function(p, i, pp) {
-
-		this._ctx.beginPath();
-		this._ctx.moveTo(p.x2, p.cy2);
-		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
-		this._ctx.arcTo(p.tx1, p.cy1, p.cx1, p.cy1, p.r1);
-		this._ctx.arcTo(p.cx0, p.cy1, p.cx0, p.y1, p.r0);
-
-		// p.cx00 = p.x1 + ((p.r0 + p.di) * p.qx);
-		// p.cy00 = (p.cy1 + p.y1) / 2;
-		// this._ctx.arcTo(p.cx00, p.cy1, p.cx00, p.cy00, p.r0 / 2);
-		// this._ctx.arcTo(p.cx00, p.y1, p.x1, p.y1, p.r0 / 2);
-		// this._ctx.lineTo(p.x1, p.y1);
-
-		// p.cx00 = p.x1 + (p.r0 * p.qx * 2);
-		// this._ctx.lineTo(p.cx00, p.cy1);
-		// this._ctx.quadraticCurveTo(p.cx0, p.cy1, p.cx0, p.y1);
-
-		// this._ctx.lineTo(p.cx0, p.y1);
-
-		this._ctx.stroke();
-
-		// if (DEBUG) {
-		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
-		// 		p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
-		// 	if (i === 0) {
-		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["blue"], p.x1);
-		// 		CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
-		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["lightskyblue"], p.cx1);
-		// 		CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
-		// 	}
-		// 	CanvasHelper.drawHGuide(this._ctx, _dStyles["silver"], p.cy2);
-		// 	// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
-		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
-		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
-		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
-		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
-		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
-		//
-		// 	CanvasHelper.drawVGuide(this._ctx, _dStyles["yellowgreen"], p.cx2);
-		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
-		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
-		// }
-	},
 });
 
 if (DEBUG) {
 	var applyMethod = function(context, args) {
 		return Array.prototype.shift.apply(args).apply(context, args);
 	}
-	GraphView.prototype._skipLog = false;
-	GraphView.prototype._requestRender = _.wrap(CanvasView.prototype._requestRender, function(fn) {
-		console.log("%s::_requestRender", this.cid);
-		// var retval = Array.prototype.shift.apply(arguments).apply(this, arguments);
-		// return retval;
+	GraphView.prototype._skipLog = true;
 
-		return applyMethod(this, arguments);
-	});
-	GraphView.prototype._applyRender = _.wrap(CanvasView.prototype._applyRender, function(fn) {
-		// this._skipLog = true;
-		console.log("%s::_applyRender", this.cid);
-		// var retval = Array.prototype.shift.apply(arguments).apply(this, arguments);
-		// this._skipLog = false;
-		// return retval;
-		return applyMethod(this, arguments);
-	});
+	if (!GraphView.prototype._skipLog) {
+		GraphView.prototype._requestRender = _.wrap(CanvasView.prototype._requestRender, function(fn) {
+			console.log("%s::_requestRender", this.cid);
+			return applyMethod(this, arguments);
+		});
+		GraphView.prototype._applyRender = _.wrap(CanvasView.prototype._applyRender, function(fn) {
+			// this._skipLog = true;
+			// console.log("%s::_applyRender", this.cid);
+			// this._skipLog = false;
+			return applyMethod(this, arguments);
+		});
+	}
 }
 
 module.exports = GraphView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":104,"utils/canvas/calcArcHConnector":105,"utils/geom/inflateRect":109}],68:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":104,"utils/canvas/calcArcHConnector":105,"utils/dom/getAbsoluteClientRect":107,"utils/geom/inflateRect":110}],68:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -9080,7 +9086,12 @@ var GroupingListView = FilterableListView.extend({
 			get: function() {
 				return this._groups;
 			}
-		}
+		},
+		filteredGroups: {
+			get: function() {
+				return this._filteredGroups;
+			}
+		},
 	},
 
 	/** @override */
@@ -9088,9 +9099,9 @@ var GroupingListView = FilterableListView.extend({
 		FilterableListView.prototype.initialize.apply(this, arguments);
 
 		this._groups = [];
-		// this._groupItems = [];
-		this._groupsByItemCid = {};
+		this._filteredGroups = [];
 
+		this._groupsByItemCid = {};
 		this._groupingFn = options.groupingFn;
 		this.groupingRenderer = options.groupingRenderer;
 
@@ -9130,15 +9141,16 @@ var GroupingListView = FilterableListView.extend({
 
 		if (this._groupingFn) {
 			if (this._filteredItems.length == 0) {
+				this._filteredGroups = [];
 				this._groups.forEach(function(group) {
 					this.itemViews.findByModel(group).el.classList.remove("excluded");
 				}, this);
 			} else {
-				var filteredGroups = this._filteredItems.map(function(item) {
+				this._filteredGroups = _.uniq(this._filteredItems.map(function(item) {
 					return this._groupsByItemCid[item.cid];
-				}, this);
+				}, this));
 				this._groups.forEach(function(group) {
-					this.itemViews.findByModel(group).el.classList.toggle("excluded", filteredGroups.indexOf(group) == -1);
+					this.itemViews.findByModel(group).el.classList.toggle("excluded", this._filteredGroups.indexOf(group) == -1);
 				}, this);
 			}
 			// this._groupsExclusionIndex = this._groups.map(function (group) {
@@ -9172,7 +9184,6 @@ var GroupingListView = FilterableListView.extend({
 });
 
 module.exports = GroupingListView;
-
 },{"app/view/component/FilterableListView":66,"app/view/render/ClickableRenderer":82,"app/view/render/LabelRenderer":89,"underscore":"underscore"}],69:[function(require,module,exports){
 /** @type {module:app/view/component/progress/CanvasProgressMeter} */
 module.exports = require("app/view/component/progress/CanvasProgressMeter3");
@@ -11622,7 +11633,7 @@ if (GA) {
 module.exports = PlayableRenderer;
 }).call(this,true)
 
-},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":110,"utils/prefixedProperty":111}],92:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":111,"utils/prefixedProperty":112}],92:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13107,7 +13118,7 @@ if (DEBUG) {
 module.exports = VideoRenderer;
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":108,"utils/prefixedEvent":110}],96:[function(require,module,exports){
+},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":109,"utils/prefixedEvent":111}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -14247,7 +14258,7 @@ TransformItem.prototype = Object.create({
 });
 
 module.exports = TransformItem;
-},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":110,"utils/prefixedProperty":111,"utils/prefixedStyleName":112,"utils/strings/camelToDashed":115}],104:[function(require,module,exports){
+},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113,"utils/strings/camelToDashed":116}],104:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
 var splice = Array.prototype.splice;
@@ -14349,6 +14360,19 @@ module.exports = {
 	},
 	drawArrowhead: function(ctx, s, x, y, r, t) {
 		_drawShape(this.arrowhead, s, ctx, x, y, r, t);
+	},
+
+	rect: function(ctx, a1, a2, a3, a4) {
+
+		ctx.beginPath();
+		if (isNaN(a1)) {
+			ctx.rect(a1.left, a1.top, a1.width, a1.height);
+		} else {
+			ctx.rect(a1, a2, a3, a4);
+		}
+	},
+	drawRect: function(ctx, s, a1, a2, a3, a4) {
+		_drawShape(this.rect, s, ctx, a1, a2, a3, a4);
 	},
 };
 },{}],105:[function(require,module,exports){
@@ -14572,6 +14596,61 @@ module.exports = function(s, m, includeSizePos) {
 
 },{}],107:[function(require,module,exports){
 /**
+Returns a bounding rect for _el_ with absolute coordinates corrected for
+scroll positions.
+
+The native `getBoundingClientRect()` returns coordinates for an element's
+visual position relative to the top left of the viewport, so if the element
+is part of a scrollable region that has been scrolled, its coordinates will
+be different than if the region hadn't been scrolled.
+
+This method corrects for scroll offsets all the way up the node tree, so the
+returned bounding rect will represent an absolute position on a virtual
+canvas, regardless of scrolling.
+
+@method getAbsoluteClientRect
+@param {HTMLElement} el HTML element.
+@return {Object} Absolute bounding rect for _el_.
+**/
+
+module.exports = function(el) {
+	var doc = document,
+		win = window,
+		body = doc.body,
+
+		// pageXOffset and pageYOffset work everywhere except IE <9.
+		offsetX = win.pageXOffset !== undefined ? win.pageXOffset :
+		(doc.documentElement || body.parentNode || body).scrollLeft,
+		offsetY = win.pageYOffset !== undefined ? win.pageYOffset :
+		(doc.documentElement || body.parentNode || body).scrollTop,
+
+		rect = el.getBoundingClientRect();
+
+	if (el !== body) {
+		var parent = el.parentNode;
+
+		// The element's rect will be affected by the scroll positions of
+		// *all* of its scrollable parents, not just the window, so we have
+		// to walk up the tree and collect every scroll offset. Good times.
+		while (parent !== null && parent !== body) {
+			offsetX += parent.scrollLeft;
+			offsetY += parent.scrollTop;
+			parent = parent.parentNode;
+		}
+	}
+
+	return {
+		_src: rect,
+		bottom: rect.bottom + offsetY,
+		height: rect.height,
+		left: rect.left + offsetX,
+		right: rect.right + offsetX,
+		top: rect.top + offsetY,
+		width: rect.width
+	};
+};
+},{}],108:[function(require,module,exports){
+/**
  * @param {number} i current iteration
  * @param {number} s start value
  * @param {number} d change in value
@@ -14584,7 +14663,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -14618,7 +14697,7 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -14654,7 +14733,7 @@ module.exports = function(rect, dx, dy) {
 	return r;
 };
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -14752,7 +14831,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":113}],111:[function(require,module,exports){
+},{"./prefixes":114}],112:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -14793,7 +14872,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":113}],112:[function(require,module,exports){
+},{"./prefixes":114}],113:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -14849,10 +14928,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":113}],113:[function(require,module,exports){
+},{"./prefixes":114}],114:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],114:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 /* jshint ignore:start */
 /*
 Taken from:
@@ -14912,19 +14991,19 @@ if (/Trident|Edge/.test(navigator.userAgent)) {
 module.exports = setImmediate;
 /* jshint ignore:end */
 
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -15089,7 +15168,7 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],118:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],119:[function(require,module,exports){
 module.exports={
 	"units": {
 		"hu_px": "20",

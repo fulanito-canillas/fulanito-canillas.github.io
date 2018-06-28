@@ -382,8 +382,8 @@ body {
 
 /* line 32, ../src/sass/views/_default.colors.scss */
 .app-initial {
-  -webkit-transition: unset !important;
-          transition: unset !important;
+  -webkit-transition: none 0s 0s !important;
+          transition: none 0s 0s !important;
 }
 /* line 33, ../src/sass/views/_default.colors.scss */
 .app-initial #container {
@@ -587,8 +587,8 @@ html {
 
 /* line 30, ../src/sass/components/_filterable.scss */
 .skip-transitions.grouped .list-group, .skip-transitions.list .list-item {
-  -webkit-transition: unset !important;
-          transition: unset !important;
+  -webkit-transition: none 0s 0s !important;
+          transition: none 0s 0s !important;
 }
 
 /* line 40, ../src/sass/components/_filterable.scss */
@@ -892,8 +892,8 @@ html {
 }
 /* line 385, ../src/sass/views/_default.scss */
 .skip-transitions #nav-graph {
-  -webkit-transition: unset !important;
-          transition: unset !important;
+  -webkit-transition: none 0s 0s !important;
+          transition: none 0s 0s !important;
 }
 
 /* line 389, ../src/sass/views/_default.scss */
@@ -934,8 +934,8 @@ html {
 }
 /* line 17, ../src/sass/components/_carousel.scss */
 .skip-transitions .carousel-item {
-  -webkit-transition: unset !important;
-          transition: unset !important;
+  -webkit-transition: none 0s 0s !important;
+          transition: none 0s 0s !important;
 }
 /* line 23, ../src/sass/components/_carousel.scss */
 .carousel-item .content {
@@ -1508,8 +1508,8 @@ html {
 }
 /* line 19, ../src/sass/components/_stack.scss */
 .stack.skip-transitions > .stack-item, .stack.skip-transitions > .stack-item.current {
-  -webkit-transition: unset !important;
-          transition: unset !important;
+  -webkit-transition: none 0s 0s !important;
+          transition: none 0s 0s !important;
 }
 
 /* line 500, ../src/sass/views/_default.scss */
