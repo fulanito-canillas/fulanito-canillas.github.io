@@ -1501,26 +1501,26 @@ if (!DEBUG) {
 	});
 }
 
+require("Modernizr");
+require("es6-promise").polyfill();
+require("classlist-polyfill");
+require("raf-polyfill");
+require("matches-polyfill");
+require("fullscreen-polyfill");
+require("math-sign-polyfill");
+require("setimmediate");
+
+require("backbone").$ = require("backbone.native");
+require("backbone.babysitter");
+require("Backbone.Mutators");
+require("hammerjs");
+
 // document.addEventListener('DOMContentLoaded', function(ev) {
 // 	console.log("%s:[event %s]", ev.target, ev.type);
 // });
 
 window.addEventListener("load", function(ev) {
 	console.log("%s:[event %s]", ev.target, ev.type);
-
-	require("Modernizr");
-	require("es6-promise").polyfill();
-	require("classlist-polyfill");
-	require("raf-polyfill");
-	require("matches-polyfill");
-	require("fullscreen-polyfill");
-	require("math-sign-polyfill");
-	require("setimmediate");
-
-	require("backbone").$ = require("backbone.native");
-	require("backbone.babysitter");
-	require("Backbone.Mutators");
-	require("hammerjs");
 
 	// process bootstrap data, let errors go up the stack
 	try {
@@ -2776,7 +2776,7 @@ var stripTags = require("utils/strings/stripTags");
 // /** @type {module:app/model/parseSymAttrs} */
 // var parseSymAttrs = require("app/model/parseSymAttrs");
 
-console.log(Globals.PARAMS);
+// console.log(Globals.PARAMS);
 
 var urlTemplates = {
 	"original": _.template(Globals.MEDIA_DIR + "/<%= src %>"),
@@ -8651,11 +8651,10 @@ var GraphView = CanvasView.extend({
 
 		this._groupRects.forEach(function(r) {
 			// TODO: implement DOMRect.inflate()
-			CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
-				r.left + document.body.scrollLeft,
-				r.top + document.body.scrollTop,
-				r.width, r.height);
-
+			// CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
+			// 	r.left + document.body.scrollLeft,
+			// 	r.top + document.body.scrollTop,
+			// 	r.width, r.height);
 			r = inflateRect(r, -8.5, -4.5);
 			this._ctx.clearRect(
 				r.left + document.body.scrollLeft,

@@ -2271,9 +2271,10 @@ body {
 }
 /* line 62, ../src/sass/views/_fullwidth-small.scss */
 .fullwidth-small body .media-carousel .empty-item {
-  right: calc(50% - 53.33333px);
+  right: 50%;
+  min-width: 190px;
 }
-/* line 23, ../src/sass/_main.scss */
+/* line 22, ../src/sass/_main.scss */
 #unsupported {
   display: none;
 }
@@ -2892,4 +2893,5 @@ body {
 .unsupported .breakpoint::after {
   content: 'unsupported';
 }
+
 /*# sourceMappingURL=folio-debug.css.map */
