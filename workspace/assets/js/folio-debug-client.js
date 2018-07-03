@@ -4053,7 +4053,7 @@ var DebugToolbar = View.extend({
 
 		/* toggle container classes
 		/* - - - - - - - - - - - - - - - - */
-		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), container);
+		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), document.body);
 		this.initializeClassToggle("debug-blocks", this.el.querySelector("#toggle-blocks a"), container);
 		this.initializeClassToggle("debug-markdown", this.el.querySelector("#toggle-markdown a"), container);
 		this.initializeClassToggle("debug-logs", this.el.querySelector("#toggle-logs a"), container);
