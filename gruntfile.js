@@ -86,7 +86,8 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks("grunt-http");
 	grunt.config("http", [
-		"css/fonts.css",
+		// "css/fonts-debug.css",
+		// "css/fonts-debug.css.map",
 		"css/folio-debug.css",
 		"css/folio-debug.css.map",
 		"css/folio-ie.css",
