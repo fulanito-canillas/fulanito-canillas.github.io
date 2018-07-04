@@ -241,27 +241,6 @@ $breakpoints: (
 	content: quote(inspect(map-get($breakpoints, "unquoted")));
 }
 */
-#bundle-list, #keyword-list, #nav-graph {
-  position: absolute;
-  display: inline-block;
-  will-change: transform; }
-
-.list-item, .list-group, #site-name, .article-button, .empty-item .content p,
-.stack .content {
-  box-sizing: border-box;
-  padding-left: 20px;
-  padding-right: 20px; }
-  .list-item .label, .list-group .label, #site-name .label, .article-button .label, .empty-item .content p .label,
-  .stack .content .label {
-    padding: 0 20px;
-    margin: 0 -20px; }
-  .list-item, .list-group, #site-name, .article-button, .empty-item .content p,
-  .stack .content, .list-item *, .list-group *, #site-name *, .article-button *, .empty-item .content p *,
-  .stack .content * {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none; }
-
 html {
   color: #666;
   background-color: #000; }
@@ -291,6 +270,8 @@ body {
 
 #container {
   z-index: 1; }
+  #container #navigation #nav-graph {
+    z-index: 1; }
   .transform-wrapper {
     z-index: 1; }
     .transform-wrapper .list {
@@ -414,10 +395,39 @@ body {
   right: 0;
   padding-top: 2rem; }
 
+.list-item, .list-group, #site-name, .article-button, .empty-item .content p,
+.stack .content {
+  box-sizing: border-box;
+  padding-left: 20px;
+  padding-right: 20px; }
+  .list-item .label, .list-group .label, #site-name .label, .article-button .label, .empty-item .content p .label,
+  .stack .content .label {
+    padding: 0 20px;
+    margin: 0 -20px; }
+  .list-item, .list-group, #site-name, .article-button, .empty-item .content p,
+  .stack .content, .list-item *, .list-group *, #site-name *, .article-button *, .empty-item .content p *,
+  .stack .content * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none; }
+
+#bundle-list, #keyword-list, #nav-graph {
+  position: absolute;
+  display: inline-block; }
+
 .transform-wrapper {
   position: absolute;
-  display: inline-block;
-  will-change: transform; }
+  display: inline-block; }
+
+#bundle-list, #keyword-list {
+  padding-top: 12rem;
+  padding-bottom: 1.5rem; }
+
+.with-bundle #bundle-list, .with-bundle #keyword-list {
+  padding-top: 1.5rem; }
+
+.without-bundle.without-article #bundle-list, .without-bundle.without-article #keyword-list {
+  min-height: 0; }
 
 #bundle-list .list-item, #keyword-list .list-group,
 #keyword-list .list-item {
@@ -511,9 +521,12 @@ body {
     #keyword-list .list-item .label {
       font-size: 1.08333333rem; }
   #keyword-list .list-group {
+    margin-top: 0.5rem;
     white-space: nowrap;
     height: 0;
     width: 220px; }
+    #keyword-list .list-group:not(.excluded):first-child {
+      margin-top: 0; }
     #keyword-list .list-group .label {
       font-size: 85%;
       font-weight: 600;
@@ -612,16 +625,6 @@ body {
 #article-list-wrapper {
   left: 0;
   width: 220px; }
-
-#bundle-list, #keyword-list {
-  padding-top: 12rem;
-  padding-bottom: 1.5rem; }
-
-.with-bundle #bundle-list, .with-bundle #keyword-list {
-  padding-top: 1.5rem; }
-
-.without-bundle #bundle-list, .without-bundle #keyword-list {
-  min-height: 0; }
 
 #nav-graph {
   box-sizing: content-box;
@@ -881,7 +884,7 @@ body {
     -webkit-flex: 0 1 auto;
         -ms-flex: 0 1 auto;
             flex: 0 1 auto;
-    padding: 0 0.5rem;
+    margin: 0 0.5rem;
     -webkit-align-self: center;
         -ms-flex-item-align: center;
             align-self: center; }
@@ -890,16 +893,18 @@ body {
   position: absolute;
   width: calc(100% + 1rem);
   height: auto;
-  margin: 1.5rem -0.5rem; }
+  margin: 0.5rem -0.5rem; }
 .playable-renderer .bottom-bar {
   top: 100%;
+  margin-top: 1.5rem;
   -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between; }
 .playable-renderer .top-bar {
   direction: rtl;
-  bottom: 100%; }
+  bottom: 100%;
+  margin-bottom: 1.5rem; }
 .playable-renderer .control-box > * {
   opacity: 0;
   visibility: hidden; }
@@ -914,16 +919,20 @@ body {
 
 .playable-renderer .fullscreen-toggle {
   line-height: 0;
-  cursor: pointer; }
+  cursor: pointer;
+  border-radius: 0.2rem; }
+  .playable-renderer .fullscreen-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.25); }
+    .color-dark .playable-renderer .fullscreen-toggle:hover {
+      background-color: rgba(0, 0, 0, 0.25); }
+  .playable-renderer .fullscreen-toggle:active {
+    background-color: rgba(255, 255, 255, 0.5); }
+    .color-dark .playable-renderer .fullscreen-toggle:active {
+      background-color: rgba(0, 0, 0, 0.5); }
   .playable-renderer .fullscreen-toggle svg {
     width: 1em;
     height: 1em;
     padding: 0.25rem; }
-  .playable-renderer .fullscreen-toggle:active {
-    border-radius: 0.2rem;
-    background-color: rgba(0, 0, 0, 0.25); }
-    .color-dark .playable-renderer .fullscreen-toggle:active {
-      background-color: rgba(255, 255, 255, 0.25); }
 .playable-renderer .progress-meter {
   font-family: "FolioFigures", monospace;
   font-weight: normal;
@@ -1328,13 +1337,13 @@ body {
   .fullwidth body.with-bundle .container-collapsed #bundle-list {
     padding-top: 1.5rem; }
   .fullwidth body #keyword-list {
-    font-size: 0.875rem;
-    line-height: 1rem;
+    font-size: 0.9166666666rem;
+    line-height: 1.5rem;
     width: auto;
     left: 66.666666667%;
     right: 0; }
     .fullwidth body #keyword-list .list-item {
-      height: 1.5em;
+      height: 1.5rem;
       text-overflow: ellipsis;
       overflow: hidden; }
       .fullwidth body #keyword-list .list-item .label {
@@ -1399,16 +1408,16 @@ body {
     width: auto;
     left: 0;
     right: 0;
-    top: 7rem;
-    margin-top: -2.1rem;
-    padding-top: 3.6rem;
+    top: 8.166666666rem;
+    margin-top: -8.166666666rem;
+    padding-top: 8.166666666rem;
     padding-bottom: 3rem; }
     .fullwidth body .media-carousel .carousel-item {
       margin-left: 26.666666667px;
       margin-right: 13.333333333px;
       width: auto;
       left: 13.333333333px;
-      height: calc(100% - 4.5rem); }
+      height: calc(100% - 11.166666666rem); }
     .fullwidth body .media-carousel .empty-item {
       right: calc(33.333333333% - 6.666666667px); }
       .fullwidth body .media-carousel .empty-item .sizing {
@@ -1428,8 +1437,11 @@ body {
     -webkit-transform: translate(0, 239.999976px);
             transform: translate(0, 239.999976px); }
   .fullwidth body .playable-renderer .top-bar {
-    z-index: 1;
-    height: 2.1rem; }
+    height: 2.1rem;
+    margin-bottom: 1rem; }
+  .fullwidth body .playable-renderer .bottom-bar {
+    height: 2.1rem;
+    margin-bottom: 1rem; }
   .fullwidth body .playable-renderer .progress-meter {
     width: auto;
     height: 100%;
@@ -1439,8 +1451,9 @@ body {
     top: 2.5rem;
     margin: 0;
     margin-left: 26.666666667px;
-    width: calc(100% - 26.666666667px); }
-    .fullwidth body .media-caption-stack > .stack-item {
+    margin-right: 7rem;
+    width: calc(100% - 26.666666667px - 7rem); }
+    .fullwidth body .media-caption-stack .stack-item {
       top: 0;
       bottom: auto; }
     .fullwidth body .media-caption-stack .content {
@@ -1523,6 +1536,10 @@ body {
               transform: translate(0, 0); }
 .fullwidth-small body.with-bundle .container-collapsed #keyword-list {
   padding-top: 1.5rem; }
+.fullwidth-small body #keyword-list .list-group {
+  margin-top: 0.5rem; }
+  .fullwidth-small body #keyword-list .list-group:first-child {
+    margin-top: 0; }
 .fullwidth-small body .media-carousel .empty-item {
   right: 50%;
   min-width: 190px; }
@@ -1683,18 +1700,15 @@ body {
   position: fixed;
   width: 100%;
   top: 0; }
-  .fullwidth body #debug-toolbar {
-    top: auto;
-    bottom: 0; }
   #debug-toolbar .debug-links {
     direction: rtl; }
-  #debug-toolbar .debug-links {
+  #debug-toolbar .debug-links > * {
     opacity: 0.5; }
-  #debug-toolbar:not(.show-links) .debug-links {
+  #debug-toolbar:not(.show-links) .debug-links > * {
     opacity: 0.2; }
-  #debug-toolbar:not(.show-links):not(.show-tx) #app-state {
-    display: none; }
   #debug-toolbar:not(.show-links) .debug-links > dd {
+    display: none; }
+  #debug-toolbar:not(.show-links):not(.show-tx) #app-state {
     display: none; }
   #debug-toolbar #app-state {
     font-size: 85%;

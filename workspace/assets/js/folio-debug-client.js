@@ -4046,8 +4046,12 @@ var DebugToolbar = View.extend({
 		this.appStateEl = this.el.querySelector("#app-state");
 
 		/* toggle visibility
-				/* - - - - - - - - - - - - - - - - */
-		this.initializeClassToggle("show-links", this.el.querySelector(".debug-links #links-toggle"), this.el);
+		/* - - - - - - - - - - - - - - - - */
+		this.initializeClassToggle("show-links", this.el.querySelector(".debug-links #links-toggle"), this.el,
+			function(key, value) {
+				this.el.classList.toggle("not-" + key, !value);
+			}
+		);
 		this.initializeClassToggle("show-tests", this.el.querySelector("#toggle-tests a"), this.el);
 		this.initializeClassToggle("hide-passed", this.el.querySelector("#toggle-passed"), this.el);
 
@@ -4060,6 +4064,7 @@ var DebugToolbar = View.extend({
 		this.initializeClassToggle("debug-tx", this.el.querySelector("#toggle-tx a"), container,
 			function(key, value) {
 				this.el.classList.toggle("show-tx", value);
+				this.el.classList.toggle("not-show-tx", !value);
 			}
 		);
 
@@ -4859,7 +4864,8 @@ var NavigationView = View.extend({
 			model: this.model,
 			useOpaque: false
 		});
-		this.el.appendChild(view.el);
+		// this.el.appendChild(view.el);
+		this.el.insertBefore(view.el, this.el.firstElementChild);
 		return view;
 	},
 
@@ -13193,7 +13199,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
 
-  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span>\n		<span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span>\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span>\n	</dt>\n"
+  return "<dl class=\"debug-links\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span>\n		<span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span>\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span>\n	</dt>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
