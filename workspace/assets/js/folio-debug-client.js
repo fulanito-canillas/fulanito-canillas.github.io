@@ -3116,7 +3116,7 @@ var AppViewProto = {
 			}).bind(this)
 		});
 
-		this._afterRender = this._afterRender.bind(this);
+		// this._afterRender = this._afterRender.bind(this);
 		this._onResize = this._onResize.bind(this);
 
 		/* render on resize, onorientationchange, visibilitychange */
@@ -3276,9 +3276,9 @@ var AppViewProto = {
 		// this.requestAnimationFrame(this._afterRender);
 	},
 
-	_afterRender: function() {
-		document.body.scrollTop = 0;
-	},
+	// _afterRender: function() {
+	// 	document.body.scrollTop = 0;
+	// },
 
 	renderAppStart: function() {
 		console.log("%s::renderAppStart", this.cid);
@@ -3290,7 +3290,7 @@ var AppViewProto = {
 	},
 
 	renderResize: function(flags) {
-		document.body.scrollTop = 0;
+		// document.body.scrollTop = 0;
 		// window.scroll({ top: 0, behavior: "smooth" });
 
 		_.each(Globals.BREAKPOINTS, function(o, s) {
@@ -4050,6 +4050,7 @@ var DebugToolbar = View.extend({
 		this.initializeClassToggle("show-links", this.el.querySelector(".debug-links #links-toggle"), this.el,
 			function(key, value) {
 				this.el.classList.toggle("not-" + key, !value);
+				// console.log("%s:initializeClassToggle:[callback] %o", this.cid, arguments);
 			}
 		);
 		this.initializeClassToggle("show-tests", this.el.querySelector("#toggle-tests a"), this.el);
@@ -4120,24 +4121,26 @@ var DebugToolbar = View.extend({
 			el.classList.toggle("has-changed", this.model.hasChanged(prop));
 			el.classList.toggle("color-reverse", this.model.hasChanged(prop));
 		}
-		if (this.model.hasChanged("routeName")) {
-			var attrVal = Globals.APP_ROOT + "symphony/";
-			switch (this.model.get("routeName")) {
-				case "article-item":
-					attrVal += "publish/articles/edit/" + this.model.get("article").id;
-					break;
-				case "bundle-item":
-					attrVal += "publish/bundles/edit/" + this.model.get("bundle").id;
-					break;
-				case "media-item":
-					attrVal += "publish/media/edit/" + this.model.get("media").id;
-					break;
-				case "root":
-					attrVal += "publish/bundles";
-					break;
-			}
-			this.backendEl.setAttribute("href", attrVal);
+
+		// NOTE: Always but rewrite CMS href.
+		// Only collapsed may have changed, but not worth all the logic
+		var attrVal = Globals.APP_ROOT + "symphony/";
+		switch (this.model.get("routeName")) {
+			case "article-item":
+				attrVal += "publish/articles/edit/" + this.model.get("article").id;
+				break;
+			case "bundle-item":
+				attrVal += "publish/bundles/edit/" + this.model.get("bundle").id;
+				break;
+			case "media-item":
+				attrVal += "publish/media/edit/" + this.model.get("media").id;
+				break;
+			case "root":
+				attrVal += "publish/bundles";
+				break;
 		}
+		this.backendEl.setAttribute("href", attrVal);
+
 		if (this.model.hasChanged("media")) {
 			if (this.model.has("media")) {
 				this.mediaInfoEl.textContent = sizeTemplate(this.model.get("media").get("source").toJSON());
@@ -9958,7 +9961,8 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 module.exports = function(image, resolveEmpty) {
 	return new Promise(function(resolve, reject) {
 		if (!(image instanceof window.HTMLImageElement)) {
-			reject(new Error("not an HTMLImageElement"));
+			//reject(new Error("not an HTMLImageElement"));
+			reject("Error: not an HTMLImageElement");
 		} else if (image.complete && (image.src.length > 0 || resolveEmpty)) {
 			// if (image.src === "") console.warn("_whenImageLoads resolved with empty src");
 			// else console.log("_whenImageLoads resolve-sync", image.src);
@@ -10829,18 +10833,21 @@ var MediaRenderer = CarouselRenderer.extend({
 			cs = 1;
 			cw = sw;
 			ch = sh;
+			this.metrics.fitDirection = "both";
 		} else if ((pcw / pch) < (sw / sh)) {
-			// constrain height
+			// fit width
 			cw = pcw;
 			cs = cw / sw;
 			// ch = cs * sh;
 			ch = Math.round(cs * sh);
+			this.metrics.fitDirection = "width";
 		} else {
-			// constrain width
+			// fit height
 			ch = pch;
 			cs = ch / sh;
 			// cw = cs * sw;
 			cw = Math.round(cs * sw);
+			this.metrics.fitDirection = "height";
 		}
 
 		this.metrics.content.x = cx;
@@ -10854,6 +10861,7 @@ var MediaRenderer = CarouselRenderer.extend({
 		this.metrics.media.height = ch;
 		this.metrics.media.scale = cs;
 
+		// console.log("%s::measure constraint: %s metrics: %o", this.cid, this.metrics.constraint, this.metrics);
 		// var sizing = this.getSizingEl();
 		// sizing.style.maxWidth = (cw + ew) + "px";
 		// sizing.style.maxHeight = (ch + eh) + "px";
@@ -10868,6 +10876,8 @@ var MediaRenderer = CarouselRenderer.extend({
 		var sizing = this.getSizingEl();
 		sizing.style.maxWidth = this.metrics.content.width + "px";
 		sizing.style.maxHeight = this.metrics.content.height + "px";
+
+		this.el.setAttribute("data-fit-dir", this.metrics.fitDirection);
 
 		return this;
 	},
@@ -10973,7 +10983,7 @@ if (DEBUG) {
 
 				this.__logElement.style.marginTop = "3rem";
 				this.__logElement.style.maxHeight = "calc(100% - " + (this.metrics.media.height) + "px - 3rem)";
-				this.__logElement.style.width = this.metrics.media.width + "px";
+				//this.__logElement.style.width = this.metrics.media.width + "px";
 				this.__logElement.scrollTop = this.__logElement.scrollHeight;
 
 				return this;
@@ -11660,7 +11670,7 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content\">\n	<div class=\"media-border content-size\"></div>\n	<div class=\"controls content-size\">\n		<div class=\"top-bar control-box\">\n		</div>\n	</div>\n	<div class=\"sequence media-size\">\n		<img class=\"sequence-step current default\" alt=\""
+  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content\">\n	<div class=\"media-border content-size\"></div>\n	<div class=\"controls content-size\">\n		<canvas class=\"progress-meter\"></canvas>\n	</div>\n	<div class=\"sequence media-size\">\n		<img class=\"sequence-step current default\" alt=\""
     + alias4(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"text","hash":{},"data":data}) : helper)))
     + "\" longdesc=\"#desc_m"
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
@@ -12071,8 +12081,8 @@ var SequenceRenderer = PlayableRenderer.extend({
 
 		// progress-meter
 		// ---------------------------------
-
 		this.progressMeter = new ProgressMeter({
+			el: this.el.querySelector(".progress-meter"),
 			values: {
 				available: this._sourceProgressByIdx.concat(),
 			},
@@ -12085,7 +12095,8 @@ var SequenceRenderer = PlayableRenderer.extend({
 			labelFn: this._progressLabelFn.bind(this)
 		});
 
-		this.el.querySelector(".top-bar").appendChild(this.progressMeter.render().el);
+		// this.el.querySelector(".top-bar")
+		//		.appendChild(this.progressMeter.render().el);
 	},
 
 	_progressLabelFn: function() {
@@ -12258,9 +12269,11 @@ var SequenceRenderer = PlayableRenderer.extend({
 			});
 		};
 
-		if (nextSource.has("prefetched") || nextSource.has("error")) {
+		if (nextSource.has("prefetched")) {
 			// nextView = context._getItemRenderer(nextSource).el;
 			_whenImageLoads(nextView.el).then(showNextView, showNextView);
+		} else if (nextSource.has("error")) {
+			showNextView();
 		} else {
 			this.content.classList.add("waiting");
 			/* TODO: add ga event 'media-waiting' */
@@ -12393,7 +12406,7 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<div class=\"top-bar control-box\">\n			<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n				<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n					<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n				</svg>\n			</a>\n		</div>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video preload=\"none\" width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
+  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n			<canvas class=\"progress-meter\"></canvas>\n			<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n				<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n					<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n				</svg>\n			</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video preload=\"none\" width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
     + container.escapeExpression(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"text","hash":{},"data":data}) : helper)))
     + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
 },"useData":true});
@@ -12625,6 +12638,7 @@ var VideoRenderer = PlayableRenderer.extend({
 		// progress-meter
 		// ---------------------------------
 		this.progressMeter = new ProgressMeter({
+			el: this.el.querySelector(".progress-meter"),
 			maxValues: {
 				amount: this.video.duration,
 				available: this.video.duration,
@@ -12633,8 +12647,8 @@ var VideoRenderer = PlayableRenderer.extend({
 			backgroundColor: this.model.attr("background-color"),
 			labelFn: this._progressLabelFn.bind(this)
 		});
-		var parentEl = this.el.querySelector(".top-bar");
-		parentEl.insertBefore(this.progressMeter.render().el, parentEl.firstChild);
+		// var parentEl = this.el.querySelector(".top-bar");
+		// parentEl.insertBefore(this.progressMeter.render().el, parentEl.firstChild);
 	},
 
 	_progressLabelFn: function(value, total) {
@@ -13199,7 +13213,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
 
-  return "<dl class=\"debug-links\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span>\n		<span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span>\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span>\n	</dt>\n"
+  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dt>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
