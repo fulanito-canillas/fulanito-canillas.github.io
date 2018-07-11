@@ -1526,13 +1526,12 @@ window.addEventListener("load", function(ev) {
 	try {
 		require("app/model/helper/bootstrap")(window.bootstrap);
 	} catch (err) {
-		// 	// document.body.innerHTML = "<h1>Oops... </h1>";
-		// 	// document.documentElement.classList.remove("app-initial");
-		// 	// document.documentElement.classList.add("app-error");
-		throw new Error("bootstrap data is missing");
-	} finally {
+		document.body.classList.remove("app-initial");
+		document.body.classList.add("app-error");
+		throw new Error("bootstrap data error (" + err.message + ")", err.fileName, err.lineNumber);
+	} finally { // detele global var
 		delete window.bootstrap;
-	} // detele global var
+	}
 
 	require("app/view/template/_helpers");
 	// require("app/view/template/_partials");
@@ -1549,8 +1548,8 @@ window.addEventListener("load", function(ev) {
 		classes: false,
 		custom: {
 			families: [
-				"Franklin Gothic FS:n4,n7",
-				// "Franklin Gothic FS:n4,i4,n7,i7",
+				// "Franklin Gothic FS:n4,n7",
+				"Franklin Gothic FS:n4,i4,n7,i7",
 				"FolioFigures:n4",
 			],
 			testStrings: {
@@ -1559,14 +1558,14 @@ window.addEventListener("load", function(ev) {
 		},
 		active: function() {
 			console.info("WebFont::active");
-			AppView.getInstance();
+			// AppView.getInstance();
 		},
 		fontactive: function(familyName, variantFvd) {
 			console.info("WebFont::fontactive '%s' (%s)", familyName, variantFvd);
 		},
 		inactive: function() {
 			console.warn("WebFont::inactive");
-			AppView.getInstance();
+			// AppView.getInstance();
 		},
 		fontinactive: function(familyName, variantFvd) {
 			console.warn("WebFont::fontinactive '%s' (%s)", familyName, variantFvd);
@@ -1578,6 +1577,7 @@ window.addEventListener("load", function(ev) {
 		// 	console.log("WebFont::fontloading", familyName, JSON.stringify(variantDesc, null, " "));
 		// },
 	});
+	AppView.getInstance();
 });
 
 
@@ -1650,7 +1650,7 @@ if (DEBUG) {
 }
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":42,"app/view/AppView":49,"app/view/helper/createColorStyleSheet":72,"app/view/template/_helpers":100,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"webfontloader":"webfontloader"}],33:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":42,"app/view/AppView":49,"app/view/helper/createColorStyleSheet":72,"app/view/template/_helpers":101,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"webfontloader":"webfontloader"}],33:[function(require,module,exports){
 /**
 /* @module app/control/Controller
 /*/
@@ -1964,8 +1964,6 @@ module.exports = (function() {
 	delete window.approot;
 	delete window.mediadir;
 
-	g.GA_TAGS = {};
-
 	// hardcoded font data
 	// - - - - - - - - - - - - - - - - -
 	g.FONT_METRICS = {
@@ -2080,7 +2078,7 @@ module.exports = (function() {
 }());
 }).call(this,true)
 
-},{"../../../sass/variables.json":119,"underscore":"underscore"}],35:[function(require,module,exports){
+},{"../../../sass/variables.json":120,"underscore":"underscore"}],35:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2708,7 +2706,7 @@ module.exports = BaseItem.extend({
 	},
 });
 
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],45:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":118}],45:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -2896,7 +2894,7 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],47:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":118}],47:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3150,15 +3148,13 @@ var AppViewProto = {
 		});
 
 		/* Google Analytics */
-		if (window.ga) {
+		if (window.ga && window.GA_ID) {
 			controller
 				.once("route", function() {
-					// if (/(?:(localhost|\.local))$/.test(location.hostname)) {}
-					var gaTag = Globals.GA_TAGS[location.hostname];
-					if (gaTag) {
-						window.ga("create", gaTag, "auto");
-					} else {
-						window.ga("create", "UA-9123564-8", "auto");
+					window.ga("create", window.GA_ID, "auto");
+					// if localhost or dummy ID, disable analytics
+					if (/(?:(localhost|\.local))$/.test(location.hostname)
+						|| window.GA_ID == "UA-9123564-8") {
 						window.ga("set", "sendHitTask", null);
 					}
 				})
@@ -3231,12 +3227,17 @@ var AppViewProto = {
 	/* --------------------------- */
 
 	_onModelChange: function() {
-		// if (this.model.hasChanged("bundle")
-		// 	|| this.model.hasChanged("media")
-		// 	|| this.model.hasChanged("article")
-		// 	|| this.model.hasChanged("routeName")) {
-		this.requestRender(View.MODEL_INVALID);
-		// }
+		// console.log("%s::_onModelChange [START]", this.cid);
+		console.group(this.cid + "::_onModelChange [START]");
+
+		this.requestRender(View.MODEL_INVALID)
+			.once("view:render:after", function(view, flags) {
+				// .whenRendered().then(function(view) {
+				this.requestAnimationFrame(function() {
+					console.log("%s::_onModelChange [END]", view.cid);
+					console.groupEnd();
+				})
+			});
 	},
 
 	/* -------------------------------
@@ -3244,12 +3245,24 @@ var AppViewProto = {
 	/* ------------------------------- */
 
 	_onResize: function() {
-		console.log("%s::_onResize", this.cid);
-		this.el.classList.add("skip-transitions");
-		this.requestRender(View.SIZE_INVALID).renderNow();
-		this.requestAnimationFrame(function() {
-			this.el.classList.remove("skip-transitions");
-		}.bind(this));
+		// console.log("%s::_onResize [START]", this.cid);
+		console.group(this.cid + "::_onResize [START]");
+		this.el.classList.add("skip-transitions")
+
+		// this.requestRender(View.SIZE_INVALID).renderNow();
+		// this.requestAnimationFrame(function() {
+		// 	this.el.classList.remove("skip-transitions");
+		// }.bind(this));
+
+		this.requestRender(View.SIZE_INVALID)
+			.once("view:render:after", function(view, flags) {
+				// .whenRendered().then(function(view) {
+				this.requestAnimationFrame(function() {
+					view.el.classList.remove("skip-transitions");
+					console.log("%s::_onResize [END]", view.cid);
+					console.groupEnd();
+				})
+			});
 	},
 
 	// _onBreakpointChange: function(ev) {
@@ -3262,6 +3275,7 @@ var AppViewProto = {
 	/* ------------------------------- */
 
 	renderFrame: function(tstamp, flags) {
+		// console.log("%s::renderFrame [%s]", this.cid, View.flagsToString(flags));
 		if (flags & View.MODEL_INVALID) {
 			this.renderModelChange();
 		}
@@ -3328,12 +3342,11 @@ var AppViewProto = {
 			}
 		} else if (article) {
 			docTitle.push(stripTags(article.get("name")));
-		} // else docTitle.push("Portfolio");
+		}
 		document.title = _.unescape(docTitle.join(" / "));
 
 		var cls = this.el.classList;
 		var prevAttr = null;
-		// var hasDarkBg = false;
 
 		// Set article class
 		if (this.model.hasChanged("article")) {
@@ -3343,7 +3356,6 @@ var AppViewProto = {
 			}
 			if (article) {
 				cls.add(article.get("domid"));
-				// hasDarkBg = hasDarkBg || bundle.colors.hasDarkBg;
 			}
 		}
 		cls.toggle("with-article", !!article);
@@ -3357,7 +3369,6 @@ var AppViewProto = {
 			}
 			if (bundle) {
 				cls.add(bundle.get("domid"));
-				// hasDarkBg = hasDarkBg || bundle.colors.hasDarkBg;
 			}
 		}
 		cls.toggle("with-bundle", !!bundle);
@@ -3371,7 +3382,6 @@ var AppViewProto = {
 			}
 			if (media) {
 				cls.add(media.get("domid"));
-				// hasDarkBg = hasDarkBg || media.colors.hasDarkBg;
 			}
 		}
 		cls.toggle("with-media", !!media);
@@ -3437,7 +3447,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":117}],50:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":118}],50:[function(require,module,exports){
 /**
  * @module app/view/NavigationView
  */
@@ -3981,7 +3991,7 @@ var ContentView = View.extend({
 });
 
 module.exports = ContentView;
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":96,"./template/CollectionStack.Media.hbs":97,"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/base/TouchManager":57,"app/view/base/View":58,"app/view/component/ArticleView":62,"app/view/component/Carousel":63,"app/view/component/CollectionStack":65,"app/view/component/SelectableListView":70,"app/view/render/CarouselRenderer":81,"app/view/render/DotNavigationRenderer":86,"app/view/render/ImageRenderer":88,"app/view/render/SequenceRenderer":93,"app/view/render/VideoRenderer":95,"underscore":"underscore","utils/TransformHelper":102}],51:[function(require,module,exports){
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":96,"./template/CollectionStack.Media.hbs":97,"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/base/TouchManager":57,"app/view/base/View":58,"app/view/component/ArticleView":62,"app/view/component/Carousel":63,"app/view/component/CollectionStack":65,"app/view/component/SelectableListView":70,"app/view/render/CarouselRenderer":81,"app/view/render/DotNavigationRenderer":86,"app/view/render/ImageRenderer":88,"app/view/render/SequenceRenderer":93,"app/view/render/VideoRenderer":95,"underscore":"underscore","utils/TransformHelper":103}],51:[function(require,module,exports){
 /**
  * @module app/view/DebugToolbar
  */
@@ -4007,6 +4017,9 @@ var View = require("app/view/base/View");
 var viewTemplate = require("./template/DebugToolbar.hbs");
 
 /** @type {Function} */
+var gridTemplate = require("./template/DebugToolbar.SVGGrid.hbs");
+
+/** @type {Function} */
 var sizeTemplate = _.template("<%= w %> \u00D7 <%= h %>");
 
 // var appStateSymbols = { withBundle: "b", withMedia: "m", collapsed: "c"};
@@ -4023,6 +4036,15 @@ var DebugToolbar = View.extend({
 	/** @override */
 	template: viewTemplate,
 
+	/** @override */
+	properties: {
+		grid: {
+			get: function() {
+				return this._grid || (this._grid = this.createGridElement());
+			}
+		}
+	},
+
 	initialize: function(options) {
 		Cookies.defaults = {
 			expires: new Date(0x7fffffff * 1e3),
@@ -4038,6 +4060,10 @@ var DebugToolbar = View.extend({
 		/* toggle's target: container
 		/* - - - - - - - - - - - - - - - - */
 		var container = document.body.querySelector("#container");
+
+		/* create/attach svg grid element
+		/* - - - - - - - - - - - - - - - - */
+		container.insertBefore(this.createGridElement(), container.firstElementChild);
 
 		/* info elements
 		/* - - - - - - - - - - - - - - - - */
@@ -4060,7 +4086,7 @@ var DebugToolbar = View.extend({
 		/* - - - - - - - - - - - - - - - - */
 		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), document.body);
 		this.initializeClassToggle("debug-blocks", this.el.querySelector("#toggle-blocks a"), container);
-		this.initializeClassToggle("debug-markdown", this.el.querySelector("#toggle-markdown a"), container);
+		this.initializeClassToggle("debug-mdown", this.el.querySelector("#toggle-mdown a"), container);
 		this.initializeClassToggle("debug-logs", this.el.querySelector("#toggle-logs a"), container);
 		this.initializeClassToggle("debug-tx", this.el.querySelector("#toggle-tx a"), container,
 			function(key, value) {
@@ -4151,10 +4177,17 @@ var DebugToolbar = View.extend({
 			}
 		}
 	},
+
+	createGridElement: function() {
+		var el = document.createElement("div");
+		el.id = "grid-wrapper";
+		el.innerHTML = gridTemplate();
+		return el;
+	},
 });
 
 module.exports = DebugToolbar;
-},{"./template/DebugToolbar.hbs":98,"app/control/Globals":34,"app/view/base/View":58,"cookies-js":"cookies-js","underscore":"underscore"}],52:[function(require,module,exports){
+},{"./template/DebugToolbar.SVGGrid.hbs":98,"./template/DebugToolbar.hbs":99,"app/control/Globals":34,"app/view/base/View":58,"cookies-js":"cookies-js","underscore":"underscore"}],52:[function(require,module,exports){
 /* global MutationObserver */
 /**
 /* @module app/view/NavigationView
@@ -4257,14 +4290,22 @@ var NavigationView = View.extend({
 		// });
 
 		this.listenTo(this.graph, "view:render:before", function(view, flags) {
+			var vmax;
 			if (flags & (View.SIZE_INVALID | View.MODEL_INVALID)) {
-				var vmax = Math.max(
+				if (this.bundleList.invalidated || this.keywordList.invalidated) {
+					view.el.style.height = "";
+				} else {
+					vmax = Math.max(
+						this.bundleList._metrics.height,
+						this.keywordList._metrics.height
+					);
+					view.el.style.height = vmax + "px";
+				}
+				console.log("%s:%s[view:render:before] [%s] h: %s, %s maxh: %o",
+					this.cid, view.cid, View.flagsToString(flags),
 					this.bundleList._metrics.height,
-					this.keywordList._metrics.height
-				);
-				view.el.style.height = vmax + "px";
-				console.log("%s:%s[view:render:before] flags: %s] height: %o",
-					this.cid, view.cid, View.flagsToString(flags), vmax);
+					this.keywordList._metrics.height,
+					vmax || 'invalid');
 			}
 		});
 		// this.listenTo(this.bundleList, "view:render:after", function(view, flags) {
@@ -4385,7 +4426,7 @@ var NavigationView = View.extend({
 		   but model is unchanged */
 		else if ((flags & View.SIZE_INVALID) && !this.model.get("collapsed")) {
 			// console.info("%s::renderFrame", this.cid, "NavigationView has resized");
-			this.graph.requestRender(View.SIZE_INVALID);
+			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
 		}
 		this.skipTransitions = false;
 	},
@@ -4931,7 +4972,7 @@ var NavigationView = View.extend({
 });
 
 module.exports = NavigationView;
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/model/collection/KeywordCollection":40,"app/model/collection/TypeCollection":41,"app/view/base/TouchManager":57,"app/view/base/View":58,"app/view/component/ArticleButton":61,"app/view/component/FilterableListView":66,"app/view/component/GraphView":67,"app/view/component/GroupingListView":68,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":102}],53:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/model/collection/KeywordCollection":40,"app/model/collection/TypeCollection":41,"app/view/base/TouchManager":57,"app/view/base/View":58,"app/view/component/ArticleButton":61,"app/view/component/FilterableListView":66,"app/view/component/GraphView":67,"app/view/component/GroupingListView":68,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103}],53:[function(require,module,exports){
 (function (DEBUG){
 /* global Path2D */
 /**
@@ -5243,7 +5284,7 @@ if (DEBUG) {
 module.exports = CanvasView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/Interpolator":55,"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":106}],54:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/Interpolator":55,"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":107}],54:[function(require,module,exports){
 (function (DEBUG){
 // /** @type {module:utils/setImmediate} */
 // var setImmediate = require("utils/setImmediate");
@@ -5748,7 +5789,7 @@ Interpolator.prototype = Object.create({
 
 module.exports = Interpolator;
 
-},{"utils/ease/linear":108}],56:[function(require,module,exports){
+},{"utils/ease/linear":109}],56:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -5790,7 +5831,7 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":111}],57:[function(require,module,exports){
+},{"utils/prefixedEvent":112}],57:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
@@ -6001,7 +6042,7 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
-},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":118}],58:[function(require,module,exports){
+},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":119}],58:[function(require,module,exports){
 /* global HTMLElement, MutationObserver */
 /**
  * @module app/view/base/View
@@ -6564,11 +6605,11 @@ var ViewProto = {
 	/** @private */
 	_applyRender: function(tstamp) {
 		if (!this._skipLog) {
-			console.log("%s::_applyRender [flags: %s] [%s, %s, %s]", this.cid,
+			console.log("%s::_applyRender [%s] [%s, %s, %s]", this.cid,
 				View.flagsToString(this._renderFlags),
 				(this._frameQueueId != -1 ? "async #" + this._frameQueueId : "sync"),
 				(this.attached ? "attached" : "detached"),
-				(this.skipTransitions ? "skip" : "run") + " transitions"
+				(this.skipTransitions ? "skip" : "run") + " tx"
 			);
 		}
 
@@ -6640,7 +6681,7 @@ var ViewProto = {
 
 	renderNow: function(alwaysRun) {
 		if (this._frameQueueId != -1) {
-			var cancelId = this._cancelRender();
+			this._cancelRender();
 			alwaysRun = true;
 		}
 		// if (alwaysRun === true) {
@@ -6695,7 +6736,7 @@ var ViewProto = {
 };
 
 module.exports = Backbone.View.extend(ViewProto, View);
-},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113}],59:[function(require,module,exports){
+},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114}],59:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -6791,7 +6832,7 @@ var ArticleView = View.extend({
 	/** @override */
 	tagName: "article",
 	/** @override */
-	className: "article-view markdown-html",
+	className: "article-view mdown",
 
 	/** @override */
 	initialize: function(options) {},
@@ -7805,7 +7846,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":112,"utils/prefixedStyleName":113}],64:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":113,"utils/prefixedStyleName":114}],64:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -7926,7 +7967,7 @@ module.exports = View.extend({
 	},
 });
 
-},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":115}],66:[function(require,module,exports){
+},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":116}],66:[function(require,module,exports){
 /**
 /* @module app/view/component/FilterableListView
 /*/
@@ -8307,7 +8348,7 @@ var FilterableListView = View.extend({
 });
 
 module.exports = FilterableListView;
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":106,"utils/prefixedProperty":112}],67:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":107,"utils/prefixedProperty":113}],67:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -8488,7 +8529,8 @@ var GraphView = CanvasView.extend({
 
 	/** @override */
 	measureCanvas: function(w, h) {
-		console.log("%s::measureCanvas s:%o o:%o h:%o", this.cid, this.el.style.height, this.el.offsetHeight, h);
+		console.log("%s::measureCanvas style:%o offset:%o arg:%o", this.cid,
+			parseInt(this.el.style.height), this.el.offsetHeight, h);
 	},
 
 	/** @override */
@@ -8664,7 +8706,7 @@ var GraphView = CanvasView.extend({
 			// 	r.left + document.body.scrollLeft,
 			// 	r.top + document.body.scrollTop,
 			// 	r.width, r.height);
-			r = inflateRect(r, -8.5, -4.5);
+			// r = inflateRect(r, -8.5, -4.5);
 			this._ctx.clearRect(
 				r.left + document.body.scrollLeft,
 				r.top + document.body.scrollTop,
@@ -9022,21 +9064,24 @@ var GraphView = CanvasView.extend({
 });
 
 if (DEBUG) {
+	GraphView.prototype._skipLog = false;
+
+	var debouncedLog = _.debounce(_.bind(console.log, console), 500, true);
 	var applyMethod = function(context, args) {
 		return Array.prototype.shift.apply(args).apply(context, args);
 	}
-	GraphView.prototype._skipLog = true;
-
 	if (!GraphView.prototype._skipLog) {
-		GraphView.prototype._requestRender = _.wrap(CanvasView.prototype._requestRender, function(fn) {
-			console.log("%s::_requestRender", this.cid);
-			return applyMethod(this, arguments);
-		});
+		// GraphView.prototype._requestRender = _.wrap(CanvasView.prototype._requestRender, function(fn) {
+		// 	debouncedLog("%s::_requestRender", this.cid);
+		// 	return applyMethod(this, arguments);
+		// });
 		GraphView.prototype._applyRender = _.wrap(CanvasView.prototype._applyRender, function(fn) {
-			// this._skipLog = true;
-			// console.log("%s::_applyRender", this.cid);
-			// this._skipLog = false;
-			return applyMethod(this, arguments);
+			this._skipLog = true;
+			debouncedLog("%s::_applyRender [debounced]", this.cid);
+			var retval = applyMethod(this, arguments);
+			this._skipLog = false;
+			return retval;
+
 		});
 	}
 }
@@ -9044,7 +9089,7 @@ if (DEBUG) {
 module.exports = GraphView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":104,"utils/canvas/calcArcHConnector":105,"utils/dom/getAbsoluteClientRect":107,"utils/geom/inflateRect":110}],68:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":105,"utils/canvas/calcArcHConnector":106,"utils/dom/getAbsoluteClientRect":108,"utils/geom/inflateRect":111}],68:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -10356,7 +10401,7 @@ var CarouselRenderer = View.extend({
 });
 
 module.exports = CarouselRenderer;
-},{"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":106}],82:[function(require,module,exports){
+},{"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":107}],82:[function(require,module,exports){
 /**
  * @module app/view/render/ClickableRenderer
  */
@@ -11031,7 +11076,7 @@ if (DEBUG) {
 module.exports = MediaRenderer;
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":99,"app/model/item/MediaItem":46,"app/view/promise/whenDefaultImageLoads":75,"app/view/promise/whenScrollingEnds":76,"app/view/promise/whenSelectionIsContiguous":78,"app/view/render/CarouselRenderer":81,"color":"color","underscore":"underscore","underscore.string/lpad":28}],91:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":100,"app/model/item/MediaItem":46,"app/view/promise/whenDefaultImageLoads":75,"app/view/promise/whenScrollingEnds":76,"app/view/promise/whenSelectionIsContiguous":78,"app/view/render/CarouselRenderer":81,"color":"color","underscore":"underscore","underscore.string/lpad":28}],91:[function(require,module,exports){
 (function (GA){
 /**
  * @module app/view/render/PlayableRenderer
@@ -11664,7 +11709,7 @@ if (GA) {
 module.exports = PlayableRenderer;
 }).call(this,true)
 
-},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":111,"utils/prefixedProperty":112}],92:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":112,"utils/prefixedProperty":113}],92:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12400,7 +12445,7 @@ if (DEBUG) {
 module.exports = SequenceRenderer;
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":99,"./SequenceRenderer.hbs":92,"app/control/Globals":34,"app/view/base/View":58,"app/view/component/ProgressMeter":69,"app/view/promise/_loadImageAsObjectURL":73,"app/view/promise/_whenImageLoads":74,"app/view/promise/whenSelectionDistanceIs":77,"app/view/render/PlayableRenderer":91,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/lpad":28,"utils/Timer":101}],94:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":100,"./SequenceRenderer.hbs":92,"app/control/Globals":34,"app/view/base/View":58,"app/view/component/ProgressMeter":69,"app/view/promise/_loadImageAsObjectURL":73,"app/view/promise/_whenImageLoads":74,"app/view/promise/whenSelectionDistanceIs":77,"app/view/render/PlayableRenderer":91,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/lpad":28,"utils/Timer":102}],94:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13153,7 +13198,7 @@ if (DEBUG) {
 module.exports = VideoRenderer;
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":109,"utils/prefixedEvent":111}],96:[function(require,module,exports){
+},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":110,"utils/prefixedEvent":112}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13161,7 +13206,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
   return "<div id=\"desc_b"
     + container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\" class=\"content sizing markdown-html\">"
+    + "\" class=\"content sizing mdown\">"
     + ((stack1 = ((helper = (helper = helpers.desc || (depth0 != null ? depth0.desc : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"desc","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "</div>\n";
 },"useData":true});
@@ -13182,6 +13227,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 },"useData":true});
 
 },{"hbsfy/runtime":21}],98:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<svg id=\"debug-grid\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMaxYMid slice\" viewport-fill=\"hsl(0,0%,100%)\" viewport-fill-opacity=\"1\" style=\"fill:none;stroke:none;stroke-width:1px;fill:none;fill-rule:evenodd;\">\n<defs>\n	<pattern id=\"pat-baseline-12px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"12\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"3\" y2=\"3\" stroke-opacity=\"0.125\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"6\" y2=\"6\" stroke-opacity=\"0.375\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"9\" y2=\"9\" stroke-opacity=\"0.125\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-24px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"24\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-10px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"10\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.00\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"5\" y2=\"5\" stroke-opacity=\"0.75\"/>\n	</pattern>\n	<pattern id=\"pat-baseline-20px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n	<pattern id=\"pat-cols-220px\" x=\"0\" y=\"0\" width=\"220\" height=\"36\" patternUnits=\"userSpaceOnUse\">\n		<rect transform=\"translate(0,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<rect transform=\"translate(200,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<line transform=\"translate(20 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,60%)\" stroke-opacity=\"0.2\"/>\n		<line transform=\"translate(200 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.2\"/>\n\n		<line transform=\"translate(140 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n		<line transform=\"translate(80 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n\n		<line transform=\"translate(0 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n		<line transform=\"translate(220 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n	</pattern>\n</defs>\n<g transform=\"translate(0 0.5)\">\n	<rect id=\"baseline\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n\n	<g id=\"debug-grid-container\">\n		<line id=\"gnv0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		<line id=\"gnv1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		<g id=\"debug-grid-content\">\n			<rect id=\"baseline-content\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n			<line id=\"gct0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n			<line id=\"gct1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		</g>\n	</g>\n\n	<rect id=\"columns\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	<line id=\"gl0\" class=\"vguide\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	<line id=\"gl1\" class=\"vguide gutter lgap\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	<line id=\"gr0\" class=\"vguide\" x1=\"100%\" x2=\"100%\" y1=\"0\" y2=\"100%\"/>\n	<line id=\"gr1\" class=\"vguide gutter rgap\" x1=\"100%\" x2=\"100%\" y1=\"0\" y2=\"100%\"/>\n</g>\n</svg>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":21}],99:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
@@ -13217,14 +13269,14 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
-    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-markdown\">\n		<a href=\"#toggle-markdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
+    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
     + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
     + "</p>\n	<ul>\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	</ul>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],99:[function(require,module,exports){
+},{"hbsfy/runtime":21}],100:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
@@ -13245,7 +13297,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + "</div>";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],100:[function(require,module,exports){
+},{"hbsfy/runtime":21}],101:[function(require,module,exports){
 // var Handlebars = require("handlebars")["default"];
 var Handlebars = require("hbsfy/runtime");
 /** @type {Function} */
@@ -13342,7 +13394,7 @@ for (var helper in helpers) {
 
 // module.exports = Handlebars;
 
-},{"app/control/Globals":34,"color":"color","hbsfy/runtime":21}],101:[function(require,module,exports){
+},{"app/control/Globals":34,"color":"color","hbsfy/runtime":21}],102:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {module:backbone} */
@@ -13486,7 +13538,7 @@ Object.defineProperties(Timer, {
 
 module.exports = Timer;
 
-},{"backbone":"backbone","underscore":"underscore"}],102:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],103:[function(require,module,exports){
 /* -------------------------------
 /* Imports
 /* ------------------------------- */
@@ -13749,7 +13801,7 @@ TransformHelper.prototype = Object.create({
 
 module.exports = TransformHelper;
 
-},{"./TransformItem":103,"underscore":"underscore"}],103:[function(require,module,exports){
+},{"./TransformItem":104,"underscore":"underscore"}],104:[function(require,module,exports){
 /* -------------------------------
  * Imports
  * ------------------------------- */
@@ -14293,7 +14345,7 @@ TransformItem.prototype = Object.create({
 });
 
 module.exports = TransformItem;
-},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113,"utils/strings/camelToDashed":116}],104:[function(require,module,exports){
+},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114,"utils/strings/camelToDashed":117}],105:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
 var splice = Array.prototype.splice;
@@ -14410,7 +14462,7 @@ module.exports = {
 		_drawShape(this.rect, s, ctx, a1, a2, a3, a4);
 	},
 };
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /**
  * @module utils/canvas/calcArcHConnector
  */
@@ -14555,7 +14607,7 @@ var drawArcConnector1 = function(ctx, x1, y1, x2, y2, r) {
 };
 */
 
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, CSSStyleDeclaration */
 
@@ -14629,7 +14681,7 @@ module.exports = function(s, m, includeSizePos) {
 
 }).call(this,true)
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 /**
 Returns a bounding rect for _el_ with absolute coordinates corrected for
 scroll positions.
@@ -14684,7 +14736,7 @@ module.exports = function(el) {
 		width: rect.width
 	};
 };
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 /**
  * @param {number} i current iteration
  * @param {number} s start value
@@ -14698,7 +14750,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -14732,7 +14784,7 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -14768,7 +14820,7 @@ module.exports = function(rect, dx, dy) {
 	return r;
 };
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -14866,7 +14918,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":114}],112:[function(require,module,exports){
+},{"./prefixes":115}],113:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -14907,7 +14959,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":114}],113:[function(require,module,exports){
+},{"./prefixes":115}],114:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -14963,10 +15015,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":114}],114:[function(require,module,exports){
+},{"./prefixes":115}],115:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /* jshint ignore:start */
 /*
 Taken from:
@@ -15026,19 +15078,19 @@ if (/Trident|Edge/.test(navigator.userAgent)) {
 module.exports = setImmediate;
 /* jshint ignore:end */
 
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -15203,7 +15255,7 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],119:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],120:[function(require,module,exports){
 module.exports={
 	"units": {
 		"hu_px": "20",
