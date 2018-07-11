@@ -54,7 +54,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .fullwidth body .article-view.mdown h6,
 .fullwidth body .article-view.mdown h5,
 .fullwidth body .article-view.mdown p, .n1-1f5 {
-  margin-left: -0.1ch;
+  margin-left: -0.1ex;
   letter-spacing: -0.05ch; }
   .n5-11:first-child, .n4f2-10:first-child, .n4-9:first-child, .n4-8:first-child, .n3f2-8:first-child, .n3f2-7:first-child, .n3-7:first-child, .n3-6:first-child, .n2-5:first-child, .carousel .mdown h1:first-child, .n1f2-4:first-child, .carousel .mdown h2:first-child, .n1p3-3f3:first-child, .carousel .mdown h3:first-child, .n1p2-2:first-child, .carousel .mdown h4:first-child, .article-view.mdown h1:first-child, .article-view.mdown h2:first-child, .n1p2-2f6:first-child, .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown h1:first-child, .fullwidth body .carousel .mdown h2:first-child,
   .fullwidth body .article-view.mdown h1:first-child,
@@ -336,13 +336,14 @@ body {
   padding-top: 0;
   margin-top: 2.5rem; }
 
+.list-item .label, .list-group .label, #site-name a, .article-button a {
+  margin: 0 -0.92ex 0 -1.08ex;
+  padding: 0 1ex; }
+
 .list-item, .list-group, #site-name, .article-button, .media-caption-stack .content > * {
   box-sizing: border-box;
   padding-left: 20px;
   padding-right: 20px; }
-  .list-item .label, .list-group .label, #site-name .label, .article-button .label, .media-caption-stack .content > * .label {
-    padding: 0 20px;
-    margin: 0 -20px; }
   .list-item, .list-group, #site-name, .article-button, .media-caption-stack .content > *, .list-item *, .list-group *, #site-name *, .article-button *, .media-caption-stack .content > * * {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -1676,8 +1677,8 @@ svg#debug-grid {
       stroke: #8c40bf;
       stroke-opacity: 0.3; }
   svg#debug-grid .hguide {
-    stroke: #33994e;
-    stroke-opacity: 0.5; }
+    stroke: #0066ff;
+    stroke-opacity: 0.75; }
   svg#debug-grid #debug-grid-container {
     -webkit-transform: translate(0, 2.5rem);
             transform: translate(0, 2.5rem); }
@@ -1692,7 +1693,9 @@ svg#debug-grid {
       stroke-opacity: 1; }
     svg#debug-grid #debug-grid-container #gnv1, svg#debug-grid #debug-grid-container #gct1 {
       -webkit-transform: translate(0, 3rem);
-              transform: translate(0, 3rem); }
+              transform: translate(0, 3rem);
+      stroke-dasharray: 0.5rem 0.75rem;
+      stroke-opacity: 1; }
   svg#debug-grid #debug-grid-content {
     -webkit-transform: translate(0, 14rem);
             transform: translate(0, 14rem); }
