@@ -46,113 +46,116 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
   display: block; }
 
-.n5-11, .n4f2-10, .n4-9, .n4-8, .n3f2-8, .n3f2-7, .n3-7, .n3-6, .n2-5, .carousel .mdown h1, .n1f2-4, .carousel .mdown h2, .n1p3-3f3, .carousel .mdown h3, .n1p2-2, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, .n1p2-2f6, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
+.carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, #bundle-list, #site-name, .article-button, .desktop-small body .media-caption-stack, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
 .fullwidth body .article-view.mdown h1,
-.fullwidth body .article-view.mdown h2, .n1f3-1f5, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
+.fullwidth body .article-view.mdown h2, .media-caption-stack, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
 .fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4, .n1f1-1f6, .carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
+.fullwidth body .article-view.mdown h4, .fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p, .carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
 .fullwidth body .article-view.mdown h6,
 .fullwidth body .article-view.mdown h5,
-.fullwidth body .article-view.mdown p, .n1-1f5 {
-  margin-left: -0.1ex;
+.fullwidth body .article-view.mdown p {
   letter-spacing: -0.05ch; }
-  .n5-11:first-child, .n4f2-10:first-child, .n4-9:first-child, .n4-8:first-child, .n3f2-8:first-child, .n3f2-7:first-child, .n3-7:first-child, .n3-6:first-child, .n2-5:first-child, .carousel .mdown h1:first-child, .n1f2-4:first-child, .carousel .mdown h2:first-child, .n1p3-3f3:first-child, .carousel .mdown h3:first-child, .n1p2-2:first-child, .carousel .mdown h4:first-child, .article-view.mdown h1:first-child, .article-view.mdown h2:first-child, .n1p2-2f6:first-child, .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown h1:first-child, .fullwidth body .carousel .mdown h2:first-child,
+
+.carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
+.fullwidth body .article-view.mdown h1,
+.fullwidth body .article-view.mdown h2, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
+.fullwidth body .article-view.mdown h3,
+.fullwidth body .article-view.mdown h4, .carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
+.fullwidth body .article-view.mdown h6,
+.fullwidth body .article-view.mdown h5,
+.fullwidth body .article-view.mdown p {
+  margin-left: -0.1ex; }
+  .carousel .mdown h1:first-child, .carousel .mdown h2:first-child, .carousel .mdown h3:first-child, .carousel .mdown h4:first-child, .article-view.mdown h1:first-child, .article-view.mdown h2:first-child, .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown h1:first-child, .fullwidth body .carousel .mdown h2:first-child,
   .fullwidth body .article-view.mdown h1:first-child,
-  .fullwidth body .article-view.mdown h2:first-child, .n1f3-1f5:first-child, .carousel .mdown h6:first-child, .article-view.mdown h3:first-child, .article-view.mdown h4:first-child, .fullwidth body .carousel .mdown h3:first-child, .fullwidth body .carousel .mdown h4:first-child,
+  .fullwidth body .article-view.mdown h2:first-child, .carousel .mdown h6:first-child, .article-view.mdown h3:first-child, .article-view.mdown h4:first-child, .fullwidth body .carousel .mdown h3:first-child, .fullwidth body .carousel .mdown h4:first-child,
   .fullwidth body .article-view.mdown h3:first-child,
-  .fullwidth body .article-view.mdown h4:first-child, .n1f1-1f6:first-child, .carousel .mdown p:first-child, .article-view.mdown p:first-child, .fullwidth body .carousel .mdown h6:first-child, .fullwidth body .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown p:first-child,
+  .fullwidth body .article-view.mdown h4:first-child, .carousel .mdown p:first-child, .article-view.mdown p:first-child, .fullwidth body .carousel .mdown h6:first-child, .fullwidth body .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown p:first-child,
   .fullwidth body .article-view.mdown h6:first-child,
   .fullwidth body .article-view.mdown h5:first-child,
-  .fullwidth body .article-view.mdown p:first-child, .n1-1f5:first-child {
+  .fullwidth body .article-view.mdown p:first-child {
     margin-top: -0.5ch; }
 
-.n5-11 {
-  font-size: 7.5rem;
-  line-height: 9rem;
-  margin-bottom: 2.25rem; }
-
-.n4f2-10 {
-  font-size: 7rem;
-  line-height: 8rem;
-  margin-bottom: 2.25rem; }
-
-.n4-9 {
-  font-size: 6rem;
-  line-height: 7rem;
-  margin-bottom: 2.25rem; }
-
-.n4-8 {
-  font-size: 6rem;
-  line-height: 6rem;
-  margin-bottom: 2.25rem; }
-
-.n3f2-8 {
-  font-size: 5.5rem;
-  line-height: 6rem;
-  margin-bottom: 1.5rem; }
-
-.n3f2-7 {
-  font-size: 5.5rem;
-  line-height: 5.5rem;
-  margin-bottom: 1.5rem; }
-
-.n3-7 {
-  font-size: 4.5rem;
-  line-height: 5.5rem;
-  margin-bottom: 1.75rem; }
-
-.n3-6 {
-  font-size: 4.5rem;
-  line-height: 4.5rem;
-  margin-bottom: 1.25rem; }
-
-.n2-5, .carousel .mdown h1 {
+/* 5_11 */
+/* 4f2_10 */
+/* 4_9 */
+/* 4_8 */
+/* 3f2_8 */
+/* 3f2_7 */
+/* 3_7 */
+/* 3_6 */
+/* 2_5 */
+.carousel .mdown h1 {
   font-size: 3.5rem;
-  line-height: 4rem;
+  line-height: 4rem; }
+
+.carousel .mdown h1 {
   margin-bottom: 1.5rem; }
 
-.n1f2-4, .carousel .mdown h2 {
+/* 1f2_4 */
+.carousel .mdown h2 {
   font-size: 2.625rem;
-  line-height: 3rem;
+  line-height: 3rem; }
+
+.carousel .mdown h2 {
   margin-bottom: 0.75rem; }
 
-.n1p3-3f3, .carousel .mdown h3 {
+/* 1p3_3f3 */
+.carousel .mdown h3 {
   font-size: 2.333333333rem;
-  line-height: 2.5rem;
+  line-height: 2.5rem; }
+
+.carousel .mdown h3 {
   margin-bottom: 0.75rem; }
 
-.n1p2-2, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2 {
+/* 2_2 */
+/* #site-name #about #bundle-list */
+.carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, #bundle-list, #site-name, .article-button, .desktop-small body .media-caption-stack {
   font-size: 1.999999999rem;
-  line-height: 2rem;
+  line-height: 2rem; }
+
+.carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2 {
   margin-bottom: 1rem; }
 
-.n1p2-2f6, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
+/* 1p2_2f6 */
+/* .media-caption-stack */
+.carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
+.fullwidth body .article-view.mdown h1,
+.fullwidth body .article-view.mdown h2, .media-caption-stack {
+  font-size: 1.833333333rem;
+  line-height: 2rem; }
+
+.carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
 .fullwidth body .article-view.mdown h1,
 .fullwidth body .article-view.mdown h2 {
-  font-size: 1.833333333rem;
-  line-height: 2rem;
   margin-bottom: 1rem; }
 
-.n1f3-1f5, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
+/* 1f3_1f5 */
+.carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
+.fullwidth body .article-view.mdown h3,
+.fullwidth body .article-view.mdown h4, .fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p {
+  font-size: 1.333333333rem;
+  line-height: 1.5rem; }
+
+.carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
 .fullwidth body .article-view.mdown h3,
 .fullwidth body .article-view.mdown h4 {
-  font-size: 1.333333333rem;
-  line-height: 1.5rem;
   margin-bottom: 1rem; }
 
-.n1f1-1f6, .carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
+/* 1f1_1f6 */
+.carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
 .fullwidth body .article-view.mdown h6,
 .fullwidth body .article-view.mdown h5,
 .fullwidth body .article-view.mdown p {
   font-size: 1.1rem;
-  line-height: 1.333333333rem;
+  line-height: 1.333333333rem; }
+
+.carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
+.fullwidth body .article-view.mdown h6,
+.fullwidth body .article-view.mdown h5,
+.fullwidth body .article-view.mdown p {
   margin-bottom: 1rem; }
 
-.n1-1f5 {
-  font-size: 1rem;
-  line-height: 1.333333333rem;
-  margin-bottom: 1rem; }
-
+/* 1_1f5 */
 * {
   border-color: inherit; }
 
@@ -336,10 +339,6 @@ body {
   padding-top: 0;
   margin-top: 2.5rem; }
 
-.list-item .label, .list-group .label, #site-name a, .article-button a {
-  margin: 0 -0.92ex 0 -1.08ex;
-  padding: 0 1ex; }
-
 .list-item, .list-group, #site-name, .article-button, .media-caption-stack .content > * {
   box-sizing: border-box;
   padding-left: 20px;
@@ -349,13 +348,21 @@ body {
     -moz-user-select: none;
     -ms-user-select: none; }
 
+.list-item .label, .list-group .label, #site-name a, .article-button a {
+  padding-left: 1ex;
+  padding-right: 1ex;
+  margin-left: -1.08ex;
+  margin-right: -0.92ex; }
+
 #bundle-list, #keyword-list, #nav-graph {
   position: absolute;
-  display: inline-block; }
+  display: inline-block;
+  will-change: transform; }
 
 .transform-wrapper {
   position: absolute;
-  display: inline-block; }
+  display: inline-block;
+  will-change: transform; }
 
 #bundle-list, #keyword-list {
   padding-top: 14rem;
@@ -431,16 +438,9 @@ body {
     display: inline-block; }
 
 #bundle-list {
-  width: 220px;
-  min-height: 4.5rem;
-  font-size: 1.999999999rem;
   font-weight: 600;
-  line-height: 2rem;
-  letter-spacing: -1px;
-  -webkit-text-rendering: optimizelegibility;
-  text-rendering: optimizelegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; }
+  width: 220px;
+  min-height: 4.5rem; }
   #bundle-list .list-item {
     width: 100%;
     height: 1em; }
@@ -498,14 +498,7 @@ body {
           transform: translate(0, 0); }
 
 #site-name {
-  font-size: 1.9999999rem;
   font-weight: 600;
-  line-height: 2rem;
-  letter-spacing: -1px;
-  -webkit-text-rendering: optimizelegibility;
-  text-rendering: optimizelegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   position: absolute;
   display: block;
   top: 0;
@@ -524,14 +517,6 @@ body {
   width: 220px; }
 
 .article-button {
-  font-size: 1.999999999rem;
-  font-weight: 300;
-  line-height: 2rem;
-  letter-spacing: -1px;
-  -webkit-text-rendering: optimizelegibility;
-  text-rendering: optimizelegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   position: absolute;
   display: block;
   -webkit-transform: translate(0, 0);
@@ -1006,14 +991,6 @@ body {
   width: 660px;
   margin: 0 auto;
   top: 14rem;
-  font-size: 1.666666666rem;
-  font-weight: 300;
-  line-height: 2rem;
-  letter-spacing: -1px;
-  -webkit-text-rendering: optimizelegibility;
-  text-rendering: optimizelegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   -webkit-transform: translate(0, 0);
           transform: translate(0, 0); }
   .container-expanded .media-caption-stack {
@@ -1227,15 +1204,7 @@ body {
   .desktop-small body .media-caption-stack {
     top: 0;
     margin-top: 0;
-    width: 880px;
-    font-size: 1.999999999rem;
-    font-weight: 300;
-    line-height: 2rem;
-    letter-spacing: -1px;
-    -webkit-text-rendering: optimizelegibility;
-    text-rendering: optimizelegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale; }
+    width: 880px; }
     .desktop-small body .media-caption-stack > .stack-item {
       top: 0;
       bottom: auto; }
@@ -1247,12 +1216,6 @@ body {
   .desktop-small body .article-view {
     width: 880px;
     padding-right: 220px; }
-.fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p {
-  font-size: 1.333333333rem;
-  line-height: 1.125;
-  letter-spacing: -0.5px;
-  -webkit-text-rendering: optimizelegibility;
-  text-rendering: optimizelegibility; }
 .fullwidth body .list-item, .fullwidth body .list-group, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content > *, .media-caption-stack .fullwidth body .content > * {
   padding-left: 2rem;
   padding-right: 1rem; }
@@ -1489,11 +1452,8 @@ html.fullwidth-small {
 
 .fullwidth-small body #container {
   min-width: 375px; }
-.fullwidth-small body #bundle-list {
-  left: 0;
-  width: auto; }
 .fullwidth-small body #keyword-list {
-  right: 0; }
+  width: 40%; }
   .fullwidth-small body #keyword-list .list-group {
     height: 1.5rem; }
     .fullwidth-small body #keyword-list .list-group .label {
@@ -1655,14 +1615,13 @@ svg#debug-grid {
     stroke: #9709f6; }
   svg#debug-grid #pat-baseline-10px,
   svg#debug-grid #pat-baseline-20px {
-    stroke: #0919f6; }
+    stroke: #f60968; }
   svg#debug-grid #baseline {
-    opacity: 0.5;
+    opacity: 0.25;
     fill: url("#pat-baseline-12px"); }
     .fullwidth-small svg#debug-grid #baseline {
       fill: url("#pat-baseline-10px"); }
   svg#debug-grid #baseline-content {
-    opacity: 0.75;
     fill: url("#pat-baseline-24px"); }
     .fullwidth svg#debug-grid #baseline-content {
       fill: none; }
@@ -1689,13 +1648,11 @@ svg#debug-grid {
       -webkit-transform: translate(0, 1.166666666rem);
               transform: translate(0, 1.166666666rem); }
     svg#debug-grid #debug-grid-container #gnv0, svg#debug-grid #debug-grid-container #gct0 {
-      stroke-dasharray: 0.25rem;
-      stroke-opacity: 1; }
+      stroke-dasharray: 0.25rem; }
     svg#debug-grid #debug-grid-container #gnv1, svg#debug-grid #debug-grid-container #gct1 {
       -webkit-transform: translate(0, 3rem);
               transform: translate(0, 3rem);
-      stroke-dasharray: 0.5rem 0.75rem;
-      stroke-opacity: 1; }
+      stroke-dasharray: 0.5rem 0.75rem; }
   svg#debug-grid #debug-grid-content {
     -webkit-transform: translate(0, 14rem);
             transform: translate(0, 14rem); }
@@ -1729,17 +1686,6 @@ svg#debug-grid {
   .fullwidth svg#debug-grid #gr1 {
     -webkit-transform: translate(-2.75rem, 0);
             transform: translate(-2.75rem, 0); }
-  .fullwidth svg#debug-grid #gm {
-    -webkit-transform: translate(0rem, 0);
-            transform: translate(0rem, 0); }
-  .fullwidth svg#debug-grid #gm1 {
-    -webkit-transform: translate(-1rem, 0);
-            transform: translate(-1rem, 0); }
-  .fullwidth svg#debug-grid #gm0 {
-    stroke: green;
-    stroke-opacity: 1;
-    -webkit-transform: translate(-0.5rem, 0);
-            transform: translate(-0.5rem, 0); }
 
 .debug-mdown .mdown h1, .debug-mdown .mdown h2, .debug-mdown .mdown h3, .debug-mdown .mdown h4, .debug-mdown .mdown h5, .debug-mdown .mdown h6, .debug-mdown .mdown p, .debug-mdown .mdown ol, .debug-mdown .mdown ul, .debug-mdown .mdown dl {
   outline: 1px solid rgba(141, 177, 78, 0.9);
