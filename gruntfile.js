@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 	grunt.config("paths", {
 		"destAssets": "workspace/assets",
 		"srcAssets": "workspace/assets",
-		"destRoot": "/",
+		"destRoot": "",
 		"srcRoot": "http://localhost/projects/folio-sym",
 		"fontFiles": "{eot,otf,svg,ttf,woff,woff2}",
 		"mediaFiles": "{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
@@ -110,6 +110,14 @@ module.exports = function(grunt) {
 			options: { url: "<%= paths.srcRoot %>/?force-debug" },
 			dest: "index.html"
 		},
+		// index_dev: {
+		// 	options: { url: "<%= paths.srcRoot %>/?force-debug" },
+		// 	dest: "index.dev.html"
+		// },
+		// index_dist: {
+		// 	options: { url: "<%= paths.srcRoot %>/?force-nodebug" },
+		// 	dest: "index.dist.html"
+		// },
 		data: {
 			options: { url: "<%= paths.srcRoot %>/json" },
 			dest: "<%= paths.destAssets %>/js/data.js"
@@ -117,12 +125,14 @@ module.exports = function(grunt) {
 	}));
 
 	/* --------------------------------
-	 * copy
+	 * copy/process
 	 * -------------------------------- */
 
 	function toPattern(s) {
 		s = grunt.template.process(s, grunt.config());
 		s = s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+		s += "\\/?";
+		grunt.log.writeln(s);
 		return new RegExp(s, "g");
 	}
 	grunt.loadNpmTasks("grunt-string-replace");
@@ -141,7 +151,7 @@ module.exports = function(grunt) {
 					// { pattern: /https?:\/\/[^\/\"\']+/g}, replacement: "./" },
 					// { pattern: /https?:\/\/folio\.(local\.|localhost)/g}, replacement: "./" },
 					{
-						pattern: toPattern("<%= paths.srcRoot %>/"),
+						pattern: toPattern("<%= paths.srcRoot %>"),
 						replacement: "<%= paths.destRoot %>"
 					},
 					{
@@ -153,6 +163,27 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.registerTask("build", ["clean", "copy", "http", "string-replace:http-root"]);
+	/* --------------------------------
+	 * minify html
+	 * -------------------------------- */
+	grunt.loadNpmTasks('grunt-contrib-htmlmin');
+	grunt.config("htmlmin", {
+		main: {
+			options: {
+				preserveLineBreaks: true,
+				keepClosingSlash: true,
+				minifyCSS: true,
+				minifyJS: true,
+				removeComments: true,
+				collapseWhitespace: true
+			},
+			files: {
+				'index.html': 'index.html',
+			}
+		},
+	});
+
+
+	grunt.registerTask("build", ["clean", "copy", "http", "string-replace", "htmlmin"]);
 	grunt.registerTask("default", ["build"]);
 };
