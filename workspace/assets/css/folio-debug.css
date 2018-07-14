@@ -50,29 +50,20 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .fullwidth body .article-view.mdown h1,
 .fullwidth body .article-view.mdown h2, .media-caption-stack, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
 .fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4, .fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p, .carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
-.fullwidth body .article-view.mdown h6,
-.fullwidth body .article-view.mdown h5,
-.fullwidth body .article-view.mdown p {
+.fullwidth body .article-view.mdown h4, .fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p {
   letter-spacing: -0.05ch; }
 
 .carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
 .fullwidth body .article-view.mdown h1,
 .fullwidth body .article-view.mdown h2, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
 .fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4, .carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
-.fullwidth body .article-view.mdown h6,
-.fullwidth body .article-view.mdown h5,
-.fullwidth body .article-view.mdown p {
+.fullwidth body .article-view.mdown h4 {
   margin-left: -0.1ex; }
   .carousel .mdown h1:first-child, .carousel .mdown h2:first-child, .carousel .mdown h3:first-child, .carousel .mdown h4:first-child, .article-view.mdown h1:first-child, .article-view.mdown h2:first-child, .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown h1:first-child, .fullwidth body .carousel .mdown h2:first-child,
   .fullwidth body .article-view.mdown h1:first-child,
   .fullwidth body .article-view.mdown h2:first-child, .carousel .mdown h6:first-child, .article-view.mdown h3:first-child, .article-view.mdown h4:first-child, .fullwidth body .carousel .mdown h3:first-child, .fullwidth body .carousel .mdown h4:first-child,
   .fullwidth body .article-view.mdown h3:first-child,
-  .fullwidth body .article-view.mdown h4:first-child, .carousel .mdown p:first-child, .article-view.mdown p:first-child, .fullwidth body .carousel .mdown h6:first-child, .fullwidth body .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown p:first-child,
-  .fullwidth body .article-view.mdown h6:first-child,
-  .fullwidth body .article-view.mdown h5:first-child,
-  .fullwidth body .article-view.mdown p:first-child {
+  .fullwidth body .article-view.mdown h4:first-child {
     margin-top: -0.5ch; }
 
 /* 5_11 */
@@ -224,14 +215,14 @@ body {
   -webkit-transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.034s;
           transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.034s; }
 
-#container {
+#navigation, #content {
   -webkit-transition: opacity 0.366s ease 0.568s, visibility 0.366s step-start 0.568s;
           transition: opacity 0.366s ease 0.568s, visibility 0.366s step-start 0.568s; }
 
 .app-initial {
   -webkit-transition: none 0s 0s !important;
           transition: none 0s 0s !important; }
-  .app-initial #container {
+  .app-initial #navigation, .app-initial #content {
     visibility: hidden;
     opacity: 0; }
 
@@ -308,17 +299,12 @@ html {
   overscroll-behavior: none; }
 
 body {
+  position: relative;
   width: 100%;
   min-height: 100%;
   overflow: hidden;
   overflow-y: auto;
   overscroll-behavior: none; }
-
-#container {
-  display: block;
-  width: 100%;
-  min-width: 660px;
-  min-height: 100%; }
 
 #navigation {
   position: relative;
@@ -326,18 +312,16 @@ body {
   box-sizing: content-box;
   max-width: 660px;
   min-height: 14rem;
-  padding-top: 0;
-  margin-top: 2.5rem; }
+  padding-top: 2.5rem; }
 
 #content {
   overflow: hidden;
   position: absolute;
   top: 0;
-  bottom: 0;
   left: 0;
   right: 0;
-  padding-top: 0;
-  margin-top: 2.5rem; }
+  min-height: 100%;
+  padding-top: 2.5rem; }
 
 .list-item, .list-group, #site-name, .article-button, .media-caption-stack .content > * {
   box-sizing: border-box;
@@ -925,7 +909,7 @@ body {
   width: 100%;
   min-width: 660px;
   bottom: 0;
-  top: 14rem;
+  top: 16.5rem;
   margin-top: -4.5rem;
   padding-top: 4.5rem;
   padding-bottom: 4.5rem; }
@@ -1086,21 +1070,25 @@ body {
     clear: both; }
 
 .desktop-small body {
+  /* body */
   /* NOTE: .list-group .label moves horizontally */ }
-  .desktop-small body #container {
-    min-width: 880px; }
   .desktop-small body #navigation {
     max-width: 880px;
     min-height: 11rem;
-    margin-top: 2rem; }
+    padding-top: 2rem; }
   .desktop-small body #content {
-    margin-top: 2rem; }
+    padding-top: 2rem; }
   .desktop-small body #bundle-list, .desktop-small body #keyword-list, .desktop-small body #nav-graph {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
   .desktop-small body .transform-wrapper {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
+  .desktop-small body.without-article.without-bundle #bundle-list, .desktop-small body.without-article.without-bundle #keyword-list {
+    padding-top: 4.5rem; }
+  .desktop-small body.without-article.without-bundle #site-name-wrapper, .desktop-small body.without-article.without-bundle #article-list-wrapper {
+    -webkit-transform: translate(0, 3rem);
+            transform: translate(0, 3rem); }
   .desktop-small body #bundle-list {
     width: 220px; }
   .desktop-small body #bundle-list-wrapper {
@@ -1149,17 +1137,12 @@ body {
               transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s; }
   .desktop-small body #article-list-wrapper {
     width: 220px; }
-  .desktop-small body.without-article.without-bundle #bundle-list, .desktop-small body.without-article.without-bundle #keyword-list {
-    padding-top: 4.5rem; }
-  .desktop-small body.without-article.without-bundle #site-name-wrapper, .desktop-small body.without-article.without-bundle #article-list-wrapper {
-    -webkit-transform: translate(0, 3rem);
-            transform: translate(0, 3rem); }
   .desktop-small body #nav-graph {
     left: 220px;
     width: 660px; }
   .desktop-small body .media-carousel {
     min-width: 880px;
-    top: 11rem; }
+    top: 13rem; }
     .desktop-small body .media-carousel .carousel-item {
       left: calc(50% - 460px);
       width: 880px; }
@@ -1216,18 +1199,41 @@ body {
   .desktop-small body .article-view {
     width: 880px;
     padding-right: 220px; }
-.fullwidth body .list-item, .fullwidth body .list-group, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content > *, .media-caption-stack .fullwidth body .content > * {
-  padding-left: 2rem;
-  padding-right: 1rem; }
-  .fullwidth body .list-item .label, .fullwidth body .list-group .label, .fullwidth body #site-name .label, .fullwidth body .article-button .label, .fullwidth body .media-caption-stack .content > * .label, .media-caption-stack .fullwidth body .content > * .label {
-    padding: 0 0.5rem;
-    margin: 0 -0.5rem; }
 .fullwidth body {
   /* body */
+  	/*&.without-bundle {
+  		// height: auto;
+  		// overflow: visible;
+  		overscroll-behavior: none;
+  		overflow-x: hidden;
+  		overflow-y: scroll;
+  
+  		#container {
+  		// 	position: relative;
+  			overscroll-behavior: none;
+  			overflow-x: hidden;
+  			overflow-y: scroll;
+  		// 	top: auto;
+  		// 	bottom: auto;
+  		// 	height: auto;
+  		// 	min-height: 0;
+  		// 	max-height: none;
+  		}
+  		#container,
+  		#container #content {
+  			position: relative;
+  			overflow: visible;
+  			top: auto;
+  			bottom: auto;
+  			height: auto;
+  			min-height: 0;
+  			max-height: none;
+  		}
+  	}*/
   /* NOTE: these values depend on #navigation being absolute or relative */
   	/*.article-view {
   		// position: relative;
-  		/*width: calc(100% - 7rem);
+  		/*width: calc(100% - 5rem);
   		left: $margin_left * 2;
   		right: $margin_right * 2;
   		margin-left: 0;
@@ -1240,7 +1246,7 @@ body {
   		// position: relative;
   		// top: 0;
   		top: auto;
-  		// top: $nav_height_small;
+  		// top: $small_nav_height;
   		bottom: auto;
   		height: auto;
   		min-height: 0;
@@ -1249,29 +1255,29 @@ body {
   
   		margin-top: 0;
   		margin-bottom: 0;
-  		padding-top: 0;//$nav_height_small;
+  		padding-top: 0;//$small_nav_height;
   		padding-bottom: 4.5rem;
   		// margin-top: -1rem;
-  		// margin-top: $nav_height_small;
+  		// margin-top: $small_nav_height;
   		// margin-bottom: 4.5rem;
   	}*/ }
-  .fullwidth body #container {
-    min-width: 0;
-    max-width: none;
-    min-height: 100%; }
   .fullwidth body #navigation {
     width: auto;
     max-width: none;
     left: 0;
     right: 0;
-    margin-left: 3.5rem;
-    margin-right: 3.5rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
     min-height: 7rem;
-    padding-top: 0;
-    margin-top: 1.166666666rem; }
+    padding-top: 1.166666666rem; }
   .fullwidth body #content {
-    padding-top: 0;
-    margin-top: 1.166666666rem; }
+    padding-top: 1.166666666rem; }
+  .fullwidth body .list-item, .fullwidth body .list-group, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content > *, .media-caption-stack .fullwidth body .content > * {
+    padding-left: 2rem;
+    padding-right: 1rem; }
+    .fullwidth body .list-item .label, .fullwidth body .list-group .label, .fullwidth body #site-name .label, .fullwidth body .article-button .label, .fullwidth body .media-caption-stack .content > * .label, .media-caption-stack .fullwidth body .content > * .label {
+      padding: 0 0.5rem;
+      margin: 0 -0.5rem; }
   .fullwidth body .transform-wrapper {
     left: 0;
     right: 0;
@@ -1291,9 +1297,7 @@ body {
     left: auto;
     right: 0; }
     .fullwidth body #keyword-list .list-item {
-      width: 100%;
-      text-overflow: ellipsis;
-      overflow: hidden; }
+      width: 100%; }
       .fullwidth body #keyword-list .list-item .label {
         font-size: inherit; }
     .fullwidth body #keyword-list .list-group {
@@ -1334,7 +1338,7 @@ body {
   .fullwidth body #article-list-wrapper {
     width: 100%; }
   .fullwidth body #site-name, .fullwidth body .article-button {
-    padding-right: 1.75rem; }
+    padding-right: 1.25rem; }
   .fullwidth body #site-name-wrapper, .fullwidth body #article-list-wrapper {
     -webkit-transform: translate(0, 0rem);
             transform: translate(0, 0rem); }
@@ -1363,15 +1367,15 @@ body {
     .fullwidth body .media-carousel .carousel-item {
       width: auto;
       height: calc(100% - 11.166666666rem);
-      left: 1.75rem;
-      right: 1.75rem;
-      margin-left: 1.75rem;
-      margin-right: 1.75rem; }
+      left: 1.25rem;
+      right: 1.25rem;
+      margin-left: 1.25rem;
+      margin-right: 1.25rem; }
       .fullwidth body .media-carousel .carousel-item .sizing {
         margin-left: 2rem;
         margin-right: 1rem; }
     .fullwidth body .media-carousel .empty-item {
-      width: calc((100% - 10rem) * (2/3)); }
+      width: calc((100% - 8rem) * (2/3)); }
     .fullwidth body .media-carousel .media-item .placeholder:before {
       font-size: 18vw;
       padding: 5%; }
@@ -1394,8 +1398,8 @@ body {
   .fullwidth body .media-caption-stack {
     top: 1.5rem;
     margin: 0;
-    margin-left: 3.5rem;
-    margin-right: 3.5rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
     width: auto; }
     .fullwidth body .media-caption-stack .stack-item {
       top: 0;
@@ -1406,38 +1410,17 @@ body {
     .fullwidth body .media-caption-stack .content p {
       margin-left: 0; }
   .fullwidth body .media-dotnav {
-    padding-left: 1.75rem;
-    padding-right: 1.75rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
     width: auto;
     bottom: 0.75rem; }
     .fullwidth body .media-dotnav .list-item {
       padding: 0 0.3333333rem; }
-  .fullwidth body {
-    overflow-y: scroll; }
-    .fullwidth body #container {
-      overflow-y: visible; }
-  .fullwidth body.without-bundle {
-    overscroll-behavior: none;
-    overflow-x: hidden;
-    overflow-y: scroll; }
-    .fullwidth body.without-bundle #container {
-      overscroll-behavior: none;
-      overflow-x: hidden;
-      overflow-y: scroll; }
-    .fullwidth body.without-bundle #container,
-    .fullwidth body.without-bundle #container #content {
-      position: relative;
-      overflow: visible;
-      top: auto;
-      bottom: auto;
-      height: auto;
-      min-height: 0;
-      max-height: none; }
   .fullwidth body .article-view {
     width: auto;
-    margin-left: 3.5rem;
-    margin-right: 3.5rem;
-    padding-top: 3.5rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+    padding-top: 7rem;
     padding-left: 2rem;
     padding-right: 1rem; }
     .fullwidth body .article-view.mdown > * {
@@ -1588,8 +1571,8 @@ html.fullwidth-small {
   .debug-grid-bg #grid-wrapper {
     display: block; }
   .fullwidth #grid-wrapper {
-    left: 1.75rem;
-    right: 1.75rem; }
+    left: 1.25rem;
+    right: 1.25rem; }
 
 svg#debug-grid {
   width: 100%;
@@ -1599,7 +1582,8 @@ svg#debug-grid {
   margin: 0 auto;
   left: 0;
   right: 0;
-  /* Baseline */
+  /* baseline */
+  /* baseline */
   /* Guides columns & margins definitions */
   /* Horizontal guides */
   /* Vertical guides instances */ }
@@ -1616,6 +1600,8 @@ svg#debug-grid {
   svg#debug-grid #pat-baseline-10px,
   svg#debug-grid #pat-baseline-20px {
     stroke: #f60968; }
+  svg#debug-grid #debug-grid-body {
+    opacity: 0.5; }
   svg#debug-grid #baseline {
     opacity: 0.25;
     fill: url("#pat-baseline-12px"); }
@@ -1675,17 +1661,17 @@ svg#debug-grid {
     -webkit-transform: translate(-20px, 0);
             transform: translate(-20px, 0); }
   .fullwidth svg#debug-grid #gl0 {
-    -webkit-transform: translate(1.75rem, 0);
-            transform: translate(1.75rem, 0); }
+    -webkit-transform: translate(1.25rem, 0);
+            transform: translate(1.25rem, 0); }
   .fullwidth svg#debug-grid #gr0 {
-    -webkit-transform: translate(-1.75rem, 0);
-            transform: translate(-1.75rem, 0); }
+    -webkit-transform: translate(-1.25rem, 0);
+            transform: translate(-1.25rem, 0); }
   .fullwidth svg#debug-grid #gl1 {
-    -webkit-transform: translate(3.75rem, 0);
-            transform: translate(3.75rem, 0); }
+    -webkit-transform: translate(3.25rem, 0);
+            transform: translate(3.25rem, 0); }
   .fullwidth svg#debug-grid #gr1 {
-    -webkit-transform: translate(-2.75rem, 0);
-            transform: translate(-2.75rem, 0); }
+    -webkit-transform: translate(-2.25rem, 0);
+            transform: translate(-2.25rem, 0); }
 
 .debug-mdown .mdown h1, .debug-mdown .mdown h2, .debug-mdown .mdown h3, .debug-mdown .mdown h4, .debug-mdown .mdown h5, .debug-mdown .mdown h6, .debug-mdown .mdown p, .debug-mdown .mdown ol, .debug-mdown .mdown ul, .debug-mdown .mdown dl {
   outline: 1px solid rgba(141, 177, 78, 0.9);

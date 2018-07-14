@@ -16,11 +16,9 @@
 <!--[if !IE]><!-->
   <body class="app-initial route-initial">
 <!--<![endif]-->
-    <div id="container">
-      <div id="navigation" class="navigation">
-        <h2>Here be dragons, ye be warned.</h2>
-        <p>Something’s not right.</p>
-      </div>
+    <div id="navigation" class="navigation">
+      <h2>Here be dragons, ye be warned.</h2>
+      <p>Something’s not right.</p>
     </div>
   </body>
 </html>
