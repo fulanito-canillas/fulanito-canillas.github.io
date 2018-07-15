@@ -1526,8 +1526,9 @@ window.addEventListener("load", function(ev) {
 	try {
 		require("app/model/helper/bootstrap")(window.bootstrap);
 	} catch (err) {
-		document.body.classList.remove("app-initial");
-		document.body.classList.add("app-error");
+		var el = document.selectQuery(".app");
+		el.classList.remove("app-initial");
+		el.classList.add("app-error");
 		throw new Error("bootstrap data error (" + err.message + ")", err.fileName, err.lineNumber);
 	} finally { // detele global var
 		delete window.bootstrap;
@@ -3077,9 +3078,9 @@ var AppViewProto = {
 	/** @override */
 	cidPrefix: "app",
 	/** @override */
-	el: "body",
+	el: "html",
 	// /** @override */
-	className: "without-bundle without-media without-article",
+	className: "app without-bundle without-media without-article",
 	/** @override */
 	model: AppState,
 
@@ -3231,15 +3232,15 @@ var AppViewProto = {
 
 	_onModelChange: function() {
 		// console.log("%s::_onModelChange [START]", this.cid);
-		console.group(this.cid + "::_onModelChange [START]");
-
+		console.group(this.cid + "::_onModelChange [render request]");
 		this.requestRender(View.MODEL_INVALID)
 			.once("view:render:after", function(view, flags) {
+				console.info("%s::_onModelChange [render complete]", view.cid);
+				console.groupEnd();
 				// .whenRendered().then(function(view) {
-				this.requestAnimationFrame(function() {
-					console.log("%s::_onModelChange [END]", view.cid);
-					console.groupEnd();
-				})
+				// this.requestAnimationFrame(function() {
+				// 	console.log("%s::_onModelChange [next frame]", view.cid);
+				// });
 			});
 	},
 
@@ -3249,8 +3250,9 @@ var AppViewProto = {
 
 	_onResize: function() {
 		// console.log("%s::_onResize [START]", this.cid);
-		console.group(this.cid + "::_onResize [START]");
-		this.el.classList.add("skip-transitions")
+		console.group(this.cid + "::_onResize [render request]");
+		this.el.classList.add("skip-transitions");
+		this.skipTransitions = true;
 
 		// this.requestRender(View.SIZE_INVALID).renderNow();
 		// this.requestAnimationFrame(function() {
@@ -3259,10 +3261,12 @@ var AppViewProto = {
 
 		this.requestRender(View.SIZE_INVALID)
 			.once("view:render:after", function(view, flags) {
+				console.info("%s::_onResize [render complete]", view.cid);
 				// .whenRendered().then(function(view) {
 				this.requestAnimationFrame(function() {
 					view.el.classList.remove("skip-transitions");
-					console.log("%s::_onResize [END]", view.cid);
+					this.skipTransitions = false;
+					console.info("%s::_onResize [removed skip-tx]", view.cid);
 					console.groupEnd();
 				})
 			});
@@ -3278,19 +3282,30 @@ var AppViewProto = {
 	/* ------------------------------- */
 
 	renderFrame: function(tstamp, flags) {
-		// console.log("%s::renderFrame [%s]", this.cid, View.flagsToString(flags));
+		console.log("%s::renderFrame [%s]", this.cid, View.flagsToString(flags));
 		if (flags & View.MODEL_INVALID) {
-			this.renderModelChange();
+			this.renderModelChange(flags);
 		}
 		if (flags & View.SIZE_INVALID) {
 			this.renderResize(flags);
+			// this.requestChildrenRender(flags, true);
 		}
+		// request children render
+		// set 'now' flag if size is invalid
+		this.requestChildrenRender(flags, true);
+		// this.requestChildrenRender(flags, flags & View.SIZE_INVALID);
+
+
 		if (this._appStartChanged) {
 			this._appStartChanged = false;
 			this.requestAnimationFrame(this.renderAppStart);
 		}
-
-		// this.requestAnimationFrame(this._afterRender);
+		if (flags & (View.MODEL_INVALID | View.SIZE_INVALID)) {
+			this.requestAnimationFrame(function() {
+				document.body.scrollTop = 0;
+				window.scroll({ top: 0, behavior: "smooth" });
+			});
+		}
 	},
 
 	// _afterRender: function() {
@@ -3320,7 +3335,7 @@ var AppViewProto = {
 		// console.log("%s::renderResize matches: %s", this.cid, bb);
 
 		// this.requestChildrenRender(View.SIZE_INVALID, true);
-		this.requestChildrenRender(flags, true);
+		// this.requestChildrenRender(flags, true);
 	},
 
 	/* -------------------------------
@@ -3413,7 +3428,8 @@ if (DEBUG) {
 
 	AppViewProto._onModelChange = (function(fn) {
 		return function() {
-			console.group(this.cid + "::_onModelChange changed:");
+			var retval;
+			console.group(this.cid + "::_onModelChange");
 			Object.keys(this.model.changedAttributes()).forEach(function(key) {
 				var prev = this.model.previous(key),
 					curr = this.model.get(key);
@@ -3422,7 +3438,9 @@ if (DEBUG) {
 					curr && curr.toString());
 			}, this);
 			console.groupEnd();
-			return fn.apply(this, arguments);
+
+			retval = fn.apply(this, arguments);
+			return retval;
 		};
 	})(AppViewProto._onModelChange);
 
@@ -3433,7 +3451,7 @@ if (DEBUG) {
 				id: "debug-toolbar",
 				model: this.model
 			});
-			this.el.appendChild(view.render().el);
+			document.body.appendChild(view.render().el);
 			// this.listenTo(this.model, "change:layoutName", function() {
 			// 	this.requestRender(View.SIZE_INVALID); //.renderNow();
 			// });
@@ -4338,7 +4356,11 @@ var NavigationView = View.extend({
 				|| this.model.hasChanged("withBundle")) {
 				this.el.classList.add("container-changing");
 			}
-			if (this.model.hasChanged("bundle")) {
+			// if (this.bundleList.invalidated) {
+			// 	this.bundleList.invalidate(View.SIZE_INVALID);
+			// }
+			// if (this.model.hasChanged("bundle")) {
+			if (this.model.hasChanged("collapsed")) {
 				this.bundleList.requestRender(View.SIZE_INVALID);
 				this.keywordList.requestRender(View.SIZE_INVALID);
 			}
@@ -4567,6 +4589,7 @@ var NavigationView = View.extend({
 	/* --------------------------- */
 
 	_onModelChange: function() {
+		this.requestRender(View.MODEL_INVALID);
 		// keywords.deselect();
 		if (this.model.hasChanged("collapsed")) {
 			if (this.model.get("collapsed")) {
@@ -4598,7 +4621,6 @@ var NavigationView = View.extend({
 			}
 			// this.graph.valueTo()
 		}
-		this.requestRender(View.MODEL_INVALID);
 	},
 
 	/* --------------------------- *
@@ -6651,9 +6673,6 @@ var ViewProto = {
 	_requestRender: function() {
 		if (this._frameQueueId == -1) {
 			this._frameQueueId = FrameQueue.request(this._applyRender, isNaN(this.viewDepth) ? Number.MAX_VALUE : this.viewDepth);
-			// this._frameQueueId = FrameQueue.request(this._applyRender, 10);
-			// if (!this._skipLog && !FrameQueue.running)
-			// 	console.log("%s::_requestRender ID:%i rescheduled", this.cid, this._frameQueueId);
 		}
 	},
 
@@ -6663,6 +6682,13 @@ var ViewProto = {
 
 	invalidate: function(flags) {
 		if (flags !== void 0) {
+			if (!this._skipLog) {
+				if (this._renderFlags > 0) {
+					console.log("%s::invalidate [%s (%s)] + [%s (%s)]", this.cid, View.flagsToString(this._renderFlags), this._renderFlags, View.flagsToString(flags), flags);
+				} else {
+					console.log("%s::invalidate [%s (%s)]", this.cid, View.flagsToString(flags), flags);
+				}
+			}
 			this._renderFlags |= flags;
 		}
 		return this;
@@ -8094,9 +8120,17 @@ var FilterableListView = View.extend({
 
 	/** @override */
 	renderFrame: function(tstamp, flags) {
+
+		console.log("%s::renderFrame [%s]", this.cid,
+			(this._collapsedChanged ? "collapsed " : "") +
+			(this._selectionChanged ? "selection " : "") +
+			(this._filterChanged ? "filter" : "")
+		);
+
 		// collapsed transition flag
-		if (this._collapsedTransitioning)
-			console.warn("%s::renderFrame collapsed transition interrupted", this.cid);
+		if (this._collapsedTransitioning) {
+			console.warn("%s::renderFrame collapsed tx interrupted", this.cid);
+		}
 
 		this._collapsedTransitioning = !this.skipTransitions && this._collapsedChanged;
 
@@ -8273,7 +8307,7 @@ var FilterableListView = View.extend({
 	_setSelection: function(item) {
 		this._selectedItem = item;
 		this._selectionChanged = true;
-		this._requestRender();
+		this.requestRender();
 	},
 
 	/** @private */
@@ -8314,7 +8348,7 @@ var FilterableListView = View.extend({
 		var hasNew = !!(newItems && newItems.length);
 		var hasOld = !!(oldItems && oldItems.length);
 
-		console.log("%s::renderFilterFn", this.cid, newItems);
+		// console.log("%s::renderFilterFn", this.cid, newItems);
 
 		if (hasNew) {
 			diff((hasOld ? oldItems : this._getAllItems()), newItems).forEach(function(item) {
@@ -9764,52 +9798,52 @@ function selfAndDescendant(selfCls, cls) {
 }
 
 // - - - - - - - - - - - - - - - -
-//  body rules
+//  root rules
 // - - - - - - - - - - - - - - - -
 
-var bodyStyles = ["background", "background-color", "color", "--link-color"];
+var rootStyles = ["background", "background-color", "color", "--link-color"];
 
-function initBodyStyles(sheet, bodySelector, attrs, fgColor, bgColor, lnColor, hasDarkBg) {
+function initRootStyles(sheet, rootSelector, attrs, fgColor, bgColor, lnColor, hasDarkBg) {
 	var s, revSelector, fgColorVal, bgColorVal;
 	// var revFgColorVal, revBgColorVal;
 
-	s = _.pick(attrs, bodyStyles);
+	s = _.pick(attrs, rootStyles);
 	s["-webkit-font-smoothing"] = (hasDarkBg ? "antialiased" : "auto");
-	/* NOTE: In Firefox 'body { -moz-osx-font-smoothing: grayscale; }'
+	/* NOTE: In Firefox '-moz-osx-font-smoothing: grayscale;'
 	/* works both in light over dark and dark over light, hardcoded in _base.scss */
 	//s["-moz-osx-font-smoothing"] = (hasDarkBg? "grayscale" : "auto");
-	insertCSSRule(sheet, bodySelector, s);
+	insertCSSRule(sheet, rootSelector, s);
 
 	// A element
 	// - - - - - - - - - - - - - - - -
 	s = {}
 	s["color"] = lnColor.rgbString();
-	insertCSSRule(sheet, bodySelector + " a", s);
-	insertCSSRule(sheet, bodySelector + " .color-ln", s);
+	insertCSSRule(sheet, rootSelector + " a", s);
+	insertCSSRule(sheet, rootSelector + " .color-ln", s);
 
 	// .color-fg05
 	// - - - - - - - - - - - - - - - -
 	s = {};
 	s["color"] = fgColor.clone().mix(bgColor, 0.5).rgbString();
 	s["border-color"] = fgColor.clone().mix(bgColor, 0.7).rgbString();
-	insertCSSRule(sheet, bodySelector + " .color-fg05", s);
+	insertCSSRule(sheet, rootSelector + " .color-fg05", s);
 
 	fgColorVal = fgColor.rgbString();
 	bgColorVal = bgColor.rgbString();
 	// revFgColorVal = bgColor.clone().mix(fgColor, 0.9).rgbString();
 	// revBgColorVal = fgColor.clone().mix(bgColor, 0.6).rgbString();
-	revSelector = bodySelector + " .color-reverse";
+	revSelector = rootSelector + " .color-reverse";
 
 	// .color-fg .color-bg
 	// - - - - - - - - - - - - - - - -
 	s = {
 		"color": fgColorVal
 	};
-	insertCSSRule(sheet, bodySelector + " .color-fg", s);
+	insertCSSRule(sheet, rootSelector + " .color-fg", s);
 	s = {
 		"background-color": bgColorVal
 	};
-	insertCSSRule(sheet, bodySelector + " .color-bg", s);
+	insertCSSRule(sheet, rootSelector + " .color-bg", s);
 	// html inverted text/background
 	s = {
 		"color": bgColorVal
@@ -9832,11 +9866,11 @@ function initBodyStyles(sheet, bodySelector, attrs, fgColor, bgColor, lnColor, h
 	s = {
 		"stroke": fgColorVal
 	};
-	insertCSSRule(sheet, bodySelector + " .color-stroke", s);
+	insertCSSRule(sheet, rootSelector + " .color-stroke", s);
 	s = {
 		"fill": bgColorVal
 	};
-	insertCSSRule(sheet, bodySelector + " .color-fill", s);
+	insertCSSRule(sheet, rootSelector + " .color-fill", s);
 	// svg inverted fill/stroke
 	s = {
 		"stroke": bgColorVal
@@ -9859,7 +9893,7 @@ function initBodyStyles(sheet, bodySelector, attrs, fgColor, bgColor, lnColor, h
 	// 		", -1px 1px 0 " + bgColorVal +
 	// 		", 1px 1px 0 " + bgColorVal
 	// };
-	// insertCSSRule(sheet, bodySelector + " :not(.collapsed-changed) .text-outline-bg", s);
+	// insertCSSRule(sheet, rootSelector + " :not(.collapsed-changed) .text-outline-bg", s);
 
 }
 
@@ -9906,7 +9940,7 @@ function initCarouselStyles(sheet, carouselSelector, attrs, fgColor, bgColor, ln
 	// s["background"] = "linear-gradient(to bottom, " +
 	// 		bgColor.clone().alpha(0.00).rgbaString() + " 0%, " +
 	// 		bgColor.clone().alpha(0.11).rgbaString() + " 100%)";
-	// insertCSSRule(sheet, bodySelector + " .color-gradient", s);
+	// insertCSSRule(sheet, rootSelector + " .color-gradient", s);
 	// s = {};
 	// s["background-color"] = "transparent";
 	// s["background"] = "linear-gradient(to bottom, " +
@@ -9931,8 +9965,10 @@ module.exports = function() {
 	document.head.appendChild(colorStyles);
 	// var colorStyles = document.querySelector("link#folio");
 
-	initBodyStyles(colorStyles.sheet, "BODY", attrs, fgColor, bgColor, lnColor, hasDarkBg);
-	initCarouselStyles(colorStyles.sheet, ".carousel", attrs, fgColor, bgColor, lnColor, hasDarkBg);
+	initRootStyles(colorStyles.sheet, ".app",
+		attrs, fgColor, bgColor, lnColor, hasDarkBg);
+	initCarouselStyles(colorStyles.sheet, ".carousel",
+		attrs, fgColor, bgColor, lnColor, hasDarkBg);
 
 	// - - - - - - - - - - - - - - - -
 	// per-bundle rules
@@ -9944,8 +9980,12 @@ module.exports = function() {
 		lnColor = bundle.colors.lnColor;
 		hasDarkBg = bundle.colors.hasDarkBg;
 
-		initBodyStyles(colorStyles.sheet, "BODY." + bundle.get("domid"), attrs, fgColor, bgColor, lnColor, hasDarkBg);
-		initCarouselStyles(colorStyles.sheet, ".carousel." + bundle.get("domid"), attrs, fgColor, bgColor, lnColor, hasDarkBg);
+		initRootStyles(colorStyles.sheet,
+			".app." + bundle.get("domid"),
+			attrs, fgColor, bgColor, lnColor, hasDarkBg);
+		initCarouselStyles(colorStyles.sheet,
+			".carousel." + bundle.get("domid"),
+			attrs, fgColor, bgColor, lnColor, hasDarkBg);
 	});
 };
 },{"app/control/Globals":34,"app/model/collection/BundleCollection":39,"color":"color","underscore":"underscore"}],73:[function(require,module,exports){
@@ -11394,7 +11434,7 @@ var PlayableRenderer = MediaRenderer.extend({
 	_onPlaybackToggle: function(ev) {
 		console.log("%s[%sabled]::_onPlaybackToggle[%s] defaultPrevented: %s", this.cid, this.enabled ? "en" : "dis", ev.type, ev.defaultPrevented);
 		// NOTE: Perform action if MouseEvent.button is 0 or undefined (0: left-button)
-		if (!ev.defaultPrevented && !ev.button) {
+		if (this.enabled && !ev.defaultPrevented && !ev.button) {
 			ev.preventDefault();
 			this.playbackRequested = !this.playbackRequested;
 		}

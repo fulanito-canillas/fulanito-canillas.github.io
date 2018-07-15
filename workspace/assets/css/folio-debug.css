@@ -46,24 +46,24 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
   display: block; }
 
-.carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, #bundle-list, #site-name, .article-button, .desktop-small body .media-caption-stack, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
-.fullwidth body .article-view.mdown h1,
-.fullwidth body .article-view.mdown h2, .media-caption-stack, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
-.fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4, .fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p {
+.carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, #bundle-list, #site-name, .article-button, .app.desktop-small .media-caption-stack, .carousel .mdown h5, .app.fullwidth .carousel .mdown h1, .app.fullwidth .carousel .mdown h2,
+.app.fullwidth .article-view.mdown h1,
+.app.fullwidth .article-view.mdown h2, .media-caption-stack, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .app.fullwidth .carousel .mdown h3, .app.fullwidth .carousel .mdown h4,
+.app.fullwidth .article-view.mdown h3,
+.app.fullwidth .article-view.mdown h4, .app.fullwidth #bundle-list, .app.fullwidth #site-name, .app.fullwidth .article-button, .app.fullwidth .media-caption-stack .content p {
   letter-spacing: -0.05ch; }
 
-.carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, .carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
-.fullwidth body .article-view.mdown h1,
-.fullwidth body .article-view.mdown h2, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
-.fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4 {
+.carousel .mdown h1, .carousel .mdown h2, .carousel .mdown h3, .carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, .carousel .mdown h5, .app.fullwidth .carousel .mdown h1, .app.fullwidth .carousel .mdown h2,
+.app.fullwidth .article-view.mdown h1,
+.app.fullwidth .article-view.mdown h2, .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .app.fullwidth .carousel .mdown h3, .app.fullwidth .carousel .mdown h4,
+.app.fullwidth .article-view.mdown h3,
+.app.fullwidth .article-view.mdown h4 {
   margin-left: -0.1ex; }
-  .carousel .mdown h1:first-child, .carousel .mdown h2:first-child, .carousel .mdown h3:first-child, .carousel .mdown h4:first-child, .article-view.mdown h1:first-child, .article-view.mdown h2:first-child, .carousel .mdown h5:first-child, .fullwidth body .carousel .mdown h1:first-child, .fullwidth body .carousel .mdown h2:first-child,
-  .fullwidth body .article-view.mdown h1:first-child,
-  .fullwidth body .article-view.mdown h2:first-child, .carousel .mdown h6:first-child, .article-view.mdown h3:first-child, .article-view.mdown h4:first-child, .fullwidth body .carousel .mdown h3:first-child, .fullwidth body .carousel .mdown h4:first-child,
-  .fullwidth body .article-view.mdown h3:first-child,
-  .fullwidth body .article-view.mdown h4:first-child {
+  .carousel .mdown h1:first-child, .carousel .mdown h2:first-child, .carousel .mdown h3:first-child, .carousel .mdown h4:first-child, .article-view.mdown h1:first-child, .article-view.mdown h2:first-child, .carousel .mdown h5:first-child, .app.fullwidth .carousel .mdown h1:first-child, .app.fullwidth .carousel .mdown h2:first-child,
+  .app.fullwidth .article-view.mdown h1:first-child,
+  .app.fullwidth .article-view.mdown h2:first-child, .carousel .mdown h6:first-child, .article-view.mdown h3:first-child, .article-view.mdown h4:first-child, .app.fullwidth .carousel .mdown h3:first-child, .app.fullwidth .carousel .mdown h4:first-child,
+  .app.fullwidth .article-view.mdown h3:first-child,
+  .app.fullwidth .article-view.mdown h4:first-child {
     margin-top: -0.5ch; }
 
 /* 5_11 */
@@ -100,7 +100,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* 2_2 */
 /* #site-name #about #bundle-list */
-.carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, #bundle-list, #site-name, .article-button, .desktop-small body .media-caption-stack {
+.carousel .mdown h4, .article-view.mdown h1, .article-view.mdown h2, #bundle-list, #site-name, .article-button, .app.desktop-small .media-caption-stack {
   font-size: 1.999999999rem;
   line-height: 2rem; }
 
@@ -109,41 +109,41 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 
 /* 1p2_2f6 */
 /* .media-caption-stack */
-.carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
-.fullwidth body .article-view.mdown h1,
-.fullwidth body .article-view.mdown h2, .media-caption-stack {
+.carousel .mdown h5, .app.fullwidth .carousel .mdown h1, .app.fullwidth .carousel .mdown h2,
+.app.fullwidth .article-view.mdown h1,
+.app.fullwidth .article-view.mdown h2, .media-caption-stack {
   font-size: 1.833333333rem;
   line-height: 2rem; }
 
-.carousel .mdown h5, .fullwidth body .carousel .mdown h1, .fullwidth body .carousel .mdown h2,
-.fullwidth body .article-view.mdown h1,
-.fullwidth body .article-view.mdown h2 {
+.carousel .mdown h5, .app.fullwidth .carousel .mdown h1, .app.fullwidth .carousel .mdown h2,
+.app.fullwidth .article-view.mdown h1,
+.app.fullwidth .article-view.mdown h2 {
   margin-bottom: 1rem; }
 
 /* 1f3_1f5 */
-.carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
-.fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4, .fullwidth body #bundle-list, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content p {
+.carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .app.fullwidth .carousel .mdown h3, .app.fullwidth .carousel .mdown h4,
+.app.fullwidth .article-view.mdown h3,
+.app.fullwidth .article-view.mdown h4, .app.fullwidth #bundle-list, .app.fullwidth #site-name, .app.fullwidth .article-button, .app.fullwidth .media-caption-stack .content p {
   font-size: 1.333333333rem;
   line-height: 1.5rem; }
 
-.carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .fullwidth body .carousel .mdown h3, .fullwidth body .carousel .mdown h4,
-.fullwidth body .article-view.mdown h3,
-.fullwidth body .article-view.mdown h4 {
+.carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .app.fullwidth .carousel .mdown h3, .app.fullwidth .carousel .mdown h4,
+.app.fullwidth .article-view.mdown h3,
+.app.fullwidth .article-view.mdown h4 {
   margin-bottom: 1rem; }
 
 /* 1f1_1f6 */
-.carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
-.fullwidth body .article-view.mdown h6,
-.fullwidth body .article-view.mdown h5,
-.fullwidth body .article-view.mdown p {
+.carousel .mdown p, .article-view.mdown p, .app.fullwidth .carousel .mdown h6, .app.fullwidth .carousel .mdown h5, .app.fullwidth .carousel .mdown p,
+.app.fullwidth .article-view.mdown h6,
+.app.fullwidth .article-view.mdown h5,
+.app.fullwidth .article-view.mdown p {
   font-size: 1.1rem;
   line-height: 1.333333333rem; }
 
-.carousel .mdown p, .article-view.mdown p, .fullwidth body .carousel .mdown h6, .fullwidth body .carousel .mdown h5, .fullwidth body .carousel .mdown p,
-.fullwidth body .article-view.mdown h6,
-.fullwidth body .article-view.mdown h5,
-.fullwidth body .article-view.mdown p {
+.carousel .mdown p, .article-view.mdown p, .app.fullwidth .carousel .mdown h6, .app.fullwidth .carousel .mdown h5, .app.fullwidth .carousel .mdown p,
+.app.fullwidth .article-view.mdown h6,
+.app.fullwidth .article-view.mdown h5,
+.app.fullwidth .article-view.mdown p {
   margin-bottom: 1rem; }
 
 /* 1_1f5 */
@@ -199,11 +199,7 @@ $breakpoints: (
 	content: quote(inspect(map-get($breakpoints, "unquoted")));
 }
 */
-html {
-  color: #666;
-  background-color: #000; }
-
-body {
+.app {
   color: #282724;
   background-color: #f3f3f2; }
 
@@ -211,9 +207,10 @@ body {
   color: #929087;
   border-color: #c2c1bc; }
 
-.color-tx, body {
-  -webkit-transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.034s;
-          transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.034s; }
+.app,
+.color-tx {
+  -webkit-transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.568s;
+          transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.568s; }
 
 #navigation, #content {
   -webkit-transition: opacity 0.366s ease 0.568s, visibility 0.366s step-start 0.568s;
@@ -226,26 +223,26 @@ body {
     visibility: hidden;
     opacity: 0; }
 
-#container {
+#nav-graph {
   z-index: 1; }
-  #container #navigation #nav-graph {
+
+.transform-wrapper {
+  z-index: 1; }
+  .transform-wrapper#bundle-list-wrapper {
+    z-index: 2; }
+  .transform-wrapper#article-list-wrapper, .transform-wrapper#site-name-wrapper {
+    z-index: 3; }
+  .transform-wrapper .list {
     z-index: 1; }
-  .transform-wrapper {
-    z-index: 1; }
-    .transform-wrapper .list {
-      z-index: 1; }
-    .transform-wrapper#bundle-list-wrapper {
-      z-index: 2; }
-    .transform-wrapper#article-list-wrapper, .transform-wrapper#site-name-wrapper {
-      z-index: 3; }
-  .media-carousel {
+
+.media-carousel {
+  z-index: 0; }
+  .media-carousel.panning, .media-carousel.scrolling {
+    z-index: 2; }
+  .media-carousel .carousel-item {
     z-index: 0; }
-    .media-carousel.panning, .media-carousel.scrolling {
-      z-index: 2; }
-    .media-carousel .carousel-item {
-      z-index: 0; }
-      .media-carousel .carousel-item.selected {
-        z-index: 1; }
+  .media-carousel:not(.disabled) .carousel-item.selected {
+    z-index: 1; }
 
 .mdown a {
   color: inherit !important;
@@ -338,7 +335,7 @@ body {
   margin-left: -1.08ex;
   margin-right: -0.92ex; }
 
-#bundle-list, #keyword-list, #nav-graph {
+#bundle-list, #keyword-list {
   position: absolute;
   display: inline-block;
   will-change: transform; }
@@ -411,8 +408,8 @@ body {
   cursor: pointer; }
   .list-item a {
     display: inline-block;
-    -webkit-transition: color 0.366s ease 0.568s;
-            transition: color 0.366s ease 0.568s; }
+    -webkit-transition: color 0.366s ease 0.034s;
+            transition: color 0.366s ease 0.034s; }
   .list-item .label {
     line-height: 0; }
 
@@ -532,6 +529,7 @@ body {
   width: 220px; }
 
 #nav-graph {
+  position: absolute;
   box-sizing: content-box;
   padding: 0;
   width: 660px;
@@ -989,8 +987,8 @@ body {
     margin: 0;
     padding-top: 1.5rem;
     padding-bottom: 1.5rem; }
-  .media-caption-stack .content > p {
-    margin-left: -1px; }
+  .media-caption-stack .content > * {
+    margin-left: -0.1ex; }
 
 .dots-fontface .list-item {
   display: inline-block;
@@ -1049,7 +1047,7 @@ body {
   .media-dotnav .list-item {
     padding: 0 0.5rem; }
     .media-dotnav .list-item a {
-      color: inherit; }
+      color: inherit !important; }
 
 .article-view {
   width: 660px;
@@ -1069,108 +1067,108 @@ body {
     float: left;
     clear: both; }
 
-.desktop-small body {
+.app.desktop-small {
   /* body */
   /* NOTE: .list-group .label moves horizontally */ }
-  .desktop-small body #navigation {
+  .app.desktop-small #navigation {
     max-width: 880px;
     min-height: 11rem;
     padding-top: 2rem; }
-  .desktop-small body #content {
+  .app.desktop-small #content {
     padding-top: 2rem; }
-  .desktop-small body #bundle-list, .desktop-small body #keyword-list, .desktop-small body #nav-graph {
+  .app.desktop-small #bundle-list, .app.desktop-small #keyword-list {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body .transform-wrapper {
+  .app.desktop-small .transform-wrapper {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body.without-article.without-bundle #bundle-list, .desktop-small body.without-article.without-bundle #keyword-list {
+  .app.desktop-small.without-article.without-bundle #bundle-list, .app.desktop-small.without-article.without-bundle #keyword-list {
     padding-top: 4.5rem; }
-  .desktop-small body.without-article.without-bundle #site-name-wrapper, .desktop-small body.without-article.without-bundle #article-list-wrapper {
+  .app.desktop-small.without-article.without-bundle #site-name-wrapper, .app.desktop-small.without-article.without-bundle #article-list-wrapper {
     -webkit-transform: translate(0, 3rem);
             transform: translate(0, 3rem); }
-  .desktop-small body #bundle-list {
+  .app.desktop-small #bundle-list {
     width: 220px; }
-  .desktop-small body #bundle-list-wrapper {
+  .app.desktop-small #bundle-list-wrapper {
     -webkit-transform: translate(220px, 0);
             transform: translate(220px, 0); }
-  .desktop-small body.with-bundle #bundle-list-wrapper {
+  .app.desktop-small.with-bundle #bundle-list-wrapper {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body.with-bundle .container-expanded #bundle-list-wrapper {
+  .app.desktop-small.with-bundle .container-expanded #bundle-list-wrapper {
     -webkit-transform: translate(220px, 0);
             transform: translate(220px, 0); }
-  .desktop-small body #keyword-list {
+  .app.desktop-small #keyword-list {
     width: 220px; }
-  .desktop-small body.with-bundle .container-collapsed #keyword-list {
+  .app.desktop-small.with-bundle .container-collapsed #keyword-list {
     padding-top: 10rem; }
-  .desktop-small body #keyword-list-wrapper {
+  .app.desktop-small #keyword-list-wrapper {
     left: 660px; }
-  .desktop-small body.with-media #keyword-list-wrapper {
+  .app.desktop-small.with-media #keyword-list-wrapper {
     -webkit-transform: translate(-660px, 0);
             transform: translate(-660px, 0); }
-  .desktop-small body.with-bundle .container-expanded #keyword-list-wrapper {
+  .app.desktop-small.with-bundle .container-expanded #keyword-list-wrapper {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body #keyword-list .list-group {
+  .app.desktop-small #keyword-list .list-group {
     width: 100%;
     height: 0; }
-  .desktop-small body.with-bundle .navigation:not(.container-expanded) #keyword-list .list-group {
+  .app.desktop-small.with-bundle .navigation:not(.container-expanded) #keyword-list .list-group {
     height: 1.5rem; }
-    .desktop-small body.with-bundle .navigation:not(.container-expanded) #keyword-list .list-group .label {
+    .app.desktop-small.with-bundle .navigation:not(.container-expanded) #keyword-list .list-group .label {
       -webkit-transform: translate(0, 0);
               transform: translate(0, 0); }
-  .desktop-small body.with-bundle .container-expanded #site-name {
+  .app.desktop-small.with-bundle .container-expanded #site-name {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body #site-name-wrapper {
+  .app.desktop-small #site-name-wrapper {
     width: 220px;
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body.with-bundle .container-expanded .article-button {
+  .app.desktop-small.with-bundle .container-expanded .article-button {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-    .desktop-small body.with-bundle .container-expanded .article-button a {
+    .app.desktop-small.with-bundle .container-expanded .article-button a {
       visibility: visible;
       opacity: 1;
       -webkit-transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s;
               transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s; }
-  .desktop-small body #article-list-wrapper {
+  .app.desktop-small #article-list-wrapper {
     width: 220px; }
-  .desktop-small body #nav-graph {
+  .app.desktop-small #nav-graph {
     left: 220px;
     width: 660px; }
-  .desktop-small body .media-carousel {
+  .app.desktop-small .media-carousel {
     min-width: 880px;
     top: 13rem; }
-    .desktop-small body .media-carousel .carousel-item {
+    .app.desktop-small .media-carousel .carousel-item {
       left: calc(50% - 460px);
       width: 880px; }
-    .desktop-small body .media-carousel .empty-item {
+    .app.desktop-small .media-carousel .empty-item {
       width: 828px;
       padding-right: 168px;
       padding-left: 0; }
-    .desktop-small body .media-carousel .media-item {
+    .app.desktop-small .media-carousel .media-item {
       width: 660px;
       margin-left: 240px; }
-  .desktop-small body .disabled .carousel-item.empty-item .content {
+  .app.desktop-small .disabled .carousel-item.empty-item .content {
     -webkit-transition: -webkit-transform 0.366s step-end 0.034s, opacity 0.099s ease 0.034s !important;
             transition: transform 0.366s step-end 0.034s, opacity 0.099s ease 0.034s !important; }
-  .desktop-small body :not(.scrolling) .carousel-item.empty-item.selected .content {
+  .app.desktop-small :not(.scrolling) .carousel-item.empty-item.selected .content {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .desktop-small body .disabled .carousel-item.empty-item.selected .content {
+  .app.desktop-small .disabled .carousel-item.empty-item.selected .content {
     -webkit-transform: translate(220px, 0);
             transform: translate(220px, 0); }
-  .desktop-small body .container-changed .carousel-item.empty-item.selected .content {
+  .app.desktop-small .container-changed .carousel-item.empty-item.selected .content {
     opacity: 0 !important; }
-  .desktop-small body .playable-renderer[data-fit-dir] .controls > .progress-meter {
+  .app.desktop-small .playable-renderer[data-fit-dir] .controls > .progress-meter {
     top: 0;
     bottom: auto;
     left: auto;
     right: 100%;
     margin: 0 1.5rem 0 0; }
-  .desktop-small body .playable-renderer .top-bar {
+  .app.desktop-small .playable-renderer .top-bar {
     -webkit-flex-direction: column;
     -ms-flex-direction: column;
     -webkit-box-orient: vertical;
@@ -1182,24 +1180,24 @@ body {
     width: auto;
     height: calc(100% + 1rem);
     margin: -0.5rem 1.25rem; }
-    .desktop-small body .playable-renderer .top-bar > * {
+    .app.desktop-small .playable-renderer .top-bar > * {
       padding: 0.5rem 0; }
-  .desktop-small body .media-caption-stack {
+  .app.desktop-small .media-caption-stack {
     top: 0;
     margin-top: 0;
     width: 880px; }
-    .desktop-small body .media-caption-stack > .stack-item {
+    .app.desktop-small .media-caption-stack > .stack-item {
       top: 0;
       bottom: auto; }
-    .desktop-small body .media-caption-stack .content {
+    .app.desktop-small .media-caption-stack .content {
       margin-left: 220px;
       width: 660px; }
-  .desktop-small body .media-dotnav {
+  .app.desktop-small .media-dotnav {
     width: 880px; }
-  .desktop-small body .article-view {
+  .app.desktop-small .article-view {
     width: 880px;
     padding-right: 220px; }
-.fullwidth body {
+.app.fullwidth {
   /* body */
   	/*&.without-bundle {
   		// height: auto;
@@ -1261,7 +1259,7 @@ body {
   		// margin-top: $small_nav_height;
   		// margin-bottom: 4.5rem;
   	}*/ }
-  .fullwidth body #navigation {
+  .app.fullwidth #navigation {
     width: auto;
     max-width: none;
     left: 0;
@@ -1270,91 +1268,91 @@ body {
     margin-right: 2.5rem;
     min-height: 7rem;
     padding-top: 1.166666666rem; }
-  .fullwidth body #content {
+  .app.fullwidth #content {
     padding-top: 1.166666666rem; }
-  .fullwidth body .list-item, .fullwidth body .list-group, .fullwidth body #site-name, .fullwidth body .article-button, .fullwidth body .media-caption-stack .content > *, .media-caption-stack .fullwidth body .content > * {
+  .app.fullwidth .list-item, .app.fullwidth .list-group, .app.fullwidth #site-name, .app.fullwidth .article-button, .app.fullwidth .media-caption-stack .content > *, .media-caption-stack .app.fullwidth .content > * {
     padding-left: 2rem;
     padding-right: 1rem; }
-    .fullwidth body .list-item .label, .fullwidth body .list-group .label, .fullwidth body #site-name .label, .fullwidth body .article-button .label, .fullwidth body .media-caption-stack .content > * .label, .media-caption-stack .fullwidth body .content > * .label {
+    .app.fullwidth .list-item .label, .app.fullwidth .list-group .label, .app.fullwidth #site-name .label, .app.fullwidth .article-button .label, .app.fullwidth .media-caption-stack .content > * .label, .media-caption-stack .app.fullwidth .content > * .label {
       padding: 0 0.5rem;
       margin: 0 -0.5rem; }
-  .fullwidth body .transform-wrapper {
+  .app.fullwidth .transform-wrapper {
     left: 0;
     right: 0;
     width: auto; }
-  .fullwidth body #bundle-list {
+  .app.fullwidth #bundle-list {
     font-weight: 600;
     width: auto;
     left: 0;
     right: 66.666666667%; }
-    .fullwidth body #bundle-list .list-item {
+    .app.fullwidth #bundle-list .list-item {
       height: 1.5rem;
       width: 100%; }
-  .fullwidth body.with-bundle .container-collapsed #bundle-list {
+  .app.fullwidth.with-bundle .container-collapsed #bundle-list {
     padding-top: 1.5rem; }
-  .fullwidth body #keyword-list {
+  .app.fullwidth #keyword-list {
     width: 33.333333333%;
     left: auto;
     right: 0; }
-    .fullwidth body #keyword-list .list-item {
+    .app.fullwidth #keyword-list .list-item {
       width: 100%; }
-      .fullwidth body #keyword-list .list-item .label {
+      .app.fullwidth #keyword-list .list-item .label {
         font-size: inherit; }
-    .fullwidth body #keyword-list .list-group {
+    .app.fullwidth #keyword-list .list-group {
       height: 0;
       width: 100%; }
-      .fullwidth body #keyword-list .list-group .label {
+      .app.fullwidth #keyword-list .list-group .label {
         width: calc(50% + 2rem);
         -webkit-transform: translate(-100%, 0);
                 transform: translate(-100%, 0); }
-  .fullwidth body.with-media .container-collapsed #keyword-list {
+  .app.fullwidth.with-media .container-collapsed #keyword-list {
     opacity: 0;
     visibility: 0; }
-  .fullwidth body #keyword-list-wrapper {
+  .app.fullwidth #keyword-list-wrapper {
     left: 0; }
-  .fullwidth body.with-bundle .navigation:not(.container-expanded) #keyword-list .list-group {
+  .app.fullwidth.with-bundle .navigation:not(.container-expanded) #keyword-list .list-group {
     height: 0;
     visibility: hidden;
     opacity: 0; }
-  .fullwidth body #site-name {
+  .app.fullwidth #site-name {
     font-weight: 600; }
-  .fullwidth body.with-bundle .container-expanded #site-name {
+  .app.fullwidth.with-bundle .container-expanded #site-name {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-  .fullwidth body #site-name-wrapper {
+  .app.fullwidth #site-name-wrapper {
     width: 100%; }
-  .fullwidth body .article-button {
+  .app.fullwidth .article-button {
     font-weight: 400; }
-  .fullwidth body.with-bundle .container-expanded .article-button {
+  .app.fullwidth.with-bundle .container-expanded .article-button {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
-    .fullwidth body.with-bundle .container-expanded .article-button a {
+    .app.fullwidth.with-bundle .container-expanded .article-button a {
       visibility: visible;
       opacity: 1;
       -webkit-transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s;
               transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s; }
-  .fullwidth body .article-button#about-button {
+  .app.fullwidth .article-button#about-button {
     top: 1.5rem; }
-  .fullwidth body #article-list-wrapper {
+  .app.fullwidth #article-list-wrapper {
     width: 100%; }
-  .fullwidth body #site-name, .fullwidth body .article-button {
+  .app.fullwidth #site-name, .app.fullwidth .article-button {
     padding-right: 1.25rem; }
-  .fullwidth body #site-name-wrapper, .fullwidth body #article-list-wrapper {
+  .app.fullwidth #site-name-wrapper, .app.fullwidth #article-list-wrapper {
     -webkit-transform: translate(0, 0rem);
             transform: translate(0, 0rem); }
-  .fullwidth body.with-bundle .container-expanded #bundle-list, .fullwidth body.with-bundle .container-expanded #keyword-list {
+  .app.fullwidth.with-bundle .container-expanded #bundle-list, .app.fullwidth.with-bundle .container-expanded #keyword-list {
     padding-top: 6rem; }
-  .fullwidth body.with-bundle .container-expanded #site-name-wrapper, .fullwidth body.with-bundle .container-expanded #article-list-wrapper {
+  .app.fullwidth.with-bundle .container-expanded #site-name-wrapper, .app.fullwidth.with-bundle .container-expanded #article-list-wrapper {
     -webkit-transform: translate(0, 0rem);
             transform: translate(0, 0rem); }
-  .fullwidth body.without-article.without-bundle #bundle-list, .fullwidth body.without-article.without-bundle #keyword-list {
+  .app.fullwidth.without-article.without-bundle #bundle-list, .app.fullwidth.without-article.without-bundle #keyword-list {
     padding-top: 6rem; }
-  .fullwidth body.without-article.without-bundle #site-name-wrapper, .fullwidth body.without-article.without-bundle #article-list-wrapper {
+  .app.fullwidth.without-article.without-bundle #site-name-wrapper, .app.fullwidth.without-article.without-bundle #article-list-wrapper {
     -webkit-transform: translate(0, 0rem);
             transform: translate(0, 0rem); }
-  .fullwidth body #nav-graph {
+  .app.fullwidth #nav-graph {
     width: 100%; }
-  .fullwidth body .media-carousel {
+  .app.fullwidth .media-carousel {
     max-width: none;
     min-width: 0;
     width: auto;
@@ -1364,68 +1362,68 @@ body {
     margin-top: -8.166666666rem;
     padding-top: 8.166666666rem;
     padding-bottom: 3rem; }
-    .fullwidth body .media-carousel .carousel-item {
+    .app.fullwidth .media-carousel .carousel-item {
       width: auto;
       height: calc(100% - 11.166666666rem);
       left: 1.25rem;
       right: 1.25rem;
       margin-left: 1.25rem;
       margin-right: 1.25rem; }
-      .fullwidth body .media-carousel .carousel-item .sizing {
+      .app.fullwidth .media-carousel .carousel-item .sizing {
         margin-left: 2rem;
         margin-right: 1rem; }
-    .fullwidth body .media-carousel .empty-item {
+    .app.fullwidth .media-carousel .empty-item {
       width: calc((100% - 8rem) * (2/3)); }
-    .fullwidth body .media-carousel .media-item .placeholder:before {
+    .app.fullwidth .media-carousel .media-item .placeholder:before {
       font-size: 18vw;
       padding: 5%; }
-    .fullwidth body .media-carousel .media-item .error-message {
+    .app.fullwidth .media-carousel .media-item .error-message {
       padding: 7%; }
-  .fullwidth body .container-expanded .media-carousel {
+  .app.fullwidth .container-expanded .media-carousel {
     -webkit-transform: translate(0, 239.999976px);
             transform: translate(0, 239.999976px); }
-  .fullwidth body .playable-renderer .top-bar {
+  .app.fullwidth .playable-renderer .top-bar {
     height: 2.1rem;
     margin-bottom: 1rem; }
-  .fullwidth body .playable-renderer .bottom-bar {
+  .app.fullwidth .playable-renderer .bottom-bar {
     height: 2.1rem;
     margin-bottom: 1rem; }
-  .fullwidth body .playable-renderer .progress-meter {
+  .app.fullwidth .playable-renderer .progress-meter {
     width: 2.1rem;
     height: 2.1rem;
     font-size: 75%;
     line-height: 1; }
-  .fullwidth body .media-caption-stack {
+  .app.fullwidth .media-caption-stack {
     top: 1.5rem;
     margin: 0;
     margin-left: 2.5rem;
     margin-right: 2.5rem;
     width: auto; }
-    .fullwidth body .media-caption-stack .stack-item {
+    .app.fullwidth .media-caption-stack .stack-item {
       top: 0;
       bottom: auto; }
-    .fullwidth body .media-caption-stack .content {
+    .app.fullwidth .media-caption-stack .content {
       max-height: 6rem;
       overflow: hidden; }
-    .fullwidth body .media-caption-stack .content p {
+    .app.fullwidth .media-caption-stack .content p {
       margin-left: 0; }
-  .fullwidth body .media-dotnav {
+  .app.fullwidth .media-dotnav {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
     width: auto;
     bottom: 0.75rem; }
-    .fullwidth body .media-dotnav .list-item {
+    .app.fullwidth .media-dotnav .list-item {
       padding: 0 0.3333333rem; }
-  .fullwidth body .article-view {
+  .app.fullwidth .article-view {
     width: auto;
     margin-left: 2.5rem;
     margin-right: 2.5rem;
     padding-top: 7rem;
     padding-left: 2rem;
     padding-right: 1rem; }
-    .fullwidth body .article-view.mdown > * {
+    .app.fullwidth .article-view.mdown > * {
       padding-left: 0; }
-    .fullwidth body .article-view.mdown h3, .fullwidth body .article-view.mdown h4 {
+    .app.fullwidth .article-view.mdown h3, .app.fullwidth .article-view.mdown h4 {
       padding-left: 0;
       width: auto;
       float: none;
@@ -1433,23 +1431,23 @@ body {
 html.fullwidth-small {
   font-size: 10px; }
 
-.fullwidth-small body #container {
+.app.fullwidth-small #container {
   min-width: 375px; }
-.fullwidth-small body #keyword-list {
+.app.fullwidth-small #keyword-list {
   width: 40%; }
-  .fullwidth-small body #keyword-list .list-group {
+  .app.fullwidth-small #keyword-list .list-group {
     height: 1.5rem; }
-    .fullwidth-small body #keyword-list .list-group .label {
+    .app.fullwidth-small #keyword-list .list-group .label {
       width: auto;
       -webkit-transform: translate(0, 0);
               transform: translate(0, 0); }
-.fullwidth-small body.with-bundle .container-expanded #bundle-list, .fullwidth-small body.with-bundle .container-expanded #keyword-list {
+.app.fullwidth-small.with-bundle .container-expanded #bundle-list, .app.fullwidth-small.with-bundle .container-expanded #keyword-list {
   padding-top: 7rem; }
-.fullwidth-small body #keyword-list .list-group {
+.app.fullwidth-small #keyword-list .list-group {
   margin-top: 0.5rem; }
-  .fullwidth-small body #keyword-list .list-group:first-child {
+  .app.fullwidth-small #keyword-list .list-group:first-child {
     margin-top: 0; }
-.fullwidth-small body .media-carousel .empty-item {
+.app.fullwidth-small .media-carousel .empty-item {
   min-width: 250px; }
 #unsupported {
   display: none; }
@@ -1860,7 +1858,7 @@ svg#debug-grid {
     display: none; }
   #debug-toolbar.hide-passed #test-results li.failed {
     text-decoration: none; }
-  .fullwidth body #debug-toolbar #test-results {
+  .app.fullwidth #test-results {
     width: auto;
     left: -2rem;
     right: -2rem; }
