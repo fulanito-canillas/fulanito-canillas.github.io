@@ -1262,7 +1262,7 @@ body {
     right: 0;
     margin-left: 2.5rem;
     margin-right: 2.5rem;
-    min-height: 7rem;
+    min-height: 25%;
     padding-top: 1.166666666rem;
     padding-bottom: 3rem; }
   .fullwidth #content {
@@ -1355,13 +1355,13 @@ body {
     width: auto;
     left: 0;
     right: 0;
-    top: 8.166666666rem;
-    margin-top: -8.166666666rem;
-    padding-top: 8.166666666rem;
+    top: calc(1.166666666rem + 25%);
+    margin-top: -4rem;
+    padding-top: 4rem;
     padding-bottom: 3rem; }
     .fullwidth .media-carousel .carousel-item {
       width: auto;
-      height: calc(100% - 11.166666666rem);
+      height: calc(100% - 7rem);
       left: 1.25rem;
       right: 1.25rem;
       margin-left: 1.25rem;
@@ -1371,7 +1371,7 @@ body {
         margin-right: 1rem; }
     .fullwidth .media-carousel .empty-item {
       width: auto;
-      right: calc(33.333333% - 3px); }
+      right: calc(33.333333% - 2px); }
     .fullwidth .media-carousel .media-item .placeholder:before {
       font-size: 18vw;
       padding: 5%; }
@@ -1416,7 +1416,7 @@ body {
     width: auto;
     margin-left: 2.5rem;
     margin-right: 2.5rem;
-    padding-top: 7rem;
+    padding-top: 25%;
     padding-left: 2rem;
     padding-right: 1rem; }
     .fullwidth .article-view.mdown > * {
@@ -1438,7 +1438,7 @@ html.fullwidth-small {
       -webkit-transform: translate(0, 0);
               transform: translate(0, 0); }
 .fullwidth-small.with-bundle .container-expanded #bundle-list, .fullwidth-small.with-bundle .container-expanded #keyword-list {
-  padding-top: 7rem; }
+  padding-top: 25%; }
 .fullwidth-small #keyword-list .list-group {
   margin-top: 0.5rem; }
   .fullwidth-small #keyword-list .list-group:first-child {
@@ -1637,8 +1637,8 @@ svg#debug-grid {
       -webkit-transform: translate(0, 11rem);
               transform: translate(0, 11rem); }
     .fullwidth svg#debug-grid #debug-grid-content {
-      -webkit-transform: translate(0, 7rem);
-              transform: translate(0, 7rem); }
+      -webkit-transform: translate(0, 25%);
+              transform: translate(0, 25%); }
   svg#debug-grid #gl0 {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
