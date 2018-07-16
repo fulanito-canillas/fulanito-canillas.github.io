@@ -1652,6 +1652,7 @@ if (DEBUG) {
 }).call(this,true)
 
 },{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":42,"app/view/AppView":49,"app/view/helper/createColorStyleSheet":72,"app/view/template/_helpers":101,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"webfontloader":"webfontloader"}],33:[function(require,module,exports){
+(function (DEBUG){
 /**
 /* @module app/control/Controller
 /*/
@@ -1686,10 +1687,17 @@ var Controller = Backbone.Router.extend({
 	/** @override */
 	initialize: function(options) {
 		this._routeNames = [];
+
+		if (DEBUG) {
+			this.on("route", function(routeName, args) {
+				console.log("controller:[route] %s [%s]", routeName, args.join());
+			});
+		}
+
 		/*
-		Prefixed article regexp: /^article(?:\/([^\/]+))\/?$/
-		Single bundle regexp: /^bundles(?:\/([^\/]+)(?:\/(\d+))?)?\/?$/
-		*/
+		 * Prefixed article regexp: /^article(?:\/([^\/]+))\/?$/
+		 * Single bundle regexp: /^bundles(?:\/([^\/]+)(?:\/(\d+))?)?\/?$/
+		 */
 		this.route(/(.*)/,
 			"notfound", this.toNotFound);
 		this.route(/^([a-z][a-z0-9\-]*)\/?$/,
@@ -1861,12 +1869,12 @@ var Controller = Backbone.Router.extend({
 
 		lastBundle = bundles.selected;
 		lastMedia = lastBundle ? lastBundle.get("media").selected : null;
-		console.log("controller::_changeSelection bundle:[%s => %s] media:[%s => %s]",
+		console.log("controller::_changeSelection bundle:[%s -> %s] media:[%s -> %s]",
 			(lastBundle ? lastBundle.cid : lastBundle), (bundle ? bundle.cid : bundle),
 			(lastMedia ? lastMedia.cid : lastMedia), (media ? media.cid : media)
 		);
 
-		if (!articles.selected && lastBundle === bundle && lastMedia === media) {
+		if (!articles.selected && (lastBundle === bundle) && (lastMedia === media)) {
 			return;
 		}
 
@@ -1878,7 +1886,10 @@ var Controller = Backbone.Router.extend({
 	},
 });
 
+
 module.exports = new Controller();
+}).call(this,true)
+
 },{"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"backbone":"backbone","underscore":"underscore"}],34:[function(require,module,exports){
 (function (DEBUG){
 /**
@@ -3114,7 +3125,10 @@ var AppViewProto = {
 		this.touch = TouchManager.init(this.container);
 		this.touch.set({
 			enable: (function() {
-				return this.model.get("collapsed") && this.model.get("withBundle");
+				return this.el.scrollHeight == this.el.clientHeight;
+				// return this.el.scrollTop === 0;
+				// return this.container.scrollTop === 0;
+				// return this.model.get("collapsed") && this.model.get("withBundle");
 			}).bind(this)
 		});
 
@@ -3223,6 +3237,7 @@ var AppViewProto = {
 				break;
 		}
 		console.info("%s::_onRoute %o -> %o", this.cid, this.model.get("routeName"), name);
+		// console.log("%s::_onRoute args: %o", this.cid, name, args);
 		this.model.set(o);
 	},
 
@@ -4313,15 +4328,18 @@ var NavigationView = View.extend({
 		this.listenTo(this.graph, "view:render:before", function(view, flags) {
 			var vmax;
 			if (flags & (View.SIZE_INVALID | View.MODEL_INVALID)) {
-				if (this.bundleList.invalidated || this.keywordList.invalidated) {
-					view.el.style.height = "";
-				} else {
-					vmax = Math.max(
-						this.bundleList._metrics.height,
-						this.keywordList._metrics.height
-					);
+				// if ((this.bundleList.renderFlags | View.SIZE_INVALID) ||
+				// 	(this.keywordList.renderFlags | View.SIZE_INVALID)) {
+				// 	view.el.style.height = "";
+				// } else {
+				vmax = Math.max(
+					this.bundleList._metrics.height,
+					this.keywordList._metrics.height
+				);
+				if (vmax) {
 					view.el.style.height = vmax + "px";
 				}
+				// }
 				console.log("%s:%s[view:render:before] [%s] h: %s, %s maxh: %o",
 					this.cid, view.cid, View.flagsToString(flags),
 					this.bundleList._metrics.height,
@@ -4360,9 +4378,9 @@ var NavigationView = View.extend({
 			// 	this.bundleList.invalidate(View.SIZE_INVALID);
 			// }
 			// if (this.model.hasChanged("bundle")) {
-			if (this.model.hasChanged("collapsed")) {
-				this.bundleList.requestRender(View.SIZE_INVALID);
-				this.keywordList.requestRender(View.SIZE_INVALID);
+			if (this.model.hasChanged("routeName")) {
+				this.bundleList.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+				this.keywordList.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
 			}
 		}
 
@@ -4599,15 +4617,16 @@ var NavigationView = View.extend({
 			} else {
 				// this.touch.off("tap", this._onNavigationClick);
 			}
-			this.keywordList.collapsed = this.bundleList.collapsed = this.model.get("collapsed");
+			this.keywordList.collapsed = this.model.get("collapsed");
+			this.bundleList.collapsed = this.model.get("collapsed");
 		}
 		if (this.model.hasChanged("bundle")) {
-			// keywords.deselect();
+			this.bundleList.selectedItem = this.model.get("bundle");
 			this.keywordList.refresh();
+			// keywords.deselect();
 			// this.graph && this.graph.requestRender(View.SIZE_INVALID);
 		}
 		if (this.model.hasChanged("withBundle")) {
-
 			// this.keywordList.refresh()
 			if (this.model.get("withBundle")) {
 				this.touch.on("vpanstart", this._onVPanStart);
@@ -4894,6 +4913,9 @@ var NavigationView = View.extend({
 			"view:select:one": controller.selectBundle,
 			"view:select:none": controller.deselectBundle
 		});
+		// view.listenTo(bundles, "select:one select:none", function(item) {
+		// 	view.selectedItem = item;
+		// });
 		this.listenTo(view, "view:select:same", this._onBundleListSame);
 		this.listenTo(keywords, "select:one select:none", this._onKeywordSelect);
 		view.wrapper = view.el.parentElement;
@@ -4917,6 +4939,9 @@ var NavigationView = View.extend({
 				// return item.get("type");
 				return types.get(item.get("tId"));
 			},
+		});
+		view.listenTo(keywords, "select:one select:none", function(item) {
+			view.selectedItem = item;
 		});
 		this.listenTo(view, "view:select:one view:select:none", this._onKeywordListChange);
 		view.wrapper = view.el.parentElement;
@@ -5153,8 +5178,10 @@ var CanvasView = View.extend({
 
 		// colors
 		// --------------------------------
-		this._color = s.color || this._options.color || Globals.DEFAULT_COLORS["color"];
-		this._backgroundColor = s.backgroundColor || this._options.backgroundColor || Globals.DEFAULT_COLORS["background-color"];
+		this._color = this._options.color ||
+			s.color || Globals.DEFAULT_COLORS["color"];
+		this._backgroundColor = this._options.backgroundColor ||
+			s.backgroundColor || Globals.DEFAULT_COLORS["background-color"];
 
 		// mozOpaque
 		// --------------------------------
@@ -5479,7 +5506,7 @@ var _runQueue = function(tstamp) {
 var FrameQueue = Object.create({
 	/**
 	/* @param fn {Function}
-	/* @param forceNext {int}
+	/* @param priority {int}
 	/* @return {int}
 	/*/
 	request: function(fn, priority) {
@@ -5547,27 +5574,29 @@ if (DEBUG) {
 	// 	// 	if (_nextQueue.numItems != 0) console.info("[FRAME ENDED] %i items scheduled for [raf:%i]", _nextQueue.numItems, _rafId);
 	// 	// 	return retval;
 	// 	// });
-	//
-	// 	// log frame end
+
+	// log frame end
+	_runQueue = _.wrap(_runQueue, function(fn, tstamp) {
+		var retval;
+		console.group("FrameQueue " + _rafId);
+		// console.log("FrameQueue::_runQueue %i items (ID range:%i-%i)", _nextQueue.numItems, _nextQueue.offset, _nextQueue.offset + _nextQueue.length - 1);
+		retval = fn(tstamp);
+		// console.log("[Frame exit]\n---\n");
+		console.groupEnd();
+		return retval;
+	});
+
+	// // use log prefix
+	// if (console.prefix) {
 	// 	_runQueue = _.wrap(_runQueue, function(fn, tstamp) {
-	// 		var retval;
-	// 		console.log("FrameQueue::_runQueue %i items (ID range:%i-%i)", _nextQueue.numItems, _nextQueue.offset, _nextQueue.offset + _nextQueue.length - 1);
+	// 		var retval, logprefix;
+	// 		logprefix = console.prefix;
+	// 		console.prefix += "[raf:" + _rafId + "] ";
 	// 		retval = fn(tstamp);
-	// 		console.log("[Frame exit]\n---\n");
+	// 		console.prefix = logprefix;
 	// 		return retval;
 	// 	});
-
-	// use log prefix
-	if (console.prefix) {
-		_runQueue = _.wrap(_runQueue, function(fn, tstamp) {
-			var retval, logprefix;
-			logprefix = console.prefix;
-			console.prefix += "[raf:" + _rafId + "] ";
-			retval = fn(tstamp);
-			console.prefix = logprefix;
-			return retval;
-		});
-	}
+	// }
 
 	// FrameQueue.cancel = _.wrap(FrameQueue.cancel, function(fn, id) {
 	// 	if ((_currQueue !== null) && (_currQueue.offset >= id) && (id < _nextQueue.offset)) {
@@ -5590,7 +5619,6 @@ if (DEBUG) {
 
 
 module.exports = FrameQueue;
-
 }).call(this,true)
 
 },{"underscore":"underscore"}],55:[function(require,module,exports){
@@ -6069,6 +6097,7 @@ var TouchManager = {
 
 module.exports = TouchManager;
 },{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":119}],58:[function(require,module,exports){
+(function (DEBUG){
 /* global HTMLElement, MutationObserver */
 /**
  * @module app/view/base/View
@@ -6630,13 +6659,15 @@ var ViewProto = {
 
 	/** @private */
 	_applyRender: function(tstamp) {
-		if (!this._skipLog) {
-			console.log("%s::_applyRender [%s] [%s, %s, %s]", this.cid,
-				View.flagsToString(this._renderFlags),
-				(this._frameQueueId != -1 ? "async #" + this._frameQueueId : "sync"),
-				(this.attached ? "attached" : "detached"),
-				(this.skipTransitions ? "skip" : "run") + " tx"
-			);
+		if (DEBUG) {
+			if (!this._skipLog) {
+				console.log("%s::_applyRender [%s] [%s, %s, %s]", this.cid,
+					View.flagsToString(this._renderFlags),
+					(this._frameQueueId != -1 ? "async #" + this._frameQueueId : "sync"),
+					(this.attached ? "attached" : "detached"),
+					(this.skipTransitions ? "skip" : "run") + " tx"
+				);
+			}
 		}
 
 		var flags = this._renderFlags;
@@ -6671,6 +6702,14 @@ var ViewProto = {
 	},
 
 	_requestRender: function() {
+		if (FrameQueue.running) {
+			this._cancelRender();
+			if (DEBUG) {
+				if (!this._skipLog) {
+					console.info("%s::_requestRender rescheduled [%s (%s)]", this.cid, View.flagsToString(this._renderFlags), this._renderFlags);
+				}
+			}
+		}
 		if (this._frameQueueId == -1) {
 			this._frameQueueId = FrameQueue.request(this._applyRender, isNaN(this.viewDepth) ? Number.MAX_VALUE : this.viewDepth);
 		}
@@ -6682,11 +6721,13 @@ var ViewProto = {
 
 	invalidate: function(flags) {
 		if (flags !== void 0) {
-			if (!this._skipLog) {
-				if (this._renderFlags > 0) {
-					console.log("%s::invalidate [%s (%s)] + [%s (%s)]", this.cid, View.flagsToString(this._renderFlags), this._renderFlags, View.flagsToString(flags), flags);
-				} else {
-					console.log("%s::invalidate [%s (%s)]", this.cid, View.flagsToString(flags), flags);
+			if (DEBUG) {
+				if (!this._skipLog) {
+					if (this._renderFlags > 0) {
+						console.log("%s::invalidate [%s (%s)] + [%s (%s)]", this.cid, View.flagsToString(this._renderFlags), this._renderFlags, View.flagsToString(flags), flags);
+					} else {
+						console.log("%s::invalidate [%s (%s)]", this.cid, View.flagsToString(flags), flags);
+					}
 				}
 			}
 			this._renderFlags |= flags;
@@ -6766,6 +6807,8 @@ var ViewProto = {
 };
 
 module.exports = Backbone.View.extend(ViewProto, View);
+}).call(this,true)
+
 },{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114}],59:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
@@ -7076,6 +7119,17 @@ var CarouselProto = {
 		scrolling: {
 			get: function() {
 				return this._scrolling;
+			}
+		},
+		selectedItem: {
+			get: function() {
+				return this._selectedView.model;
+			},
+			set: function(value) {
+				if (value)
+					this._onSelectOne(value)
+				else
+					this._onSelectNone();
 			}
 		},
 	},
@@ -7998,6 +8052,7 @@ module.exports = View.extend({
 });
 
 },{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":116}],66:[function(require,module,exports){
+(function (DEBUG){
 /**
 /* @module app/view/component/FilterableListView
 /*/
@@ -8066,6 +8121,14 @@ var FilterableListView = View.extend({
 				this._setCollapsed(value);
 			}
 		},
+		selectedItem: {
+			get: function() {
+				return this._selectedItem;
+			},
+			set: function(value) {
+				this._setSelection(value);
+			}
+		},
 		filteredItems: {
 			get: function() {
 				return this._filteredItems;
@@ -8107,7 +8170,7 @@ var FilterableListView = View.extend({
 			this.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
 		});
 
-		this.listenTo(this.collection, "select:one select:none", this._setSelection);
+		// this.listenTo(this.collection, "select:one select:none", this._setSelection);
 		this.listenTo(this.collection, "reset", function() {
 			this._allItems = null;
 			throw new Error("not implemented");
@@ -8120,12 +8183,13 @@ var FilterableListView = View.extend({
 
 	/** @override */
 	renderFrame: function(tstamp, flags) {
-
-		console.log("%s::renderFrame [%s]", this.cid,
-			(this._collapsedChanged ? "collapsed " : "") +
-			(this._selectionChanged ? "selection " : "") +
-			(this._filterChanged ? "filter" : "")
-		);
+		if (DEBUG) {
+			var changed = [];
+			this._collapsedChanged && changed.push("collapsed");
+			this._selectionChanged && changed.push("selection");
+			this._filterChanged && changed.push("filter");
+			console.log("%s::renderFrame [%s]", this.cid, changed.join(" "));
+		}
 
 		// collapsed transition flag
 		if (this._collapsedTransitioning) {
@@ -8146,7 +8210,7 @@ var FilterableListView = View.extend({
 			});
 		}
 		if (this._collapsedChanged) {
-			flags |= View.SIZE_INVALID;
+			flags |= (View.SIZE_INVALID);
 			this.el.classList.toggle("collapsed", this._collapsed);
 		}
 		if (this._selectionChanged) {
@@ -8305,9 +8369,11 @@ var FilterableListView = View.extend({
 
 	/** @param {Backbone.Model|null} */
 	_setSelection: function(item) {
-		this._selectedItem = item;
-		this._selectionChanged = true;
-		this.requestRender();
+		if (item !== this._selectedItem) {
+			this._selectedItem = item;
+			this._selectionChanged = true;
+			this.requestRender(View.MODEL_INVALID);
+		}
 	},
 
 	/** @private */
@@ -8334,7 +8400,7 @@ var FilterableListView = View.extend({
 	refresh: function() {
 		if (this._filterFn) {
 			this._filterChanged = true;
-			this.requestRender();
+			this.requestRender(View.MODEL_INVALID);
 		}
 	},
 
@@ -8386,6 +8452,8 @@ var FilterableListView = View.extend({
 });
 
 module.exports = FilterableListView;
+}).call(this,true)
+
 },{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":107,"utils/prefixedProperty":113}],67:[function(require,module,exports){
 (function (DEBUG){
 /**
@@ -8533,18 +8601,24 @@ var GraphView = CanvasView.extend({
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
 
-		this._viewportChanged = function(ev) {
+		var viewportChanged = function(ev) {
 			// this.requestRender(CanvasView.SIZE_INVALID);
 			// this.requestRender(CanvasView.LAYOUT_INVALID);
-			console.log("%s:[%s]:_viewportChanged window.scrollY:%s document.body.scrollTop:%s document.documentElement.scrollTop:%s", this.cid, ev.type,
-				window.scrollY, document.body.scrollTop, document.documentElement.scrollTop, ev);
+			console.log("%s:[%s]: window.scrollY:%s body.scrollTop:%s html.scrollTop:%s",
+				this.cid, ev.type,
+				window.scrollY,
+				document.body.scrollTop,
+				document.documentElement.scrollTop);
+			console.log("%s:[%s]: body.scrollHeight:%s body.clientHeight:%s html.scrollHeight:%s html.clientHeight:%s",
+				this.cid, ev.type,
+				document.body.scrollHeight, document.body.clientHeight,
+				document.documentElement.scrollHeight, document.documentElement.clientHeight);
 			this._groupRects = null;
-		};
+		}.bind(this);
 
-		this._viewportChanged = this._viewportChanged.bind(this);
-		// this._viewportChanged = _.debounce(this._viewportChanged, 100, false);
-		window.addEventListener("scroll", _.debounce(this._viewportChanged, 100, false), false);
-		window.addEventListener("wheel", _.debounce(this._viewportChanged, 100, false), false);
+		// viewportChanged = _.debounce(viewportChanged, 100, false);
+		window.addEventListener("scroll", _.debounce(viewportChanged, 100, false), false);
+		window.addEventListener("wheel", _.debounce(viewportChanged, 100, false), false);
 
 		// this._addListListeners(this._a2b);
 		// this._addListListeners(this._b2a);
@@ -15326,11 +15400,9 @@ module.exports={
 	"breakpoints": {
 		"fullwidth-small": "'not screen and (min-width: 460px)'",
 		"fullwidth": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
-		"mobile": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 		"desktop-small": "'only screen and (min-width: 1024px) and (min-height: 540px)'",
 		"desktop-medium": "'only screen and (min-width: 1224px) and (min-height: 704px)'",
-		"desktop-large": "'only screen and (min-width: 1824px) and (min-height: 1024px)'",
-		"unsupported": "'not screen and (min-width: 704px)'"
+		"desktop-large": "'only screen and (min-width: 1824px) and (min-height: 1024px)'"
 	},
 	"default_colors": {
 		"color": "hsl(47, 5%, 15%)",
@@ -15340,18 +15412,23 @@ module.exports={
 	"temp": {
 		"collapse_offset": "360"
 	},
-	"_debug_mq": {
-		"unquoted": "only screen and (min-width: 1824px)",
-		"unquoted_neg": "not screen and (min-width: 704px)",
-		"quoted_combined": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
-		"array": [
-			"only screen and (min-width: 704px)",
-			"not screen and (min-width: 704px)",
-			"not screen and (min-height: 540px)"
-		]
-	},
-	"_debug": {
-		"--alt-background-color": "unset"
+	"_ignore": {
+
+		"breakpoints": {
+			"mobile": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
+			"unsupported": "'not screen and (min-width: 704px)'",
+			"unquoted": "only screen and (min-width: 1824px)",
+			"unquoted_neg": "not screen and (min-width: 704px)",
+			"quoted_combined": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
+			"array": [
+				"only screen and (min-width: 704px)",
+				"not screen and (min-width: 704px)",
+				"not screen and (min-height: 540px)"
+			]
+		},
+		"default_colors": {
+			"--alt-background-color": "unset"
+		}
 	}
 }
 
