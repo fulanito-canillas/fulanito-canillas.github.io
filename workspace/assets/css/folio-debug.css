@@ -1370,7 +1370,8 @@ body {
         margin-left: 2rem;
         margin-right: 1rem; }
     .fullwidth .media-carousel .empty-item {
-      width: calc((100% - 8rem) * (2/3)); }
+      width: auto;
+      right: calc(33.333333% - 3px); }
     .fullwidth .media-carousel .media-item .placeholder:before {
       font-size: 18vw;
       padding: 5%; }
@@ -1428,8 +1429,6 @@ body {
 html.fullwidth-small {
   font-size: 10px; }
 
-.fullwidth-small #container {
-  min-width: 375px; }
 .fullwidth-small #keyword-list {
   width: 40%; }
   .fullwidth-small #keyword-list .list-group {
@@ -1445,7 +1444,7 @@ html.fullwidth-small {
   .fullwidth-small #keyword-list .list-group:first-child {
     margin-top: 0; }
 .fullwidth-small .media-carousel .empty-item {
-  min-width: 250px; }
+  right: calc(40% - 3px); }
 /**
  * Debug colors
  * @see http://dev.w3.org/csswg/css-color/#named-colors
