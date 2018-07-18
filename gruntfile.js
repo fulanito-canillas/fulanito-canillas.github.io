@@ -174,7 +174,7 @@ module.exports = function(grunt) {
 				minifyJS: true,
 				removeComments: true,
 				collapseWhitespace: true,
-				collapseInlineTagWhitespace: true,
+				// collapseInlineTagWhitespace: true,
 				preserveLineBreaks: true,
 				keepClosingSlash: true,
 			},
