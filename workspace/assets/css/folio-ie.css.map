@@ -6,12 +6,12 @@
     <title>Portfolio — Page not found</title>
     <meta name="viewport" content="user-scalable=no, width=device-width, height=device-height, initial-scale=1, maximum-scale=1" />
   </head>
-<!--[if lte IE 9]><body class="ie ie9 "><![endif]-->
-<!--[if gt IE 9]><body class="ie "><![endif]-->
+<!--[if lte IE 9]><body class="ie ie9 touch-target"><![endif]-->
+<!--[if gt IE 9]><body class="ie touch-target"><![endif]-->
 <!--[if !IE]><!-->
-  <body class="">
+  <body class="touch-target">
 <!--<![endif]-->
-    <div id="container">
+    <div id="container" class="">
       <div id="navigation" class="navigation">
         <h2>Here be dragons, ye be warned.</h2>
         <p>Something’s not right.</p>

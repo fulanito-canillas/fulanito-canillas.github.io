@@ -170,12 +170,13 @@ module.exports = function(grunt) {
 	grunt.config("htmlmin", {
 		main: {
 			options: {
-				preserveLineBreaks: true,
-				keepClosingSlash: true,
 				minifyCSS: true,
 				minifyJS: true,
 				removeComments: true,
-				collapseWhitespace: true
+				collapseWhitespace: true,
+				collapseInlineTagWhitespace: true,
+				preserveLineBreaks: true,
+				keepClosingSlash: true,
 			},
 			files: {
 				'index.html': 'index.html',
