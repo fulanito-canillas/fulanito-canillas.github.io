@@ -221,12 +221,12 @@ $breakpoints: (
 
 .app,
 .color-tx {
-  -webkit-transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.568s;
-          transition: background-color 0.366s ease 0.568s, color 0.366s ease 0.568s; }
+  -webkit-transition: background-color 0.35s ease 0.55s, color 0.35s ease 0.55s;
+          transition: background-color 0.35s ease 0.55s, color 0.35s ease 0.55s; }
 
 #navigation, #content {
-  -webkit-transition: opacity 0.366s ease 0.568s, visibility 0.366s step-start 0.568s;
-          transition: opacity 0.366s ease 0.568s, visibility 0.366s step-start 0.568s; }
+  -webkit-transition: opacity 0.35s ease 0.55s, visibility 0.35s step-start 0.55s;
+          transition: opacity 0.35s ease 0.55s, visibility 0.35s step-start 0.55s; }
 
 .app-initial {
   -webkit-transition: none 0s 0s !important;
@@ -275,7 +275,7 @@ $breakpoints: (
     box-sizing: border-box; }
 .mdown ol,
 .mdown ul {
-  padding-left: 18.5px; }
+  padding-left: 0; }
   .mdown ol li,
   .mdown ul li {
     margin-left: 1em; }
@@ -298,7 +298,8 @@ body {
 
 html {
   height: 100%;
-  overflow: hidden;
+  width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: auto; }
@@ -307,11 +308,13 @@ body {
   position: relative;
   width: 100%;
   min-height: 100%;
-  overflow: hidden;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: none;
   -webkit-overflow-scrolling: auto; }
+
+#container {
+  position: static; }
 
 #navigation {
   position: relative;
@@ -357,9 +360,7 @@ body {
   padding-top: 14rem;
   padding-bottom: 1.5rem; }
 
-.with-article #bundle-list, .with-article #keyword-list,
-.with-bundle #bundle-list,
-.with-bundle #keyword-list {
+.with-article #bundle-list, .with-article #keyword-list, .with-bundle #bundle-list, .with-bundle #keyword-list {
   padding-top: 1.5rem; }
 
 .without-bundle.without-article #bundle-list, .without-bundle.without-article #keyword-list {
@@ -371,14 +372,14 @@ body {
 
 #bundle-list .list-item, #keyword-list .list-group,
 #keyword-list .list-item {
-  -webkit-transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 1.102s, -webkit-transform 0.366s ease 0.568s;
-          transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 1.102s, transform 0.366s ease 0.568s; }
+  -webkit-transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 1.05s, -webkit-transform 0.35s ease 0.55s;
+          transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 1.05s, transform 0.35s ease 0.55s; }
 
 #bundle-list.collapsed .list-item:not(.selected), #keyword-list.collapsed .list-group.excluded,
 #keyword-list.collapsed .list-item.excluded, #keyword-list.collapsed:not(.has-excluded) .list-group.excluded,
 #keyword-list.collapsed:not(.has-excluded) .list-item.excluded {
-  -webkit-transition: visibility 1.434s step-end 0.034s, opacity 0.366s ease 0.034s, -webkit-transform 0.366s step-end 0.568s;
-          transition: visibility 1.434s step-end 0.034s, opacity 0.366s ease 0.034s, transform 0.366s step-end 0.568s; }
+  -webkit-transition: visibility 1.35s step-end 0.05s, opacity 0.35s ease 0.05s, -webkit-transform 0.35s step-end 0.55s;
+          transition: visibility 1.35s step-end 0.05s, opacity 0.35s ease 0.05s, transform 0.35s step-end 0.55s; }
 
 .skip-transitions.grouped .list-group, .skip-transitions.list .list-item {
   -webkit-transition: none 0s 0s !important;
@@ -423,6 +424,9 @@ body {
   white-space: nowrap; }
   .list-group .label {
     display: inline-block; }
+    .list-group .label > span {
+      padding: 0 1ex;
+      margin: 0 -1ex; }
 
 #bundle-list {
   font-weight: 600;
@@ -454,9 +458,9 @@ body {
     margin-top: 0.5rem;
     white-space: nowrap;
     height: 0;
-    /*&:not(.excluded):first-child {
+    /* &:not(.excluded):first-child {
     	top: 0;
-    }*/
+    } */
     width: 220px; }
     #keyword-list .list-group .label {
       font-size: 85%;
@@ -493,8 +497,8 @@ body {
   -webkit-transform: translate(0, 0);
           transform: translate(0, 0); }
   #site-name a {
-    -webkit-transition: color 0.366s ease 0.568s;
-            transition: color 0.366s ease 0.568s; }
+    -webkit-transition: color 0.35s ease 0.55s;
+            transition: color 0.35s ease 0.55s; }
 
 .with-bundle #site-name {
   -webkit-transform: translate(-100%, 0);
@@ -512,8 +516,8 @@ body {
   .article-button a {
     visibility: visible;
     opacity: 1;
-    -webkit-transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s;
-            transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s; }
+    -webkit-transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 0.05s, color 0.35s ease 0.55s;
+            transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 0.05s, color 0.35s ease 0.55s; }
 
 .with-bundle .article-button {
   -webkit-transform: translate(-100%, 0);
@@ -521,8 +525,8 @@ body {
   .with-bundle .article-button a {
     visibility: hidden;
     opacity: 0;
-    -webkit-transition: visibility 1.434s step-end 0.034s, opacity 0.366s ease 1.102s, color 0.366s ease 0.568s;
-            transition: visibility 1.434s step-end 0.034s, opacity 0.366s ease 1.102s, color 0.366s ease 0.568s; }
+    -webkit-transition: visibility 1.35s step-end 0.05s, opacity 0.35s ease 1.05s, color 0.35s ease 0.55s;
+            transition: visibility 1.35s step-end 0.05s, opacity 0.35s ease 1.05s, color 0.35s ease 0.55s; }
 
 .app-initial.with-bundle .article-button a {
   -webkit-transition: none;
@@ -541,13 +545,13 @@ body {
   padding: 0;
   width: 660px;
   opacity: 0;
-  -webkit-transition: opacity 0.366s ease 0.034s;
-          transition: opacity 0.366s ease 0.034s; }
+  -webkit-transition: opacity 0.35s ease 0.05s;
+          transition: opacity 0.35s ease 0.05s; }
   .container-expanded:not(.container-changing) #nav-graph {
     opacity: 1; }
   .container-collapsed.container-changing #nav-graph {
-    -webkit-transition: opacity 0.366s ease 0.034s, height 0.366s step-end 0.034s;
-            transition: opacity 0.366s ease 0.034s, height 0.366s step-end 0.034s; }
+    -webkit-transition: opacity 0.35s ease 0.05s, height 0.35s step-end 0.05s;
+            transition: opacity 0.35s ease 0.05s, height 0.35s step-end 0.05s; }
   .skip-transitions #nav-graph {
     -webkit-transition: none 0s 0s !important;
             transition: none 0s 0s !important; }
@@ -582,16 +586,16 @@ body {
   .carousel.disabled .carousel-item .content {
     cursor: default !important; }
   .carousel-item .content {
-    -webkit-transition: opacity 0.366s ease 0.034s;
-            transition: opacity 0.366s ease 0.034s; }
+    -webkit-transition: opacity 0.35s ease 0.05s;
+            transition: opacity 0.35s ease 0.05s; }
 
 .empty-item .content {
-  -webkit-transition: opacity 0.099s ease 0.034s;
-          transition: opacity 0.099s ease 0.034s;
+  -webkit-transition: opacity 0.1s ease 0.05s;
+          transition: opacity 0.1s ease 0.05s;
   opacity: 0.06; }
   .empty-item .content .s {
-    -webkit-transition: background-color 0.099s ease 0.034s;
-            transition: background-color 0.099s ease 0.034s;
+    -webkit-transition: background-color 0.1s ease 0.05s;
+            transition: background-color 0.1s ease 0.05s;
     background-color: currentColor; }
 .empty-item.candidate .content, .empty-item.selected .content {
   opacity: 1.0; }
@@ -637,7 +641,9 @@ body {
     .carousel.disabled .media-item.candidate.ready .content, .carousel.disabled .media-item.selected.ready .content, .carousel.disabled .empty-item.selected + .media-item.ready .content {
       opacity: 0; }
   .media-item .placeholder:before {
-    font: 600 9rem/0.9 "Franklin Gothic FS", "Helvetica", sans-serif;
+    font-size: 9rem;
+    font-weight: bold;
+    line-height: 0.9;
     letter-spacing: -0.01em;
     padding: 3rem;
     position: absolute;
@@ -647,8 +653,8 @@ body {
     font: 300 12rem/0.9 "FolioFigures", Consolas, Menlo, "Andale Mono", monospace;
     letter-spacing: -0.05em; }
   .media-item .placeholder:before {
-    -webkit-transition: opacity 0.366s ease 0.568s;
-            transition: opacity 0.366s ease 0.568s;
+    -webkit-transition: opacity 0.35s ease 0.55s;
+            transition: opacity 0.35s ease 0.55s;
     opacity: 0; }
   .media-item.candidate.pending .placeholder:before, .media-item.selected.pending .placeholder:before, .empty-item.selected + .media-item.pending .placeholder:before {
     opacity: 1; }
@@ -820,8 +826,8 @@ body {
   opacity: 0;
   visibility: hidden; }
 .playable-renderer.ready.selected .controls > * {
-  -webkit-transition: opacity 0.366s ease 0.034s, visibility 0.366s ease 0.034s;
-          transition: opacity 0.366s ease 0.034s, visibility 0.366s ease 0.034s;
+  -webkit-transition: opacity 0.35s ease 0.05s, visibility 0.35s ease 0.05s;
+          transition: opacity 0.35s ease 0.05s, visibility 0.35s ease 0.05s;
   opacity: 1;
   visibility: visible; }
   .scrolling .playable-renderer.ready.selected .controls > * {
@@ -879,22 +885,22 @@ body {
   visibility: hidden;
   opacity: 0;
   z-index: 0;
-  -webkit-transition: visibility 1.434s step-end 0.034s, opacity 1.434s step-end 0.034s;
-          transition: visibility 1.434s step-end 0.034s, opacity 1.434s step-end 0.034s; }
+  -webkit-transition: visibility 1.35s step-end 0.05s, opacity 1.35s step-end 0.05s;
+          transition: visibility 1.35s step-end 0.05s, opacity 1.35s step-end 0.05s; }
   .sequence-renderer .sequence-step.current {
     visibility: visible;
     opacity: 1;
     z-index: 1;
-    -webkit-transition: opacity 0.633s ease 0.301s;
-            transition: opacity 0.633s ease 0.301s; }
+    -webkit-transition: opacity 0.6s ease 0.3s;
+            transition: opacity 0.6s ease 0.3s; }
   .sequence-renderer .sequence-step.error {
     background-image: url("../images/bg-missing-media.svg"); }
 .sequence-renderer .playback-error .sequence-step:not(.current) {
-  -webkit-transition: visibility 1.434s step-end 0.034s, opacity 0.633s ease 0.301s;
-          transition: visibility 1.434s step-end 0.034s, opacity 0.633s ease 0.301s; }
+  -webkit-transition: visibility 1.35s step-end 0.05s, opacity 0.6s ease 0.3s;
+          transition: visibility 1.35s step-end 0.05s, opacity 0.6s ease 0.3s; }
 .sequence-renderer .media-border {
-  -webkit-transition: opacity 0.633s ease 0.301s;
-          transition: opacity 0.633s ease 0.301s;
+  -webkit-transition: opacity 0.6s ease 0.3s;
+          transition: opacity 0.6s ease 0.3s;
   opacity: 1; }
 .sequence-renderer .playback-error .media-border {
   opacity: 0; }
@@ -958,16 +964,16 @@ body {
     margin: 0 0 0 1rem; }
 
 .carousel.removing-child .carousel-item .content {
-  -webkit-transition: opacity -0.168s step-end 2.704s !important;
-          transition: opacity -0.168s step-end 2.704s !important; }
+  -webkit-transition: opacity -0.15s step-end 2.55s !important;
+          transition: opacity -0.15s step-end 2.55s !important; }
 
 .stack > .stack-item {
   display: block;
   position: absolute;
   top: 0;
   left: 0;
-  -webkit-transition: opacity 0.366s ease 0.034s;
-          transition: opacity 0.366s ease 0.034s;
+  -webkit-transition: opacity 0.35s ease 0.05s;
+          transition: opacity 0.35s ease 0.05s;
   opacity: 0; }
   .stack > .stack-item.current {
     opacity: 1; }
@@ -1038,7 +1044,7 @@ body {
 .media-dotnav {
   text-align: center;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 20px 0 20px;
   position: absolute;
   width: 660px;
   bottom: 1rem;
@@ -1046,8 +1052,8 @@ body {
   right: 0;
   -webkit-transform: translate(0, 0);
           transform: translate(0, 0);
-  -webkit-transition: opacity 0.366s ease 0.034s;
-          transition: opacity 0.366s ease 0.034s;
+  -webkit-transition: opacity 0.35s ease 0.05s;
+          transition: opacity 0.35s ease 0.05s;
   opacity: 1; }
   .without-media .media-dotnav, .container-expanded .media-dotnav, .container-changing .media-dotnav, .container-changed .media-dotnav {
     opacity: 0; }
@@ -1138,8 +1144,8 @@ body {
     .desktop-small.with-bundle .container-expanded .article-button a {
       visibility: visible;
       opacity: 1;
-      -webkit-transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s;
-              transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s; }
+      -webkit-transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 0.05s, color 0.35s ease 0.55s;
+              transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 0.05s, color 0.35s ease 0.55s; }
   .desktop-small #article-list-wrapper {
     width: 220px; }
   .desktop-small #nav-graph {
@@ -1159,8 +1165,8 @@ body {
       width: 660px;
       margin-left: 240px; }
   .desktop-small .disabled .carousel-item.empty-item .content {
-    -webkit-transition: -webkit-transform 0.366s step-end 0.034s, opacity 0.099s ease 0.034s !important;
-            transition: transform 0.366s step-end 0.034s, opacity 0.099s ease 0.034s !important; }
+    -webkit-transition: -webkit-transform 0.35s step-end 0.05s, opacity 0.1s ease 0.05s !important;
+            transition: transform 0.35s step-end 0.05s, opacity 0.1s ease 0.05s !important; }
   .desktop-small :not(.scrolling) .carousel-item.empty-item.selected .content {
     -webkit-transform: translate(0, 0);
             transform: translate(0, 0); }
@@ -1216,7 +1222,7 @@ body {
     margin-right: 2vw;
     min-height: 25%;
     padding-top: 1.166666666rem;
-    padding-bottom: 3rem; }
+    padding-bottom: 2rem; }
   .fullwidth #content {
     padding-top: 1.166666666rem; }
   .fullwidth .list-item, .fullwidth .list-group, .fullwidth #site-name, .fullwidth .article-button, .fullwidth .media-caption-stack .content > *, .media-caption-stack .fullwidth .content > * {
@@ -1233,7 +1239,7 @@ body {
     width: auto; }
   .fullwidth #bundle-list {
     font-weight: 600;
-    width: 33.333333333vh;
+    width: 33.333333333vw;
     left: 0;
     right: auto; }
     .fullwidth #bundle-list .list-item {
@@ -1253,9 +1259,12 @@ body {
       height: 0;
       width: 100%; }
       .fullwidth #keyword-list .list-group .label {
-        width: calc(32vw / 2);
+        width: 16vw;
         -webkit-transform: translate(-100%, 0);
                 transform: translate(-100%, 0); }
+        .fullwidth #keyword-list .list-group .label > span {
+          padding: 0 0.5ex;
+          margin: 0 -0.5ex; }
   .fullwidth.with-media .container-collapsed #keyword-list {
     opacity: 0;
     visibility: 0; }
@@ -1280,8 +1289,8 @@ body {
     .fullwidth.with-bundle .container-expanded .article-button a {
       visibility: visible;
       opacity: 1;
-      -webkit-transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s;
-              transition: visibility 1.434s step-start 0.034s, opacity 0.366s ease 0.034s, color 0.366s ease 0.568s; }
+      -webkit-transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 0.05s, color 0.35s ease 0.55s;
+              transition: visibility 1.35s step-start 0.05s, opacity 0.35s ease 0.05s, color 0.35s ease 0.55s; }
   .fullwidth .article-button#about-button {
     top: 1.5rem; }
   .fullwidth #article-list-wrapper {
@@ -1619,8 +1628,11 @@ svg#debug-grid {
     -webkit-transform: translate(calc(100% - 20px, 0));
             transform: translate(calc(100% - 20px, 0)); }
   svg#debug-grid #gr1 {
-    -webkit-transform: translate(calc(100% - 40px, 0));
-            transform: translate(calc(100% - 40px, 0)); }
+    -webkit-transform: translate(calc(100% - 20px - 20px, 0));
+            transform: translate(calc(100% - 20px - 20px, 0)); }
+  svg#debug-grid #gm {
+    -webkit-transform: translate(calc(100vw - 220px - 20px), 0);
+            transform: translate(calc(100vw - 220px - 20px), 0); }
   .fullwidth svg#debug-grid {
     /* container is flipped horizontally */ }
     .fullwidth svg#debug-grid #gl0 {

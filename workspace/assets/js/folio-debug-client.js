@@ -1944,7 +1944,6 @@ module.exports = (function() {
 	if (DEBUG) {
 		console.group("Breakpoints");
 		for (s in g.BREAKPOINTS) {
-			// console.log("%s: %o %o", s, g.BREAKPOINTS[s], sass.breakpoints[s] + '');
 			console.log("%s: %o", s, g.BREAKPOINTS[s].media);
 		}
 		console.groupEnd();
@@ -1953,8 +1952,8 @@ module.exports = (function() {
 	// base colors, dimensions
 	// - - - - - - - - - - - - - - - - -
 	g.DEFAULT_COLORS = _.clone(sass.default_colors);
-	g.HORIZONTAL_STEP = parseFloat(sass.units["hu_px"]);
-	g.VERTICAL_STEP = parseFloat(sass.units["vu_px"]);
+	// g.HORIZONTAL_STEP = parseFloat(sass.units["hu_px"]);
+	// g.VERTICAL_STEP = parseFloat(sass.units["vu_px"]);
 
 
 	// paths, networking
@@ -2014,17 +2013,34 @@ module.exports = (function() {
 	var minDelay = g.TRANSITION_MIN_DELAY = parseFloat(sass.transitions["min_delay_ms"]);
 	var delay = g.TRANSITION_DELAY = g.TRANSITION_DURATION + g.TRANSITION_DELAY_INTERVAL;
 
-	// css transition presets
+	// css transitions
+	// - - - - - - - - - - - - - - - - -
+	o = {};
+
+	// match tx() in _transitions.scss
+	// - - - - - - - - - - - - - - - - -
+	o.tx = function tx(durationCount, delayCount, easeVal) {
+		_.isNumber(durationCount) || (durationCount = 1);
+		_.isNumber(delayCount) || (delayCount = -1);
+		_.isString(easeVal) || (easeVal = ease);
+
+		var o = {};
+		if (delayCount < 0) {
+			o.duration = (duration * durationCount) +
+				(delayInterval * (durationCount - 1));
+			o.delay = 0;
+		} else {
+			o.duration = (duration * durationCount) +
+				(delayInterval * (durationCount - 1)) - minDelay;
+			o.delay = (delay * delayCount) - minDelay;
+		}
+		o.easeing = easeVal;
+		return 0;
+	}
+
+	// transition presets
 	// TODO: get rid of this
 	// - - - - - - - - - - - - - - - - -
-
-	// var tx = function(txo, durationCount, delayCount) {
-	// 	txo.duration = (duration * durationCount)
-	// 		+ (delayInterval * (durationCount - 1));
-	// 	txo.delay = (delay * delayCount) + minDelay;
-	// };
-
-	o = {};
 
 	o.NONE = {
 		delay: 0,
@@ -2073,15 +2089,17 @@ module.exports = (function() {
 	// o.LAST_EARLY = 		_.defaults({delay: txDelay*2.0 + txMinDelay*0}, txAligned);
 	// o.AFTER = 			_.defaults({delay: txDelay*2.0 + txMinDelay}, txAligned);
 
-	console.groupCollapsed("Transitions");
+	console.group("Transitions");
 	for (s in o) {
-		so = o[s];
-		so.name = s;
-		so.className = "tx-" + s.replace("_", "-").toLowerCase();
-		if (!so.hasOwnProperty("cssText")) {
-			so.cssText = so.duration / 1000 + "s " + so.easing + " " + so.delay / 1000 + "s";
+		if (!_.isFunction(o[s])) {
+			so = o[s];
+			so.name = s;
+			so.className = "tx-" + s.replace("_", "-").toLowerCase();
+			if (!so.hasOwnProperty("cssText")) {
+				so.cssText = so.duration / 1000 + "s " + so.easing + " " + so.delay / 1000 + "s";
+			}
+			console.log("%s: %s", so.name, so.cssText);
 		}
-		console.log("%s: %s", so.name, so.cssText);
 	}
 	console.groupEnd();
 	g.transitions = o;
@@ -2090,7 +2108,7 @@ module.exports = (function() {
 }());
 }).call(this,true)
 
-},{"../../../sass/variables.json":120,"underscore":"underscore"}],35:[function(require,module,exports){
+},{"../../../sass/variables.json":119,"underscore":"underscore"}],35:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2717,7 +2735,7 @@ module.exports = BaseItem.extend({
 		this.colors = {
 			fgColor: new Color(this.attr("color")),
 			bgColor: new Color(this.attr("background-color")),
-			lnColor: new Color(this.attr("--link-color")),
+			lnColor: new Color(this.attr("link-color")),
 		};
 		this.colors.hasDarkBg = this.colors.fgColor.luminosity() > this.colors.bgColor.luminosity();
 	},
@@ -2726,8 +2744,7 @@ module.exports = BaseItem.extend({
 		return this._attrs || (this._attrs = _.defaults({}, this.get("attrs"), attrsDefault));
 	},
 });
-
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":118}],45:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],45:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -2915,7 +2932,7 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":118}],47:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],47:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3282,9 +3299,9 @@ var AppViewProto = {
 			.once("view:render:after", function(view, flags) {
 				console.info("%s::_onResize [render complete]", view.cid);
 
-				if (/iphone/i.test(navigator.userAgent)) {
-					document.body.scrollTop = 1;
-				}
+				// if (/iphone/i.test(navigator.userAgent)) {
+				// 	document.body.scrollTop = 1;
+				// }
 
 				this.requestAnimationFrame(function() {
 					view.el.classList.remove("skip-transitions");
@@ -3432,7 +3449,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":118}],50:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":117}],50:[function(require,module,exports){
 /**
  * @module app/view/NavigationView
  */
@@ -4622,9 +4639,9 @@ var NavigationView = View.extend({
 	/* --------------------------- */
 
 	_onNavigationClick: function(ev) {
-		if (!ev.defaultPrevented && !this.model.get("collapsed")) {
+		if (!ev.defaultPrevented && this.model.has("bundle")) {
 			console.log("%s::_onNavigationClick [%s]", this.cid, ev.type, ev);
-			this.model.set("collapsed", true);
+			this.model.set("collapsed", !this.model.get("collapsed"));
 		}
 	},
 
@@ -5005,7 +5022,7 @@ var Interpolator = require("app/view/base/Interpolator");
 /** @type {module:utils/css/getBoxEdgeStyles} */
 var getBoxEdgeStyles = require("utils/css/getBoxEdgeStyles");
 
-var MIN_CANVAS_RATIO = 2; // /Firefox/.test(window.navigator.userAgent)? 2 : 1;
+var MIN_CANVAS_RATIO = 1; // /Firefox/.test(window.navigator.userAgent)? 2 : 1;
 
 /**
  * @constructor
@@ -5536,21 +5553,32 @@ if (DEBUG) {
 	// 	// 	return retval;
 	// 	// });
 
+	var wrapConsole = function(prefix) {
+		var shift = [].shift;
+		var fnNames = ["group", "log", "info", "warn", "error"];
+		var fnSrc = {};
+		fnNames.forEach(function(fnName) {
+			fnSrc[fnName] = console[fnName];
+			console[fnName] = _.wrap(console[fnName], function() {
+				if (typeof arguments[1] == "string") arguments[1] = prefix + " " + arguments[1];
+				return shift.apply(arguments).apply(console, arguments);
+			});
+		});
+		return function() {
+			fnNames.forEach(function(fnName) {
+				console[fnName] = fnSrc[fnName];
+			});
+		}
+	}
+
 	// log frame end
 	_runQueue = _.wrap(_runQueue, function(fn, tstamp) {
 		var retval;
-		console.group("FrameQueue id:" + _rafId);
-		// console.group("FrameQueue id:" + _rafId +
-		// 	" items: " + _nextQueue.numItems +
-		// 	" [" + _nextQueue.offset +
-		// 	"-" + (_nextQueue.offset + _nextQueue.length - 1) +
-		// 	"]"
-		// );
-		// var id = _rafId;
-		// console.info("FrameQueue:[%s BEGIN] %i items (ID range: %i-%i)", id, _nextQueue.numItems, _nextQueue.offset, _nextQueue.offset + _nextQueue.length - 1);
+		var unwrap = wrapConsole("[raf " + _rafId + "]");
+		// console.group("FrameQueue #" + _rafId);
 		retval = fn(tstamp);
-		// console.info("FrameQueue:[%s END]", id);
-		console.groupEnd();
+		// console.groupEnd();
+		unwrap();
 		return retval;
 	});
 
@@ -5811,7 +5839,7 @@ Interpolator.prototype = Object.create({
 
 module.exports = Interpolator;
 
-},{"utils/ease/linear":109}],56:[function(require,module,exports){
+},{"utils/ease/linear":108}],56:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -5853,7 +5881,7 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":112}],57:[function(require,module,exports){
+},{"utils/prefixedEvent":111}],57:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
@@ -6064,7 +6092,7 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
-},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":119}],58:[function(require,module,exports){
+},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":118}],58:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
 /**
@@ -6777,7 +6805,7 @@ var ViewProto = {
 module.exports = Backbone.View.extend(ViewProto, View);
 }).call(this,true)
 
-},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114}],59:[function(require,module,exports){
+},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113}],59:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -7898,7 +7926,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":113,"utils/prefixedStyleName":114}],64:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":112,"utils/prefixedStyleName":113}],64:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -8019,7 +8047,7 @@ module.exports = View.extend({
 	},
 });
 
-},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":116}],66:[function(require,module,exports){
+},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":115}],66:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/view/component/FilterableListView
@@ -8422,7 +8450,7 @@ var FilterableListView = View.extend({
 module.exports = FilterableListView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":107,"utils/prefixedProperty":113}],67:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":107,"utils/prefixedProperty":112}],67:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -8449,8 +8477,8 @@ var CanvasHelper = require("utils/canvas/CanvasHelper");
 /** @type {module:utils/geom/inflateRect} */
 var inflateRect = require("utils/geom/inflateRect");
 
-/** @type {module:utils/dom/getAbsoluteClientRect} */
-var getAbsoluteClientRect = require("utils/dom/getAbsoluteClientRect");
+// /** @type {module:utils/dom/getAbsoluteClientRect} */
+// var getAbsoluteClientRect = require("utils/dom/getAbsoluteClientRect");
 
 
 // var BEZIER_CIRCLE = 0.551915024494;
@@ -8493,7 +8521,8 @@ if (DEBUG) {
 
 		_dStyles[colorName] = _.defaults({
 			lineWidth: 0.75,
-			strokeStyle: rgbaValue
+			strokeStyle: rgbaValue,
+			setLineDash: [[10, 2]]
 		}, _dStyles["defaults"]);
 
 		_dStyles[colorName + "_fill"] = _.defaults({
@@ -8569,27 +8598,57 @@ var GraphView = CanvasView.extend({
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
 
-		var viewportChanged = function(ev) {
-			// this.requestRender(CanvasView.SIZE_INVALID);
-			// this.requestRender(CanvasView.LAYOUT_INVALID);
-			console.log("%s:[%s]: window.scrollY:%s body.scrollTop:%s html.scrollTop:%s",
-				this.cid, ev.type,
-				window.scrollY,
-				document.body.scrollTop,
-				document.documentElement.scrollTop);
-			console.log("%s:[%s]: body.scrollHeight:%s body.clientHeight:%s html.scrollHeight:%s html.clientHeight:%s",
-				this.cid, ev.type,
-				document.body.scrollHeight, document.body.clientHeight,
-				document.documentElement.scrollHeight, document.documentElement.clientHeight);
-			this._groupRects = null;
-		}.bind(this);
+		this.__traceScroll = _.debounce(this.__traceScroll, 100, false)
 
+		var viewportChanged = function(ev) {
+			// this.__traceScroll(ev.type);
+			// this._groupRects = null;
+			// this.invalidate(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
+			this.requestRender(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
+		}.bind(this);
 		// viewportChanged = _.debounce(viewportChanged, 100, false);
-		window.addEventListener("scroll", _.debounce(viewportChanged, 100, false), false);
-		window.addEventListener("wheel", _.debounce(viewportChanged, 100, false), false);
+
+		// window.addEventListener("scroll",
+		// 		_.debounce(viewportChanged, 100, false), false);
+		// window.addEventListener("wheel",
+		// 		_.debounce(viewportChanged, 100, false), false);
+		window.addEventListener("scroll", viewportChanged, false);
+		window.addEventListener("wheel", viewportChanged, false);
+		window.addEventListener("resize", viewportChanged, false);
+		window.addEventListener("orientationchange", viewportChanged, false);
 
 		// this._addListListeners(this._a2b);
 		// this._addListListeners(this._b2a);
+	},
+
+	__traceScroll: function(type) {
+		console.log("%s:[%s]: DPR:%s this.el.scrollTop:%s window.scrollY:%s body.scrollTop:%s html.scrollTop:%s",
+			this.cid, type,
+			this._canvasRatio,
+			this.el.scrollTop,
+			window.scrollY,
+			document.body.scrollTop,
+			document.documentElement.scrollTop);
+		// console.log("%s:[%s]: " +
+		// 	"window.scrollY: %s " +
+		// 	"window.pageYOffset: %s " +
+		// 	"html.scrollTop: %s " +
+		// 	"html.scrollHeight: %s " +
+		// 	"html.clientHeight: %s " +
+		// 	"body.scrollTop: %s " +
+		// 	"body.scrollHeight: %s " +
+		// 	"body.clientHeight: %s " +
+		// 	"#container.scrollTop: %s", this.cid, type,
+		// 	window.scrollY,
+		// 	window.pageYOffset,
+		// 	document.documentElement.scrollTop,
+		// 	document.documentElement.scrollHeight,
+		// 	document.documentElement.clientHeight,
+		// 	document.body.scrollTop,
+		// 	document.body.scrollHeight,
+		// 	document.body.clientHeight,
+		// 	document.body.firstElementChild.scrollTop
+		// );
 	},
 
 	// _addListListeners: function(d) {
@@ -8609,8 +8668,7 @@ var GraphView = CanvasView.extend({
 
 	/** @override */
 	measureCanvas: function(w, h) {
-		console.log("%s::measureCanvas style:%o offset:%o arg:%o", this.cid,
-			parseInt(this.el.style.height), this.el.offsetHeight, h);
+		console.log("%s::measureCanvas style:%o offset:%o client:%o arg:%o", this.cid, parseInt(this.el.style.height), this.el.offsetHeight, this.el.clientHeight, h);
 	},
 
 	/** @override */
@@ -8631,7 +8689,7 @@ var GraphView = CanvasView.extend({
 			bgColor = b.colors.bgColor.clone();
 		} else {
 			bgColor = Color(Globals.DEFAULT_COLORS["background-color"]);
-			lnColor = Color(Globals.DEFAULT_COLORS["--link-color"]);
+			lnColor = Color(Globals.DEFAULT_COLORS["link-color"]);
 		}
 
 		this._a2b.s.strokeStyle = this._a2b.s.fillStyle =
@@ -8767,55 +8825,31 @@ var GraphView = CanvasView.extend({
 				this._groupRects[i] = els[i].getBoundingClientRect(els[i]);
 			}
 		}
-		if (lVal === 1) {
-			console.log("%s::_redraw " +
-				"window.scrollY: %s " +
-				"window.pageYOffset: %s " +
-				"body.scrollTop: %s " +
-				"html.scrollTop: %s " +
-				"#container.scrollTop: %s",
-				this.cid,
-				window.scrollY,
-				window.pageYOffset,
-				document.documentElement.scrollTop,
-				document.body.scrollTop,
-				document.documentElement.firstElementChild.scrollTop
-			);
-		}
+		// if (lVal === 1) {
+		// 	this.__traceScroll("redraw");
+		// }
 
 		this._groupRects.forEach(function(r) {
-			// TODO: implement DOMRect.inflate()
-			// CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
-			// 	r.left + document.body.scrollLeft,
-			// 	r.top + document.body.scrollTop,
-			// 	r.width, r.height);
-			// r = inflateRect(r, -8.5, -4.5);
-			this._ctx.clearRect(
-				r.left + document.body.scrollLeft,
-				r.top + document.body.scrollTop,
-				r.width, r.height);
-
+			this._ctx.clearRect(r.left, r.top, r.width, r.height);
+			// r = inflateRect(r, 2, 2);
+			// CanvasHelper.drawRect(this._ctx, _dStyles["blue"],
+			// 	r.left, r.top, r.width, r.height);
 		}, this);
 	},
 
 	_drawOverlays: function(list, rect) {
-		var items = list.groups;
+		var r = {},
+			items = list.groups;
 		for (var i = 0, num = items.length, item; i < num; i++) {
 			item = list.itemViews.findByModel(items[i]);
 			if (item._metrics && item.transform) {
-				console.log("list.filteredGroups.length[%o] %o", i,
-					item._metrics, item.transform);
-				this._ctx.clearRect(
-					rect.left + item.transform.tx + item._metrics.offsetLeft,
-					rect.top + item.transform.ty + item._metrics.offsetTop - 5,
-					item._metrics.offsetWidth,
-					10 // item._metrics.offsetHeight
-				);
-				// CanvasHelper.drawRect(this._ctx, _dStyles["red_fill"],
-				// 	rect.left + item.transform.tx + item._metrics.offsetLeft,
-				// 	rect.top + item.transform.ty + item._metrics.offsetTop - 5,
-				// 	item._metrics.offsetWidth, 10
-				// );
+				r.left = rect.left + item.transform.tx + item._metrics.offsetLeft;
+				r.top = rect.top + item.transform.ty + item._metrics.offsetTop - 5;
+				r.width = item._metrics.offsetWidth;
+				r.height = item._metrics.offsetHeight;
+				r = inflateRect(r, 4, 4);
+				CanvasHelper.drawRect(this._ctx, _dStyles["green"],
+					r.left, r.top, r.width, r.height);
 			}
 		}
 	},
@@ -9181,7 +9215,7 @@ if (DEBUG) {
 module.exports = GraphView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":105,"utils/canvas/calcArcHConnector":106,"utils/dom/getAbsoluteClientRect":108,"utils/geom/inflateRect":111}],68:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":105,"utils/canvas/calcArcHConnector":106,"utils/geom/inflateRect":110}],68:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -9843,7 +9877,12 @@ function selfAndDescendant(selfCls, cls) {
 //  root rules
 // - - - - - - - - - - - - - - - -
 
-var rootStyles = ["background", "background-color", "color", "--link-color"];
+var rootStyles = [
+	"color",
+	"background",
+	"background-color",
+	// "--link-color"
+];
 
 function initRootStyles(sheet, rootSelector, attrs, fgColor, bgColor, lnColor, hasDarkBg) {
 	var s, revSelector, fgColorVal, bgColorVal;
@@ -9998,7 +10037,7 @@ module.exports = function() {
 	attrs = Globals.DEFAULT_COLORS;
 	fgColor = new Color(Globals.DEFAULT_COLORS["color"]);
 	bgColor = new Color(Globals.DEFAULT_COLORS["background-color"]);
-	lnColor = new Color(Globals.DEFAULT_COLORS["--link-color"])
+	lnColor = new Color(Globals.DEFAULT_COLORS["link-color"])
 	hasDarkBg = fgColor.luminosity() > bgColor.luminosity();
 
 	var colorStyles = document.createElement("style");
@@ -11807,7 +11846,7 @@ if (GA) {
 module.exports = PlayableRenderer;
 }).call(this,true)
 
-},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":112,"utils/prefixedProperty":113}],92:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":111,"utils/prefixedProperty":112}],92:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13296,7 +13335,7 @@ if (DEBUG) {
 module.exports = VideoRenderer;
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":110,"utils/prefixedEvent":112}],96:[function(require,module,exports){
+},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":109,"utils/prefixedEvent":111}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -14443,7 +14482,7 @@ TransformItem.prototype = Object.create({
 });
 
 module.exports = TransformItem;
-},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114,"utils/strings/camelToDashed":117}],105:[function(require,module,exports){
+},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113,"utils/strings/camelToDashed":116}],105:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
 var splice = Array.prototype.splice;
@@ -14781,61 +14820,6 @@ module.exports = function(s, m, includeSizePos) {
 
 },{}],108:[function(require,module,exports){
 /**
-Returns a bounding rect for _el_ with absolute coordinates corrected for
-scroll positions.
-
-The native `getBoundingClientRect()` returns coordinates for an element's
-visual position relative to the top left of the viewport, so if the element
-is part of a scrollable region that has been scrolled, its coordinates will
-be different than if the region hadn't been scrolled.
-
-This method corrects for scroll offsets all the way up the node tree, so the
-returned bounding rect will represent an absolute position on a virtual
-canvas, regardless of scrolling.
-
-@method getAbsoluteClientRect
-@param {HTMLElement} el HTML element.
-@return {Object} Absolute bounding rect for _el_.
-**/
-
-module.exports = function(el) {
-	var doc = document,
-		win = window,
-		body = doc.body,
-
-		// pageXOffset and pageYOffset work everywhere except IE <9.
-		offsetX = win.pageXOffset !== undefined ? win.pageXOffset :
-		(doc.documentElement || body.parentNode || body).scrollLeft,
-		offsetY = win.pageYOffset !== undefined ? win.pageYOffset :
-		(doc.documentElement || body.parentNode || body).scrollTop,
-
-		rect = el.getBoundingClientRect();
-
-	if (el !== body) {
-		var parent = el.parentNode;
-
-		// The element's rect will be affected by the scroll positions of
-		// *all* of its scrollable parents, not just the window, so we have
-		// to walk up the tree and collect every scroll offset. Good times.
-		while (parent !== null && parent !== body) {
-			offsetX += parent.scrollLeft;
-			offsetY += parent.scrollTop;
-			parent = parent.parentNode;
-		}
-	}
-
-	return {
-		_src: rect,
-		bottom: rect.bottom + offsetY,
-		height: rect.height,
-		left: rect.left + offsetX,
-		right: rect.right + offsetX,
-		top: rect.top + offsetY,
-		width: rect.width
-	};
-};
-},{}],109:[function(require,module,exports){
-/**
  * @param {number} i current iteration
  * @param {number} s start value
  * @param {number} d change in value
@@ -14848,7 +14832,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],110:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -14882,7 +14866,7 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],111:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -14918,7 +14902,7 @@ module.exports = function(rect, dx, dy) {
 	return r;
 };
 
-},{}],112:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -15016,7 +15000,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":115}],113:[function(require,module,exports){
+},{"./prefixes":114}],112:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -15057,7 +15041,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":115}],114:[function(require,module,exports){
+},{"./prefixes":114}],113:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -15113,10 +15097,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":115}],115:[function(require,module,exports){
+},{"./prefixes":114}],114:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],116:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 /* jshint ignore:start */
 /*
 Taken from:
@@ -15176,19 +15160,19 @@ if (/Trident|Edge/.test(navigator.userAgent)) {
 module.exports = setImmediate;
 /* jshint ignore:end */
 
-},{}],117:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],118:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],119:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -15353,17 +15337,13 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],120:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],119:[function(require,module,exports){
 module.exports={
-	"units": {
-		"hu_px": "20",
-		"vu_px": "12"
-	},
 	"transitions": {
-		"min_delay_ms": "34",
-		"delay_interval_ms": "134",
+		"ease": "ease",
 		"duration_ms": "400",
-		"ease": "ease"
+		"delay_interval_ms": "100",
+		"min_delay_ms": "50"
 	},
 	"breakpoints": {
 		"landscape": "'(orientation: landscape)'",
@@ -15377,13 +15357,26 @@ module.exports={
 	"default_colors": {
 		"color": "hsl(47, 5%, 15%)",
 		"background-color": "hsl(47, 5%, 95%)",
-		"--link-color": "hsl(10, 80%, 50%)"
+		"link-color": "hsl(10, 80%, 50%)"
 	},
 	"temp": {
 		"collapse_offset": "360"
 	},
 	"_ignore": {
-
+		"transitions": {
+			"ease": "ease",
+			"duration_ms": "400",
+			"delay_interval_ms": "134",
+			"min_delay_ms": "34"
+		},
+		"default_colors": {
+			"--link-color": "hsl(10, 80%, 50%)",
+			"--alt-background-color": "unset"
+		},
+		"units": {
+			"hu_px": "20",
+			"vu_px": "12"
+		},
 		"breakpoints": {
 			"mobile": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 			"unsupported": "'not screen and (min-width: 704px)'",
@@ -15395,9 +15388,6 @@ module.exports={
 				"not screen and (min-width: 704px)",
 				"not screen and (min-height: 540px)"
 			]
-		},
-		"default_colors": {
-			"--alt-background-color": "unset"
 		}
 	}
 }
