@@ -3362,13 +3362,13 @@ var AppViewProto = {
 		var hasDarkBg = false;
 
 		docTitle.push(Globals.APP_NAME);
-		if (this.model.bundle) {
-			docTitle.push(stripTags(this.model.bundle.get("name")));
-			if (this.model.media) {
-				docTitle.push(stripTags(this.model.media.get("name")));
+		if (this.model.get("bundle")) {
+			docTitle.push(stripTags(this.model.get("bundle").get("name")));
+			if (this.model.get("media")) {
+				docTitle.push(stripTags(this.model.get("media").get("name")));
 			}
-		} else if (this.model.article) {
-			docTitle.push(stripTags(this.model.article.get("name")));
+		} else if (this.model.get("article")) {
+			docTitle.push(stripTags(this.model.get("article").get("name")));
 		}
 		document.title = _.unescape(docTitle.join(" / "));
 
@@ -4253,11 +4253,11 @@ var NavigationView = View.extend({
 	/** @override */
 	className: "container-expanded",
 
-	events: (function() {
-		return window.hasOwnProperty("onpointerup")
-			? { "pointerup #nav-graph": "_onNavigationClick" }
-			: { "mouseup #nav-graph": "_onNavigationClick" }
-	}()),
+	// events: (function() {
+	// 	return window.hasOwnProperty("onpointerup")
+	// 		? { "pointerup #nav-graph": "_onNavigationClick" }
+	// 		: { "mouseup #nav-graph": "_onNavigationClick" }
+	// }()),
 
 	/** @override */
 	initialize: function(options) {
@@ -4389,6 +4389,28 @@ var NavigationView = View.extend({
 			}
 		}
 
+		var whenListsRendered = Promise.all([
+			this.bundleList.whenRendered(),
+			this.keywordList.whenRendered()
+		]).then((function(arr) {
+			var vmax = arr.reduce(function(a, o) {
+				return Math.max(a, o._metrics.height);
+			}, 0);
+			console.log("%s:[whenRendered][flags: %s] height: %o",
+				this.cid, View.flagsToString(flags), vmax);
+			this.graph.el.style.height = vmax + "px";
+			this.el.style.minHeight = vmax + "px";
+		}.bind(this)), (function(reason) {
+			console.warn("%s:[whenRendered] failed: %o", this.cid, reason);
+		}.bind(this)));
+
+		Promise.all([whenListsRendered, this.transforms.promise()])
+			.then(function(arr) {
+				console.log("====== navigationView listsRendered + transitionsEnd");
+			}, function(arr) {
+				console.warn("====== navigationView listsRendered + transitionsEnd");
+			});
+
 		// children loop
 		// - - - - - - - - - - - - - - - - -
 		this.itemViews.forEach(function(view) {
@@ -4400,34 +4422,6 @@ var NavigationView = View.extend({
 				view.renderNow();
 			}
 		}, this);
-
-		// if ((flags & View.SIZE_INVALID) || (this.model.hasChanged("collapsed") && (flags | View.MODEL_INVALID))) {
-		// 	// if (this.model.get("collapsed")) {
-		// 	// 	this.el.style.minHeight = "";
-		// 	// } else {
-		Promise.all([
-			this.bundleList.whenRendered(),
-			this.keywordList.whenRendered()
-		]).then((function(arr) {
-			var vmax = arr.reduce(function(a, o) {
-				return Math.max(a, o._metrics.height);
-			}, 0);
-			console.log("%s:[whenRendered flags: %s] height: %o",
-				this.cid, View.flagsToString(flags), vmax);
-			// if (vmax !== this._metrics.minHeight) {
-			// 	this._metrics.minHeight = vmax;
-			// this.el.style.minHeight = vmax + "px";
-			// }
-			this.graph.el.style.height = vmax + "px";
-			this.el.style.minHeight = vmax + "px";
-			// document.body.scrollTop = 0;
-			// window.scrollTo(0, 1)
-			// this.requestAnimationFrame(function() {
-			// 	window.scrollTo(0, 0);
-			// });
-		}).bind(this));
-		// 	// }
-		// }
 
 		// graph
 		// - - - - - - - - - - - - - - - - -
@@ -4484,12 +4478,13 @@ var NavigationView = View.extend({
 		var withMedia = this.model.get("withMedia");
 		var withMediaChanged = modelChanged && this.model.hasChanged("withMedia");
 		//var mediaChanged = modelChanged && this.model.hasChanged("media");
-		/* collapsed */
-		var collapsed = this.model.get("collapsed");
-		var collapsedChanged = modelChanged && this.model.hasChanged("collapsed");
 		/* article */
 		// var withArticle = this.model.get("withArticle");
 		var withArticleChanged = modelChanged && this.model.hasChanged("withArticle");
+		//var articleChanged = modelChanged && this.model.hasChanged("article");
+		/* collapsed */
+		var collapsed = this.model.get("collapsed");
+		var collapsedChanged = modelChanged && this.model.hasChanged("collapsed");
 
 		var tf;
 		/* this.bundleList.el */
@@ -4588,10 +4583,7 @@ var NavigationView = View.extend({
 			if (this.model.get("collapsed")) {
 				// clear keyword selection
 				keywords.deselect();
-				// this.el.addEventListener(pointerupName, this._onNavigationClick);
-			} else {
-				// this.el.removeEventListener(pointerupName, this._onNavigationClick);
-			}
+			} // else {}
 			this.keywordList.collapsed = this.model.get("collapsed");
 			this.bundleList.collapsed = this.model.get("collapsed");
 		}
@@ -4604,10 +4596,12 @@ var NavigationView = View.extend({
 		if (this.model.hasChanged("withBundle")) {
 			// this.keywordList.refresh()
 			if (this.model.get("withBundle")) {
+				this.graph.el.addEventListener(pointerupName, this._onNavigationClick);
 				this.touch.on("vpanstart", this._onVPanStart);
 				this.touch.on("hpanstart", this._onHPanStart);
 				// this.touch.on("tap", this._onTap);
 			} else {
+				this.graph.el.removeEventListener(pointerupName, this._onNavigationClick);
 				this.touch.off("vpanstart", this._onVPanStart);
 				this.touch.off("hpanstart", this._onHPanStart);
 				keywords.deselect();
@@ -4641,7 +4635,8 @@ var NavigationView = View.extend({
 	_onNavigationClick: function(ev) {
 		if (!ev.defaultPrevented && this.model.has("bundle")) {
 			console.log("%s::_onNavigationClick [%s]", this.cid, ev.type, ev);
-			this.model.set("collapsed", !this.model.get("collapsed"));
+			// this.model.set("collapsed", !this.model.get("collapsed"));
+			this._changeCollapsed(!this.model.get("collapsed"));
 		}
 	},
 
@@ -8629,42 +8624,7 @@ var GraphView = CanvasView.extend({
 			window.scrollY,
 			document.body.scrollTop,
 			document.documentElement.scrollTop);
-		// console.log("%s:[%s]: " +
-		// 	"window.scrollY: %s " +
-		// 	"window.pageYOffset: %s " +
-		// 	"html.scrollTop: %s " +
-		// 	"html.scrollHeight: %s " +
-		// 	"html.clientHeight: %s " +
-		// 	"body.scrollTop: %s " +
-		// 	"body.scrollHeight: %s " +
-		// 	"body.clientHeight: %s " +
-		// 	"#container.scrollTop: %s", this.cid, type,
-		// 	window.scrollY,
-		// 	window.pageYOffset,
-		// 	document.documentElement.scrollTop,
-		// 	document.documentElement.scrollHeight,
-		// 	document.documentElement.clientHeight,
-		// 	document.body.scrollTop,
-		// 	document.body.scrollHeight,
-		// 	document.body.clientHeight,
-		// 	document.body.firstElementChild.scrollTop
-		// );
 	},
-
-	// _addListListeners: function(d) {
-	// 	this.listenTo(d.srcView, {
-	// 		"select:one": function(model) {
-	// 			this.listenToOnce(d.destView, "view:render:after",
-	// 				function(view) {
-	// 					d.srcItem = d.srcView.collection.selected;
-	// 					d.destItems = d.destView.filteredItems;
-	// 				});
-	// 		},
-	// 		"select:none": function() {
-	// 			d.srcItem = d.destItems = null;
-	// 		}
-	// 	});
-	// },
 
 	/** @override */
 	measureCanvas: function(w, h) {
