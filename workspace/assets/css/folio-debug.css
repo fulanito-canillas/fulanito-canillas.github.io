@@ -1464,9 +1464,19 @@ html.fullwidth-small {
   .debug-blocks #navigation {
     outline: 0.5rem solid rgba(250, 126, 112, 0.25);
     outline-offset: -0.5rem; }
+    .debug-blocks #navigation:hover {
+      outline: 0.75rem dashed rgba(250, 126, 112, 0.75);
+      outline-offset: -0.75rem; }
     .debug-blocks #navigation.container-changing {
       outline: 0.5rem dashed rgba(250, 126, 112, 0.6);
       outline-offset: -0.5rem; }
+    .debug-blocks #navigation .graph {
+      outline: 0.25rem dashed rgba(96, 159, 96, 0.25);
+      outline-offset: 0; }
+      .debug-blocks #navigation .graph:hover {
+        outline: 0.5rem dashed rgba(96, 159, 96, 0.75);
+        outline-offset: 0; }
+    .debug-blocks #navigation #article-list-wrapper,
     .debug-blocks #navigation #site-name-wrapper,
     .debug-blocks #navigation .list {
       outline: 1px solid Crimson;
@@ -1483,12 +1493,12 @@ html.fullwidth-small {
     .debug-blocks #navigation .list-item .label {
       outline: 1px solid #fa7e70;
       outline-offset: -1px; }
-    .debug-blocks #navigation .graph {
-      outline: 2px dashed rgba(96, 159, 96, 0.75);
-      outline-offset: 0; }
   .debug-blocks #content {
     outline: 0.5rem solid rgba(0, 191, 255, 0.25);
     outline-offset: -0.5rem; }
+    .debug-blocks #content:hover {
+      outline: 0.75rem dashed rgba(0, 191, 255, 0.75);
+      outline-offset: -0.75rem; }
     .debug-blocks #content.container-changing {
       outline: 0.5rem dashed rgba(0, 191, 255, 0.6);
       outline-offset: -0.5rem; }

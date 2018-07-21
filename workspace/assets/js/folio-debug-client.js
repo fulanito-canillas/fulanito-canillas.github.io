@@ -3078,11 +3078,20 @@ var stripTags = require("utils/strings/stripTags");
 // var prefixedProperty = require("utils/prefixedProperty");
 // /** @type {Function} */
 // var prefixedEvent = require("utils/prefixedEvent");
+// /** @type {module:hammerjs.Pan} */
+// var Pan = Hammer.Pan;
+
+/** @type {module:app/view/base/TouchManager} */
+var TouchManager = require("app/view/base/TouchManager");
+/** @type {module:hammerjs} */
+var Hammer = require("hammerjs");
+/** @type {module:utils/touch/SmoothPanRecognizer} */
+var Pan = require("utils/touch/SmoothPanRecognizer");
+/** @type {module:hammerjs.Tap} */
+var Tap = Hammer.Tap;
 
 /** @type {module:app/control/Globals} */
 var Globals = require("app/control/Globals");
-/** @type {module:app/view/base/TouchManager} */
-var TouchManager = require("app/view/base/TouchManager");
 /** @type {module:app/control/Controller} */
 var controller = require("app/control/Controller");
 /** @type {module:app/model/AppState} */
@@ -3131,18 +3140,34 @@ var AppViewProto = {
 		},
 	},
 
+	properties: {
+		navigation: {
+			get: function() {
+				return this._navigation ||
+					(this._navigation = this.el.querySelector("#navigation"));
+			}
+		},
+		content: {
+			get: function() {
+				return this._content ||
+					(this._content = this.el.querySelector("#content"));
+			}
+		},
+	},
+
 	/** @override */
 	initialize: function(options) {
 		/* elements */
 		// this.routeEl = this.el;
 		// this.stateEl = this.el
 		this.breakpointEl = this.el;
-		this.touchEl = document.body;
+		// this.touchEl = document.body;
 		// this.touchEl = document.getElementById("containter");
 
 		/* create single hammerjs manager */
-		this.touch = TouchManager.init(this.touchEl);
-		this.touch.set({
+		var vpan, hpan;
+		hpan = vpan = TouchManager.init(document.body);
+		hpan.set({
 			enable: (function() {
 				return this.el.scrollHeight == this.el.clientHeight;
 				// return this.el.scrollTop === 0;
@@ -3150,6 +3175,27 @@ var AppViewProto = {
 				// return this.model.get("collapsed") && this.model.get("withBundle");
 			}).bind(this)
 		});
+
+		// var vpan = new Hammer(this.navigation, {
+		// 	recognizers: [
+		// 		[Pan, {
+		// 			event: 'vpan',
+		// 			direction: Hammer.DIRECTION_VERTICAL,
+		// 			enable: (function() {
+		// 				return this.el.scrollHeight == this.el.clientHeight;
+		// 			}).bind(this)
+		// 		}],
+		// 	]
+		// });
+		// var hpan = new Hammer(this.content, {
+		// 	recognizers: [
+		// 			[Tap],
+		// 			[Pan, {
+		// 			event: 'hpan',
+		// 			direction: Hammer.DIRECTION_HORIZONTAL,
+		// 			}]
+		// 		]
+		// });
 
 		// this._afterRender = this._afterRender.bind(this);
 		this._onResize = this._onResize.bind(this);
@@ -3177,12 +3223,17 @@ var AppViewProto = {
 
 		/* initialize views */
 		this.navigationView = new NavigationView({
-			el: "#navigation",
-			model: this.model
+			el: this.navigation,
+			model: this.model,
+			vpan: vpan,
+			hpan: hpan
 		});
+
 		this.contentView = new ContentView({
-			el: "#content",
-			model: this.model
+			el: this.content,
+			model: this.model,
+			vpan: vpan,
+			hpan: hpan,
 		});
 
 		/* Google Analytics */
@@ -3449,7 +3500,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":117}],50:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","hammerjs":"hammerjs","underscore":"underscore","utils/strings/stripTags":117,"utils/touch/SmoothPanRecognizer":118}],50:[function(require,module,exports){
 /**
  * @module app/view/NavigationView
  */
@@ -3461,8 +3512,8 @@ var _ = require("underscore");
 var Globals = require("app/control/Globals");
 /** @type {module:utils/TransformHelper} */
 var TransformHelper = require("utils/TransformHelper");
-/** @type {module:app/view/base/TouchManager} */
-var TouchManager = require("app/view/base/TouchManager");
+// /** @type {module:app/view/base/TouchManager} */
+// var TouchManager = require("app/view/base/TouchManager");
 
 /** @type {module:app/control/Controller} */
 var controller = require("app/control/Controller");
@@ -3536,7 +3587,9 @@ var ContentView = View.extend({
 		_.bindAll(this, "_onVPanStart", "_onVPanMove", "_onVPanFinal", "_onCollapsedEvent");
 
 		this.transforms = new TransformHelper();
-		this.touch = TouchManager.getInstance();
+		// this.touch = options.touch || new Error("no touch"); //TouchManager.getInstance();
+		this.vpan = options.vpan || new Error("no vpan");
+		this.hpan = options.hpan || new Error("no hpan");
 
 		this.listenTo(this.model, "change", this._onModelChange);
 
@@ -3695,17 +3748,17 @@ var ContentView = View.extend({
 	_onModelChange: function() {
 		if (this.model.hasChanged("withBundle")) {
 			if (this.model.get("withBundle")) {
-				this.touch.on("vpanstart", this._onVPanStart);
+				this.vpan.on("vpanstart", this._onVPanStart);
 			} else {
-				this.touch.off("vpanstart", this._onVPanStart);
+				this.vpan.off("vpanstart", this._onVPanStart);
 			}
 		}
 		if (this.model.hasChanged("collapsed") || this.model.hasChanged("withBundle")) {
 			if (this.model.get("withBundle") && !this.model.get("collapsed")) {
-				this.touch.on("hpanleft hpanright", this._onCollapsedEvent);
+				this.hpan.on("hpanleft hpanright", this._onCollapsedEvent);
 				this.el.addEventListener("click", this._onCollapsedEvent, false);
 			} else {
-				this.touch.off("hpanleft hpanright", this._onCollapsedEvent);
+				this.hpan.off("hpanleft hpanright", this._onCollapsedEvent);
 				this.el.removeEventListener("click", this._onCollapsedEvent, false);
 			}
 		}
@@ -3719,8 +3772,8 @@ var ContentView = View.extend({
 	_collapsedOffsetY: Globals.COLLAPSE_OFFSET,
 
 	_onVPanStart: function(ev) {
-		this.touch.on("vpanmove", this._onVPanMove);
-		this.touch.on("vpanend vpancancel", this._onVPanFinal);
+		this.vpan.on("vpanmove", this._onVPanMove);
+		this.vpan.on("vpanend vpancancel", this._onVPanFinal);
 
 		this.transforms.stopAllTransitions();
 		// this.transforms.clearAllOffsets();
@@ -3760,8 +3813,8 @@ var ContentView = View.extend({
 	},
 
 	_onVPanFinal: function(ev) {
-		this.touch.off("vpanmove", this._onVPanMove);
-		this.touch.off("vpanend vpancancel", this._onVPanFinal);
+		this.vpan.off("vpanmove", this._onVPanMove);
+		this.vpan.off("vpanend vpancancel", this._onVPanFinal);
 
 		// FIXME: model.collapsed may have already changed, _onVPanMove would run with wrong values:
 		// model.collapsed is changed in a setImmediate callback from NavigationView.
@@ -3918,7 +3971,7 @@ var ContentView = View.extend({
 			rendererFunction: rendererFunction,
 			requireSelection: false,
 			direction: Carousel.DIRECTION_HORIZONTAL,
-			touch: this.touch,
+			touch: this.hpan,
 		});
 		controller.listenTo(view, {
 			"view:select:one": controller.selectMedia,
@@ -3993,7 +4046,7 @@ var ContentView = View.extend({
 });
 
 module.exports = ContentView;
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":96,"./template/CollectionStack.Media.hbs":97,"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/base/TouchManager":57,"app/view/base/View":58,"app/view/component/ArticleView":62,"app/view/component/Carousel":63,"app/view/component/CollectionStack":65,"app/view/component/SelectableListView":70,"app/view/render/CarouselRenderer":81,"app/view/render/DotNavigationRenderer":86,"app/view/render/ImageRenderer":88,"app/view/render/SequenceRenderer":93,"app/view/render/VideoRenderer":95,"underscore":"underscore","utils/TransformHelper":103}],51:[function(require,module,exports){
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":96,"./template/CollectionStack.Media.hbs":97,"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/base/View":58,"app/view/component/ArticleView":62,"app/view/component/Carousel":63,"app/view/component/CollectionStack":65,"app/view/component/SelectableListView":70,"app/view/render/CarouselRenderer":81,"app/view/render/DotNavigationRenderer":86,"app/view/render/ImageRenderer":88,"app/view/render/SequenceRenderer":93,"app/view/render/VideoRenderer":95,"underscore":"underscore","utils/TransformHelper":103}],51:[function(require,module,exports){
 /**
  * @module app/view/DebugToolbar
  */
@@ -4088,6 +4141,7 @@ var DebugToolbar = View.extend({
 		/* - - - - - - - - - - - - - - - - */
 		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), document.body);
 		this.initializeClassToggle("debug-blocks", this.el.querySelector("#toggle-blocks a"), container);
+		this.initializeClassToggle("debug-graph", this.el.querySelector("#toggle-graph a"), container);
 		this.initializeClassToggle("debug-mdown", this.el.querySelector("#toggle-mdown a"), container);
 		this.initializeClassToggle("debug-logs", this.el.querySelector("#toggle-logs a"), container);
 		this.initializeClassToggle("debug-tx", this.el.querySelector("#toggle-tx a"), container,
@@ -4206,8 +4260,8 @@ var Hammer = require("hammerjs");
 var Globals = require("app/control/Globals");
 /** @type {module:utils/TransformHelper} */
 var TransformHelper = require("utils/TransformHelper");
-/** @type {module:app/view/base/TouchManager} */
-var TouchManager = require("app/view/base/TouchManager");
+// /** @type {module:app/view/base/TouchManager} */
+// var TouchManager = require("app/view/base/TouchManager");
 
 /** @type {module:app/control/Controller} */
 var controller = require("app/control/Controller");
@@ -4271,7 +4325,9 @@ var NavigationView = View.extend({
 		// };
 		this.itemViews = [];
 		this.transforms = new TransformHelper();
-		this.touch = TouchManager.getInstance();
+		// this.touch = options.touch || new Error("no touch"); //TouchManager.getInstance();
+		this.vpan = options.vpan || new Error("no vpan");
+		this.hpan = options.hpan || new Error("no hpan");
 
 		this.listenTo(this.model, "change", this._onModelChange);
 
@@ -4302,24 +4358,23 @@ var NavigationView = View.extend({
 
 		this.listenTo(this.graph, "view:render:before", function(view, flags) {
 			var vmax;
-			if (flags & (View.SIZE_INVALID | View.MODEL_INVALID)) {
+			if (!view.el.style.height) {
+				// if (flags & (View.SIZE_INVALID | View.MODEL_INVALID)) {
 				// if ((this.bundleList.renderFlags | View.SIZE_INVALID) ||
 				// 	(this.keywordList.renderFlags | View.SIZE_INVALID)) {
-				// 	view.el.style.height = "";
-				// } else {
+				// }
 				vmax = Math.max(
 					this.bundleList._metrics.height,
 					this.keywordList._metrics.height
 				);
-				if (vmax) {
+				if (_.isNumber(vmax)) {
 					view.el.style.height = vmax + "px";
+					console.log("%s:[view:render:before][once]:%s [%s] heights:[%i, %i] (max %i)",
+						this.cid, view.cid, View.flagsToString(flags),
+						this.bundleList._metrics.height,
+						this.keywordList._metrics.height,
+						vmax);
 				}
-				// }
-				console.log("%s:%s[view:render:before] [%s] h: %s, %s maxh: %o",
-					this.cid, view.cid, View.flagsToString(flags),
-					this.bundleList._metrics.height,
-					this.keywordList._metrics.height,
-					vmax || 'invalid');
 			}
 		});
 		// this.listenTo(this.bundleList, "view:render:after", function(view, flags) {
@@ -4392,24 +4447,27 @@ var NavigationView = View.extend({
 		var whenListsRendered = Promise.all([
 			this.bundleList.whenRendered(),
 			this.keywordList.whenRendered()
-		]).then((function(arr) {
-			var vmax = arr.reduce(function(a, o) {
+		]).then((function(result) {
+			var vmax = result.reduce(function(a, o) {
 				return Math.max(a, o._metrics.height);
 			}, 0);
 			console.log("%s:[whenRendered][flags: %s] height: %o",
 				this.cid, View.flagsToString(flags), vmax);
 			this.graph.el.style.height = vmax + "px";
 			this.el.style.minHeight = vmax + "px";
+			return result;
 		}.bind(this)), (function(reason) {
 			console.warn("%s:[whenRendered] failed: %o", this.cid, reason);
 		}.bind(this)));
 
 		Promise.all([whenListsRendered, this.transforms.promise()])
-			.then(function(arr) {
-				console.log("====== navigationView listsRendered + transitionsEnd");
-			}, function(arr) {
-				console.warn("====== navigationView listsRendered + transitionsEnd");
-			});
+			.then(function(result) {
+				console.log("====== navigationView [listsRendered + transitionsEnd] [%s]", View.flagsToString(flags), result);
+				this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+			}.bind(this), function(reason) {
+				console.warn("====== navigationView [listsRendered + transitionsEnd] [%s]", View.flagsToString(flags), reason);
+				this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+			}.bind(this));
 
 		// children loop
 		// - - - - - - - - - - - - - - - - -
@@ -4425,40 +4483,41 @@ var NavigationView = View.extend({
 
 		// graph
 		// - - - - - - - - - - - - - - - - -
-		/* collapsed has not changed, no bundle selected */
-		if ((flags & (View.SIZE_INVALID | ~View.MODEL_INVALID))
-			&& !this.model.hasChanged("collapsed")
-			&& !this.model.get("withBundle")) {
-			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
-			if (!this.skipTransitions) {
-				this.graph.renderNow();
-			}
-		}
-		/* NavigationView has resized while uncollapsed,
-		   but model is unchanged */
-		else if ((flags & View.SIZE_INVALID) && !this.model.get("collapsed")) {
-			// console.info("%s::renderFrame", this.cid, "NavigationView has resized");
-			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
-		}
+		// if ((flags & (View.SIZE_INVALID | ~View.MODEL_INVALID))
+		// 	/* collapsed has not changed, no bundle selected */
+		// 	&& !this.model.hasChanged("collapsed")
+		// 	&& !this.model.get("withBundle")) {
+		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+		// 	if (!this.skipTransitions) {
+		// 		this.graph.renderNow();
+		// 	}
+		// }
+		// else if ((flags & View.SIZE_INVALID) && !this.model.get("collapsed")) {
+		// 	/* NavigationView has resized while uncollapsed,
+		// 	but model is unchanged */
+		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+		// }
 		this.skipTransitions = false;
 	},
 
 	_whenTransitionsEnd: function(result) {
 		console.info("%s::_whenTransitionsEnd", this.cid);
 		this.el.classList.remove("container-changing");
-		if (Globals.BREAKPOINTS["desktop-small"].matches
-			|| !this.model.get("collapsed")) {
-			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID).renderNow();
-		}
+		// if (!Globals.BREAKPOINTS["desktop-small"].matches)
+		// 	return;
+		// if (!this.model.get("collapsed")) {
+		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
+		// }
 	},
 
 	_whenTransitionsAbort: function(reason) {
 		console.warn("%s::_whenTransitionsAbort %o", this.cid, reason);
 		this.el.classList.remove("container-changing");
-		if (Globals.BREAKPOINTS["desktop-small"].matches
-			|| !this.model.get("collapsed")) {
-			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID).renderNow();
-		}
+		// if (!Globals.BREAKPOINTS["desktop-small"].matches)
+		// 	return;
+		// if (!this.model.get("collapsed")) {
+		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
+		// }
 	},
 
 	/* -------------------------------
@@ -4597,15 +4656,15 @@ var NavigationView = View.extend({
 			// this.keywordList.refresh()
 			if (this.model.get("withBundle")) {
 				this.graph.el.addEventListener(pointerupName, this._onNavigationClick);
-				this.touch.on("vpanstart", this._onVPanStart);
-				this.touch.on("hpanstart", this._onHPanStart);
-				// this.touch.on("tap", this._onTap);
+				this.vpan.on("vpanstart", this._onVPanStart);
+				this.hpan.on("hpanstart", this._onHPanStart);
+				// this.hpan.on("tap", this._onTap);
 			} else {
 				this.graph.el.removeEventListener(pointerupName, this._onNavigationClick);
-				this.touch.off("vpanstart", this._onVPanStart);
-				this.touch.off("hpanstart", this._onHPanStart);
+				this.vpan.off("vpanstart", this._onVPanStart);
+				this.hpan.off("hpanstart", this._onHPanStart);
 				keywords.deselect();
-				// this.touch.off("tap", this._onTap);
+				// this.hpan.off("tap", this._onTap);
 			}
 			// this.graph.valueTo()
 		}
@@ -4708,8 +4767,8 @@ var NavigationView = View.extend({
 			this.transforms.get(this.keywordList.wrapper).clearCapture();
 			this._onHPanMove(ev);
 
-			this.touch.on("hpanmove", this._onHPanMove);
-			this.touch.on("hpanend hpancancel", this._onHPanFinal);
+			this.hpan.on("hpanmove", this._onHPanMove);
+			this.hpan.on("hpanend hpancancel", this._onHPanFinal);
 		}
 	},
 
@@ -4735,8 +4794,8 @@ var NavigationView = View.extend({
 	},
 
 	_onHPanFinal: function(ev) {
-		this.touch.off("hpanmove", this._onHPanMove);
-		this.touch.off("hpanend hpancancel", this._onHPanFinal);
+		this.hpan.off("hpanmove", this._onHPanMove);
+		this.hpan.off("hpanend hpancancel", this._onHPanFinal);
 
 		/* NOTE: if there is no model change, set tx here. Otherwise just wait for render */
 		var kTf = this.transforms.get(this.keywordList.wrapper);
@@ -4759,8 +4818,8 @@ var NavigationView = View.extend({
 	_collapsedOffsetY: Globals.COLLAPSE_OFFSET,
 
 	_onVPanStart: function(ev) {
-		this.touch.on("vpanmove", this._onVPanMove);
-		this.touch.on("vpanend vpancancel", this._onVPanFinal);
+		this.vpan.on("vpanmove", this._onVPanMove);
+		this.vpan.on("vpanend vpancancel", this._onVPanFinal);
 
 		this.transforms.stopTransition(this.bundleList.el, this.keywordList.el); //, this.graph.el);
 		// this.transforms.clearOffset(this.bundleList.el, this.keywordList.el);
@@ -4806,8 +4865,8 @@ var NavigationView = View.extend({
 	},
 
 	_onVPanFinal: function(ev) {
-		this.touch.off("vpanmove", this._onVPanMove);
-		this.touch.off("vpanend vpancancel", this._onVPanFinal);
+		this.vpan.off("vpanmove", this._onVPanMove);
+		this.vpan.off("vpanend vpancancel", this._onVPanFinal);
 
 		this._onVPanMove(ev);
 		this.setImmediate(function() {
@@ -4954,7 +5013,7 @@ var NavigationView = View.extend({
 			this._transformObserver = new MutationObserver(this._onTransformMutation);
 		}
 		this._transformObserver.observe(target, { attributes: true, attributeFilter: ["style"] });
-		this.touch.on("hpanend hpancancel", this._endTransformObserve);
+		this.hpan.on("hpanend hpancancel", this._endTransformObserve);
 		this.transforms.get(this.keywordList.wrapper)
 			.stopTransition()
 			.clearOffset()
@@ -4964,7 +5023,7 @@ var NavigationView = View.extend({
 
 	_endTransformObserve: function() {
 		this._transformObserver.disconnect();
-		this.touch.off("hpanend hpancancel", this._endTransformObserve);
+		this.hpan.off("hpanend hpancancel", this._endTransformObserve);
 		this.transforms.get(this.keywordList.wrapper)
 			.clearOffset()
 			.runTransition(tx.NOW)
@@ -4996,7 +5055,7 @@ var NavigationView = View.extend({
 });
 
 module.exports = NavigationView;
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/model/collection/KeywordCollection":40,"app/model/collection/TypeCollection":41,"app/view/base/TouchManager":57,"app/view/base/View":58,"app/view/component/ArticleButton":61,"app/view/component/FilterableListView":66,"app/view/component/GraphView":67,"app/view/component/GroupingListView":68,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103}],53:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/model/collection/KeywordCollection":40,"app/model/collection/TypeCollection":41,"app/view/base/View":58,"app/view/component/ArticleButton":61,"app/view/component/FilterableListView":66,"app/view/component/GraphView":67,"app/view/component/GroupingListView":68,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103}],53:[function(require,module,exports){
 (function (DEBUG){
 /* global Path2D */
 /**
@@ -5131,8 +5190,8 @@ var CanvasView = View.extend({
 
 		var s = getComputedStyle(this.el);
 
-		this._canvasWidth = this.el.offsetWidth;
-		this._canvasHeight = this.el.offsetHeight;
+		this._canvasWidth = this.el.clientWidth;
+		this._canvasHeight = this.el.clientHeight;
 
 		if (s.boxSizing === "border-box") {
 			var m = getBoxEdgeStyles(s);
@@ -5548,6 +5607,7 @@ if (DEBUG) {
 	// 	// 	return retval;
 	// 	// });
 
+	/*
 	var wrapConsole = function(prefix) {
 		var shift = [].shift;
 		var fnNames = ["group", "log", "info", "warn", "error"];
@@ -5565,15 +5625,16 @@ if (DEBUG) {
 			});
 		}
 	}
+	*/
 
 	// log frame end
 	_runQueue = _.wrap(_runQueue, function(fn, tstamp) {
 		var retval;
-		var unwrap = wrapConsole("[raf " + _rafId + "]");
+		// var unwrap = wrapConsole("[raf " + _rafId + "]");
 		// console.group("FrameQueue #" + _rafId);
 		retval = fn(tstamp);
 		// console.groupEnd();
-		unwrap();
+		// unwrap();
 		return retval;
 	});
 
@@ -5881,12 +5942,12 @@ module.exports = eventMap;
  * @module app/view/base/TouchManager
  */
 
+// /** @type {module:app/control/Globals} */
+// var Globals = require("app/control/Globals");
 // /** @type {module:underscore} */
 // var _ = require("underscore");
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
-/** @type {module:app/control/Globals} */
-var Globals = require("app/control/Globals");
 
 /** @type {module:hammerjs.Tap} */
 var Tap = Hammer.Tap;
@@ -6087,7 +6148,7 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
-},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":118}],58:[function(require,module,exports){
+},{"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":118}],58:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
 /**
@@ -6926,10 +6987,15 @@ module.exports = ArticleView;
 var _ = require("underscore");
 // /** @type {module:backbone} */
 // var Backbone = require("backbone");
-/** @type {module:hammerjs} */
-var Hammer = require("hammerjs");
 /** @type {module:backbone.babysitter} */
 var Container = require("backbone.babysitter");
+
+/** @type {module:hammerjs} */
+var Hammer = require("hammerjs");
+/** @type {module:utils/touch/SmoothPanRecognizer} */
+var Pan = require("utils/touch/SmoothPanRecognizer");
+/** @type {module:hammerjs.Tap} */
+var Tap = Hammer.Tap;
 
 /** @type {module:app/control/Globals} */
 var Globals = require("app/control/Globals");
@@ -7038,12 +7104,13 @@ var isValidTouchManager = function(touch, direction) {
 
 var createTouchManager = function(el, dir, thres) {
 	var touch = new Hammer.Manager(el);
-	var pan = new Hammer.Pan({
-		threshold: 15,
-		direction: dir,
+	var pan = new Pan({
+		event: "hpan",
+		threshold: Globals.THRESHOLD,
+		direction: Hammer.DIRECTION_HORIZONTAL,
 	});
-	var tap = new Hammer.Tap({
-		threshold: thres - 1,
+	var tap = new Tap({
+		threshold: Globals.THRESHOLD - 1,
 		interval: 50,
 		time: 200,
 	});
@@ -7147,7 +7214,7 @@ var CarouselProto = {
 		if (isValidTouchManager(options.touch, this.direction)) {
 			this.touch = options.touch;
 		} else {
-			console.warn("%s::initializeHammer using private Hammer instance", this.cid);
+			console.warn("%s::initialize creating Hammer instance", this.cid);
 			this.touch = createTouchManager(this.el, this.direction);
 			// this.on("view:removed", this.touch.destroy, this.touch);
 			this.listenTo(this, "view:removed", function() {
@@ -7921,7 +7988,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":112,"utils/prefixedStyleName":113}],64:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":112,"utils/prefixedStyleName":113,"utils/touch/SmoothPanRecognizer":118}],64:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -8596,7 +8663,9 @@ var GraphView = CanvasView.extend({
 		this.__traceScroll = _.debounce(this.__traceScroll, 100, false)
 
 		var viewportChanged = function(ev) {
-			// this.__traceScroll(ev.type);
+			console.log("$s:[%s] event: %o", this.cid, ev.type, ev);
+
+			this.__traceScroll(ev.type);
 			// this._groupRects = null;
 			// this.invalidate(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
 			this.requestRender(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
@@ -8608,7 +8677,7 @@ var GraphView = CanvasView.extend({
 		// window.addEventListener("wheel",
 		// 		_.debounce(viewportChanged, 100, false), false);
 		window.addEventListener("scroll", viewportChanged, false);
-		window.addEventListener("wheel", viewportChanged, false);
+		// window.addEventListener("wheel", viewportChanged, false);
 		window.addEventListener("resize", viewportChanged, false);
 		window.addEventListener("orientationchange", viewportChanged, false);
 
@@ -8617,13 +8686,28 @@ var GraphView = CanvasView.extend({
 	},
 
 	__traceScroll: function(type) {
-		console.log("%s:[%s]: DPR:%s this.el.scrollTop:%s window.scrollY:%s body.scrollTop:%s html.scrollTop:%s",
-			this.cid, type,
-			this._canvasRatio,
-			this.el.scrollTop,
+		var tpl = "%s:[%s] DPR:%i " +
+			"[window: %i %i] " +
+			"[html: %i %i %i] " +
+			"[body: %i %i %i] " +
+			"[container: %i %i %i] " +
+			"[graph: %i %i %i]";
+		console.log(tpl, this.cid, type, this._canvasRatio,
 			window.scrollY,
+			window.pageYOffset,
+			document.documentElement.clientHeight,
+			document.documentElement.scrollTop,
+			document.documentElement.scrollHeight,
+			document.body.clientHeight,
 			document.body.scrollTop,
-			document.documentElement.scrollTop);
+			document.body.scrollHeight,
+			document.body.firstElementChild.clientHeight,
+			document.body.firstElementChild.scrollTop,
+			document.body.firstElementChild.scrollHeight,
+			this.el.clientHeight,
+			this.el.scrollTop,
+			this.el.scrollHeight
+		);
 	},
 
 	/** @override */
@@ -8655,7 +8739,12 @@ var GraphView = CanvasView.extend({
 		this._a2b.s.strokeStyle = this._a2b.s.fillStyle =
 			this._a2b.strokeStyleFn(this._color, bgColor, lnColor);
 		this._b2a.s.strokeStyle = this._b2a.s.fillStyle =
-			this._b2a.strokeStyleFn(this._color, bgColor, lnColor)
+			this._b2a.strokeStyleFn(this._color, bgColor, lnColor);
+
+		if (DEBUG) {
+			this._debugBlocks = this.el.matches(".debug-blocks ." + this.className);
+			this._debugGraph = this.el.matches(".debug-graph ." + this.className);
+		}
 	},
 
 	_setStyle: function(s) {
@@ -8791,9 +8880,11 @@ var GraphView = CanvasView.extend({
 
 		this._groupRects.forEach(function(r) {
 			this._ctx.clearRect(r.left, r.top, r.width, r.height);
-			// r = inflateRect(r, 2, 2);
-			// CanvasHelper.drawRect(this._ctx, _dStyles["blue"],
-			// 	r.left, r.top, r.width, r.height);
+			if (this.el.matches(".debug-blocks canvas")) {
+				r = inflateRect(r, 2, 2);
+				CanvasHelper.drawRect(this._ctx, _dStyles["blue"],
+					r.left, r.top, r.width, r.height);
+			}
 		}, this);
 	},
 
@@ -9008,7 +9099,6 @@ var GraphView = CanvasView.extend({
 	},
 
 	_drawConnector: function(p, i, pp) {
-
 		this._ctx.beginPath();
 		this._ctx.moveTo(p.x2, p.cy2);
 		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
@@ -9029,27 +9119,29 @@ var GraphView = CanvasView.extend({
 
 		this._ctx.stroke();
 
-		// if (DEBUG) {
-		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
-		// 		p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
-		// 	if (i === 0) {
-		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["blue"], p.x1);
-		// 		CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
-		// 		CanvasHelper.drawVGuide(this._ctx, _dStyles["lightskyblue"], p.cx1);
-		// 		CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
-		// 	}
-		// 	CanvasHelper.drawHGuide(this._ctx, _dStyles["silver"], p.cy2);
-		// 	// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
-		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
-		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
-		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
-		// 	CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
-		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
-		//
-		// 	CanvasHelper.drawVGuide(this._ctx, _dStyles["yellowgreen"], p.cx2);
-		// 	CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
-		// 	CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
-		// }
+		if (DEBUG) {
+			if (this._debugGraph) {
+				CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
+					p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
+				if (i === 0) {
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["blue"], p.x1);
+					CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["lightskyblue"], p.cx1);
+					CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
+				}
+				CanvasHelper.drawHGuide(this._ctx, _dStyles["silver"], p.cy2);
+				// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
+				CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
+				CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
+				CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
+				CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
+				CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
+
+				CanvasHelper.drawVGuide(this._ctx, _dStyles["yellowgreen"], p.cx2);
+				CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
+				CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
+			}
+		}
 	},
 
 	_roundTo: function(n, p) {
@@ -9057,7 +9149,8 @@ var GraphView = CanvasView.extend({
 		return Math.round(n / p) * p;
 	},
 
-	/* _computeConnectors: function(d) {
+	/*
+	_computeConnectors: function(d) {
 		var rBase = d.s.radiusBase;
 		var rInc = d.s.radiusIncrement;
 		var sMin = d.xMin;
@@ -13366,7 +13459,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
-    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
+    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
     + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
     + "</p>\n	<ul>\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")

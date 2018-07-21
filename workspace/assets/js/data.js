@@ -78,7 +78,7 @@
 		{'id':91,'o':63,'name':'Homepage, with site navigation','bId':66,'srcIdx':0,'srcset':[{'src':'ivy-agency_0001_home2.png','mime':'image/png','w':1099,'h':791}]},
 		{'id':89,'o':62,'name':'Homepage','bId':66,'srcIdx':0,'srcset':[{'src':'ivy-agency_0000_home1.png','mime':'image/png','w':1099,'h':791}]},
 		{'id':88,'o':60,'name':'Backend Interface','bId':65,'srcIdx':0,'srcset':[{'src':'ivy-adminb.png','mime':'image/png','w':1100,'h':1190}],'attrs':['@classname:browser-safari']},
-		{'id':87,'o':61,'name':'Alternate','bId':65,'srcIdx':0,'srcset':[{'src':'ivy-admina.png','mime':'image/png','w':1100,'h':780}]},
+		{'id':87,'o':61,'name':'Alternate','bId':65,'srcIdx':0,'srcset':[{'src':'ivy-admina.png','mime':'image/png','w':1100,'h':780}],'attrs':['link-color:royalblue']},
 		{'id':84,'o':56,'name':'Forms &amp; Dialogs','bId':64,'srcIdx':0,'srcset':[{'src':'fpm_0009_forms-signin.png','mime':'image/png','w':960,'h':677},{'src':'fpm_0010_forms-error.png','mime':'image/png','w':960,'h':677}],'attrs':['@renderer:sequence']},
 		{'id':81,'o':54,'name':'Listings','bId':64,'srcIdx':0,'srcset':[{'src':'fpm_0001_list-table_infoalbum.png','mime':'image/png','w':960,'h':677},{'src':'fpm_0006_list-table_infosong.png','mime':'image/png','w':960,'h':677},{'src':'fpm_0005_list-table_keywords.png','mime':'image/png','w':960,'h':677},{'src':'fpm_0007_list-tiles_keywords.png','mime':'image/png','w':960,'h':677},{'src':'fpm_0008_list-covers.png','mime':'image/png','w':960,'h':677}],'attrs':['@renderer:sequence']},
 		{'id':78,'o':58,'name':'Downloads','bId':64,'srcIdx':0,'srcset':[{'src':'fpm_0004_user-downloads.png','mime':'image/png','w':960,'h':677}]},
