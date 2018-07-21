@@ -1326,7 +1326,7 @@ body {
     padding-right: 2vw; }
     .fullwidth .media-carousel .carousel-item {
       width: auto;
-      height: calc(100% - 7rem);
+      max-height: calc(100% - 7rem);
       left: 2vw;
       right: 2vw;
       margin-left: 6vw;

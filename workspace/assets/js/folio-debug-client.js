@@ -3203,7 +3203,7 @@ var AppViewProto = {
 		/* render on resize, onorientationchange, visibilitychange */
 		window.addEventListener("orientationchange", this._onResize, false);
 		// window.addEventListener("resize", this._onResize, false);
-		window.addEventListener("resize", _.debounce(this._onResize, 30, true /* immediate? */ ), false);
+		window.addEventListener("resize", _.debounce(this._onResize, 30, false), false);
 
 		// var h = function(ev) { console.log(ev.type, ev) };
 		// window.addEventListener("scroll", h, false);
@@ -4318,6 +4318,7 @@ var NavigationView = View.extend({
 		_.bindAll(this, "_onVPanStart", "_onVPanMove", "_onVPanFinal");
 		_.bindAll(this, "_onHPanStart", "_onHPanMove", "_onHPanFinal");
 		_.bindAll(this, "_whenTransitionsEnd", "_whenTransitionsAbort");
+		_.bindAll(this, "_whenListsRendered");
 		_.bindAll(this, "_onNavigationClick");
 
 		// this._metrics = {
@@ -4356,7 +4357,7 @@ var NavigationView = View.extend({
 		// 	"canvas:redraw": this._onGraphRedraw,
 		// });
 
-		this.listenTo(this.graph, "view:render:before", function(view, flags) {
+		/*this.listenTo(this.graph, "view:render:before", function(view, flags) {
 			var vmax;
 			if (!view.el.style.height) {
 				// if (flags & (View.SIZE_INVALID | View.MODEL_INVALID)) {
@@ -4376,7 +4377,7 @@ var NavigationView = View.extend({
 						vmax);
 				}
 			}
-		});
+		});*/
 		// this.listenTo(this.bundleList, "view:render:after", function(view, flags) {
 		// 	console.info("%s:[view:render:after %s]", this.cid, view.cid, View.flagsToString(flags & View.SIZE_INVALID));
 		// 		if (flags & View.SIZE_INVALID) {
@@ -4434,40 +4435,15 @@ var NavigationView = View.extend({
 			// );
 		}
 
-		if (flags & View.MODEL_INVALID) {
-			// if (this.model.hasChanged("collapsed")) {
-			//if ((this.model.hasChanged("collapsed") && !this.model.get("collapsed")) || (this.model.hasChanged("withBundle") && !this.model.get("withBundle"))) {
-			if (this.model.hasChanged("collapsed")
-				|| this.model.hasChanged("withBundle")
-				|| this.model.hasChanged("withArticle")) {
-				this.transforms.promise().then(this._whenTransitionsEnd, this._whenTransitionsAbort);
-			}
-		}
-
-		var whenListsRendered = Promise.all([
-			this.bundleList.whenRendered(),
-			this.keywordList.whenRendered()
-		]).then((function(result) {
-			var vmax = result.reduce(function(a, o) {
-				return Math.max(a, o._metrics.height);
-			}, 0);
-			console.log("%s:[whenRendered][flags: %s] height: %o",
-				this.cid, View.flagsToString(flags), vmax);
-			this.graph.el.style.height = vmax + "px";
-			this.el.style.minHeight = vmax + "px";
-			return result;
-		}.bind(this)), (function(reason) {
-			console.warn("%s:[whenRendered] failed: %o", this.cid, reason);
-		}.bind(this)));
-
-		Promise.all([whenListsRendered, this.transforms.promise()])
-			.then(function(result) {
-				console.log("====== navigationView [listsRendered + transitionsEnd] [%s]", View.flagsToString(flags), result);
-				this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
-			}.bind(this), function(reason) {
-				console.warn("====== navigationView [listsRendered + transitionsEnd] [%s]", View.flagsToString(flags), reason);
-				this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
-			}.bind(this));
+		// if (flags & View.MODEL_INVALID) {
+		// 	// if (this.model.hasChanged("collapsed")) {
+		// 	//if ((this.model.hasChanged("collapsed") && !this.model.get("collapsed")) || (this.model.hasChanged("withBundle") && !this.model.get("withBundle"))) {
+		// 	if (this.model.hasChanged("collapsed")
+		// 		|| this.model.hasChanged("withBundle")
+		// 		|| this.model.hasChanged("withArticle")) {
+		// 		this.transforms.promise().then(this._whenTransitionsEnd, this._whenTransitionsAbort);
+		// 	}
+		// }
 
 		// children loop
 		// - - - - - - - - - - - - - - - - -
@@ -4480,6 +4456,44 @@ var NavigationView = View.extend({
 				view.renderNow();
 			}
 		}, this);
+
+		var whenListsRendered = Promise.all([
+			this.bundleList.whenRendered(),
+			this.keywordList.whenRendered()
+		])
+			.then(
+				function(result) {
+					var vmax = result.reduce(function(a, o) {
+						return Math.max(a, o._metrics.height);
+					}, 0);
+					console.log("%s:[whenRendered][flags: %s] height: %o", this.cid, View.flagsToString(flags), vmax);
+					this.graph.el.style.height = vmax + "px";
+					// this.el.style.maxHeight = vmax + "px";
+					return result;
+				}.bind(this),
+				function(reason) {
+					console.warn("%s:[whenRendered] failed: %o", this.cid, reason);
+				}.bind(this)
+			);
+
+		Promise.all([
+			whenListsRendered,
+			this.transforms.promise()
+		])
+			.then(
+				function(result) {
+					console.log("%s:[listsRendered+transitionsEnd] [%s]", this.cid, View.flagsToString(flags), result);
+
+					this.el.classList.remove("container-changing");
+					this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+				}.bind(this),
+				function(reason) {
+					console.warn("%s:[listsRendered+transitionsEnd] [%s]", this.cid, View.flagsToString(flags), reason);
+
+					this.el.classList.remove("container-changing");
+					this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+				}.bind(this)
+			);
 
 		// graph
 		// - - - - - - - - - - - - - - - - -
@@ -4498,6 +4512,10 @@ var NavigationView = View.extend({
 		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
 		// }
 		this.skipTransitions = false;
+	},
+
+	_whenListsRendered: function(result) {
+
 	},
 
 	_whenTransitionsEnd: function(result) {
@@ -6773,7 +6791,7 @@ var ViewProto = {
 
 	invalidate: function(flags) {
 		if (flags !== void 0) {
-			if (DEBUG) {
+			/*if (DEBUG) {
 				if (!this._skipLog) {
 					if (this._renderFlags > 0) {
 						console.log("%s::invalidate [%s (%s)] + [%s (%s)]", this.cid, View.flagsToString(this._renderFlags), this._renderFlags, View.flagsToString(flags), flags);
@@ -6781,7 +6799,7 @@ var ViewProto = {
 						console.log("%s::invalidate [%s (%s)]", this.cid, View.flagsToString(flags), flags);
 					}
 				}
-			}
+			}*/
 			this._renderFlags |= flags;
 		}
 		return this;
@@ -8246,7 +8264,7 @@ var FilterableListView = View.extend({
 			this._collapsedChanged && changed.push("collapsed");
 			this._selectionChanged && changed.push("selection");
 			this._filterChanged && changed.push("filter");
-			console.log("%s::renderFrame [%s]", this.cid, changed.join(" "));
+			//console.log("%s::renderFrame [%s]", this.cid, changed.join(" "));
 		}
 
 		// collapsed transition flag
@@ -8579,12 +8597,11 @@ if (DEBUG) {
 		"grey", "silver"
 	]
 	.forEach(function(colorName) {
-		var rgbaValue = Color(colorName).alpha(0.75).rgbaString();
+		var rgbaValue = Color(colorName).alpha(0.5).rgbaString();
 
 		_dStyles[colorName] = _.defaults({
 			lineWidth: 0.75,
 			strokeStyle: rgbaValue,
-			setLineDash: [[10, 2]]
 		}, _dStyles["defaults"]);
 
 		_dStyles[colorName + "_fill"] = _.defaults({
@@ -8660,10 +8677,10 @@ var GraphView = CanvasView.extend({
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
 
-		this.__traceScroll = _.debounce(this.__traceScroll, 100, false)
+		// this.__traceScroll = _.debounce(this.__traceScroll, 100, false)
 
 		var viewportChanged = function(ev) {
-			console.log("$s:[%s] event: %o", this.cid, ev.type, ev);
+			console.log("%s:[%s] event: %o", this.cid, ev.type, ev);
 
 			this.__traceScroll(ev.type);
 			// this._groupRects = null;
@@ -8675,9 +8692,9 @@ var GraphView = CanvasView.extend({
 		// window.addEventListener("scroll",
 		// 		_.debounce(viewportChanged, 100, false), false);
 		// window.addEventListener("wheel",
-		// 		_.debounce(viewportChanged, 100, false), false);
+		// 	_.debounce(viewportChanged, 100, false), false);
 		window.addEventListener("scroll", viewportChanged, false);
-		// window.addEventListener("wheel", viewportChanged, false);
+		window.addEventListener("wheel", viewportChanged, false);
 		window.addEventListener("resize", viewportChanged, false);
 		window.addEventListener("orientationchange", viewportChanged, false);
 
@@ -8880,9 +8897,9 @@ var GraphView = CanvasView.extend({
 
 		this._groupRects.forEach(function(r) {
 			this._ctx.clearRect(r.left, r.top, r.width, r.height);
-			if (this.el.matches(".debug-blocks canvas")) {
+			if (this._debugGraph || this._debugBlocks) {
 				r = inflateRect(r, 2, 2);
-				CanvasHelper.drawRect(this._ctx, _dStyles["blue"],
+				CanvasHelper.drawRect(this._ctx, _dStyles["salmon"],
 					r.left, r.top, r.width, r.height);
 			}
 		}, this);
@@ -9099,6 +9116,20 @@ var GraphView = CanvasView.extend({
 	},
 
 	_drawConnector: function(p, i, pp) {
+		if (DEBUG) {
+			if (this._debugGraph) {
+				if (i === 0) {
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], p.x1);
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], p.cx1);
+					CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
+					CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
+				}
+				CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], p.cx2);
+				CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.cy2);
+				// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
+			}
+		}
+
 		this._ctx.beginPath();
 		this._ctx.moveTo(p.x2, p.cy2);
 		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
@@ -9118,26 +9149,16 @@ var GraphView = CanvasView.extend({
 		// this._ctx.lineTo(p.cx0, p.y1);
 
 		this._ctx.stroke();
-
 		if (DEBUG) {
 			if (this._debugGraph) {
 				CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
 					p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
-				if (i === 0) {
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["blue"], p.x1);
-					CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["lightskyblue"], p.cx1);
-					CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
-				}
-				CanvasHelper.drawHGuide(this._ctx, _dStyles["silver"], p.cy2);
-				// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
 				CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
 				CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
 				CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
 				CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
 				CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
 
-				CanvasHelper.drawVGuide(this._ctx, _dStyles["yellowgreen"], p.cx2);
 				CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
 				CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
 			}
