@@ -1651,7 +1651,7 @@ if (DEBUG) {
 }
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":42,"app/view/AppView":49,"app/view/helper/createColorStyleSheet":72,"app/view/template/_helpers":101,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"webfontloader":"webfontloader"}],33:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":45,"app/view/AppView":52,"app/view/helper/createColorStyleSheet":74,"app/view/template/_helpers":101,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"webfontloader":"webfontloader"}],33:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Controller
@@ -1890,7 +1890,7 @@ var Controller = Backbone.Router.extend({
 module.exports = new Controller();
 }).call(this,true)
 
-},{"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"backbone":"backbone","underscore":"underscore"}],34:[function(require,module,exports){
+},{"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"backbone":"backbone","underscore":"underscore"}],34:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Globals
@@ -1914,6 +1914,7 @@ module.exports = (function() {
 	g.PAN_THRESHOLD = 15; // px
 	g.COLLAPSE_THRESHOLD = 75; // px
 	g.COLLAPSE_OFFSET = parseInt(sass.temp["collapse_offset"]);
+	g.CLICK_EVENT = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
 
 	// breakpoints
 	// - - - - - - - - - - - - - - - - -
@@ -2108,7 +2109,254 @@ module.exports = (function() {
 }());
 }).call(this,true)
 
-},{"../../../sass/variables.json":119,"underscore":"underscore"}],35:[function(require,module,exports){
+},{"../../../sass/variables.json":120,"underscore":"underscore"}],35:[function(require,module,exports){
+/**
+ * @module app/view/DebugToolbar
+ */
+
+/** @type {module:underscore} */
+var _ = require("underscore");
+// /** @type {module:backbone} */
+// var Backbone = require("backbone");
+/** @type {module:cookies-js} */
+var Cookies = require("cookies-js");
+// /** @type {module:modernizr} */
+// var Modernizr = require("Modernizr");
+
+/** @type {module:app/control/Globals} */
+var Globals = require("app/control/Globals");
+// /** @type {module:app/control/Controller} */
+// var controller = require("app/control/Controller");
+
+/** @type {module:app/view/base/View} */
+var View = require("app/view/base/View");
+
+/** @type {Function} */
+var viewTemplate = require("./template/DebugToolbar.hbs");
+
+/** @type {Function} */
+var gridTemplate = require("./template/DebugToolbar.SVGGrid.hbs");
+
+/** @type {Function} */
+var sizeTemplate = _.template("<%= w %> \u00D7 <%= h %>");
+
+// var appStateSymbols = { withBundle: "b", withMedia: "m", collapsed: "c"};
+// var appStateKeys = Object.keys(appStateSymbols);
+
+var DebugToolbar = View.extend({
+
+	/** @override */
+	cidPrefix: "debugToolbar",
+	/** @override */
+	tagName: "div",
+	/** @override */
+	className: "toolbar",
+	/** @override */
+	template: viewTemplate,
+
+	/** @override */
+	properties: {
+		grid: {
+			get: function() {
+				return this._grid || (this._grid = this.createGridElement());
+			}
+		}
+	},
+
+	initialize: function(options) {
+		Cookies.defaults = {
+			expires: new Date(0x7fffffff * 1e3),
+			domain: String(window.location)
+				.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i)[1]
+		};
+
+		this.el.innerHTML = this.template({
+			tests: Modernizr,
+			navigator: window.navigator
+		});
+
+		/* toggle's target: container
+		/* - - - - - - - - - - - - - - - - */
+		var container = document.getElementById("container"); //.querySelector("#container");
+
+		/* create/attach svg grid element
+		/* - - - - - - - - - - - - - - - - */
+		container.insertBefore(this.createGridElement(), container.firstElementChild);
+
+		/* info elements
+		/* - - - - - - - - - - - - - - - - */
+		this.backendEl = this.el.querySelector("#edit-backend a");
+		this.mediaInfoEl = this.el.querySelector("#media-info span");
+		this.appStateEl = this.el.querySelector("#app-state");
+
+		/* toggle visibility
+		/* - - - - - - - - - - - - - - - - */
+		this.initializeClassToggle("show-links", this.el.querySelector(".debug-links #links-toggle"), this.el,
+			function(key, value) {
+				this.el.classList.toggle("not-" + key, !value);
+				// console.log("%s:initializeClassToggle:[callback] %o", this.cid, arguments);
+			}
+		);
+		this.initializeClassToggle("show-tests", this.el.querySelector("#toggle-tests a"), this.el);
+		this.initializeClassToggle("hide-passed", this.el.querySelector("#toggle-passed"), this.el);
+
+		/* toggle container classes
+		/* - - - - - - - - - - - - - - - - */
+		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), document.body);
+		this.initializeClassToggle("debug-blocks", this.el.querySelector("#toggle-blocks a"), container);
+		this.initializeClassToggle("debug-graph", this.el.querySelector("#toggle-graph a"), container);
+		this.initializeClassToggle("debug-mdown", this.el.querySelector("#toggle-mdown a"), container);
+		this.initializeClassToggle("debug-logs", this.el.querySelector("#toggle-logs a"), container);
+		this.initializeClassToggle("debug-tx", this.el.querySelector("#toggle-tx a"), container,
+			function(key, value) {
+				this.el.classList.toggle("show-tx", value);
+				this.el.classList.toggle("not-show-tx", !value);
+			}
+		);
+
+		this.initializeViewportInfo();
+
+		// this.initializeLayoutSelect();
+
+		this.listenTo(this.model, "change", this._onModelChange);
+		this._onModelChange();
+	},
+
+	initializeViewportInfo: function() {
+		var viewportInfoEl = this.el.querySelector("#viewport-info span");
+		var callback = function() {
+			viewportInfoEl.textContent = sizeTemplate({ w: window.innerWidth, h: window.innerHeight });
+		};
+		callback.call();
+		window.addEventListener("resize", _.debounce(callback, 100, false, false));
+	},
+
+	initializeToggle: function(key, toggleEl, callback) {
+		var ctx = this;
+		var toggleValue = Cookies.get(key) === "true";
+		callback.call(ctx, key, toggleValue);
+
+		toggleEl.addEventListener("click", function(ev) {
+			if (ev.defaultPrevented) return;
+			else ev.preventDefault();
+			toggleValue = !toggleValue;
+			Cookies.set(key, toggleValue ? "true" : "");
+			callback.call(ctx, key, toggleValue);
+		}, false);
+	},
+
+	initializeClassToggle: function(key, toggleEl, targetEl, callback) {
+		var hasCallback = _.isFunction(callback);
+
+		this.initializeToggle(key, toggleEl, function(key, toggleValue) {
+			targetEl.classList.toggle(key, toggleValue);
+			toggleEl.classList.toggle("toggle-enabled", toggleValue);
+			toggleEl.classList.toggle("color-reverse", toggleValue);
+			hasCallback && callback.apply(this, arguments);
+		});
+	},
+
+	_onModelChange: function() {
+		console.log("%s::_onModelChange changedAttributes: %o", this.cid, this.model.changedAttributes());
+		var i, ii, prop, el, els = this.appStateEl.children;
+		for (i = 0, ii = els.length; i < ii; i++) {
+			el = els[i];
+			prop = el.getAttribute("data-prop");
+			el.classList.toggle("has-value", this.model.get(prop));
+			el.classList.toggle("has-changed", this.model.hasChanged(prop));
+			el.classList.toggle("color-reverse", this.model.hasChanged(prop));
+		}
+
+		// NOTE: Always but rewrite CMS href.
+		// Only collapsed may have changed, but not worth all the logic
+		var attrVal = Globals.APP_ROOT + "symphony/";
+		switch (this.model.get("routeName")) {
+			case "article-item":
+				attrVal += "publish/articles/edit/" + this.model.get("article").id;
+				break;
+			case "bundle-item":
+				attrVal += "publish/bundles/edit/" + this.model.get("bundle").id;
+				break;
+			case "media-item":
+				attrVal += "publish/media/edit/" + this.model.get("media").id;
+				break;
+			case "root":
+				attrVal += "publish/bundles";
+				break;
+		}
+		this.backendEl.setAttribute("href", attrVal);
+
+		if (this.model.hasChanged("media")) {
+			if (this.model.has("media")) {
+				this.mediaInfoEl.textContent = sizeTemplate(this.model.get("media").get("source").toJSON());
+				this.mediaInfoEl.style.display = "";
+			} else {
+				this.mediaInfoEl.textContent = "";
+				this.mediaInfoEl.style.display = "none";
+			}
+		}
+	},
+
+	createGridElement: function() {
+		var el = document.createElement("div");
+		el.id = "grid-wrapper";
+		el.innerHTML = gridTemplate();
+		return el;
+	},
+});
+
+module.exports = DebugToolbar;
+},{"./template/DebugToolbar.SVGGrid.hbs":36,"./template/DebugToolbar.hbs":37,"app/control/Globals":34,"app/view/base/View":60,"cookies-js":"cookies-js","underscore":"underscore"}],36:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<svg id=\"debug-grid\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMaxYMid slice\" viewport-fill=\"hsl(0,0%,100%)\" viewport-fill-opacity=\"1\" style=\"fill:none;stroke:none;stroke-width:1px;fill:none;fill-rule:evenodd;\">\n<defs>\n	<pattern id=\"pat-baseline-12px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"12\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"3\" y2=\"3\" stroke-opacity=\"0.125\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"6\" y2=\"6\" stroke-opacity=\"0.375\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"9\" y2=\"9\" stroke-opacity=\"0.125\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-24px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"24\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-10px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"10\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.00\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"5\" y2=\"5\" stroke-opacity=\"0.75\"/>\n	</pattern>\n	<pattern id=\"pat-baseline-20px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n	<pattern id=\"pat-cols-220px\" x=\"0\" y=\"0\" width=\"220\" height=\"36\" patternUnits=\"userSpaceOnUse\">\n		<rect transform=\"translate(0,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<rect transform=\"translate(200,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<line transform=\"translate(20 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,60%)\" stroke-opacity=\"0.2\"/>\n		<line transform=\"translate(200 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.2\"/>\n\n		<line transform=\"translate(140 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n		<line transform=\"translate(80 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n\n		<line transform=\"translate(0 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n		<line transform=\"translate(220 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n	</pattern>\n</defs>\n<g id=\"debug-grid-body\" transform=\"translate(0 0.5)\">\n	<rect id=\"baseline\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	<g id=\"debug-grid-container\">\n		<g id=\"debug-grid-content\">\n			<rect id=\"baseline-content\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n			<line id=\"gct0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n			<line id=\"gct1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		</g>\n		<line id=\"gnv0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		<line id=\"gnv1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n	</g>\n\n	<g id=\"abs-cols\">\n		<rect id=\"columns\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	</g>\n\n	<g id=\"rel-cols\">\n		<line id=\"le\" class=\"vguide edge\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"re\" class=\"vguide edge\" x1=\"100%\" x2=\"100%\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gl0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"gl1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gr0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"gr1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gm\" class=\"vguide\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	</g>\n</g>\n</svg>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":21}],37:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "	<dd id=\"select-layout\">\n		<select size=1>\n"
+    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.layouts : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "		</select>\n	</dd>\n";
+},"2":function(container,depth0,helpers,partials,data) {
+    var alias1=container.lambda, alias2=container.escapeExpression;
+
+  return "			<option value=\""
+    + alias2(alias1(depth0, depth0))
+    + "\">"
+    + alias2(alias1(depth0, depth0))
+    + "</option>\n";
+},"4":function(container,depth0,helpers,partials,data) {
+    var stack1, helper, alias1=depth0 != null ? depth0 : {};
+
+  return "		<li class=\""
+    + ((stack1 = helpers["if"].call(alias1,depth0,{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
+    + "\">"
+    + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
+    + "</li>\n";
+},"5":function(container,depth0,helpers,partials,data) {
+    return "passed";
+},"7":function(container,depth0,helpers,partials,data) {
+    return "failed";
+},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
+
+  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dt>\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "	<dd id=\"edit-backend\">\n		<a href=\""
+    + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
+    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
+    + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
+    + "</p>\n	<ul>\n"
+    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "	</ul>\n</div>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":21}],38:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2116,8 +2364,6 @@ module.exports = (function() {
 
 /** @type {module:backbone} */
 var Backbone = require("backbone");
-
-// var defaults = ;
 
 module.exports = Backbone.Model.extend({
 
@@ -2143,7 +2389,7 @@ module.exports = Backbone.Model.extend({
 		});
 	}
 });
-},{"backbone":"backbone"}],36:[function(require,module,exports){
+},{"backbone":"backbone"}],39:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2278,7 +2524,7 @@ var BaseItem = {
 module.exports = BaseItem.extend.call(Model, BaseItemProto, BaseItem);
 // module.exports = Model.extend(BaseItemProto, BaseItem);
 
-},{"backbone":"backbone","underscore":"underscore"}],37:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],40:[function(require,module,exports){
 /**
  * @module app/model/SelectableCollection
  */
@@ -2424,7 +2670,7 @@ var SelectableCollection = Backbone.Collection.extend({
 
 module.exports = SelectableCollection;
 
-},{"backbone":"backbone","underscore":"underscore"}],38:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],41:[function(require,module,exports){
 /**
  * @module app/model/collection/ArticleCollection
  */
@@ -2447,7 +2693,7 @@ var ArticleCollection = SelectableCollection.extend({
 });
 
 module.exports = new ArticleCollection();
-},{"app/model/SelectableCollection":37,"app/model/item/ArticleItem":43}],39:[function(require,module,exports){
+},{"app/model/SelectableCollection":40,"app/model/item/ArticleItem":46}],42:[function(require,module,exports){
 /**
  * @module app/model/collection/BundleCollection
  */
@@ -2487,7 +2733,7 @@ var BundleCollection = SelectableCollection.extend({
 
 module.exports = new BundleCollection();
 
-},{"app/model/SelectableCollection":37,"app/model/item/BundleItem":44}],40:[function(require,module,exports){
+},{"app/model/SelectableCollection":40,"app/model/item/BundleItem":47}],43:[function(require,module,exports){
 /**
  * @module app/model/collection/KeywordCollection
  * @requires module:backbone
@@ -2512,7 +2758,7 @@ var KeywordCollection = SelectableCollection.extend({
 
 module.exports = new KeywordCollection();
 
-},{"app/model/SelectableCollection":37,"app/model/item/KeywordItem":45}],41:[function(require,module,exports){
+},{"app/model/SelectableCollection":40,"app/model/item/KeywordItem":48}],44:[function(require,module,exports){
 /**
  * @module app/model/collection/TypeCollection
  * @requires module:backbone
@@ -2537,7 +2783,7 @@ var TypeCollection = Backbone.Collection.extend({
 
 module.exports = new TypeCollection();
 
-},{"app/model/item/TypeItem":48,"backbone":"backbone"}],42:[function(require,module,exports){
+},{"app/model/item/TypeItem":51,"backbone":"backbone"}],45:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 
@@ -2603,7 +2849,7 @@ module.exports = function(bootstrap) {
 
 	// bootstrap["params"] = bootstrap["articles-all"] = bootstrap["types-all"] = bootstrap["keywords-all"] = bootstrap["bundles-all"] = bootstrap["media-all"] = null;
 };
-},{"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/model/collection/KeywordCollection":40,"app/model/collection/TypeCollection":41,"underscore":"underscore"}],43:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/model/collection/KeywordCollection":43,"app/model/collection/TypeCollection":44,"underscore":"underscore"}],46:[function(require,module,exports){
 /**
  * @module app/model/item/ArticleItem
  */
@@ -2629,7 +2875,7 @@ module.exports = BaseItem.extend({
 	},
 
 });
-},{"app/model/BaseItem":36}],44:[function(require,module,exports){
+},{"app/model/BaseItem":39}],47:[function(require,module,exports){
 /**
  * @module app/model/item/BundleItem
  * @requires module:backbone
@@ -2744,7 +2990,7 @@ module.exports = BaseItem.extend({
 		return this._attrs || (this._attrs = _.defaults({}, this.get("attrs"), attrsDefault));
 	},
 });
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/MediaItem":46,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],45:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":40,"app/model/item/MediaItem":49,"color":"color","underscore":"underscore","utils/strings/stripTags":118}],48:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -2785,7 +3031,7 @@ module.exports = BaseItem.extend({
 	// }
 });
 
-},{"app/model/BaseItem":36}],46:[function(require,module,exports){
+},{"app/model/BaseItem":39}],49:[function(require,module,exports){
 /**
  * @module app/model/item/MediaItem
  * @requires module:backbone
@@ -2932,7 +3178,7 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":34,"app/model/BaseItem":36,"app/model/SelectableCollection":37,"app/model/item/SourceItem":47,"color":"color","underscore":"underscore","utils/strings/stripTags":117}],47:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":40,"app/model/item/SourceItem":50,"color":"color","underscore":"underscore","utils/strings/stripTags":118}],50:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3031,7 +3277,7 @@ module.exports = BaseItem.extend({
 
 }).call(this,true)
 
-},{"app/model/BaseItem":36}],48:[function(require,module,exports){
+},{"app/model/BaseItem":39}],51:[function(require,module,exports){
 /**
  * @module app/model/item/TypeItem
  */
@@ -3059,7 +3305,7 @@ module.exports = BaseItem.extend({
 
 });
 
-},{"app/model/BaseItem":36}],49:[function(require,module,exports){
+},{"app/model/BaseItem":39}],52:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/view/AppView
@@ -3087,8 +3333,8 @@ var TouchManager = require("app/view/base/TouchManager");
 var Hammer = require("hammerjs");
 /** @type {module:utils/touch/SmoothPanRecognizer} */
 var Pan = require("utils/touch/SmoothPanRecognizer");
-/** @type {module:hammerjs.Tap} */
-var Tap = Hammer.Tap;
+// /** @type {module:hammerjs.Tap} */
+// var Tap = Hammer.Tap;
 
 /** @type {module:app/control/Globals} */
 var Globals = require("app/control/Globals");
@@ -3107,6 +3353,13 @@ var View = require("app/view/base/View");
 var NavigationView = require("app/view/NavigationView");
 /** @type {module:app/view/ContentView} */
 var ContentView = require("app/view/ContentView");
+
+
+/** @type {module:utils/debug/traceElement} */
+var traceElement = require("utils/debug/traceElement");
+
+var vpanLogFn = _.debounce(console.log.bind(console), 100, false);
+var hpanLogFn = _.debounce(console.log.bind(console), 100, false);
 
 var AppView = {
 	getInstance: function() {
@@ -3138,9 +3391,21 @@ var AppViewProto = {
 		"fullscreenchange": function(ev) {
 			console.log(ev.type);
 		},
+		"dragstart": function(ev) {
+			if (ev.target.nodeName == "IMG" || ev.target.nodeName == "A") {
+				ev.defaultPrevented || ev.preventDefault();
+			}
+		}
 	},
 
 	properties: {
+		container: {
+			get: function() {
+				return this._container ||
+					// (this._container = document.body);
+					(this._container = document.getElementById("container"));
+			}
+		},
 		navigation: {
 			get: function() {
 				return this._navigation ||
@@ -3164,45 +3429,89 @@ var AppViewProto = {
 		// this.touchEl = document.body;
 		// this.touchEl = document.getElementById("containter");
 
-		/* create single hammerjs manager */
-		var vpan, hpan;
-		hpan = vpan = TouchManager.init(document.body);
-		hpan.set({
-			enable: (function() {
-				return this.el.scrollHeight == this.el.clientHeight;
-				// return this.el.scrollTop === 0;
-				// return this.container.scrollTop === 0;
-				// return this.model.get("collapsed") && this.model.get("withBundle");
-			}).bind(this)
-		});
+		/* init HammerJS handlers */
+		var vtouch, htouch;
+		var vpan, hpan, tap;
 
-		// var vpan = new Hammer(this.navigation, {
+		this._vpanEnableFn = function(mc, ev) {
+			var retval = !this._hasOverflowY(this.container);
+			vpanLogFn("%s::_vpanEnableFn -> %o\n%o", this.cid, retval, arguments);
+			return retval;
+		}.bind(this);
+
+		this._hpanEnableFn = function(mc, ev) {
+			var retval = this.model.get("withBundle") && this.model.get("collapsed");
+			hpanLogFn("%s::_hpanEnableFn -> %o\n%o", this.cid, retval, arguments);
+			return !!retval;
+		}.bind(this);
+
+		vtouch = htouch = TouchManager.init(this.content);
+		// vtouch.get("vpan").set({ enable: this._vpanEnableFn });
+		// htouch.get("hpan").set({ enable: this._hpanEnableFn });
+		vtouch.set({
+			enable: function() {
+				console.log("app1::hammerjs enable", arguments);
+				return true;
+			}
+		});
+		// hpan = vpan;
+
+		// this.el.style.touchAction = "none"; //"pan-x pan-y";
+
+		// tap = new Hammer.Tap();
+		// hpan = new Pan({
+		// 	event: "hpan",
+		// 	direction: Hammer.DIRECTION_HORIZONTAL
+		// });
+		// hpan.set({
+		// 	enable: this._hpanEnableFn
+		// });
+		// vpan = new Pan({
+		// 	event: "vpan",
+		// 	direction: Hammer.DIRECTION_VERTICAL
+		// });
+		// vpan.set({
+		// 	enable: this._vpanEnableFn
+		// });
+		// hpan.requireFailure(vpan);
+		// vpan.requireFailure(hpan);
+
+		// vtouch = new Hammer.Manager(this.navigation);
+		// vtouch.add([]);
+
+		// htouch = vtouch = new Hammer.Manager(this.content);
+		// htouch.add([tap, hpan, vpan]);
+		// htouch.add([hpan, vpan]);
+		// htouch.set({ touchAction: "pan-x pan-y" });
+
+		// vpan = new Hammer(this.navigation, {
 		// 	recognizers: [
 		// 		[Pan, {
 		// 			event: 'vpan',
+		// 			touchAction: "pan-y",
 		// 			direction: Hammer.DIRECTION_VERTICAL,
-		// 			enable: (function() {
-		// 				return this.el.scrollHeight == this.el.clientHeight;
-		// 			}).bind(this)
+		// 			enable: vpanEnableFn
 		// 		}],
 		// 	]
 		// });
-		// var hpan = new Hammer(this.content, {
+		// hpan = new Hammer(this.content, {
 		// 	recognizers: [
-		// 			[Tap],
-		// 			[Pan, {
+		// 		[Pan, {
 		// 			event: 'hpan',
+		// 			touchAction: "pan-x",
 		// 			direction: Hammer.DIRECTION_HORIZONTAL,
-		// 			}]
-		// 		]
+		// 			enable: hpanEnableFn
+		// 		}],
+		// 		[Tap]
+		// 	]
 		// });
+		// hpan.get("hpan").requireFailure(vpan.get("vpan"));
 
 		// this._afterRender = this._afterRender.bind(this);
 		this._onResize = this._onResize.bind(this);
 
 		/* render on resize, onorientationchange, visibilitychange */
 		window.addEventListener("orientationchange", this._onResize, false);
-		// window.addEventListener("resize", this._onResize, false);
 		window.addEventListener("resize", _.debounce(this._onResize, 30, false), false);
 
 		// var h = function(ev) { console.log(ev.type, ev) };
@@ -3225,15 +3534,15 @@ var AppViewProto = {
 		this.navigationView = new NavigationView({
 			el: this.navigation,
 			model: this.model,
-			vpan: vpan,
-			hpan: hpan
+			vpan: vtouch,
+			hpan: htouch
 		});
 
 		this.contentView = new ContentView({
 			el: this.content,
 			model: this.model,
-			vpan: vpan,
-			hpan: hpan,
+			vpan: vtouch,
+			hpan: htouch,
 		});
 
 		/* Google Analytics */
@@ -3264,6 +3573,19 @@ var AppViewProto = {
 			pushState: false,
 			hashChange: true,
 		});
+	},
+
+	_hasOverflowY: function(el) {
+		var retval = false;
+		var trace = [];
+		var scrollEl = el;
+		do {
+			retval = retval || (scrollEl.scrollHeight != scrollEl.clientHeight);
+			trace.push(traceElement(scrollEl) + " " + scrollEl.scrollHeight + " == " + scrollEl.clientHeight);
+		} while (scrollEl = scrollEl.parentElement);
+		// this.navigation.style.touchAction = retval ? "pan-x" : "auto";
+		vpanLogFn("%s::_hasOverflowY(%s) -> %s %o", this.cid, traceElement(el), retval, trace);
+		return retval;
 	},
 
 	/* -------------------------------
@@ -3348,20 +3670,31 @@ var AppViewProto = {
 		this.requestRender(View.SIZE_INVALID)
 			// .whenRendered().then(function(view) {
 			.once("view:render:after", function(view, flags) {
-				console.info("%s::_onResize [render complete]", view.cid);
+				console.info("%s::_onResize [removed complete] %o + %o = %o + %o",
+					view.cid, view.el.clientTop, view.el.clientHeight, view.el.scrollTop, view.el.scrollHeight);
 
+				// if ((view.el.scrollTop < 1) && (view.el.clientHeight != view.el.scrollHeight)) {
+				// 	view.el.scrollTop = 1;
+				// }
 				// if (/iphone/i.test(navigator.userAgent)) {
-				// 	document.body.scrollTop = 1;
+				// document.body.scrollTop = 1;
 				// }
 
 				this.requestAnimationFrame(function() {
 					view.el.classList.remove("skip-transitions");
-					this.skipTransitions = false;
-					console.info("%s::_onResize [removed skip-tx]", view.cid);
+					view.skipTransitions = false;
+					// window.scrollTo(0, 1);
+					// document.body.scrollTop = 1;
+					console.info("%s::_onResize [render removed-tx]", view.cid);
 					console.groupEnd();
 				})
 			});
 	},
+
+	// _onBreakpointChange: function(ev) {
+	// 	console.log("%s::_onBreakpointChange", this.cid, ev.matches, ev.media, ev.target.className);
+	// 	this.requestRender(View.SIZE_INVALID).renderNow();
+	// },
 
 	/* -------------------------------
 	/* render
@@ -3381,16 +3714,29 @@ var AppViewProto = {
 				this.toggle(s, o.matches);
 			}, this.breakpointEl.classList);
 		}
-		// if (flags & (View.MODEL_INVALID | View.SIZE_INVALID)) {
-		// this.requestAnimationFrame(function() {
-		// document.body.scrollTop = 0;
-		// window.scroll({ top: 0, behavior: "smooth" });
-		// });
-		// }
 		/* request children render:  always render now */
 		this.requestChildrenRender(flags, true);
 		/* request children render:  set 'now' flag if size is invalid */
 		// this.requestChildrenRender(flags, flags & View.SIZE_INVALID);
+
+		if (flags & (View.MODEL_INVALID | View.SIZE_INVALID)) {
+			// this.navigation.style.touchAction = !this._hasOverflowY(this.container) ? "pan-x" : "";
+			// this.content.style.touchAction = this._hpanEnableFn() ? "pan-y" : "";
+			// this.requestAnimationFrame(function() {
+			// 	if (this._hpanEnableFn() && this._vpanEnableFn()) {
+			// 		this.content.style.touchAction = "none";
+			// 	} else if (this._hpanEnableFn()) {
+			// 		this.content.style.touchAction = "pan-y";
+			// 	} else if (this._vpanEnableFn()) {
+			// 		this.content.style.touchAction = "pan-x";
+			// 	} else {
+			// 		this.content.style.touchAction = "auto";
+			// 	}
+			// 	// 	document.body.scrollTop = 0;
+			// 	// 	window.scroll({ top: 0, behavior: "smooth" });
+			// });
+
+		}
 
 		if (this._appStartChanged) {
 			this._appStartChanged = false;
@@ -3406,7 +3752,6 @@ var AppViewProto = {
 	/* ------------------------------- */
 
 	renderModelChange: function() {
-
 		var cls = this.el.classList;
 		var prevAttr = null;
 		var docTitle = [];
@@ -3455,8 +3800,8 @@ var AppViewProto = {
 };
 
 if (DEBUG) {
-	/** @type {module:app/view/DebugToolbar} */
-	var DebugToolbar = require("app/view/DebugToolbar");
+	/** @type {module:app/debug/DebugToolbar} */
+	var DebugToolbar = require("app/debug/DebugToolbar");
 
 	AppViewProto._onModelChange = (function(fn) {
 		return function() {
@@ -3500,7 +3845,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/AppState":35,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/ContentView":50,"app/view/DebugToolbar":51,"app/view/NavigationView":52,"app/view/base/TouchManager":57,"app/view/base/View":58,"backbone":"backbone","hammerjs":"hammerjs","underscore":"underscore","utils/strings/stripTags":117,"utils/touch/SmoothPanRecognizer":118}],50:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/debug/DebugToolbar":35,"app/model/AppState":38,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/view/ContentView":53,"app/view/NavigationView":54,"app/view/base/TouchManager":59,"app/view/base/View":60,"backbone":"backbone","hammerjs":"hammerjs","underscore":"underscore","utils/debug/traceElement":108,"utils/strings/stripTags":118,"utils/touch/SmoothPanRecognizer":119}],53:[function(require,module,exports){
 /**
  * @module app/view/NavigationView
  */
@@ -3709,10 +4054,29 @@ var ContentView = View.extend({
 		if (sizeChanged) {
 			this.itemViews.forEach(function(view) {
 				view.skipTransitions = this.skipTransitions;
-				// view.invalidateSize();
-				// view.renderNow();
 				view.requestRender(View.SIZE_INVALID).renderNow();
 			}, this);
+			/*Promise.all(this.itemViews.map(function(view) {
+					view.skipTransitions = this.skipTransitions;
+					return view.requestRender(View.SIZE_INVALID).whenRendered();
+				}, this))
+				.then(
+					function(views) {
+						var nh = this.el.offsetParent.offsetHeight - this.el.offsetTop;
+						// var oh = views.reduce(function(h, view) {
+						// 	return Math.max(h, view.el.offsetHeight);
+						// }, nh);
+						// oh++;
+						// console.log("%s:[whenRendered] [result: %s %s] %o", this.cid,
+						// 	nh, oh, this.el.parent, views);
+						this.el.style.minHeight = nh + "px";
+						return views;
+					}.bind(this),
+					function(reason) {
+						console.warn("%s:[whenRendered] [rejected] %o", this.cid, reason);
+						return reason;
+					}.bind(this)
+				);*/
 		}
 		this.skipTransitions = this._transformsChanged = false;
 	},
@@ -3728,9 +4092,16 @@ var ContentView = View.extend({
 		});
 	},
 
+	/* -------------------------------
+	/* Collapse UI gestures/events
+	/* ------------------------------- */
+
 	_onCollapsedEvent: function(ev) {
 		console.log("%s:[%s -> _onCollapsedEvent] target: %s", this.cid, ev.type, ev.target);
-		if (!ev.defaultPrevented && this.model.get("withBundle") && !this.model.get("collapsed") && !this.enabled) {
+		if (!ev.defaultPrevented &&
+			this.model.get("withBundle") &&
+			!this.model.get("collapsed") &&
+			!this.enabled) {
 			// this.setImmediate(function() {
 			// if (ev.type == "click") ev.stopPropagation();
 			ev.preventDefault();
@@ -3741,6 +4112,7 @@ var ContentView = View.extend({
 			// });
 		}
 	},
+
 	/* --------------------------- *
 	/* model changed
 	/* --------------------------- */
@@ -3753,15 +4125,19 @@ var ContentView = View.extend({
 				this.vpan.off("vpanstart", this._onVPanStart);
 			}
 		}
-		if (this.model.hasChanged("collapsed") || this.model.hasChanged("withBundle")) {
-			if (this.model.get("withBundle") && !this.model.get("collapsed")) {
+		/*
+		if (this.model.hasChanged("withBundle") ||
+			this.model.hasChanged("collapsed")) {
+			if (this.model.get("withBundle") &&
+				!this.model.get("collapsed")) {
 				this.hpan.on("hpanleft hpanright", this._onCollapsedEvent);
-				this.el.addEventListener("click", this._onCollapsedEvent, false);
+				this.el.addEventListener(Globals.CLICK_EVENT, this._onCollapsedEvent, false);
 			} else {
 				this.hpan.off("hpanleft hpanright", this._onCollapsedEvent);
-				this.el.removeEventListener("click", this._onCollapsedEvent, false);
+				this.el.removeEventListener(Globals.CLICK_EVENT, this._onCollapsedEvent, false);
 			}
 		}
+		*/
 		this.requestRender(View.MODEL_INVALID);
 	},
 
@@ -4046,204 +4422,7 @@ var ContentView = View.extend({
 });
 
 module.exports = ContentView;
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":96,"./template/CollectionStack.Media.hbs":97,"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/view/base/View":58,"app/view/component/ArticleView":62,"app/view/component/Carousel":63,"app/view/component/CollectionStack":65,"app/view/component/SelectableListView":70,"app/view/render/CarouselRenderer":81,"app/view/render/DotNavigationRenderer":86,"app/view/render/ImageRenderer":88,"app/view/render/SequenceRenderer":93,"app/view/render/VideoRenderer":95,"underscore":"underscore","utils/TransformHelper":103}],51:[function(require,module,exports){
-/**
- * @module app/view/DebugToolbar
- */
-
-/** @type {module:underscore} */
-var _ = require("underscore");
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");
-/** @type {module:cookies-js} */
-var Cookies = require("cookies-js");
-// /** @type {module:modernizr} */
-// var Modernizr = require("Modernizr");
-
-/** @type {module:app/control/Globals} */
-var Globals = require("app/control/Globals");
-// /** @type {module:app/control/Controller} */
-// var controller = require("app/control/Controller");
-
-/** @type {module:app/view/base/View} */
-var View = require("app/view/base/View");
-
-/** @type {Function} */
-var viewTemplate = require("./template/DebugToolbar.hbs");
-
-/** @type {Function} */
-var gridTemplate = require("./template/DebugToolbar.SVGGrid.hbs");
-
-/** @type {Function} */
-var sizeTemplate = _.template("<%= w %> \u00D7 <%= h %>");
-
-// var appStateSymbols = { withBundle: "b", withMedia: "m", collapsed: "c"};
-// var appStateKeys = Object.keys(appStateSymbols);
-
-var DebugToolbar = View.extend({
-
-	/** @override */
-	cidPrefix: "debugToolbar",
-	/** @override */
-	tagName: "div",
-	/** @override */
-	className: "toolbar",
-	/** @override */
-	template: viewTemplate,
-
-	/** @override */
-	properties: {
-		grid: {
-			get: function() {
-				return this._grid || (this._grid = this.createGridElement());
-			}
-		}
-	},
-
-	initialize: function(options) {
-		Cookies.defaults = {
-			expires: new Date(0x7fffffff * 1e3),
-			domain: String(window.location)
-				.match(/^https?\:\/\/([^\/:?#]+)(?:[\/:?#]|$)/i)[1]
-		};
-
-		this.el.innerHTML = this.template({
-			tests: Modernizr,
-			navigator: window.navigator
-		});
-
-		/* toggle's target: container
-		/* - - - - - - - - - - - - - - - - */
-		var container = document.body; //.querySelector("#container");
-
-		/* create/attach svg grid element
-		/* - - - - - - - - - - - - - - - - */
-		container.insertBefore(this.createGridElement(), container.firstElementChild);
-
-		/* info elements
-		/* - - - - - - - - - - - - - - - - */
-		this.backendEl = this.el.querySelector("#edit-backend a");
-		this.mediaInfoEl = this.el.querySelector("#media-info span");
-		this.appStateEl = this.el.querySelector("#app-state");
-
-		/* toggle visibility
-		/* - - - - - - - - - - - - - - - - */
-		this.initializeClassToggle("show-links", this.el.querySelector(".debug-links #links-toggle"), this.el,
-			function(key, value) {
-				this.el.classList.toggle("not-" + key, !value);
-				// console.log("%s:initializeClassToggle:[callback] %o", this.cid, arguments);
-			}
-		);
-		this.initializeClassToggle("show-tests", this.el.querySelector("#toggle-tests a"), this.el);
-		this.initializeClassToggle("hide-passed", this.el.querySelector("#toggle-passed"), this.el);
-
-		/* toggle container classes
-		/* - - - - - - - - - - - - - - - - */
-		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), document.body);
-		this.initializeClassToggle("debug-blocks", this.el.querySelector("#toggle-blocks a"), container);
-		this.initializeClassToggle("debug-graph", this.el.querySelector("#toggle-graph a"), container);
-		this.initializeClassToggle("debug-mdown", this.el.querySelector("#toggle-mdown a"), container);
-		this.initializeClassToggle("debug-logs", this.el.querySelector("#toggle-logs a"), container);
-		this.initializeClassToggle("debug-tx", this.el.querySelector("#toggle-tx a"), container,
-			function(key, value) {
-				this.el.classList.toggle("show-tx", value);
-				this.el.classList.toggle("not-show-tx", !value);
-			}
-		);
-
-		this.initializeViewportInfo();
-
-		// this.initializeLayoutSelect();
-
-		this.listenTo(this.model, "change", this._onModelChange);
-		this._onModelChange();
-	},
-
-	initializeViewportInfo: function() {
-		var viewportInfoEl = this.el.querySelector("#viewport-info span");
-		var callback = function() {
-			viewportInfoEl.textContent = sizeTemplate({ w: window.innerWidth, h: window.innerHeight });
-		};
-		callback.call();
-		window.addEventListener("resize", _.debounce(callback, 100, false, false));
-	},
-
-	initializeToggle: function(key, toggleEl, callback) {
-		var ctx = this;
-		var toggleValue = Cookies.get(key) === "true";
-		callback.call(ctx, key, toggleValue);
-
-		toggleEl.addEventListener("click", function(ev) {
-			if (ev.defaultPrevented) return;
-			else ev.preventDefault();
-			toggleValue = !toggleValue;
-			Cookies.set(key, toggleValue ? "true" : "");
-			callback.call(ctx, key, toggleValue);
-		}, false);
-	},
-
-	initializeClassToggle: function(key, toggleEl, targetEl, callback) {
-		var hasCallback = _.isFunction(callback);
-
-		this.initializeToggle(key, toggleEl, function(key, toggleValue) {
-			targetEl.classList.toggle(key, toggleValue);
-			toggleEl.classList.toggle("toggle-enabled", toggleValue);
-			toggleEl.classList.toggle("color-reverse", toggleValue);
-			hasCallback && callback.apply(this, arguments);
-		});
-	},
-
-	_onModelChange: function() {
-		console.log("%s::_onModelChange changedAttributes: %o", this.cid, this.model.changedAttributes());
-		var i, ii, prop, el, els = this.appStateEl.children;
-		for (i = 0, ii = els.length; i < ii; i++) {
-			el = els[i];
-			prop = el.getAttribute("data-prop");
-			el.classList.toggle("has-value", this.model.get(prop));
-			el.classList.toggle("has-changed", this.model.hasChanged(prop));
-			el.classList.toggle("color-reverse", this.model.hasChanged(prop));
-		}
-
-		// NOTE: Always but rewrite CMS href.
-		// Only collapsed may have changed, but not worth all the logic
-		var attrVal = Globals.APP_ROOT + "symphony/";
-		switch (this.model.get("routeName")) {
-			case "article-item":
-				attrVal += "publish/articles/edit/" + this.model.get("article").id;
-				break;
-			case "bundle-item":
-				attrVal += "publish/bundles/edit/" + this.model.get("bundle").id;
-				break;
-			case "media-item":
-				attrVal += "publish/media/edit/" + this.model.get("media").id;
-				break;
-			case "root":
-				attrVal += "publish/bundles";
-				break;
-		}
-		this.backendEl.setAttribute("href", attrVal);
-
-		if (this.model.hasChanged("media")) {
-			if (this.model.has("media")) {
-				this.mediaInfoEl.textContent = sizeTemplate(this.model.get("media").get("source").toJSON());
-				this.mediaInfoEl.style.display = "";
-			} else {
-				this.mediaInfoEl.textContent = "";
-				this.mediaInfoEl.style.display = "none";
-			}
-		}
-	},
-
-	createGridElement: function() {
-		var el = document.createElement("div");
-		el.id = "grid-wrapper";
-		el.innerHTML = gridTemplate();
-		return el;
-	},
-});
-
-module.exports = DebugToolbar;
-},{"./template/DebugToolbar.SVGGrid.hbs":98,"./template/DebugToolbar.hbs":99,"app/control/Globals":34,"app/view/base/View":58,"cookies-js":"cookies-js","underscore":"underscore"}],52:[function(require,module,exports){
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":98,"./template/CollectionStack.Media.hbs":99,"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/view/base/View":60,"app/view/component/ArticleView":64,"app/view/component/Carousel":65,"app/view/component/CollectionStack":67,"app/view/component/SelectableListView":72,"app/view/render/CarouselRenderer":83,"app/view/render/DotNavigationRenderer":88,"app/view/render/ImageRenderer":90,"app/view/render/SequenceRenderer":95,"app/view/render/VideoRenderer":97,"underscore":"underscore","utils/TransformHelper":103}],54:[function(require,module,exports){
 /* global MutationObserver */
 /**
 /* @module app/view/NavigationView
@@ -4292,26 +4471,18 @@ var ArticleButton = require("app/view/component/ArticleButton");
 
 var tx = Globals.transitions;
 
-
-var pointerupName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
-
 /**
 /* @constructor
 /* @type {module:app/view/NavigationView}
 /*/
 var NavigationView = View.extend({
 
+	// /** @override */
+	// tagName: "div",
 	/** @override */
 	cidPrefix: "navigationView",
-
 	/** @override */
-	className: "container-expanded",
-
-	// events: (function() {
-	// 	return window.hasOwnProperty("onpointerup")
-	// 		? { "pointerup #nav-graph": "_onNavigationClick" }
-	// 		: { "mouseup #nav-graph": "_onNavigationClick" }
-	// }()),
+	className: "navigation container-expanded",
 
 	/** @override */
 	initialize: function(options) {
@@ -4331,6 +4502,8 @@ var NavigationView = View.extend({
 		this.hpan = options.hpan || new Error("no hpan");
 
 		this.listenTo(this.model, "change", this._onModelChange);
+
+		this.listenTo(this.model, "withBundle:change", this._onWithBundleChange);
 
 		this.keywordList = this.createKeywordList();
 		/* NOTE: .list-group .label moves horizontally (cf. sass/layouts/*.scss) */
@@ -4463,16 +4636,24 @@ var NavigationView = View.extend({
 		])
 			.then(
 				function(result) {
-					var vmax = result.reduce(function(a, o) {
+					var hval = result.reduce(function(a, o) {
 						return Math.max(a, o._metrics.height);
 					}, 0);
-					console.log("%s:[whenRendered][flags: %s] height: %o", this.cid, View.flagsToString(flags), vmax);
-					this.graph.el.style.height = vmax + "px";
-					// this.el.style.maxHeight = vmax + "px";
+					if (this.model.get("collapsed")) {
+						this.el.style.height = "";
+						// this.el.style.minHeight = "";
+						// this.graph.el.style.height = "100%";
+					} else {
+						this.el.style.height = hval + "px";
+						// this.el.style.minHeight = hval + "px";
+						// this.graph.el.style.height = hval + "px";
+					}
+					console.log("%s:[whenRendered][flags: %s] height: %o", this.cid, View.flagsToString(flags), hval);
 					return result;
 				}.bind(this),
 				function(reason) {
 					console.warn("%s:[whenRendered] failed: %o", this.cid, reason);
+					return reason;
 				}.bind(this)
 			);
 
@@ -4673,12 +4854,12 @@ var NavigationView = View.extend({
 		if (this.model.hasChanged("withBundle")) {
 			// this.keywordList.refresh()
 			if (this.model.get("withBundle")) {
-				this.graph.el.addEventListener(pointerupName, this._onNavigationClick);
+				this.graph.el.addEventListener(Globals.CLICK_EVENT, this._onNavigationClick);
 				this.vpan.on("vpanstart", this._onVPanStart);
 				this.hpan.on("hpanstart", this._onHPanStart);
 				// this.hpan.on("tap", this._onTap);
 			} else {
-				this.graph.el.removeEventListener(pointerupName, this._onNavigationClick);
+				this.graph.el.removeEventListener(Globals.CLICK_EVENT, this._onNavigationClick);
 				this.vpan.off("vpanstart", this._onVPanStart);
 				this.hpan.off("hpanstart", this._onHPanStart);
 				keywords.deselect();
@@ -4687,6 +4868,18 @@ var NavigationView = View.extend({
 			// this.graph.valueTo()
 		}
 	},
+
+	// _onWithBundleChange: function(withBundle) {
+	// 	if (withBundle) {
+	// 		this.listenTo(this.model, "collapsed:change", function(collapsed){
+	//
+	// 		});
+	// 	} else {
+	// 		this.stopListening(this.model, "collapsed:change", function(collapsed){
+	//
+	// 		});
+	// 	}
+	// },
 
 	/* --------------------------- *
 	/* keyword collection changed
@@ -4711,7 +4904,8 @@ var NavigationView = View.extend({
 
 	_onNavigationClick: function(ev) {
 		if (!ev.defaultPrevented && this.model.has("bundle")) {
-			console.log("%s::_onNavigationClick [%s]", this.cid, ev.type, ev);
+			console.log("%s::_onNavigationClick [%s]", this.cid, ev.type); //, ev.target);
+			ev.preventDefault();
 			// this.model.set("collapsed", !this.model.get("collapsed"));
 			this._changeCollapsed(!this.model.get("collapsed"));
 		}
@@ -5073,7 +5267,7 @@ var NavigationView = View.extend({
 });
 
 module.exports = NavigationView;
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":38,"app/model/collection/BundleCollection":39,"app/model/collection/KeywordCollection":40,"app/model/collection/TypeCollection":41,"app/view/base/View":58,"app/view/component/ArticleButton":61,"app/view/component/FilterableListView":66,"app/view/component/GraphView":67,"app/view/component/GroupingListView":68,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103}],53:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/model/collection/KeywordCollection":43,"app/model/collection/TypeCollection":44,"app/view/base/View":60,"app/view/component/ArticleButton":63,"app/view/component/FilterableListView":68,"app/view/component/GraphView":69,"app/view/component/GroupingListView":70,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103}],55:[function(require,module,exports){
 (function (DEBUG){
 /* global Path2D */
 /**
@@ -5208,8 +5402,8 @@ var CanvasView = View.extend({
 
 		var s = getComputedStyle(this.el);
 
-		this._canvasWidth = this.el.clientWidth;
-		this._canvasHeight = this.el.clientHeight;
+		this._canvasWidth = this.el.offsetWidth;
+		this._canvasHeight = this.el.offsetHeight;
 
 		if (s.boxSizing === "border-box") {
 			var m = getBoxEdgeStyles(s);
@@ -5387,7 +5581,7 @@ if (DEBUG) {
 module.exports = CanvasView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/Interpolator":55,"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":107}],54:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/Interpolator":57,"app/view/base/View":60,"underscore":"underscore","utils/css/getBoxEdgeStyles":107}],56:[function(require,module,exports){
 (function (DEBUG){
 // /** @type {module:utils/setImmediate} */
 // var setImmediate = require("utils/setImmediate");
@@ -5691,7 +5885,7 @@ if (DEBUG) {
 module.exports = FrameQueue;
 }).call(this,true)
 
-},{"underscore":"underscore"}],55:[function(require,module,exports){
+},{"underscore":"underscore"}],57:[function(require,module,exports){
 /**
  * @module app/view/base/Interpolator
  */
@@ -5913,7 +6107,7 @@ Interpolator.prototype = Object.create({
 
 module.exports = Interpolator;
 
-},{"utils/ease/linear":108}],56:[function(require,module,exports){
+},{"utils/ease/linear":109}],58:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -5955,17 +6149,17 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":111}],57:[function(require,module,exports){
+},{"utils/prefixedEvent":112}],59:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
 
-// /** @type {module:app/control/Globals} */
-// var Globals = require("app/control/Globals");
 // /** @type {module:underscore} */
 // var _ = require("underscore");
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
+/** @type {module:app/control/Globals} */
+var Globals = require("app/control/Globals");
 
 /** @type {module:hammerjs.Tap} */
 var Tap = Hammer.Tap;
@@ -5986,11 +6180,13 @@ function createInstance(el) {
 	var manager, hpan, vpan, tap;
 	hpan = new Pan({
 		// threshold: Globals.PAN_THRESHOLD,
+		// touchAction: "pan-y",
 		direction: Hammer.DIRECTION_HORIZONTAL,
 		event: "hpan",
 	});
 	vpan = new Pan({
 		// threshold: Globals.PAN_THRESHOLD,
+		// touchAction: "pan-x",
 		direction: Hammer.DIRECTION_VERTICAL,
 		event: "vpan",
 	});
@@ -5998,9 +6194,11 @@ function createInstance(el) {
 		// threshold: Globals.PAN_THRESHOLD - 1
 	});
 	manager = new Hammer.Manager(el);
-	manager.add([tap, hpan, vpan]);
-	vpan.requireFailure(hpan);
 	// manager.set({ domevents: true });
+	manager.add([tap, hpan, vpan]);
+	// manager.add([hpan, vpan]);
+	vpan.requireFailure(hpan);
+	// manager.add(hpan);
 	return manager;
 }
 
@@ -6166,7 +6364,7 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
-},{"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":118}],58:[function(require,module,exports){
+},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":119}],60:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
 /**
@@ -6879,7 +7077,7 @@ var ViewProto = {
 module.exports = Backbone.View.extend(ViewProto, View);
 }).call(this,true)
 
-},{"app/view/base/FrameQueue":54,"app/view/base/PrefixedEvents":56,"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79,"app/view/promise/whenViewIsRendered":80,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113}],59:[function(require,module,exports){
+},{"app/view/base/FrameQueue":56,"app/view/base/PrefixedEvents":58,"app/view/base/ViewError":61,"app/view/promise/whenViewIsAttached":81,"app/view/promise/whenViewIsRendered":82,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114}],61:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -6891,7 +7089,7 @@ ViewError.prototype.name = "ViewError";
 
 module.exports = ViewError;
 
-},{}],60:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -6906,7 +7104,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</a>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],61:[function(require,module,exports){
+},{"hbsfy/runtime":21}],63:[function(require,module,exports){
 /**
 /* @module app/view/component/ArticleView
 /*/
@@ -6950,7 +7148,7 @@ var ArticleButton = View.extend({
 	},
 });
 module.exports = ArticleButton;
-},{"./ArticleButton.hbs":60,"app/view/base/View":58}],62:[function(require,module,exports){
+},{"./ArticleButton.hbs":62,"app/view/base/View":60}],64:[function(require,module,exports){
 /**
 /* @module app/view/component/ArticleView
 /*/
@@ -6996,7 +7194,7 @@ var ArticleView = View.extend({
 	},
 });
 module.exports = ArticleView;
-},{"app/view/base/View":58}],63:[function(require,module,exports){
+},{"app/view/base/View":60}],65:[function(require,module,exports){
 /**
 /* @module app/view/component/Carousel
 /*/
@@ -8006,7 +8204,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/CarouselRenderer":81,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":112,"utils/prefixedStyleName":113,"utils/touch/SmoothPanRecognizer":118}],64:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":60,"app/view/render/CarouselRenderer":83,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":113,"utils/prefixedStyleName":114,"utils/touch/SmoothPanRecognizer":119}],66:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -8015,7 +8213,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"id","hash":{},"data":data}) : helper)));
 },"useData":true});
 
-},{"hbsfy/runtime":21}],65:[function(require,module,exports){
+},{"hbsfy/runtime":21}],67:[function(require,module,exports){
 /**
  * @module app/view/component/CollectionStack
  */
@@ -8127,7 +8325,7 @@ module.exports = View.extend({
 	},
 });
 
-},{"./CollectionStack.hbs":64,"app/view/base/View":58,"utils/setImmediate":115}],66:[function(require,module,exports){
+},{"./CollectionStack.hbs":66,"app/view/base/View":60,"utils/setImmediate":116}],68:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/view/component/FilterableListView
@@ -8530,7 +8728,7 @@ var FilterableListView = View.extend({
 module.exports = FilterableListView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":107,"utils/prefixedProperty":112}],67:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":60,"app/view/render/ClickableRenderer":84,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/css/getBoxEdgeStyles":107,"utils/prefixedProperty":113}],69:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -8677,12 +8875,12 @@ var GraphView = CanvasView.extend({
 		};
 		this.listenTo(this, "view:render:before", this._beforeViewRender);
 
-		// this.__traceScroll = _.debounce(this.__traceScroll, 100, false)
+		// this.__traceScroll = _.debounce(this.__traceScroll, 100, false);
 
 		var viewportChanged = function(ev) {
-			console.log("%s:[%s] event: %o", this.cid, ev.type, ev);
+			console.log("%s:[%s]", this.cid, ev.type);
 
-			this.__traceScroll(ev.type);
+			// this.__traceScroll(ev.type);
 			// this._groupRects = null;
 			// this.invalidate(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
 			this.requestRender(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
@@ -9289,7 +9487,7 @@ if (DEBUG) {
 module.exports = GraphView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":53,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":105,"utils/canvas/calcArcHConnector":106,"utils/geom/inflateRect":110}],68:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/CanvasView":55,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":105,"utils/canvas/calcArcHConnector":106,"utils/geom/inflateRect":111}],70:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -9453,7 +9651,7 @@ var GroupingListView = FilterableListView.extend({
 });
 
 module.exports = GroupingListView;
-},{"app/view/component/FilterableListView":66,"app/view/render/ClickableRenderer":82,"app/view/render/LabelRenderer":89,"underscore":"underscore"}],69:[function(require,module,exports){
+},{"app/view/component/FilterableListView":68,"app/view/render/ClickableRenderer":84,"app/view/render/LabelRenderer":91,"underscore":"underscore"}],71:[function(require,module,exports){
 /** @type {module:app/view/component/progress/CanvasProgressMeter} */
 module.exports = require("app/view/component/progress/CanvasProgressMeter3");
 /** @type {module:app/view/component/progress/SVGPathProgressMeter} */
@@ -9461,7 +9659,7 @@ module.exports = require("app/view/component/progress/CanvasProgressMeter3");
 /** @type {module:app/view/component/progress/SVGCircleProgressMeter} */
 // module.exports = require("app/view/component/progress/SVGCircleProgressMeter");
 
-},{"app/view/component/progress/CanvasProgressMeter3":71}],70:[function(require,module,exports){
+},{"app/view/component/progress/CanvasProgressMeter3":73}],72:[function(require,module,exports){
 /**
  * @module app/view/component/SelectableListView
  */
@@ -9632,7 +9830,7 @@ var SelectableListView = View.extend({
 
 module.exports = SelectableListView;
 
-},{"app/view/base/View":58,"app/view/render/ClickableRenderer":82,"app/view/render/DefaultSelectableRenderer":84,"backbone.babysitter":"backbone.babysitter"}],71:[function(require,module,exports){
+},{"app/view/base/View":60,"app/view/render/ClickableRenderer":84,"app/view/render/DefaultSelectableRenderer":86,"backbone.babysitter":"backbone.babysitter"}],73:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/progress/CanvasProgressMeter
@@ -9921,7 +10119,7 @@ module.exports = CanvasProgressMeter;
 
 }).call(this,true)
 
-},{"app/view/base/CanvasView":53}],72:[function(require,module,exports){
+},{"app/view/base/CanvasView":55}],74:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {Function} */
@@ -10143,7 +10341,7 @@ module.exports = function() {
 			attrs, fgColor, bgColor, lnColor, hasDarkBg);
 	});
 };
-},{"app/control/Globals":34,"app/model/collection/BundleCollection":39,"color":"color","underscore":"underscore"}],73:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/collection/BundleCollection":42,"color":"color","underscore":"underscore"}],75:[function(require,module,exports){
 /*global XMLHttpRequest */
 
 // var _ = require("underscore");
@@ -10213,7 +10411,7 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 		return Promise.resolve(url);
 	};
 }
-},{}],74:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports = function(image, resolveEmpty) {
 	return new Promise(function(resolve, reject) {
 		if (!(image instanceof window.HTMLImageElement)) {
@@ -10257,7 +10455,7 @@ module.exports = function(image, resolveEmpty) {
 	});
 };
 
-},{}],75:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {module:app/view/promise/_whenImageLoads} */
@@ -10330,7 +10528,7 @@ module.exports = function(view) {
 		}
 	});
 };
-},{"app/view/promise/_loadImageAsObjectURL":73,"app/view/promise/_whenImageLoads":74,"underscore":"underscore"}],76:[function(require,module,exports){
+},{"app/view/promise/_loadImageAsObjectURL":75,"app/view/promise/_whenImageLoads":76,"underscore":"underscore"}],78:[function(require,module,exports){
 /* global Promise */
 /** @type {module:app/view/base/ViewError} */
 var ViewError = require("app/view/base/ViewError");
@@ -10412,7 +10610,7 @@ module.exports = function(view) {
 };
 */
 
-},{"app/view/base/ViewError":59,"app/view/promise/whenViewIsAttached":79}],77:[function(require,module,exports){
+},{"app/view/base/ViewError":61,"app/view/promise/whenViewIsAttached":81}],79:[function(require,module,exports){
 /** @type {module:app/view/base/ViewError} */
 var ViewError = require("app/view/base/ViewError");
 
@@ -10460,7 +10658,7 @@ module.exports = function(view, distance) {
 	});
 };
 
-},{"app/view/base/ViewError":59}],78:[function(require,module,exports){
+},{"app/view/base/ViewError":61}],80:[function(require,module,exports){
 // /** @type {module:app/view/base/ViewError} */
 // var ViewError = require("app/view/base/ViewError");
 
@@ -10471,7 +10669,7 @@ var whenSelectionDistanceIs = require("app/view/promise/whenSelectionDistanceIs"
 module.exports = function(view) {
 	return whenSelectionDistanceIs(view, 1);
 };
-},{"app/view/promise/whenSelectionDistanceIs":77}],79:[function(require,module,exports){
+},{"app/view/promise/whenSelectionDistanceIs":79}],81:[function(require,module,exports){
 module.exports = function(view) {
 	return new Promise(function(resolve, reject) {
 		if (view.attached) {
@@ -10484,7 +10682,7 @@ module.exports = function(view) {
 	});
 };
 
-},{}],80:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 module.exports = function(view) {
 	return new Promise(function(resolve, reject) {
 		if (!view.invalidated) {
@@ -10496,7 +10694,7 @@ module.exports = function(view) {
 		}
 	});
 };
-},{}],81:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /**
  * @module app/view/render/CarouselRenderer
  */
@@ -10612,7 +10810,7 @@ var CarouselRenderer = View.extend({
 });
 
 module.exports = CarouselRenderer;
-},{"app/view/base/View":58,"underscore":"underscore","utils/css/getBoxEdgeStyles":107}],82:[function(require,module,exports){
+},{"app/view/base/View":60,"underscore":"underscore","utils/css/getBoxEdgeStyles":107}],84:[function(require,module,exports){
 /**
  * @module app/view/render/ClickableRenderer
  */
@@ -10642,7 +10840,7 @@ var ClickableRenderer = LabelRenderer.extend({
 
 module.exports = ClickableRenderer;
 
-},{"app/view/render/LabelRenderer":89}],83:[function(require,module,exports){
+},{"app/view/render/LabelRenderer":91}],85:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -10655,7 +10853,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</span></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],84:[function(require,module,exports){
+},{"hbsfy/runtime":21}],86:[function(require,module,exports){
 /**
  * @module app/view/render/DefaultSelectableRenderer
  */
@@ -10695,7 +10893,7 @@ var DefaultSelectableRenderer = ClickableRenderer.extend({
 
 module.exports = DefaultSelectableRenderer;
 
-},{"./DefaultSelectableRenderer.hbs":83,"app/view/render/ClickableRenderer":82}],85:[function(require,module,exports){
+},{"./DefaultSelectableRenderer.hbs":85,"app/view/render/ClickableRenderer":84}],87:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -10708,7 +10906,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\"><b> </b></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],86:[function(require,module,exports){
+},{"hbsfy/runtime":21}],88:[function(require,module,exports){
 /**
  * @module app/view/render/DotNavigationRenderer
  */
@@ -10757,7 +10955,7 @@ var DotNavigationRenderer = ClickableRenderer.extend({
 
 module.exports = DotNavigationRenderer;
 
-},{"./DotNavigationRenderer.hbs":85,"app/view/render/ClickableRenderer":82}],87:[function(require,module,exports){
+},{"./DotNavigationRenderer.hbs":87,"app/view/render/ClickableRenderer":84}],89:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -10770,7 +10968,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],88:[function(require,module,exports){
+},{"hbsfy/runtime":21}],90:[function(require,module,exports){
 /**
  * @module app/view/render/ImageRenderer
  */
@@ -10875,7 +11073,7 @@ var ImageRenderer = MediaRenderer.extend({
 
 module.exports = ImageRenderer;
 
-},{"./ImageRenderer.hbs":87,"./MediaRenderer":90}],89:[function(require,module,exports){
+},{"./ImageRenderer.hbs":89,"./MediaRenderer":92}],91:[function(require,module,exports){
 /**
  * @module app/view/render/LabelRenderer
  */
@@ -10921,7 +11119,7 @@ var LabelRenderer = View.extend({
 
 module.exports = LabelRenderer;
 
-},{"app/view/base/View":58}],90:[function(require,module,exports){
+},{"app/view/base/View":60}],92:[function(require,module,exports){
 (function (DEBUG){
 /*global XMLHttpRequest, HTMLMediaElement, MediaError*/
 /**
@@ -11287,7 +11485,7 @@ if (DEBUG) {
 module.exports = MediaRenderer;
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":100,"app/model/item/MediaItem":46,"app/view/promise/whenDefaultImageLoads":75,"app/view/promise/whenScrollingEnds":76,"app/view/promise/whenSelectionIsContiguous":78,"app/view/render/CarouselRenderer":81,"color":"color","underscore":"underscore","underscore.string/lpad":28}],91:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":100,"app/model/item/MediaItem":49,"app/view/promise/whenDefaultImageLoads":77,"app/view/promise/whenScrollingEnds":78,"app/view/promise/whenSelectionIsContiguous":80,"app/view/render/CarouselRenderer":83,"color":"color","underscore":"underscore","underscore.string/lpad":28}],93:[function(require,module,exports){
 (function (GA){
 /**
  * @module app/view/render/PlayableRenderer
@@ -11920,7 +12118,7 @@ if (GA) {
 module.exports = PlayableRenderer;
 }).call(this,true)
 
-},{"app/view/render/MediaRenderer":90,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":111,"utils/prefixedProperty":112}],92:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":92,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":112,"utils/prefixedProperty":113}],94:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -11933,7 +12131,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],93:[function(require,module,exports){
+},{"hbsfy/runtime":21}],95:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/render/SequenceRenderer
@@ -12656,7 +12854,7 @@ if (DEBUG) {
 module.exports = SequenceRenderer;
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":100,"./SequenceRenderer.hbs":92,"app/control/Globals":34,"app/view/base/View":58,"app/view/component/ProgressMeter":69,"app/view/promise/_loadImageAsObjectURL":73,"app/view/promise/_whenImageLoads":74,"app/view/promise/whenSelectionDistanceIs":77,"app/view/render/PlayableRenderer":91,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/lpad":28,"utils/Timer":102}],94:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":100,"./SequenceRenderer.hbs":94,"app/control/Globals":34,"app/view/base/View":60,"app/view/component/ProgressMeter":71,"app/view/promise/_loadImageAsObjectURL":75,"app/view/promise/_whenImageLoads":76,"app/view/promise/whenSelectionDistanceIs":79,"app/view/render/PlayableRenderer":93,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/lpad":28,"utils/Timer":102}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12667,7 +12865,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],95:[function(require,module,exports){
+},{"hbsfy/runtime":21}],97:[function(require,module,exports){
 (function (DEBUG){
 /*global HTMLMediaElement, MediaError*/
 /**
@@ -12729,9 +12927,9 @@ var VideoRenderer = PlayableRenderer.extend({
 	template: require("./VideoRenderer.hbs"),
 
 	events: (function() {
-		return window.hasOwnProperty("onpointerup")
-			? { "pointerup .fullscreen-toggle": "_onFullscreenToggle" }
-			: { "mouseup .fullscreen-toggle": "_onFullscreenToggle" }
+		var ret = {};
+		ret[Globals.CLICK_EVENT + " fullscreen-toggle"] = "_onFullscreenToggle";
+		return ret;
 	}()),
 
 	// events: {
@@ -13409,7 +13607,7 @@ if (DEBUG) {
 module.exports = VideoRenderer;
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":94,"app/control/Globals":34,"app/view/component/ProgressMeter":69,"app/view/render/PlayableRenderer":91,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":109,"utils/prefixedEvent":111}],96:[function(require,module,exports){
+},{"./VideoRenderer.hbs":96,"app/control/Globals":34,"app/view/component/ProgressMeter":71,"app/view/render/PlayableRenderer":93,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":110,"utils/prefixedEvent":112}],98:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13422,7 +13620,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":21}],97:[function(require,module,exports){
+},{"hbsfy/runtime":21}],99:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13435,56 +13633,6 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</p>"
     + ((stack1 = ((helper = (helper = helpers.sub || (depth0 != null ? depth0.sub : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"sub","hash":{},"data":data}) : helper))) != null ? stack1 : "")
     + "</div>\n";
-},"useData":true});
-
-},{"hbsfy/runtime":21}],98:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<svg id=\"debug-grid\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMaxYMid slice\" viewport-fill=\"hsl(0,0%,100%)\" viewport-fill-opacity=\"1\" style=\"fill:none;stroke:none;stroke-width:1px;fill:none;fill-rule:evenodd;\">\n<defs>\n	<pattern id=\"pat-baseline-12px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"12\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"3\" y2=\"3\" stroke-opacity=\"0.125\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"6\" y2=\"6\" stroke-opacity=\"0.375\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"9\" y2=\"9\" stroke-opacity=\"0.125\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-24px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"24\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-10px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"10\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.00\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"5\" y2=\"5\" stroke-opacity=\"0.75\"/>\n	</pattern>\n	<pattern id=\"pat-baseline-20px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n	<pattern id=\"pat-cols-220px\" x=\"0\" y=\"0\" width=\"220\" height=\"36\" patternUnits=\"userSpaceOnUse\">\n		<rect transform=\"translate(0,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<rect transform=\"translate(200,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<line transform=\"translate(20 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,60%)\" stroke-opacity=\"0.2\"/>\n		<line transform=\"translate(200 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.2\"/>\n\n		<line transform=\"translate(140 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n		<line transform=\"translate(80 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n\n		<line transform=\"translate(0 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n		<line transform=\"translate(220 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n	</pattern>\n</defs>\n<g id=\"debug-grid-body\" transform=\"translate(0 0.5)\">\n	<rect id=\"baseline\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	<g id=\"debug-grid-container\">\n		<g id=\"debug-grid-content\">\n			<rect id=\"baseline-content\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n			<line id=\"gct0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n			<line id=\"gct1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		</g>\n		<line id=\"gnv0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		<line id=\"gnv1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n	</g>\n	<rect id=\"columns\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n\n	<line id=\"le\" class=\"vguide edge\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	<line id=\"re\" class=\"vguide edge\" x1=\"100%\" x2=\"100%\" y1=\"0\" y2=\"100%\"/>\n\n	<line id=\"gl0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	<line id=\"gl1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n	<line id=\"gr0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	<line id=\"gr1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	\n	<line id=\"gm\" class=\"vguide\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n</g>\n</svg>\n";
-},"useData":true});
-
-},{"hbsfy/runtime":21}],99:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
-    var stack1;
-
-  return "	<dd id=\"select-layout\">\n		<select size=1>\n"
-    + ((stack1 = helpers.each.call(depth0 != null ? depth0 : {},(depth0 != null ? depth0.layouts : depth0),{"name":"each","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "		</select>\n	</dd>\n";
-},"2":function(container,depth0,helpers,partials,data) {
-    var alias1=container.lambda, alias2=container.escapeExpression;
-
-  return "			<option value=\""
-    + alias2(alias1(depth0, depth0))
-    + "\">"
-    + alias2(alias1(depth0, depth0))
-    + "</option>\n";
-},"4":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {};
-
-  return "		<li class=\""
-    + ((stack1 = helpers["if"].call(alias1,depth0,{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.program(7, data, 0),"data":data})) != null ? stack1 : "")
-    + "\">"
-    + container.escapeExpression(((helper = (helper = helpers.key || (data && data.key)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"key","hash":{},"data":data}) : helper)))
-    + "</li>\n";
-},"5":function(container,depth0,helpers,partials,data) {
-    return "passed";
-},"7":function(container,depth0,helpers,partials,data) {
-    return "failed";
-},"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
-
-  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dt>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "	<dd id=\"edit-backend\">\n		<a href=\""
-    + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
-    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
-    + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
-    + "</p>\n	<ul>\n"
-    + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "	</ul>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":21}],100:[function(require,module,exports){
@@ -14556,7 +14704,7 @@ TransformItem.prototype = Object.create({
 });
 
 module.exports = TransformItem;
-},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":111,"utils/prefixedProperty":112,"utils/prefixedStyleName":113,"utils/strings/camelToDashed":116}],105:[function(require,module,exports){
+},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114,"utils/strings/camelToDashed":117}],105:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
 var splice = Array.prototype.splice;
@@ -14893,6 +15041,25 @@ module.exports = function(s, m, includeSizePos) {
 }).call(this,true)
 
 },{}],108:[function(require,module,exports){
+module.exports = function(el) {
+	if (!(el instanceof HTMLElement)) {
+		return "" + el;
+	}
+	var retval = [el.tagName];
+	if (el.hasAttribute("id")) {
+		retval.push("#" + el.id);
+	}
+	if (el.classList[0]) {
+		retval.push("." + el.classList[0]);
+	}
+	if (el.cid !== void 0) {
+		retval.push(" @" + el.cid);
+	} else if (el.hasAttribute("data-cid")) {
+		retval.push(" @" + el.getAttribute("data-cid"));
+	}
+	return retval.join("");
+};
+},{}],109:[function(require,module,exports){
 /**
  * @param {number} i current iteration
  * @param {number} s start value
@@ -14906,7 +15073,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -14940,7 +15107,7 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -14976,7 +15143,7 @@ module.exports = function(rect, dx, dy) {
 	return r;
 };
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -15074,7 +15241,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":114}],112:[function(require,module,exports){
+},{"./prefixes":115}],113:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -15115,7 +15282,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":114}],113:[function(require,module,exports){
+},{"./prefixes":115}],114:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -15171,10 +15338,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":114}],114:[function(require,module,exports){
+},{"./prefixes":115}],115:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /* jshint ignore:start */
 /*
 Taken from:
@@ -15234,19 +15401,19 @@ if (/Trident|Edge/.test(navigator.userAgent)) {
 module.exports = setImmediate;
 /* jshint ignore:end */
 
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -15411,7 +15578,7 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],119:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],120:[function(require,module,exports){
 module.exports={
 	"transitions": {
 		"ease": "ease",

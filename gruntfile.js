@@ -61,37 +61,18 @@ module.exports = function(grunt) {
 		},
 	});
 
-	// grunt.config("copy", {
-	// 	sources: {
-	// 		options: {
-	// 			process: function(content, srcpath) {
-	// 				return content.replace(/(\s)url\((['"]).*?(?=[^\/]*['"])/g, "$1font-url($2");
-	// 			}
-	// 		},
-	// 		files: [{
-	// 			expand: true,
-	// 			dest: "./build/generated/sass/fonts",
-	// 			cwd: "./node_modules/@folio/workspace-assets/css/",
-	// 			src: [
-	// 				"_folio-figures.scss",
-	// 				"_franklin-gothic-itc-cp.scss",
-	// 			]
-	// 		}]
-	// 	}
-	// });
-
 	/* --------------------------------
 	 * grunt-http
 	 * -------------------------------- */
 
 	grunt.loadNpmTasks("grunt-http");
 	grunt.config("http", [
-		// "css/fonts-debug.css",
-		// "css/fonts-debug.css.map",
+		// "css/folio.css",
+		// "js/folio.js",
 		"css/folio-debug.css",
 		"css/folio-debug.css.map",
 		"css/folio-ie.css",
-		"css/folio-ie.css.map",
+		// "css/folio-ie.css.map",
 		"js/folio-debug-client.js",
 		"js/folio-debug-client.js.map",
 		"js/folio-debug-vendor.js",
@@ -118,23 +99,28 @@ module.exports = function(grunt) {
 		// 	options: { url: "<%= paths.srcRoot %>/?force-nodebug" },
 		// 	dest: "index.dist.html"
 		// },
-		data: {
+		"data-json": {
 			options: { url: "<%= paths.srcRoot %>/json" },
+			dest: "<%= paths.destAssets %>/js/data.json"
+		},
+		"data-jsonp": {
+			options: { url: "<%= paths.srcRoot %>/json?callback=bootstrap" },
 			dest: "<%= paths.destAssets %>/js/data.js"
-		}
+		},
 	}));
 
 	/* --------------------------------
 	 * copy/process
 	 * -------------------------------- */
 
-	function toPattern(s) {
+	var toPattern = function(s) {
 		s = grunt.template.process(s, grunt.config());
 		s = s.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 		s += "\\/?";
-		grunt.log.writeln(s);
+		grunt.log.writeln("RegExp: /" + s + "/g");
 		return new RegExp(s, "g");
-	}
+	};
+
 	grunt.loadNpmTasks("grunt-string-replace");
 	grunt.config("string-replace", {
 		"http-root": {
@@ -147,9 +133,6 @@ module.exports = function(grunt) {
 			},
 			options: {
 				replacements: [
-					// { pattern: "<%= paths.srcAssets %>", replacement: "<%= paths.destAssets %>"},
-					// { pattern: /https?:\/\/[^\/\"\']+/g}, replacement: "./" },
-					// { pattern: /https?:\/\/folio\.(local\.|localhost)/g}, replacement: "./" },
 					{
 						pattern: toPattern("<%= paths.srcRoot %>"),
 						replacement: "<%= paths.destRoot %>"
@@ -166,6 +149,7 @@ module.exports = function(grunt) {
 	/* --------------------------------
 	 * minify html
 	 * -------------------------------- */
+
 	grunt.loadNpmTasks('grunt-contrib-htmlmin');
 	grunt.config("htmlmin", {
 		main: {
@@ -183,7 +167,6 @@ module.exports = function(grunt) {
 			}
 		},
 	});
-
 
 	grunt.registerTask("build", ["clean", "copy", "http", "string-replace", "htmlmin"]);
 	grunt.registerTask("default", ["build"]);
