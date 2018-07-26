@@ -21,6 +21,12 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks("grunt-contrib-clean");
 	grunt.config("clean", {
+		scripts: {
+			src: [
+				"workspace/assets/js",
+				"workspace/assets/css"
+			]
+		},
 		resources: {
 			src: [
 				"workspace/assets/fonts",
@@ -87,26 +93,22 @@ module.exports = function(grunt) {
 		options: {
 			ignoreErrors: true
 		},
-		index: {
+		"index-dev": {
 			options: { url: "<%= paths.srcRoot %>/?force-debug" },
 			dest: "index.html"
 		},
-		// index_dev: {
-		// 	options: { url: "<%= paths.srcRoot %>/?force-debug" },
-		// 	dest: "index.dev.html"
-		// },
-		// index_dist: {
+		// "index-dist": {
 		// 	options: { url: "<%= paths.srcRoot %>/?force-nodebug" },
 		// 	dest: "index.dist.html"
 		// },
-		"data-json": {
-			options: { url: "<%= paths.srcRoot %>/json" },
-			dest: "<%= paths.destAssets %>/js/data.json"
-		},
-		"data-jsonp": {
-			options: { url: "<%= paths.srcRoot %>/json?callback=bootstrap" },
-			dest: "<%= paths.destAssets %>/js/data.js"
-		},
+		// "data-json": {
+		// 	options: { url: "<%= paths.srcRoot %>/json" },
+		// 	dest: "<%= paths.destAssets %>/js/data.json"
+		// },
+		// "data-jsonp": {
+		// 	options: { url: "<%= paths.srcRoot %>/json?callback=bootstrap" },
+		// 	dest: "<%= paths.destAssets %>/js/data.js"
+		// },
 	}));
 
 	/* --------------------------------
@@ -168,6 +170,6 @@ module.exports = function(grunt) {
 		},
 	});
 
-	grunt.registerTask("build", ["clean", "copy", "http", "string-replace", "htmlmin"]);
+	grunt.registerTask("build", ["clean:resources", "clean:scripts", "copy", "http", "string-replace", "htmlmin"]);
 	grunt.registerTask("default", ["build"]);
 };
