@@ -305,7 +305,8 @@ html {
   position: relative;
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   -webkit-overflow-scrolling: auto;
   overscroll-behavior: none; }
 
@@ -316,17 +317,14 @@ html {
 body {
   position: relative;
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: auto;
   overscroll-behavior: none; }
 
 #container {
-  position: relative;
-  /* allow to grow beyond viewport so that #content can grow too */
-  min-height: 100%;
-  width: 100%; }
+  /* allow to grow beyond viewport so that #content can grow too */ }
 
 #navigation {
   position: relative;
@@ -443,6 +441,9 @@ body {
     .list-group .label > span {
       padding: 0 1ex;
       margin: 0 -1ex; }
+
+.list-item.excluded .label, .list-group.excluded .label {
+  text-decoration: line-through; }
 
 #bundle-list {
   font-weight: 600;
@@ -1268,7 +1269,7 @@ body {
   .app.fullwidth #keyword-list {
     font-size: 1rem;
     right: 0;
-    width: calc(32vw - 2vw - 2vw + 2vw);
+    width: 30vw;
     left: auto; }
     .app.fullwidth #keyword-list .list-item {
       width: 100%; }
@@ -1375,6 +1376,8 @@ body {
     height: 2.1rem;
     font-size: 75%;
     line-height: 1; }
+  .app.fullwidth .playable-renderer[data-fit-dir="height"] .controls > .progress-meter {
+    margin: 0 0 0 1rem; }
   .app.fullwidth .media-caption-stack {
     top: 1.5rem;
     margin: 0;
@@ -1630,81 +1633,75 @@ html.fullwidth-small {
   outline-offset: -2px;
   outline-style: dashed !important; }
 
-.debug-blocks {
-  outline: 0.4rem solid #ff00dd;
-  outline-offset: -0.6rem; }
-  .debug-blocks #container {
-    outline: 0.4rem dashed #ff00dd;
-    outline-offset: -0.9rem; }
-  .debug-blocks #navigation {
-    outline: 0.5rem dashed rgba(250, 126, 112, 0.25);
+.debug-blocks #navigation {
+  outline: 0.8rem dashed rgba(250, 126, 112, 0.5);
+  outline-offset: -0.4rem; }
+  .debug-blocks #navigation.container-changing {
+    outline: 0.8rem dashed rgba(250, 126, 112, 0.75);
+    outline-offset: -0.4rem; }
+  .debug-blocks #navigation .graph {
+    outline: 0.3rem dashed rgba(96, 159, 96, 0.25);
     outline-offset: 0; }
-    .debug-blocks #navigation.container-changing {
-      outline: 0.5rem dashed rgba(250, 126, 112, 0.6);
+    .debug-blocks #navigation .graph:hover, .debug-blocks #navigation .graph:active {
+      outline: 0.3rem dashed rgba(96, 159, 96, 0.75);
       outline-offset: 0; }
-    .debug-blocks #navigation .graph {
-      outline: 0.5rem dashed rgba(96, 159, 96, 0.25);
-      outline-offset: 0; }
-      .debug-blocks #navigation .graph:hover, .debug-blocks #navigation .graph:active {
-        outline: 0.5rem dashed rgba(96, 159, 96, 0.75);
-        outline-offset: 0; }
-    .debug-blocks #navigation #article-list-wrapper,
-    .debug-blocks #navigation #site-name-wrapper,
-    .debug-blocks #navigation .list {
-      outline: 1px solid Crimson;
-      outline-offset: -1px;
-      background-color: rgba(250, 126, 112, 0.1); }
-    .debug-blocks #navigation #site-name,
-    .debug-blocks #navigation .article-button,
-    .debug-blocks #navigation .list-group,
-    .debug-blocks #navigation .list-item {
-      background-color: rgba(250, 126, 112, 0.3); }
-    .debug-blocks #navigation #site-name a,
-    .debug-blocks #navigation .article-button a,
-    .debug-blocks #navigation .list-group .label span,
-    .debug-blocks #navigation .list-item .label {
-      outline: 1px solid #fa7e70;
-      outline-offset: -1px; }
-  .debug-blocks #content {
-    outline: 0.5rem solid rgba(0, 191, 255, 0.25);
+  .debug-blocks #navigation #article-list-wrapper,
+  .debug-blocks #navigation #site-name-wrapper,
+  .debug-blocks #navigation .list {
+    outline: 1px solid Crimson;
+    outline-offset: -1px;
+    background-color: rgba(250, 126, 112, 0.1); }
+  .debug-blocks #navigation #site-name,
+  .debug-blocks #navigation .article-button,
+  .debug-blocks #navigation .list-group,
+  .debug-blocks #navigation .list-item {
+    background-color: rgba(250, 126, 112, 0.3); }
+  .debug-blocks #navigation #site-name a,
+  .debug-blocks #navigation .article-button a,
+  .debug-blocks #navigation .list-group .label span,
+  .debug-blocks #navigation .list-item .label {
+    outline: 1px solid #fa7e70;
+    outline-offset: -1px; }
+.debug-blocks #content {
+  outline: 0.5rem solid rgba(0, 191, 255, 0.25);
+  outline-offset: -0.5rem; }
+  .debug-blocks #content:hover {
+    outline: 0.75rem dashed rgba(0, 191, 255, 0.75);
+    outline-offset: -0.75rem; }
+  .debug-blocks #content.container-changing {
+    outline: 0.5rem dashed rgba(0, 191, 255, 0.6);
     outline-offset: -0.5rem; }
-    .debug-blocks #content:hover {
-      outline: 0.75rem dashed rgba(0, 191, 255, 0.75);
-      outline-offset: -0.75rem; }
-    .debug-blocks #content.container-changing {
-      outline: 0.5rem dashed rgba(0, 191, 255, 0.6);
-      outline-offset: -0.5rem; }
-    .debug-blocks #content .article-view {
-      outline: 0.5rem solid rgba(0, 191, 255, 0.3);
-      outline-offset: -0.5rem; }
-      .debug-blocks #content .article-view > * {
-        background-color: rgba(32, 175, 223, 0.2);
-        outline: 1px dashed deepskyblue;
-        outline-offset: -1px; }
-    .debug-blocks #content .stack .stack-item {
-      outline: 1px solid RoyalBlue;
+  .debug-blocks #content .article-view {
+    outline: 0.5rem solid rgba(0, 191, 255, 0.3);
+    outline-offset: -0.5rem; }
+    .debug-blocks #content .article-view > * {
+      background-color: rgba(32, 175, 223, 0.2);
+      outline: 1px dashed deepskyblue;
       outline-offset: -1px; }
-    .debug-blocks #content .stack .content {
-      background-color: rgba(32, 175, 223, 0.1); }
-      .debug-blocks #content .stack .content > * {
-        background-color: rgba(32, 175, 223, 0.3); }
-    .debug-blocks #content .carousel {
-      background-color: rgba(32, 175, 223, 0.1); }
-      .debug-blocks #content .carousel.scrolling {
-        outline: 1rem solid rgba(0, 191, 255, 0.3);
+  .debug-blocks #content .stack .stack-item {
+    outline: 1px solid RoyalBlue;
+    outline-offset: -1px; }
+  .debug-blocks #content .stack .content {
+    background-color: rgba(32, 175, 223, 0.1); }
+    .debug-blocks #content .stack .content > * {
+      background-color: rgba(32, 175, 223, 0.3); }
+  .debug-blocks #content .carousel {
+    background-color: rgba(32, 175, 223, 0.1); }
+    .debug-blocks #content .carousel.scrolling {
+      outline: 1rem solid rgba(0, 191, 255, 0.3);
+      outline-offset: -1rem; }
+      .debug-blocks #content .carousel.scrolling.panning {
+        outline: 1rem solid rgba(0, 191, 255, 0.7);
         outline-offset: -1rem; }
-        .debug-blocks #content .carousel.scrolling.panning {
-          outline: 1rem solid rgba(0, 191, 255, 0.7);
-          outline-offset: -1rem; }
-    .debug-blocks #content .carousel-item {
-      outline: 1px solid RoyalBlue;
-      outline-offset: -1px; }
-    .debug-blocks #content .empty-item .content {
-      outline: 1px solid deepskyblue;
-      outline-offset: -1px;
-      background-color: rgba(32, 175, 223, 0.3); }
-    .debug-blocks #content .media-item {
-      background-color: rgba(32, 175, 223, 0.3); }
+  .debug-blocks #content .carousel-item {
+    outline: 1px solid RoyalBlue;
+    outline-offset: -1px; }
+  .debug-blocks #content .empty-item .content {
+    outline: 1px solid deepskyblue;
+    outline-offset: -1px;
+    background-color: rgba(32, 175, 223, 0.3); }
+  .debug-blocks #content .media-item {
+    background-color: rgba(32, 175, 223, 0.3); }
 
 .debug-mdown .mdown h1, .debug-mdown .mdown h2, .debug-mdown .mdown h3, .debug-mdown .mdown h4, .debug-mdown .mdown h5, .debug-mdown .mdown h6, .debug-mdown .mdown p, .debug-mdown .mdown ol, .debug-mdown .mdown ul, .debug-mdown .mdown dl {
   outline: 1px solid rgba(141, 177, 78, 0.9);
@@ -1888,8 +1885,8 @@ svg#debug-grid {
   width: auto;
   left: 0;
   right: 0;
-  bottom: -1.5rem;
-  margin: 1.5rem 0;
+  bottom: 0;
+  margin-top: 3rem;
   overflow-y: auto;
   overflow-x: auto; }
   .media-item .debug-log > pre {
@@ -1952,6 +1949,12 @@ svg#debug-grid {
     content: 'fullwidth'; } }
 .fullwidth .breakpoint::after {
   content: 'fullwidth'; }
+
+@media only screen and (min-width: 704px) and (min-height: 540px) {
+  .breakpoint::after {
+    content: 'default'; } }
+.default .breakpoint::after {
+  content: 'default'; }
 
 @media only screen and (min-width: 1024px) and (min-height: 540px) {
   .breakpoint::after {
