@@ -2205,7 +2205,7 @@ module.exports = (function() {
 }());
 }).call(this,true)
 
-},{"../../../sass/variables.json":122,"underscore":"underscore"}],35:[function(require,module,exports){
+},{"../../../sass/variables.json":121,"underscore":"underscore"}],35:[function(require,module,exports){
 /**
  * @module app/view/DebugToolbar
  */
@@ -3086,7 +3086,7 @@ module.exports = BaseItem.extend({
 		return this._attrs || (this._attrs = _.defaults({}, this.get("attrs"), attrsDefault));
 	},
 });
-},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":40,"app/model/item/MediaItem":49,"color":"color","underscore":"underscore","utils/strings/stripTags":120}],48:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":40,"app/model/item/MediaItem":49,"color":"color","underscore":"underscore","utils/strings/stripTags":119}],48:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -3274,7 +3274,7 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":40,"app/model/item/SourceItem":50,"color":"color","underscore":"underscore","utils/strings/stripTags":120}],50:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":40,"app/model/item/SourceItem":50,"color":"color","underscore":"underscore","utils/strings/stripTags":119}],50:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3907,7 +3907,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/debug/DebugToolbar":35,"app/model/AppState":38,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/view/ContentView":53,"app/view/NavigationView":54,"app/view/base/TouchManager":59,"app/view/base/View":60,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":120}],53:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/debug/DebugToolbar":35,"app/model/AppState":38,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/view/ContentView":53,"app/view/NavigationView":54,"app/view/base/TouchManager":59,"app/view/base/View":60,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":119}],53:[function(require,module,exports){
 /**
  * @module app/view/NavigationView
  */
@@ -4345,6 +4345,7 @@ var ContentView = View.extend({
 			var view = this.childViews[ev.target.cid];
 			view.el.classList.remove("adding-child");
 			view.el.style.removeProperty(transitionProp);
+			// view.requestRender(View.SIZE_INVALID).renderNow();
 		}
 	},
 
@@ -4531,7 +4532,7 @@ var ArticleButton = require("app/view/component/ArticleButton");
 // /** @type {module:utils/prefixedProperty} */
 // var prefixedProperty = require("utils/prefixedProperty");
 
-var traceElement = require("utils/debug/traceElement");
+// var traceElement = require("utils/debug/traceElement");
 
 var tx = Globals.transitions;
 
@@ -4689,15 +4690,16 @@ var NavigationView = View.extend({
 			// var hval = result.reduce(function(a, o) {
 			// 	return Math.max(a, o.metrics.height);
 			// }, 0);
-			if (this.model.get("collapsed")) {
-				this.el.style.height = "";
-			} else {
-				this.el.style.height = Math.max(
+			var hval = this.model.get("collapsed") ?
+				"" : Math.max(
 					this.bundleList.metrics.height,
 					this.keywordList.metrics.height) + "px";
-			}
+
+			this.el.style.height = hval; //this.model.get("collapsed") ? "" : "100%";
+			// this.vpanGroup.style.height = hval;
+			this.graph.el.style.height = hval;
 			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
-			console.log("%s:[whenListsRenderedDone] height set to %s", this.cid, this.el.style.height || "[not set]", result);
+			console.log("%s:[whenListsRenderedDone] height set to %s", this.cid, hval || "[not set]", result);
 			return result;
 		}.bind(this);
 
@@ -4949,7 +4951,9 @@ var NavigationView = View.extend({
 			/* HORIZONTAL: the rest */
 			if (collapsedChanged ^ withArticleChanged) {
 				this.transforms.runTransition(collapsed ? tx.LAST : tx.FIRST,
-					this.sitename.el, this.about.el, this.bundleList.wrapper, this.hGroupings);
+					this.sitename.el, this.about.el,
+					this.bundleList.wrapper,
+					this.hGroupings);
 			}
 			/* VERTICAL */
 			if (fromRoute == 'root' || toRoute == 'root') {
@@ -4986,7 +4990,7 @@ var NavigationView = View.extend({
 		// this.transforms.clearOffset(
 		// 	// this.bundleList.el,
 		// 	// this.keywordList.el,
-		// 	this.keywordList.wrapper);
+		// 	this.bundleList.wrapper);
 	},
 
 	/* --------------------------- *
@@ -5067,11 +5071,14 @@ var NavigationView = View.extend({
 	/* --------------------------- */
 
 	_onNavigationClick: function(ev) {
-		if (!ev.defaultPrevented && this.model.has("bundle")) {
-			// console.log("%s::_onNavigationClick [%s]", this.cid, ev.type); //, ev.target);
-			ev.preventDefault();
-			this.transforms.offset(0, 1, this.graph.el);
-			this.transforms.validate();
+		if (ev.defaultPrevented || ev.target !== this.graph.el) {
+			return;
+		}
+		ev.preventDefault();
+		if (this.model.has("bundle")) {
+			console.log("%s::_onNavigationClick [%s]", this.cid, ev.type, ev); //, ev.target);
+			// this.transforms.offset(0, 1, this.graph.el);
+			// this.transforms.validate();
 			// this._setCollapsed(!this.model.get("collapsed"));
 			this.setImmediate(function() {
 				this.model.set("collapsed", !this.model.get("collapsed"));
@@ -5456,7 +5463,7 @@ var NavigationView = View.extend({
 });
 
 module.exports = NavigationView;
-},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/model/collection/KeywordCollection":43,"app/model/collection/TypeCollection":44,"app/view/base/View":60,"app/view/component/ArticleButton":63,"app/view/component/FilterableListView":68,"app/view/component/GraphView":69,"app/view/component/GroupingListView":70,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103,"utils/debug/traceElement":109}],55:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/model/collection/ArticleCollection":41,"app/model/collection/BundleCollection":42,"app/model/collection/KeywordCollection":43,"app/model/collection/TypeCollection":44,"app/view/base/View":60,"app/view/component/ArticleButton":63,"app/view/component/FilterableListView":68,"app/view/component/GraphView":69,"app/view/component/GroupingListView":70,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":103}],55:[function(require,module,exports){
 var PriorityQueue = function(offset) {
 	this._offset = offset | 0;
 	this._items = [];
@@ -6195,7 +6202,7 @@ Interpolator.prototype = Object.create({
 });
 
 module.exports = Interpolator;
-},{"utils/ease/linear":110}],58:[function(require,module,exports){
+},{"utils/ease/linear":109}],58:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -6237,7 +6244,7 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":113}],59:[function(require,module,exports){
+},{"utils/prefixedEvent":112}],59:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
@@ -6452,7 +6459,7 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
-},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":121}],60:[function(require,module,exports){
+},{"app/control/Globals":34,"hammerjs":"hammerjs","utils/touch/SmoothPanRecognizer":120}],60:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
 /**
@@ -6768,6 +6775,8 @@ var ViewProto = {
 	_renderQueueId: -1,
 	/** @type {int} */
 	_renderFlags: 0,
+	/** @type {Boolean} */
+	_enabled: null,
 
 	/** @type {object} */
 	properties: {
@@ -7061,7 +7070,7 @@ var ViewProto = {
 			if (this._logFlags["view.render"]) {
 				console.log("%s::_applyRender   [%s]",
 					this.cid, this._traceRenderStatus(),
-					this._logFlags["view.render"] ?
+					this._logFlags["view.trace"] ?
 					this._logRenderCallers.join("\n") : "");
 			}
 			this._logRenderCallers.length = 0;
@@ -7220,9 +7229,6 @@ var ViewProto = {
 	/* common abstract
 	/* ------------------------------- */
 
-	/** @private */
-	_enabled: undefined,
-
 	/**
 	/* @param {Boolean}
 	/*/
@@ -7256,7 +7262,7 @@ if (DEBUG) {
 module.exports = Backbone.View.extend(ViewProto, View);
 }).call(this,true)
 
-},{"app/view/base/CallbackQueue":55,"app/view/base/PrefixedEvents":58,"app/view/base/ViewError":61,"app/view/promise/whenViewIsAttached":81,"app/view/promise/whenViewIsRendered":82,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":113,"utils/prefixedProperty":114,"utils/prefixedStyleName":115}],61:[function(require,module,exports){
+},{"app/view/base/CallbackQueue":55,"app/view/base/PrefixedEvents":58,"app/view/base/ViewError":61,"app/view/promise/whenViewIsAttached":81,"app/view/promise/whenViewIsRendered":82,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114}],61:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -7762,8 +7768,8 @@ var CarouselProto = {
 	/* enabled
 	/* --------------------------- */
 
-	/** @override */
-	_enabled: undefined,
+	// /** @override */
+	// _enabled: undefined,
 
 	/** @override */
 	setEnabled: function(enabled) {
@@ -8383,7 +8389,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":60,"app/view/render/CarouselRenderer":83,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":114,"utils/prefixedStyleName":115,"utils/touch/SmoothPanRecognizer":121}],66:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":60,"app/view/render/CarouselRenderer":83,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":113,"utils/prefixedStyleName":114,"utils/touch/SmoothPanRecognizer":120}],66:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -9083,7 +9089,7 @@ if (DEBUG) {
 module.exports = FilterableListView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/View":60,"app/view/render/ClickableRenderer":84,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":105,"utils/css/getBoxEdgeStyles":108,"utils/prefixedProperty":114,"utils/promise/rejectAll":117,"utils/promise/resolveAll":118}],69:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":60,"app/view/render/ClickableRenderer":84,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":105,"utils/css/getBoxEdgeStyles":108,"utils/prefixedProperty":113,"utils/promise/rejectAll":116,"utils/promise/resolveAll":117}],69:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -9241,7 +9247,7 @@ var GraphView = CanvasView.extend({
 			// this.requestRender(CanvasView.LAYOUT_INVALID | CanvasView.SIZE_INVALID);
 			// this.requestRender().renderNow();
 		}.bind(this);
-		// viewportChanged = _.debounce(viewportChanged, 100, false);
+		viewportChanged = _.debounce(viewportChanged, 60, false);
 
 		// window.addEventListener("scroll",
 		// 		_.debounce(viewportChanged, 100, false), false);
@@ -9843,7 +9849,7 @@ if (DEBUG) {
 module.exports = GraphView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":56,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":106,"utils/canvas/calcArcHConnector":107,"utils/geom/inflateRect":112}],70:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/CanvasView":56,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":106,"utils/canvas/calcArcHConnector":107,"utils/geom/inflateRect":111}],70:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -11717,7 +11723,7 @@ var MediaRenderer = CarouselRenderer.extend({
 		this.metrics.media.height = ch;
 		this.metrics.media.scale = cs;
 
-		// console.log("%s::measure constraint: %s metrics: %o", this.cid, this.metrics.constraint, this.metrics);
+		console.log("%s::measure mw:%s mh:%s fit: %s metrics: %o", this.cid, pcw, pch, this.metrics.fitDirection, this.metrics);
 		// var sizing = this.getSizingEl();
 		// sizing.style.maxWidth = (cw + ew) + "px";
 		// sizing.style.maxHeight = (ch + eh) + "px";
@@ -12521,7 +12527,7 @@ if (GA) {
 module.exports = PlayableRenderer;
 }).call(this,true)
 
-},{"app/view/render/MediaRenderer":92,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":113,"utils/prefixedProperty":114}],94:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":92,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":112,"utils/prefixedProperty":113}],94:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -14012,7 +14018,7 @@ if (DEBUG) {
 module.exports = VideoRenderer;
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":96,"app/control/Globals":34,"app/view/component/ProgressMeter":71,"app/view/render/PlayableRenderer":93,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":111,"utils/prefixedEvent":113}],98:[function(require,module,exports){
+},{"./VideoRenderer.hbs":96,"app/control/Globals":34,"app/view/component/ProgressMeter":71,"app/view/render/PlayableRenderer":93,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":110,"utils/prefixedEvent":112}],98:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -15124,7 +15130,7 @@ TransformItem.prototype = Object.create({
 module.exports = TransformItem;
 }).call(this,true)
 
-},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":113,"utils/prefixedProperty":114,"utils/prefixedStyleName":115,"utils/strings/camelToDashed":119}],105:[function(require,module,exports){
+},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":112,"utils/prefixedProperty":113,"utils/prefixedStyleName":114,"utils/strings/camelToDashed":118}],105:[function(require,module,exports){
 module.exports = function(a1, a2, dest) {
 	return a1.reduce(function(res, o, i, a) {
 		if (a2.indexOf(o) == -1) res.push(o);
@@ -15468,25 +15474,6 @@ module.exports = function(s, m, includeSizePos) {
 }).call(this,true)
 
 },{}],109:[function(require,module,exports){
-module.exports = function(el) {
-	if (!(el instanceof HTMLElement)) {
-		return "" + el;
-	}
-	var retval = [el.tagName];
-	if (el.hasAttribute("id")) {
-		retval.push("#" + el.id);
-	}
-	if (el.classList[0]) {
-		retval.push("." + el.classList[0]);
-	}
-	if (el.cid !== void 0) {
-		retval.push(" @" + el.cid);
-	} else if (el.hasAttribute("data-cid")) {
-		retval.push(" @" + el.getAttribute("data-cid"));
-	}
-	return retval.join("");
-};
-},{}],110:[function(require,module,exports){
 /**
  * @param {number} i current iteration
  * @param {number} s start value
@@ -15500,7 +15487,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],111:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -15534,7 +15521,7 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],112:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -15570,7 +15557,7 @@ module.exports = function(rect, dx, dy) {
 	return r;
 };
 
-},{}],113:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -15668,7 +15655,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":116}],114:[function(require,module,exports){
+},{"./prefixes":115}],113:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -15709,7 +15696,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":116}],115:[function(require,module,exports){
+},{"./prefixes":115}],114:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -15765,10 +15752,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":116}],116:[function(require,module,exports){
+},{"./prefixes":115}],115:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],117:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = function(pp, reason) {
 	if (pp.length > 0) {
 		pp.forEach(function(p, i, a) {
@@ -15779,7 +15766,7 @@ module.exports = function(pp, reason) {
 	}
 	return pp;
 };
-},{}],118:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(pp, result) {
 	if (pp.length != 0) {
 		pp.forEach(function(p, i, a) {
@@ -15790,19 +15777,19 @@ module.exports = function(pp, result) {
 	}
 	return pp;
 };
-},{}],119:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],120:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],121:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -15967,7 +15954,7 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],122:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],121:[function(require,module,exports){
 module.exports={
 	"transitions": {
 		"ease": "ease",
