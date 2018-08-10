@@ -335,6 +335,10 @@ body {
   min-height: 14rem;
   padding-top: 2.5rem; }
 
+#vpan-group {
+  -webkit-transform: translate(0, 0);
+          transform: translate(0, 0); }
+
 #content {
   position: absolute;
   overflow: hidden;
@@ -1291,9 +1295,6 @@ body {
         width: 16vw;
         -webkit-transform: translate(-100%, 0);
                 transform: translate(-100%, 0); }
-        .app.fullwidth #keyword-list .list-group .label > span {
-          padding: 0 0.5ex;
-          margin: 0 -0.5ex; }
   .app.fullwidth.with-media .container-collapsed #keyword-list {
     opacity: 0;
     visibility: 0; }
