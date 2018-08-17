@@ -1594,6 +1594,7 @@ if (!DEBUG) {
 	});
 }
 
+// function applyPolyfills() {
 require("Modernizr");
 require("es6-promise").polyfill();
 require("classlist-polyfill");
@@ -1602,11 +1603,14 @@ require("matches-polyfill");
 require("fullscreen-polyfill");
 require("math-sign-polyfill");
 require("setimmediate");
+// }
 
+// function applyRequires() {
 require("backbone").$ = require("backbone.native");
 require("backbone.babysitter");
 require("Backbone.Mutators");
 require("hammerjs");
+// }
 
 // document.addEventListener('DOMContentLoaded', function(ev) {
 // 	console.log("%s:[event %s]", ev.target, ev.type);
@@ -1632,46 +1636,63 @@ window.addEventListener("load", function(ev) {
 	/** @type {module:app/view/helper/createColorStyleSheet} */
 	require("app/view/helper/createColorStyleSheet").call();
 
+	/** @type {module:underscore} */
+	var _ = require("underscore");
+
 	/** @type {module:app/view/AppView} */
 	var AppView = require("app/view/AppView");
+	var startApp = AppView.getInstance.bind(AppView);
 
 	/** @type {module:webfontloader} */
 	var WebFont = require("webfontloader");
-	WebFont.load({
+	var loadOpts = {
 		async: true,
+		groupName: "",
 		classes: false,
+		active: function() {
+			console.info("WebFont:%s:active", this.groupName);
+			// AppView.getInstance();
+		},
+		fontactive: function(familyName, variantFvd) {
+			console.info("WebFont:%s:fontactive '%s' (%s)", this.groupName, familyName, variantFvd);
+		},
+		inactive: function() {
+			console.warn("WebFont:%s:inactive", this.groupName);
+			// AppView.getInstance();
+		},
+		fontinactive: function(familyName, variantFvd) {
+			console.warn("WebFont:%s:fontinactive '%s' (%s)", this.groupName, familyName, variantFvd);
+		},
+		loading: function() {
+			console.log("WebFont:%s:loading", this.groupName);
+		},
+		// fontloading: function(familyName, variantDesc) {
+		// 	console.log("WebFont::fontloading", familyName, JSON.stringify(variantDesc, null, " "));
+		// },
+	};
+
+	WebFont.load(_.defaults({
+		async: false,
+		groupName: "required",
 		custom: {
 			families: [
-				// "Franklin Gothic FS:n4,n7",
-				"Franklin Gothic FS:n4,i4,n7,i7",
+				"Franklin Gothic FS:n4,n7",
+				// 		"Franklin Gothic FS:i4,i7"
 				"FolioFigures:n4",
 			],
 			testStrings: {
 				"FolioFigures": "hms"
 			},
 		},
-		active: function() {
-			console.info("WebFont::active");
-			// AppView.getInstance();
-		},
-		fontactive: function(familyName, variantFvd) {
-			console.info("WebFont::fontactive '%s' (%s)", familyName, variantFvd);
-		},
-		inactive: function() {
-			console.warn("WebFont::inactive");
-			// AppView.getInstance();
-		},
-		fontinactive: function(familyName, variantFvd) {
-			console.warn("WebFont::fontinactive '%s' (%s)", familyName, variantFvd);
-		},
-		// loading: function() {
-		// 	console.log("WebFont::loading");
-		// },
-		// fontloading: function(familyName, variantDesc) {
-		// 	console.log("WebFont::fontloading", familyName, JSON.stringify(variantDesc, null, " "));
-		// },
-	});
-	AppView.getInstance();
+		active: startApp,
+		inactive: startApp
+	}, loadOpts));
+
+	WebFont.load(_.defaults({}, loadOpts));
+
+	// requestAnimationFrame(function(tstamp) {
+	// 	AppView.getInstance();
+	// });
 });
 
 
@@ -1744,7 +1765,7 @@ if (DEBUG) {
 }
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":46,"app/view/AppView":53,"app/view/helper/createColorStyleSheet":75,"app/view/template/_helpers":102,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"webfontloader":"webfontloader"}],33:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":46,"app/view/AppView":53,"app/view/helper/createColorStyleSheet":75,"app/view/template/_helpers":102,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],33:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Controller
@@ -2467,6 +2488,8 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
  * @requires module:backbone
  */
 
+// /** @type {module:underscore} */
+// var _ = require("underscore");
 /** @type {module:backbone} */
 var BaseModel = require("backbone").Model;
 // /** @type {module:app/model/BaseModel} */
@@ -2475,42 +2498,114 @@ var BaseModel = require("backbone").Model;
 module.exports = BaseModel.extend({
 
 	defaults: {
-		routeName: "initial",
 		collapsed: false,
+		routeName: "initial",
 		article: null,
-		withArticle: false,
 		bundle: null,
-		withBundle: false,
 		media: null,
+		fromRouteName: "",
+		withArticle: false,
+		withBundle: false,
 		withMedia: false,
 	},
 
 	getters: [
-		"routeName",
 		"collapsed",
+		"routeName",
 		"article",
-		"withArticle",
 		"bundle",
-		"withBundle",
 		"media",
+		"fromRouteName",
+		"withArticle",
+		"withBundle",
 		"withMedia"
 	],
 
-	mutators: {
-		routeName: {
-			set: function(key, value, opts, set) {
-				this.fromRouteName = this.routeName;
-				// var retval = set(key, value, opts);
-				console.log("AppState:mutators:routeName:set (%o) : %o", arguments, null);
+	// mutators: {
+	// 	routeName: {
+	// 		set: function(key, value, opts, set) {
+	// 			// Set fromRoute to avoid losing current "changing" state
+	// 			this._previousAttributes["fromRouteName"] = this.attributes["fromRouteName"];
+	// 			this.changed["fromRouteName"] = this.attributes["fromRouteName"] = this.previous("routeName");
+	// 			// set("fromRouteName", this.previous("routeName"), {
+	// 			// 	silent: true
+	// 			// });
+	// 		}
+	// 	}
+	// },
+
+	initialize: function() {
+		// this.listenTo(this, {
+		// 	"change:routeName": function() {
+		// 		this.set("fromRouteName", this.previous("routeName"));
+		// 	},
+		// 	"change:article": function(val) {
+		// 		console.log("%s:[change] %o", this.cid, arguments);
+		// 		this.set("withArticle", (typeof val === 'object'));
+		// 	},
+		// 	"change:bundle": function(val) {
+		// 		console.log("%s:[change] %o", this.cid, arguments);
+		// 		this.set("withBundle", (typeof val === 'object'));
+		// 	},
+		// 	"change:media": function(val) {
+		// 		console.log("%s:[change] %o", this.cid, arguments);
+		// 		this.set("withMedia", (typeof val === 'object'));
+		// 	},
+		// });
+
+		// this.set({
+		// 	fromRouteName: "",
+		// 		withArticle: false,
+		// 		withBundle: false,
+		// 		withMedia: false
+		// });
+		var opts = { silent: false };
+
+		this.listenTo(this, "change", function(attrs) {
+			// var opts = { silent: false };
+			if (this.hasChanged("routeName")) {
+				this.set("fromRouteName", this.previous("routeName"), opts);
 			}
-		}
+			if (this.hasChanged("article")) {
+				this.set("withArticle", this.has("article"), opts);
+			}
+			if (this.hasChanged("bundle")) {
+				this.set("withBundle", this.has("bundle"), opts);
+			}
+			if (this.hasChanged("media")) {
+				this.set("withMedia", this.has("media"), opts);
+			}
+		});
+
+		this.listenTo(this, "change:routeName",
+			function(val) {
+				console.log("%s:[change:routeName] %o", this.cid, val);
+				// this.set("fromRouteName", this.previous("routeName"));
+			});
+		this.listenTo(this, "change:article",
+			function(val) {
+				console.log("%s:[change:article] %o", this.cid, val);
+				// this.set("withArticle", _.isObject(val));
+			});
+		this.listenTo(this, "change:bundle",
+			function(val) {
+				console.log("%s:[change:bundle] %o", this.cid, val);
+				// this.set("withBundle", _.isObject(val));
+			});
+		this.listenTo(this, "change:media",
+			function(val) {
+				console.log("%s:[change:media] %o", this.cid, val);
+				// this.set("withMedia", _.isObject(val));
+			});
 	},
 
-	// initialize: function() {
-	// 	this.listenTo(this, "change:routeName", function() {
-	// 		this.fromRouteName = this.previous("routeName");
-	// 	});
-	// },
+	hasAnyPrevious: function(attr) {
+		return this.previous(attr) != null;
+	},
+
+	hasAnyChanged: function(attr) {
+		return this.hasChanged(attr) && (this.has(attr) != this.hasAnyPrevious(attr));
+	}
 
 	// constructor: function() {
 	// 	Object.keys(this.defaults).forEach(function(getterName) {
@@ -2634,7 +2729,7 @@ var BaseModel = {
 		for (propName in proto) {
 			if (proto.hasOwnProperty(propName) && _.isObject(proto[propName])) { //(Object.getPrototypeOf(proto[propName]) === Object.prototype)) {
 				proto[propName] = _.defaults(proto[propName], this.prototype[propName]);
-				console.log("BaseModel::extend '%s:%s' is Object\n%s", proto._domPrefix, propName, JSON.stringify(proto[propName]));
+				// console.log("BaseModel::extend '%s:%s' is Object\n%s", proto._domPrefix, propName, JSON.stringify(proto[propName]));
 			}
 		}
 
@@ -3537,7 +3632,7 @@ var AppViewProto = {
 	/** @override */
 	el: "html",
 	// /** @override */
-	className: "app without-bundle without-media without-article",
+	className: "app", // without-bundle without-media without-article",
 	/** @override */
 	model: AppState,
 
@@ -3603,7 +3698,9 @@ var AppViewProto = {
 		// 	return !!retval;
 		// }.bind(this);
 
-		vtouch = htouch = TouchManager.init(this.content);
+		// vtouch = htouch = TouchManager.init(this.content);
+		vtouch = htouch = TouchManager.init(document.body);
+
 		// vtouch.get("vpan").set({ enable: this._vpanEnableFn });
 		// htouch.get("hpan").set({ enable: this._hpanEnableFn });
 		// 		vtouch.set({
@@ -3762,23 +3859,29 @@ var AppViewProto = {
 
 	_onRoute: function(name, args) {
 		console.info("%s::_onRoute %o -> %o", this.cid, this.model.get("routeName"), name);
-		var o = _.defaults({ routeName: name }, AppState.prototype.defaults);
+		// var o = _.defaults({ routeName: name }, AppState.prototype.defaults);
+		var o = {
+			routeName: name,
+			bundle: null,
+			media: null,
+			article: null
+		};
 		switch (name) {
 			case "media-item":
 				o.bundle = bundles.selected;
-				o.withBundle = true;
+				// o.withBundle = true;
 				o.media = o.bundle.media.selected;
-				o.withMedia = true;
+				// o.withMedia = true;
 				o.collapsed = true;
 				break;
 			case "bundle-item":
 				o.bundle = bundles.selected;
-				o.withBundle = true;
+				// o.withBundle = true;
 				o.collapsed = true;
 				break;
 			case "article-item":
 				o.article = articles.selected;
-				o.withArticle = true;
+				// o.withArticle = true;
 				o.collapsed = true;
 				break;
 			case "bundle-list":
@@ -3804,6 +3907,20 @@ var AppViewProto = {
 				this.model.previous(key),
 				this.model.get(key));
 		}, this);
+
+		["Article", "Bundle", "Media"].forEach(function(name) {
+			var key = name.toLowerCase();
+			console[this.hasChanged("with" + name) == this.hasAnyChanged(key) ? "log" : "warn"].call(console, "%s::_onModelChange with%s: %o with%sChanged: %o", this.cid,
+				name, this.has(key),
+				name, this.hasAnyChanged(key)
+			);
+		}, this.model);
+
+		// console.log("%s::_onModelChange %o", this.cid,
+		// 	// arguments
+		// 	// _.clone(this.model.attributes),
+		// 	// this.model.changedAttributes()
+		// );
 
 		this.requestRender(View.MODEL_INVALID)
 			// .requestChildrenRender(View.MODEL_INVALID)
@@ -3902,12 +4019,19 @@ var AppViewProto = {
 
 		/* Set route class */
 		if (this.model.hasChanged("routeName")) {
+
+			prevAttr = this.model.previous("fromRouteName");
+			if (prevAttr) {
+				cls.remove("from-route-" + prevAttr);
+			}
+			cls.add("from-route-" + this.model.get("fromRouteName"));
+
 			prevAttr = this.model.previous("routeName");
 			if (prevAttr) {
 				cls.remove("route-" + prevAttr);
-				this.el.setAttribute("from-route", prevAttr);
+				// this.el.setAttribute("from-route", prevAttr);
 			}
-			this.el.setAttribute("to-route", this.model.get("routeName"));
+			// this.el.setAttribute("to-route", this.model.get("routeName"));
 			cls.add("route-" + this.model.get("routeName"));
 		}
 
@@ -4239,7 +4363,7 @@ var ContentView = View.extend({
 	/* --------------------------- */
 
 	_onModelChange: function() {
-		if (this.model.hasChanged("withBundle")) {
+		if (this.model.hasAnyChanged("bundle")) {
 			if (this.model.has("bundle")) {
 				this.vpan.on("vpanstart", this._onVPanStart);
 			} else {
@@ -4594,6 +4718,11 @@ var ArticleButton = require("app/view/component/ArticleButton");
 
 var tx = Globals.transitions;
 
+var txNow = _.clone(tx.NOW);
+txNow.easing = "ease";
+// var hTx = _.clone(collapsed ? tx.LAST : tx.FIRST);
+// hTx.easing = "ease";
+
 /**
 /* @constructor
 /* @type {module:app/view/NavigationView}
@@ -4629,6 +4758,10 @@ var NavigationView = View.extend({
 		// this.listenTo(this.model, "withBundle:change", this._onwithBundleChange);
 
 		this.vpanGroup = this.el.querySelector("#vpan-group");
+		this.el.style.touchAction = "none";
+		this.el.style.webkitUserSelect = "none";
+		this.el.style.webkitUserDrag = "none";
+
 		this.keywordList = this.createKeywordList();
 		this.bundleList = this.createBundleList();
 		this.itemViews.push(this.keywordList);
@@ -4719,7 +4852,8 @@ var NavigationView = View.extend({
 		// transforms
 		// - - - - - - - - - - - - - - - - -
 		if (this.skipTransitions ||
-			(flags & (View.MODEL_INVALID | View.SIZE_INVALID | View.LAYOUT_INVALID))) {
+			(flags & View.ALL_INVALID)) {
+			// (flags & (View.MODEL_INVALID | View.SIZE_INVALID | View.LAYOUT_INVALID))) {
 			// if (transformsChanged) {
 			if (this.skipTransitions) {
 				this.transforms.stopAllTransitions();
@@ -4948,21 +5082,21 @@ var NavigationView = View.extend({
 	/* ------------------------------- */
 
 	renderTransitions: function(flags) {
-		var fromRoute = this.model.previous("routeName");
+		var fromRoute = this.model.get("fromRouteName");
 		var toRoute = this.model.get("routeName");
 
 		var modelChanged = (flags & View.MODEL_INVALID);
 		/* bundle */
 		var withBundle = this.model.has("bundle");
-		var withBundleChanged = modelChanged && this.model.hasChanged("withBundle");
+		var withBundleChanged = modelChanged && this.model.hasAnyChanged("bundle");
 		var bundleChanged = modelChanged && this.model.hasChanged("bundle");
 		/* media */
 		var withMedia = this.model.has("media");
-		var withMediaChanged = modelChanged && this.model.hasChanged("withMedia");
+		var withMediaChanged = modelChanged && this.model.hasAnyChanged("media");
 		//var mediaChanged = modelChanged && this.model.hasChanged("media");
 		/* article */
 		// var withArticle = this.model.has("article");
-		var withArticleChanged = modelChanged && this.model.hasChanged("withArticle");
+		var withArticleChanged = modelChanged && this.model.hasAnyChanged("article");
 		//var articleChanged = modelChanged && this.model.hasChanged("article");
 		/* collapsed */
 		var collapsed = this.model.get("collapsed");
@@ -5020,7 +5154,7 @@ var NavigationView = View.extend({
 				}
 			} else {
 				if (!withBundleChanged && withMediaChanged)
-					tf.runTransition(bundleChanged ? tx.BETWEEN : tx.NOW);
+					tf.runTransition(bundleChanged ? tx.BETWEEN : txNow); //tx.NOW);
 			}
 			if (tf.hasOffset)
 				tf.clearOffset();
@@ -5029,10 +5163,9 @@ var NavigationView = View.extend({
 			if (collapsedChanged ^ withArticleChanged) {
 				this.transforms.runTransition(collapsed ? tx.LAST : tx.FIRST,
 					this.sitename.el, this.about.el, this.bundleList.wrapper);
-				if (!(fromRoute == 'article-item' && toRoute == 'media-item')) {
-					this.transforms.runTransition(collapsed ? tx.LAST : tx.FIRST,
-						this.hGroupings);
-				}
+				// if (fromRoute != 'article-item' && toRoute != 'media-item') {
+				this.transforms.runTransition(collapsed ? tx.LAST : tx.FIRST, this.hGroupings);
+				// }
 			}
 			/* VERTICAL */
 			if (fromRoute == 'root' || toRoute == 'root') {
@@ -6743,8 +6876,10 @@ var View = {
 	/** @const */
 	NONE_INVALID: 0,
 	/** @const */
-	CHILDREN_INVALID: 1,
+	ALL_INVALID: ~0 >>> 1,
 
+	/** @const */
+	CHILDREN_INVALID: 1,
 	/** @const */
 	MODEL_INVALID: 2,
 	/** @const */
@@ -6768,9 +6903,6 @@ var View = {
 
 	/** @type {module:utils/prefixedEvent} */
 	prefixedEvent: require("utils/prefixedEvent"),
-
-	// /** @type {module:utils/setImmediate} */
-	// setImmediate: require("utils/setImmediate"),
 
 	/** @type {module:app/view/promise/whenViewIsAttached} */
 	whenViewIsAttached: require("app/view/promise/whenViewIsAttached"),
@@ -7133,7 +7265,6 @@ var ViewProto = {
 
 	setImmediate: function(callback, priority, ctx) {
 		return modelQueue.request(callback.bind(ctx || this), priority);
-		// return window.setImmediate(callback.bind(ctx || this));
 	},
 
 	clearImmediate: function(id) {
@@ -7870,11 +8001,8 @@ var CarouselProto = {
 			// dom manipulation on render (_renderEnabled)
 			// this._renderFlags |= View.STYLES_INVALID;
 			// this.requestRender();
-
-			this.el.classList.toggle("disabled", !this.enabled);
-			this.itemViews.each(function(view) {
-				view.setEnabled(this.enabled);
-			}, this);
+			this.setImmediate(this._renderEnabled);
+			// this._renderEnabled();
 		}
 	},
 
@@ -8167,6 +8295,11 @@ var CarouselProto = {
 	/* touch event: pan
 	/* --------------------------- */
 
+	getViewAtPanDir: function(dir) {
+		// return (dir & this._precedingDir) ? this._precedingView : this._followingView;
+		return (dir & this._followingDir) ? this._precedingView : this._followingView;
+	},
+
 	// _panCapturedOffset: 0,
 
 	/** @param {Object} ev */
@@ -8178,16 +8311,17 @@ var CarouselProto = {
 
 	/** @param {Object} ev */
 	_onPanMove: function(ev) {
-		var view = this.getViewAtPanDir(ev.offsetDirection);
 		// var delta = (this.direction & HORIZONTAL) ? ev.thresholdDeltaX : ev.thresholdDeltaY;
 		var delta = (this.direction & HORIZONTAL) ? ev.deltaX : ev.deltaY;
+		var view = this.getViewAtPanDir(ev.offsetDirection);
+		var cView = this._panCandidateView;
 
-		if (this._panCandidateView !== view) {
-			this._panCandidateView && this._panCandidateView.el.classList.remove("candidate");
+		if (cView !== view) {
+			cView && cView.el.classList.remove("candidate");
+			view && view.el.classList.add("candidate");
 			this._panCandidateView = view;
-			this._panCandidateView && this._panCandidateView.el.classList.add("candidate");
 		}
-		if (this._panCandidateView === void 0) {
+		if (cView === void 0) {
 			delta *= Globals.HPAN_OUT_DRAG;
 		}
 
@@ -8237,11 +8371,6 @@ var CarouselProto = {
 	/* --------------------------- *
 	/* touch event: tap
 	/* --------------------------- */
-
-	getViewAtPanDir: function(dir) {
-		// return (dir & this._precedingDir) ? this._precedingView : this._followingView;
-		return (dir & this._followingDir) ? this._precedingView : this._followingView;
-	},
 
 	/** @type {int} In pixels */
 	_tapGrow: 10,
@@ -9239,11 +9368,21 @@ var styleBase = {
 	lineWidth: 0.75,
 	lineDashOffset: 0,
 	setLineDash: [[]],
-	radiusBase: 0.8,
+	// radiusBase: 2,
+	// /* factored to rem unit */ //6,
+	// radiusIncrement: 0.21, //3, //0.25,
+	// /* uses lineWidth multiplier */
+	// outlineWidth: 3,
+	// /* uses lineWidth multiplier */
+	// arrowSize: 0.3,
+};
+var paramsBase = {
+	radiusBase: 1.25,
 	/* factored to rem unit */ //6,
 	radiusIncrement: 0.21, //3, //0.25,
 	/* uses lineWidth multiplier */
-	outlineWidth: 3.5,
+	outlineWidth: 3,
+	/* uses lineWidth multiplier */
 	arrowSize: 0.3,
 };
 
@@ -9258,13 +9397,15 @@ var styleBase = {
 
 if (DEBUG) {
 	/* eslint-disable no-unused-vars */
-	var _dStyles = {};
-	_dStyles["defaults"] = {
-		lineWidth: 0,
-		fillStyle: "transparent",
-		strokeStyle: "transparent",
-		lineDashOffset: 0,
-		setLineDash: [[]]
+	var _dStyles = {
+		defaults: {
+			globalAlpha: 0.66,
+			lineWidth: 0,
+			fillStyle: "transparent",
+			strokeStyle: "transparent",
+			lineDashOffset: 0,
+			setLineDash: [[]]
+		}
 	};
 
 	/* Stroke */
@@ -9275,10 +9416,15 @@ if (DEBUG) {
 		"grey", "silver"
 	]
 	.forEach(function(colorName) {
-		var rgbaValue = Color(colorName).alpha(0.5).rgbaString();
+		var rgbaValue = Color(colorName).alpha(0.75).rgbaString();
 
 		_dStyles[colorName] = _.defaults({
 			lineWidth: 0.75,
+			strokeStyle: rgbaValue,
+		}, _dStyles["defaults"]);
+
+		_dStyles[colorName + "_dashed"] = _.defaults({
+			setLineDash: [[4, 2]],
 			strokeStyle: rgbaValue,
 		}, _dStyles["defaults"]);
 
@@ -9346,7 +9492,8 @@ var GraphView = CanvasView.extend({
 			s: _.defaults({
 				lineWidth: 1.25
 				// radiusIncrement: 0.25,
-			}, styleBase),
+			}, styleBase, paramsBase),
+			p: _.defaults({}, paramsBase),
 			strokeStyleFn: function(fg, bg, ln) {
 				return Color(ln).mix(bg, 0.9).hexString();
 				// return Color(fg).mix(bg, 0.9).hexString();
@@ -9360,20 +9507,21 @@ var GraphView = CanvasView.extend({
 				// arrowSize: 0.25,
 				// radiusIncrement: 0,
 				// outlineWidth: 0,
-			}, styleBase),
+			}, styleBase, paramsBase),
+			p: _.defaults({}, paramsBase),
 			strokeStyleFn: function(fg, bg, ln) {
 				return Color(fg).mix(bg, 0.6).hexString();
 			}
 		};
 
 		// this.listenTo(this._a2b.srcView.collection, "view:select:one view:select:none", function(item) {
-		// 	this._a2b.pointsOut = this._a2b.points;
-		// 	this._a2b.points = null;
+		// 	this._a2b.connectorsOut = this._a2b.connectors;
+		// 	this._a2b.connectors = null;
 		// });
 		//
 		// this.listenTo(this._b2a.srcView.collection, "view:select:one view:select:none", function(item) {
-		// 	this._b2a.pointsOut = this._b2a.points;
-		// 	this._b2a.points = null;
+		// 	this._b2a.connectorsOut = this._b2a.connectors;
+		// 	this._b2a.connectors = null;
 		// });
 
 		// this.listenTo(this, "view:render:before", this._beforeViewRender);
@@ -9454,9 +9602,6 @@ var GraphView = CanvasView.extend({
 
 	_updateMetrics: function() {
 		var bounds;
-		var i, ii, els;
-		var aRect, bRect;
-		var aMin, bMin;
 
 		this._rootFontSize = parseFloat(
 			getComputedStyle(document.documentElement).fontSize);
@@ -9468,28 +9613,33 @@ var GraphView = CanvasView.extend({
 			(-(bounds.top + window.scrollY) * this._canvasRatio) - 0.5
 		);
 
-		aRect = this._listA.el.getBoundingClientRect();
-		aMin = aRect.left + window.scrollX;
+		var i, ii, els;
+		var srcRect, destRect;
+		var srcMin, destMin;
+
+		srcRect = this._a2b.srcView.el.getBoundingClientRect();
+		destRect = this._a2b.destView.el.getBoundingClientRect();
+		this._a2b.qx = getRectDirX(srcRect, destRect);
+
 		els = this._listA.el.querySelectorAll(".label");
+		srcMin = srcRect.left + window.scrollX;
 		for (i = 0, ii = els.length; i < ii; i++) {
-			aMin = Math.max(aMin,
+			srcMin = Math.max(srcMin,
 				els[i].getBoundingClientRect().right + window.scrollX);
 		}
+		this._a2b.xMin = srcMin;
 
-		bRect = this._listB.el.getBoundingClientRect();
-		bMin = bRect.left + window.scrollX;
 		els = this._listB.el.querySelectorAll(".label");
+		destMin = destRect.left + window.scrollX;
 		for (i = 0, ii = els.length; i < ii; i++) {
-			bMin = Math.min(bMin,
+			destMin = Math.min(destMin,
 				els[i].getBoundingClientRect().left + window.scrollX);
 		}
-		// this._b2a.destRect = this._a2b.rect = aRect;
-		this._b2a.destMinX = this._a2b.xMin = aMin;
-		this._b2a.qx = getRectDirX(bRect, aRect);
+		this._a2b.destMinX = destMin;
 
-		// this._a2b.destRect = this._b2a.rect = bRect;
-		this._a2b.destMinX = this._b2a.xMin = bMin;
-		this._a2b.qx = getRectDirX(aRect, bRect);
+		this._b2a.qx = -this._a2b.qx;
+		this._b2a.xMin = this._a2b.destMinX;
+		this._b2a.destMinX = this._a2b.xMin;
 
 		// var s = getComputedStyle(document.documentElement);
 		// this._rootFontSize = parseFloat(s.fontSize); // * this._canvasRatio;
@@ -9516,24 +9666,6 @@ var GraphView = CanvasView.extend({
 	/* redraw
 	/* --------------------------- */
 
-	// _beforeViewRender: function(view, flags) {
-	// 	if (flags & (CanvasView.SIZE_INVALID | CanvasView.MODEL_INVALID)) {
-	// 		console.log("%s::_beforeViewRender [flags: %s]", this.cid, CanvasView.flagsToString(flags));
-	//
-	// 		this._a2b.pointsOut = this._a2b.points;
-	// 		this._a2b.rootOut = this._a2b.root;
-	// 		this._b2a.pointsOut = this._b2a.points;
-	// 		this._b2a.rootOut = this._b2a.root;
-	//
-	// 		this._a2b.points = null;
-	// 		this._a2b.root = null;
-	// 		this._b2a.points = null;
-	// 		this._b2a.root = null;
-	//
-	// 		this._labelOverlays = null;
-	// 	}
-	// },
-
 	redraw: function(ctx, interpolator, flags) {
 		this._clearCanvas(0, 0, this._canvasWidth, this._canvasHeight);
 		ctx.save();
@@ -9547,11 +9679,10 @@ var GraphView = CanvasView.extend({
 		// a2b: bundle to keywords, left to right
 		if (flags & (CanvasView.SIZE_INVALID | CanvasView.MODEL_INVALID)) {
 			console.log("%s::redraw [valuesChanged: %s] [flags: %s]", this.cid, interpolator.valuesChanged, CanvasView.flagsToString(flags));
-
-			this._a2b.pointsOut = this._a2b.points;
-			this._b2a.pointsOut = this._b2a.points;
-			this._b2a.points = this._computeConnectors(this._b2a);
-			this._a2b.points = this._computeConnectors(this._a2b);
+			this._a2b.connectorsOut = this._a2b.connectors;
+			this._b2a.connectorsOut = this._b2a.connectors;
+			this._b2a.connectors = this._computeConnectors(this._b2a);
+			this._a2b.connectors = this._computeConnectors(this._a2b);
 			this._labelOverlays = this._computeLabelOverlays(this._listB);
 		}
 
@@ -9560,10 +9691,10 @@ var GraphView = CanvasView.extend({
 		var a2bVal = interpolator._valueData["a2b"]._renderedValue / interpolator._valueData["a2b"]._maxVal;
 
 		/* draw */
-		this._drawConnectors(this._b2a.points, this._b2a.s, b2aVal, 1);
-		this._drawConnectors(this._b2a.pointsOut, this._b2a.s, 1 - b2aVal, 1);
-		this._drawConnectors(this._a2b.points, this._a2b.s, a2bVal, 2);
-		// this._drawConnectors(this._a2b.pointsOut, this._a2b.s, 1 - a2bVal, 2);
+		this._drawConnectors(this._b2a.connectors, this._b2a.s, b2aVal, 1);
+		this._drawConnectors(this._b2a.connectorsOut, this._b2a.s, 1 - b2aVal, 1);
+		this._drawConnectors(this._a2b.connectors, this._a2b.s, a2bVal, 2);
+		// this._drawConnectors(this._a2b.connectorsOut, this._a2b.s, 1 - a2bVal, 2);
 		this._drawLabelOverlays(this._labelOverlays);
 	},
 
@@ -9594,9 +9725,8 @@ var GraphView = CanvasView.extend({
 
 	_drawLabelOverlays: function(data) {
 		this._ctx.save();
-
 		// CanvasView.setStyle(this._ctx, s);
-		this._ctx.globalAlpha = 0.75;
+		this._ctx.globalAlpha = 0.85;
 		this._ctx.globalCompositeOperation = "destination-out";
 		// this._ctx.canvas.style.letterSpacing = overlayData.cssStyle.letterSpacing;
 
@@ -9605,14 +9735,13 @@ var GraphView = CanvasView.extend({
 			this._ctx.fillRect(r.left, r.top, r.width, r.height);
 			// this._ctx.strokeText(r.innerText, r.left, r.top);
 		}, this);
-
 		this._ctx.restore();
 
 		if (DEBUG) {
 			if (this._debugGraph || this._debugBlocks) {
 				data.rects.forEach(function(r) {
-					r = inflateRect(r, 2, 2);
-					CanvasHelper.drawRect(this._ctx, _dStyles["salmon"],
+					r = inflateRect(r, 0, 0);
+					CanvasHelper.drawRect(this._ctx, _dStyles["silver_dashed"],
 						r.left, r.top, r.width, r.height);
 				}, this);
 			}
@@ -9628,15 +9757,15 @@ var GraphView = CanvasView.extend({
 		var dMin = d.destMinX;
 		var qx = d.qx;
 
-		// var root = {};
-		var p, points = [];
-		var x1, y1, tx;
 		var rBase, rInc;
-
 		rBase = this._roundTo(d.s.radiusBase * this._rootFontSize, 0.5);
 		rInc = this._roundTo(d.s.radiusIncrement * this._rootFontSize, 0.5);
 
-		var sView, ddView, ddItems, ddNum, i;
+		// var root = {};
+		var i, p, ddNum, connectors = [];
+		var x1, y1, tx;
+
+		var sView, ddView, ddItems;
 		if (d.srcView.collection.selected && d.destView.filteredItems) {
 			sView = d.srcView.itemViews.findByModel(d.srcView.collection.selected);
 
@@ -9677,47 +9806,61 @@ var GraphView = CanvasView.extend({
 				p.x1 = x1;
 				p.y1 = y1;
 				p.qx = qx;
-				points[i] = p;
+				connectors[i] = p;
 			}
-			points.sort(function(a, b) {
+			connectors.sort(function(a, b) {
 				return a.y2 - b.y2;
 			});
-			var si = 0; // ssEl's number of items above in the Y axis
-			var rMax0 = ddNum * 0.5 * rInc; // first arc (r0) max radius (cx0)
-			var a; // cy1 offset from y1
+			// ssEl's number of items above in the Y axis
+			var si = 0;
+			// Node first arc (r0) max radius (cx0)
+			// They are centered to the label, so halve it
+			var rMax0 = ddNum * rInc * 0.5;
+			// cy1 offset from y1
+			var a;
 
+			// First pass, calc first radius (r0, at the source of the connector),
+			// and the amount of dest connectors vertically closer to the source (di)
 			for (i = 0; i < ddNum; i++) {
-				p = points[i];
+				p = connectors[i];
 
 				a = (i - (ddNum - 1) / 2) * rInc;
 				p.cy1 = p.y1 + a;
 				p.cy2 = p.y2;
+				p.r0 = Math.abs(a);
+				p.cx0 = p.x1 + (rMax0 - p.r0) * qx;
 
-				a = Math.abs(a);
-				p.r0 = a;
-				p.cx0 = p.x1 + (rMax0 - a) * qx;
+				// If src (cy1) is above dest (y2), decrease index diff (di)
+				p.di = ((p.cy1 - p.y2) > 0) ? i : ddNum - (i + 1);
+				si = Math.max(si, p.di);
 
 				// p.dx = x1 - p.x2;
 				// p.dy = y1 - p.y2;
-
-				p.di = ((p.cy1 - p.y2) > 0) ? i : ddNum - (i + 1);
-				si = Math.max(si, p.di);
 			}
 
-			// NOTE
-			//sMin = p.x1 + (rMax0 * qx);
+			// Calc max radius that fits sMin to dMin:
+			// from space btw sMin to dMin, remove first arc and max arc increase,
+			// then halve (there's two arcs left)
+			var rBaseMax = (Math.abs(dMin - sMin) - (rMax0 + (si * rInc))) / 2;
+			// Ensure 0 > rBase > rBaseMax
+			rBase = Math.max(0, Math.min(rBase, rBaseMax));
+			// console.log("%s::_computeConnectors 1rem = %spx rBase:%s rBaseMax:%s", this.cid, this._rootFontSize, rBase, rBaseMax);
 
 			for (i = 0; i < ddNum; i++) {
-				p = points[i];
+				p = connectors[i];
 				p.r1 = p.di * rInc + rBase;
 				p.r2 = rBase;
-				// p.r2 = rBase + (si - p.di) * rInc;
+
+				// p.r1 = p.di * rInc + rBase;
+				// p.r2 = (si - p.di) * rInc + rBase;
 
 				p.cx1 = sMin + (rMax0 * qx);
 				p.cx2 = dMin - ((si - p.di) * rInc) * qx;
+				//
+				// p.cx1 = sMin + (rMax0 * qx);
 				// p.cx2 = dMin;
 
-				tx = calcArcHConnector(p.cx1, p.cy1, p.r1, p.cx2, p.cy2, p.r2, 0.9);
+				tx = calcArcHConnector(p.cx1, p.cy1, p.r1, p.cx2, p.cy2, p.r2, 1);
 				if (tx) {
 					p.tx1 = tx[0];
 					p.tx2 = tx[1];
@@ -9730,19 +9873,26 @@ var GraphView = CanvasView.extend({
 				// Find out longest node connection for setLineDash
 				// root.maxLength = Math.max(root.maxLength, p.length);
 			}
-			points.sort(function(a, b) {
-				return a.di - b.di; // Sort by distance to selected view
+			connectors.sort(function(a, b) {
+				return a.di - b.di; // Sort by index distance to from source point
+				// return a.r0 - b.r0; // Sort by first arc (centered)
+				// return (a.r1 + a.r2) - (b.r1 + b.r2);
+				// return a.tx2 - b.tx2;
 			});
 
+			connectors.si = si;
+			connectors.qx = qx;
+			connectors.sMin = sMin;
+			connectors.dMin = dMin;
 			// root.x = x1;
 			// root.y = y1;
 			// root.qx = qx;
 			// root.r0 = si * rInc;
 		}
-		// d.points = points;
+		// d.connectors = connectors;
 		// d.root = root;
 		// return d;
-		return points;
+		return connectors;
 	},
 
 	_drawConnectors: function(pp, s, lVal, dir) {
@@ -9814,16 +9964,36 @@ var GraphView = CanvasView.extend({
 
 	_drawConnector: function(p, i, pp) {
 		if (DEBUG) {
-			if (this._debugGraph) {
-				if (i == 0) {
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], p.x1);
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], p.cx1);
-					CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.y1);
+			var isRtl = p.qx < 0;
+			if (this._debugGraph && isRtl) {
+				var isFirst = i == 0;
+				var isLast = i == (pp.length - 1);
+				var gs = _dStyles[isFirst ? "salmon_dashed" : "lightskyblue_dashed"];
+
+				if (isFirst) {
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], pp.sMin);
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], pp.dMin);
+
+					CanvasHelper.drawHGuide(this._ctx, _dStyles["silver_dashed"], p.y1);
+					CanvasHelper.drawVGuide(this._ctx, _dStyles["silver_dashed"], p.x1);
 					CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
 				}
-				// CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], p.cx2);
-				CanvasHelper.drawHGuide(this._ctx, _dStyles["grey"], p.cy2);
+				// if (isRtl) {
+				if (isFirst || isLast) {
+					// CanvasHelper.drawVGuide(this._ctx, gs, p.cx1 + (p.r1 * p.qx));
+					CanvasHelper.drawVGuide(this._ctx, gs, p.tx2);
+					CanvasHelper.drawVGuide(this._ctx, gs, p.cx2 - (p.r2 * p.qx));
+					// CanvasHelper.drawVGuide(this._ctx, gs, p.cx2);
+					// CanvasHelper.drawHGuide(this._ctx, gs, p.cy2);
+				}
+				// }
 				// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
+				// if (isRtl) {
+				if (isFirst || isLast) {
+					this._ctx.save();
+					this._ctx.strokeStyle = _dStyles[(isFirst ? "red" : "blue")].strokeStyle;
+				}
+				// }
 			}
 		}
 
@@ -9847,17 +10017,29 @@ var GraphView = CanvasView.extend({
 		this._ctx.stroke();
 
 		if (DEBUG) {
-			if (this._debugGraph) {
-				CanvasHelper.drawCrosshair(this._ctx, _dStyles["blue"],
-					p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
-				CanvasHelper.drawSquare(this._ctx, _dStyles["midnightblue"], p.cx0, p.cy1, 2);
-				CanvasHelper.drawCircle(this._ctx, _dStyles["blue"], p.cx1, p.cy1, 1);
-				CanvasHelper.drawSquare(this._ctx, _dStyles["blue"], p.tx1, p.cy1, 2);
-				CanvasHelper.drawSquare(this._ctx, _dStyles["green"], p.tx2, p.cy2, 2);
-				CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 1);
+			if (this._debugGraph && isRtl) {
 
-				CanvasHelper.drawCircle(this._ctx, _dStyles["olive"], p.x2, p.cy2, 3);
-				CanvasHelper.drawCrosshair(this._ctx, _dStyles["olive"], p.x2, p.y2, 6);
+				if (isFirst || isLast) {
+					this._ctx.restore();
+				}
+				var ps = _dStyles[isLast ? "midnightblue" : isFirst ? "sienna" : "grey"];
+				// if (isFirst)
+				// 	ps = _dStyles["sienna"];
+				// else if (isLast)
+				// 	ps = _dStyles["midnightblue"];
+				// else
+				// 	ps = _dStyles["grey"];
+
+				// CanvasHelper.drawCrosshair(this._ctx, ps, p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
+				CanvasHelper.drawCircle(this._ctx, ps, p.cx0, p.cy1, 1);
+
+				CanvasHelper.drawSquare(this._ctx, ps, p.cx2, p.cy2, 2);
+				CanvasHelper.drawSquare(this._ctx, ps, p.cx1, p.cy1, 2);
+				CanvasHelper.drawCircle(this._ctx, ps, p.tx1, p.cy1, 1);
+				CanvasHelper.drawCircle(this._ctx, ps, p.tx2, p.cy2, 1);
+
+				CanvasHelper.drawCircle(this._ctx, ps, p.x2, p.cy2, 3);
+				CanvasHelper.drawCrosshair(this._ctx, ps, p.x2, p.y2, 6);
 			}
 		}
 	},
@@ -9875,7 +10057,7 @@ var GraphView = CanvasView.extend({
 		var dMin = d.destMinX;
 
 		var lMax = 0;
-		var p, points = [];
+		var p, connectors = [];
 		var qx, x1, y1, tx;
 		var si; // ssEl's number of items above in the Y axis
 
@@ -9917,12 +10099,12 @@ var GraphView = CanvasView.extend({
 				// p.dLength = Math.abs(p.x) + Math.abs(p.y);
 				p.di = p.dy > 0 ? i : ddNum - (i + 1);
 				si = Math.max(si, p.di);
-				points[i] = p;
+				connectors[i] = p;
 			}
 
 			var a, rMax0 = ddNum * 0.5 * rInc;
 			for (i = 0; i < ddNum; i++) {
-				p = points[i];
+				p = connectors[i];
 				p.r1 = p.di * rInc + rBase;
 				p.r2 = rBase;
 				// p.r2 = (si - p.di) * rInc + rBase;
@@ -9947,13 +10129,13 @@ var GraphView = CanvasView.extend({
 				lMax = Math.max(lMax, Math.abs(p.x1 - p.x2) + Math.abs(p.cy1 - p.cy2));
 			}
 			// Sort by distance y1 (original) > cy1 (rInc offset) distance
-			points.sort(function(a, b) {
+			connectors.sort(function(a, b) {
 				// return Math.abs(b.y1 - b.cy1) - Math.abs(a.y1 - a.cy1);
 				// return a.r0 - b.r0;
 				return b.di - a.di;
 			});
 		}
-		d.points = points;
+		d.connectors = connectors;
 		d.maxLength = lMax;
 		d.maxLength = qx;
 	}, */
@@ -11384,7 +11566,8 @@ module.exports = CarouselRenderer;
 /**
  * @module app/view/render/ClickableRenderer
  */
-
+// /** @type {module:underscore} */
+// var _ = require("underscore");
 /** @type {module:app/view/render/LabelRenderer} */
 var LabelRenderer = require("app/view/render/LabelRenderer");
 
@@ -11396,6 +11579,10 @@ var ClickableRenderer = LabelRenderer.extend({
 
 	/** @type {string} */
 	cidPrefix: "clickableRenderer",
+
+	// defaults: {
+	// 	target: ".label"
+	// },
 
 	/** @override */
 	events: {
@@ -11409,6 +11596,23 @@ var ClickableRenderer = LabelRenderer.extend({
 			ev.defaultPrevented || ev.preventDefault();
 		}
 	},
+
+	// initialize: function(options) {
+	// 	options || (options = {});
+	// 	// if (options) {
+	// 	options = _.defaults({}, options, _.result(this, 'defaults'));
+	// 	// } else {
+	// 	// 	 _.defaults({}, _.result(this, 'defaults'));
+	// 	// }
+	// 	this.events["click " + options.target] = this.clickHandler;
+	// },
+	//
+	// clickHandler: function(ev) {
+	// 	if (ev.defaultPrevented) return;
+	//
+	// 	ev.preventDefault();
+	// 	this.trigger("renderer:click", this.model, ev);
+	// }
 });
 
 module.exports = ClickableRenderer;
@@ -11487,16 +11691,18 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 // var _ = require("underscore");
 // /** @type {module:backbone} */
 // var Backbone = require("backbone");
+/** @type {module:app/view/base/View} */
+var View = require("app/view/base/View");
+// /** @type {module:app/view/component/ClickableRenderer} */
+// var ClickableRenderer = require("app/view/render/LabelRenderer");
 /** @type {string} */
 var viewTemplate = require("./DotNavigationRenderer.hbs");
-/** @type {module:app/view/component/ClickableRenderer} */
-var ClickableRenderer = require("app/view/render/ClickableRenderer");
 
 /**
  * @constructor
  * @type {module:app/view/render/DotNavigationRenderer}
  */
-var DotNavigationRenderer = ClickableRenderer.extend({
+var DotNavigationRenderer = View.extend({
 
 	/** @type {string} */
 	cidPrefix: "dotRenderer",
@@ -11506,6 +11712,19 @@ var DotNavigationRenderer = ClickableRenderer.extend({
 	className: "list-item",
 	/** @override */
 	template: viewTemplate,
+
+	/** @override */
+	events: {
+		"click": function(ev) {
+			if (ev.defaultPrevented) return;
+
+			ev.preventDefault();
+			this.trigger("renderer:click", this.model, ev);
+		},
+		"click a": function(ev) {
+			ev.defaultPrevented || ev.preventDefault();
+		}
+	},
 
 	/** @override */
 	initialize: function(options) {
@@ -11526,8 +11745,7 @@ var DotNavigationRenderer = ClickableRenderer.extend({
 });
 
 module.exports = DotNavigationRenderer;
-
-},{"./DotNavigationRenderer.hbs":88,"app/view/render/ClickableRenderer":85}],90:[function(require,module,exports){
+},{"./DotNavigationRenderer.hbs":88,"app/view/base/View":61}],90:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -14222,13 +14440,15 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"error-message color-fg\">\n	<p><strong>"
+  return "<div class=\"error-title color-fg color-reverse\">"
+    + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
+    + "</div>\n<div class=\"error-message color-fg\">\n	<p><strong>"
     + alias4(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper)))
     + "</strong> <code>"
     + alias4(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"message","hash":{},"data":data}) : helper)))
     + "</code></p>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.infoSrc : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "</div>";
+    + "</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":20}],102:[function(require,module,exports){

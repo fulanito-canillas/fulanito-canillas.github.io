@@ -137,6 +137,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .app.fullwidth .article-view.mdown h2 {
   margin-bottom: 1rem; }
 
+/* 1f3_1f6 */
 /* 1f3_1f5 */
 .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .app.fullwidth .carousel .mdown h3, .app.fullwidth .carousel .mdown h4,
 .app.fullwidth .article-view.mdown h3,
@@ -612,8 +613,8 @@ body {
   -ms-user-select: none;
   -webkit-transform: translate(0, 0);
           transform: translate(0, 0);
-  -webkit-transition: -webkit-transform 0.35s ease-in-out 0s;
-          transition: transform 0.35s ease-in-out 0s; }
+  -webkit-transition: -webkit-transform 0.35s ease 0s;
+          transition: transform 0.35s ease 0s; }
   .skip-transitions .carousel-item {
     -webkit-transition: all 0s 0s !important;
             transition: all 0s 0s !important; }
@@ -639,12 +640,8 @@ body {
     background-color: currentColor; }
 .empty-item.candidate .content, .empty-item.selected .content {
   opacity: 1.0; }
-  .empty-item.candidate .content .s, .empty-item.selected .content .s {
-    background-color: transparent; }
 .carousel.disabled .empty-item.candidate .content, .carousel.disabled .empty-item.selected .content {
   opacity: 0.06; }
-  .carousel.disabled .empty-item.candidate .content .s, .carousel.disabled .empty-item.selected .content .s {
-    background-color: currentColor; }
 
 .media-item {
   	/*
@@ -933,8 +930,15 @@ body {
     z-index: 1;
     -webkit-transition: opacity 0.508s ease-in-out 0.226s;
             transition: opacity 0.508s ease-in-out 0.226s; }
-  .sequence-renderer .sequence-step.error {
-    background-image: url("../images/bg-missing-media.svg"); }
+  .sequence-renderer .sequence-step.error .error-title {
+    font-size: 9rem;
+    font-weight: bold;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    padding: 3rem;
+    position: absolute;
+    top: 0;
+    left: 0; }
 .sequence-renderer .playback-error .sequence-step:not(.current) {
   -webkit-transition: visibility 1.084s step-end 0.034s, opacity 0.508s ease-in-out 0.226s;
           transition: visibility 1.084s step-end 0.034s, opacity 0.508s ease-in-out 0.226s; }
@@ -1459,9 +1463,9 @@ HTML.fullwidth-small {
   #debug-toolbar .debug-links > * {
     opacity: 0.5; }
   #debug-toolbar:not(.show-links) {
-    width: auto; }
+    width: auto;
+    /* override color-bg */ }
     #debug-toolbar:not(.show-links) .debug-links.color-bg {
-      /* override color-bg */
       background-color: transparent; }
     #debug-toolbar:not(.show-links) .debug-links > * {
       opacity: 0.2; }
