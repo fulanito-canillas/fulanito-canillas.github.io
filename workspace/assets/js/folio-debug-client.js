@@ -1588,21 +1588,23 @@ module.exports = function trim(str, characters) {
 
 console.info("Portfolio App started");
 
-if (!DEBUG) {
-	window.addEventListener("error", function(ev) {
-		console.error("Uncaught Error", ev);
-	});
-}
+// if (!DEBUG) {
+// 	window.addEventListener("error", function(ev) {
+// 		console.error("Uncaught Error", ev);
+// 	});
+// }
 
 // function applyPolyfills() {
 require("Modernizr");
+require("setimmediate");
 require("es6-promise").polyfill();
 require("classlist-polyfill");
 require("raf-polyfill");
 require("matches-polyfill");
 require("fullscreen-polyfill");
 require("math-sign-polyfill");
-require("setimmediate");
+// require("mutation-polyfill");
+// require("path2d-polyfill");
 // }
 
 // function applyRequires() {
@@ -2031,7 +2033,8 @@ module.exports = (function() {
 	g.PAN_THRESHOLD = 15; // px
 	g.COLLAPSE_THRESHOLD = 75; // px
 	g.COLLAPSE_OFFSET = parseInt(sass.temp["collapse_offset"]);
-	g.CLICK_EVENT = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
+	// g.CLICK_EVENT = "click"; //window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
+	g.VIDEO_CROP_PX = parseInt(sass["video_crop_px"]);
 
 	// breakpoints
 	// - - - - - - - - - - - - - - - - -
@@ -2235,7 +2238,7 @@ module.exports = (function() {
 }());
 }).call(this,true)
 
-},{"../../../sass/variables.json":122,"underscore":"underscore"}],35:[function(require,module,exports){
+},{"../../../sass/variables.json":127,"underscore":"underscore"}],35:[function(require,module,exports){
 /**
  * @module app/view/DebugToolbar
  */
@@ -2317,10 +2320,9 @@ module.exports = View.extend({
 
 		/* toggle visibility
 		/* - - - - - - - - - - - - - - - - */
-		this.initializeClassToggle("show-links", this.el.querySelector(".debug-links #links-toggle"), this.el,
+		this.initializeClassToggle("show-links", this.el.querySelector("#links-toggle"), this.el,
 			function(key, value) {
 				this.el.classList.toggle("not-" + key, !value);
-				// console.log("%s:initializeClassToggle:[callback] %o", this.cid, arguments);
 			}
 		);
 		this.initializeClassToggle("show-tests", this.el.querySelector("#toggle-tests a"), this.el);
@@ -2328,17 +2330,25 @@ module.exports = View.extend({
 
 		/* toggle container classes
 		/* - - - - - - - - - - - - - - - - */
-		this.initializeClassToggle("debug-grid-bg", this.el.querySelector("#toggle-grid-bg a"), document.body);
-		this.initializeClassToggle("debug-blocks", this.el.querySelector("#toggle-blocks a"), container);
-		this.initializeClassToggle("debug-graph", this.el.querySelector("#toggle-graph a"), container);
-		this.initializeClassToggle("debug-mdown", this.el.querySelector("#toggle-mdown a"), container);
-		this.initializeClassToggle("debug-logs", this.el.querySelector("#toggle-logs a"), container);
-		this.initializeClassToggle("debug-tx", this.el.querySelector("#toggle-tx a"), container,
+		this.initializeClassToggle("debug-blocks-nav",
+			this.el.querySelector("#toggle-blocks-nav a"), container);
+		this.initializeClassToggle("debug-blocks-content",
+			this.el.querySelector("#toggle-blocks-content a"), container);
+		this.initializeClassToggle("debug-mdown",
+			this.el.querySelector("#toggle-mdown a"), container);
+		this.initializeClassToggle("debug-tx",
+			this.el.querySelector("#toggle-tx a"), container,
 			function(key, value) {
 				this.el.classList.toggle("show-tx", value);
 				this.el.classList.toggle("not-show-tx", !value);
 			}
 		);
+		this.initializeClassToggle("debug-graph",
+			this.el.querySelector("#toggle-graph a"), container);
+		this.initializeClassToggle("debug-logs",
+			this.el.querySelector("#toggle-logs a"), container);
+		this.initializeClassToggle("debug-grid-bg",
+			this.el.querySelector("#toggle-grid-bg a"), document.body);
 
 		this.initializeViewportInfo();
 
@@ -2358,6 +2368,8 @@ module.exports = View.extend({
 	},
 
 	initializeToggle: function(key, toggleEl, callback) {
+		if (!toggleEl) return;
+
 		var ctx = this;
 		var toggleValue = Cookies.get(key) === "true";
 		callback.call(ctx, key, toggleValue);
@@ -2471,11 +2483,11 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
 
-  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n	<dt id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dt>\n"
+  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
-    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">Blocks</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-blocks\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
+    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks-nav\">\n		<a href=\"#toggle-blocks-nav\" class=\"color-fg color-bg\">Nav</a>\n	</dd>\n	<dd id=\"toggle-blocks-content\">\n		<a href=\"#toggle-blocks-content\" class=\"color-fg color-bg\">Content</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-tx\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n	<dd id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
     + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
     + "</p>\n	<ul>\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
@@ -3251,7 +3263,7 @@ module.exports = BaseItem.extend({
 		return this._attrs || (this._attrs = _.defaults({}, this.get("attrs"), attrsDefault));
 	},
 });
-},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":41,"app/model/item/MediaItem":50,"color":"color","underscore":"underscore","utils/strings/stripTags":120}],49:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":41,"app/model/item/MediaItem":50,"color":"color","underscore":"underscore","utils/strings/stripTags":125}],49:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -3439,7 +3451,7 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":41,"app/model/item/SourceItem":51,"color":"color","underscore":"underscore","utils/strings/stripTags":120}],51:[function(require,module,exports){
+},{"app/control/Globals":34,"app/model/BaseItem":39,"app/model/SelectableCollection":41,"app/model/item/SourceItem":51,"color":"color","underscore":"underscore","utils/strings/stripTags":125}],51:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3679,11 +3691,9 @@ var AppViewProto = {
 		// this.routeEl = this.el;
 		// this.stateEl = this.el
 		this.breakpointEl = this.el;
-		// this.touchEl = document.body;
-		// this.touchEl = document.getElementById("containter");
 
 		/* init HammerJS handlers */
-		var vtouch, htouch;
+		var vtouch, htouch, touchEl;
 		// var vpan, hpan, tap;
 
 		// this._vpanEnableFn = function(mc, ev) {
@@ -3698,8 +3708,9 @@ var AppViewProto = {
 		// 	return !!retval;
 		// }.bind(this);
 
-		// vtouch = htouch = TouchManager.init(this.content);
-		vtouch = htouch = TouchManager.init(document.body);
+		touchEl = this.content;
+		// touchEl = document.body;
+		vtouch = htouch = TouchManager.init(touchEl);
 
 		// vtouch.get("vpan").set({ enable: this._vpanEnableFn });
 		// htouch.get("hpan").set({ enable: this._hpanEnableFn });
@@ -4090,7 +4101,7 @@ if (DEBUG) {
 module.exports = View.extend(AppViewProto, AppView);
 }).call(this,true)
 
-},{"app/control/Controller":33,"app/control/Globals":34,"app/debug/DebugToolbar":35,"app/model/AppState":38,"app/model/collection/ArticleCollection":42,"app/model/collection/BundleCollection":43,"app/view/ContentView":54,"app/view/NavigationView":55,"app/view/base/TouchManager":60,"app/view/base/View":61,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":120}],54:[function(require,module,exports){
+},{"app/control/Controller":33,"app/control/Globals":34,"app/debug/DebugToolbar":35,"app/model/AppState":38,"app/model/collection/ArticleCollection":42,"app/model/collection/BundleCollection":43,"app/view/ContentView":54,"app/view/NavigationView":55,"app/view/base/TouchManager":60,"app/view/base/View":61,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":125}],54:[function(require,module,exports){
 /**
  * @module app/view/ContentView
  */
@@ -4149,9 +4160,6 @@ var transformProp = View.prefixedProperty("transform");
 var transitionProp = View.prefixedProperty("transition");
 
 var tx = Globals.transitions;
-
-
-// var clickEvent = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup",
 
 /**
  * @constructor
@@ -4376,10 +4384,10 @@ var ContentView = View.extend({
 			if (this.model.get("withBundle") &&
 				!this.model.get("collapsed")) {
 				this.hpan.on("hpanleft hpanright", this._onCollapsedEvent);
-				this.el.addEventListener(Globals.CLICK_EVENT, this._onCollapsedEvent, false);
+				this.el.addEventListener(View.CLICK_EVENT, this._onCollapsedEvent, false);
 			} else {
 				this.hpan.off("hpanleft hpanright", this._onCollapsedEvent);
-				this.el.removeEventListener(Globals.CLICK_EVENT, this._onCollapsedEvent, false);
+				this.el.removeEventListener(View.CLICK_EVENT, this._onCollapsedEvent, false);
 			}
 		}
 		*/
@@ -4758,9 +4766,9 @@ var NavigationView = View.extend({
 		// this.listenTo(this.model, "withBundle:change", this._onwithBundleChange);
 
 		this.vpanGroup = this.el.querySelector("#vpan-group");
-		this.el.style.touchAction = "none";
-		this.el.style.webkitUserSelect = "none";
-		this.el.style.webkitUserDrag = "none";
+		// this.el.style.touchAction = "none";
+		// this.el.style.webkitUserSelect = "none";
+		// this.el.style.webkitUserDrag = "none";
 
 		this.keywordList = this.createKeywordList();
 		this.bundleList = this.createBundleList();
@@ -4875,9 +4883,9 @@ var NavigationView = View.extend({
 		// - - - - - - - - - - - - - - - - -
 		var toggleGraph = function(result) {
 			this.graph.enabled = !this.model.get("collapsed");
-			this.graph.valueTo(0, 0, "a2b");
+			this.graph.valueTo("a2b", 0, 0);
 			if (!this.model.get("collapsed")) {
-				this.graph.valueTo(1, Globals.TRANSITION_DURATION, "a2b");
+				this.graph.valueTo("a2b", 1, Globals.TRANSITION_DURATION);
 			}
 			return result;
 		}.bind(this);
@@ -5082,10 +5090,13 @@ var NavigationView = View.extend({
 	/* ------------------------------- */
 
 	renderTransitions: function(flags) {
-		var fromRoute = this.model.get("fromRouteName");
-		var toRoute = this.model.get("routeName");
 
 		var modelChanged = (flags & View.MODEL_INVALID);
+
+		var fromRoute = this.model.get("fromRouteName");
+		var toRoute = this.model.get("routeName");
+		var routeChanged = modelChanged && this.model.hasChanged("routeName");
+
 		/* bundle */
 		var withBundle = this.model.has("bundle");
 		var withBundleChanged = modelChanged && this.model.hasAnyChanged("bundle");
@@ -5168,7 +5179,7 @@ var NavigationView = View.extend({
 				// }
 			}
 			/* VERTICAL */
-			if (fromRoute == 'root' || toRoute == 'root') {
+			if (routeChanged && (fromRoute == 'root' || toRoute == 'root')) {
 				this.transforms.runTransition(tx.BETWEEN,
 					this.sitename.wrapper, this.about.wrapper);
 			}
@@ -5232,20 +5243,20 @@ var NavigationView = View.extend({
 			// if (!this.model.get("collapsed") && this.graph) {
 			// 	this.listenToOnce(this.keywordList, "view:render:after", function(view, flags) {
 			// 		console.log("%s::_onBundleSelect -> %s:[view:render:after] flags:%s", this.cid, view.cid, View.flagsToString(flags));
-			// 		this.graph.valueTo(0, 0, "a2b");
+			// 		this.graph.valueTo( "a2b", 0,  0);
 			// 		// this.graph.renderNow();
-			// 		this.graph.valueTo(1, Globals.TRANSITION_DURATION, "a2b");
+			// 		this.graph.valueTo( "a2b", 1,  Globals.TRANSITION_DURATION);
 			// 	});
 			// }
 			// keywords.deselect();
 			// this.graph && this.graph.requestRender(View.SIZE_INVALID);
 		}
-		// var clickEv = "click";//Globals.CLICK_EVENT
+		// var clickEv = "click";//View.CLICK_EVENT
 		if (this.model.hasChanged("withBundle")) {
 			// this.keywordList.refreshFilter()
 			if (this.model.get("withBundle")) {
 
-				this.el.addEventListener("click", this._onNavigationClick);
+				this.el.addEventListener(View.CLICK_EVENT, this._onNavigationClick);
 				this.vpan.on("vpanstart", this._onVPanStart);
 				this.hpan.on("hpanstart", this._onHPanStart);
 				// this.hpan.on("tap", this._onTap);
@@ -5281,8 +5292,8 @@ var NavigationView = View.extend({
 		if (!this.model.get("collapsed") && this.graph) {
 			this.listenToOnce(this.bundleList, "view:render:after", function(view, flags) {
 				// console.log("%s::_onKeywordSelect -> %s:[view:render:after] flags:%s", this.cid, view.cid, View.flagsToString(flags));
-				this.graph.valueTo(0, 0, "b2a");
-				this.graph.valueTo(1, Globals.TRANSITION_DURATION, "b2a");
+				this.graph.valueTo("b2a", 0, 0);
+				this.graph.valueTo("b2a", 1, Globals.TRANSITION_DURATION);
 			});
 		}
 		this.bundleList.refreshFilter();
@@ -6156,16 +6167,16 @@ var CanvasView = View.extend({
 	/* public
 	/* --------------------------- */
 
-	getValue: function(key) {
-		return this._interpolator.getValue(key);
+	getTargetValue: function(key) {
+		return this._interpolator.getTargetValue(key);
 	},
 
 	getRenderedValue: function(key) {
 		return this._interpolator.getRenderedValue(key);
 	},
 
-	valueTo: function(value, duration, key) {
-		this._interpolator.valueTo(value, duration, key);
+	valueTo: function(key, value, duration) {
+		this._interpolator.valueTo(key, value, duration);
 		this.requestRender(View.MODEL_INVALID | View.LAYOUT_INVALID);
 	},
 
@@ -6177,7 +6188,7 @@ var CanvasView = View.extend({
 	/* redraw
 	/* --------------------------- */
 
-	redraw: function(context, changed) {},
+	redraw: function(ctx, interp, flags) {},
 
 }, {
 	setStyle: function(ctx, s) {
@@ -6204,7 +6215,7 @@ if (DEBUG) {
 module.exports = CanvasView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/Interpolator":58,"app/view/base/View":61,"underscore":"underscore","utils/css/getBoxEdgeStyles":109}],58:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/Interpolator":58,"app/view/base/View":61,"underscore":"underscore","utils/css/getBoxEdgeStyles":114}],58:[function(require,module,exports){
 /**
  * @module app/view/base/Interpolator
  */
@@ -6222,6 +6233,8 @@ var Interpolator = function(values, maxValues) {
 	this._valueData = {};
 	this._maxValues = {};
 	this._renderableKeys = [];
+	// gets thrown away by first interpolate() but avoid null access errors
+	this._renderedKeys = [];
 
 	var key, val, maxVal;
 	for (key in values) {
@@ -6247,7 +6260,11 @@ Interpolator.prototype = Object.create({
 		return this._renderableKeys.indexOf(key) === -1;
 	},
 
-	getValue: function(key) {
+	getCurrentValue: function(key) {
+		return this._valueData[key]._renderedValue || this._valueData[key]._value;
+	},
+
+	getTargetValue: function(key) {
 		return this._valueData[key]._value;
 	},
 
@@ -6255,7 +6272,7 @@ Interpolator.prototype = Object.create({
 		return this._valueData[key]._renderedValue;
 	},
 
-	valueTo: function(value, duration, key) {
+	valueTo: function(key, value, duration) {
 		var changed, dataObj = this._valueData[key];
 		// console.log("%s::valueTo [%s]", "[interpolator]", key, value);
 		if (Array.isArray(dataObj)) {
@@ -6407,16 +6424,25 @@ Interpolator.prototype = Object.create({
 		}
 	},
 }, {
+	/**
+	 * @type {boolean} Has any value been changed by valueTo() since last interpolate()
+	 */
 	valuesChanged: {
 		get: function() {
 			return this._valuesChanged;
 		}
 	},
+	/**
+	 * @type {array} Keys that are not yet at target value
+	 */
 	renderableKeys: {
 		get: function() {
 			return this._renderableKeys;
 		}
 	},
+	/**
+	 * @type {array} Keys that have been rendered in the last interpolate()
+	 */
 	renderedKeys: {
 		get: function() {
 			return this._renderedKeys;
@@ -6425,7 +6451,7 @@ Interpolator.prototype = Object.create({
 });
 
 module.exports = Interpolator;
-},{"utils/ease/linear":110}],59:[function(require,module,exports){
+},{"utils/ease/linear":115}],59:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -6467,20 +6493,19 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":113}],60:[function(require,module,exports){
+},{"utils/prefixedEvent":118}],60:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
 
 // /** @type {module:underscore} */
 // var _ = require("underscore");
-/** @type {module:hammerjs} */
-var Hammer = require("hammerjs");
 /** @type {module:app/control/Globals} */
 var Globals = require("app/control/Globals");
-
-/** @type {module:hammerjs.Tap} */
-var Tap = Hammer.Tap;
+/** @type {module:hammerjs} */
+var Hammer = require("hammerjs");
+// /** @type {module:hammerjs.Tap} */
+// var Tap = Hammer.Tap;
 // /** @type {module:utils/touch/SmoothPanRecognizer} */
 // var Pan = require("utils/touch/SmoothPanRecognizer");
 /** @type {module:hammerjs.Pan} */
@@ -6495,85 +6520,30 @@ var Pan = Hammer.Pan;
  * @return {Hammer.Manager}
  */
 function createInstance(el) {
-	var manager, hpan, vpan, tap;
-	hpan = new Pan({
+	// var tap = new Hammer.Tap({
+	// 	threshold: Globals.PAN_THRESHOLD - 1
+	// });
+	var hpan = new Pan({
+		event: "hpan",
+		direction: Hammer.DIRECTION_HORIZONTAL,
 		// threshold: Globals.PAN_THRESHOLD,
 		// touchAction: "pan-y",
-		direction: Hammer.DIRECTION_HORIZONTAL,
-		event: "hpan",
 	});
-	vpan = new Pan({
-		// threshold: Globals.PAN_THRESHOLD,
-		// touchAction: "pan-x",
-		direction: Hammer.DIRECTION_VERTICAL,
-		event: "vpan",
-	});
-	tap = new Tap({
-		// threshold: Globals.PAN_THRESHOLD - 1
-	});
-	manager = new Hammer.Manager(el);
+	// var vpan = new Pan({
+	// 	event: "vpan",
+	// 	direction: Hammer.DIRECTION_VERTICAL,
+	// 	// threshold: Globals.PAN_THRESHOLD,
+	// 	// touchAction: "pan-x",
+	// });
+
+	var manager = new Hammer.Manager(el);
 	// manager.set({ domevents: true });
-	manager.add([tap, hpan, vpan]);
+	manager.add([hpan]);
 	// manager.add([hpan, vpan]);
-	vpan.requireFailure(hpan);
-	// manager.add(hpan);
+	// manager.add([tap, hpan, vpan]);
+	// vpan.requireFailure(hpan);
 	return manager;
 }
-
-// function createInstance(el) {
-// 	return new Hammer(el, {
-// 		recognizers: [
-// 			[Tap],
-// 			[Pan, {
-// 				event: 'hpan',
-// 				direction: Hammer.DIRECTION_HORIZONTAL,
-// 				threshold: Globals.THRESHOLD
-// 			}],
-// 			[Pan, {
-// 				event: 'vpan',
-// 				direction: Hammer.DIRECTION_VERTICAL,
-// 				threshold: Globals.THRESHOLD
-// 			}, ['hpan']]
-// 		]
-// 	});
-// }
-
-// function createInstance(el) {
-// 	var recognizers = [];
-// 	var manager = new Hammer.Manager(el);
-//
-// 	var hpan = new Pan({
-// 		event: "hpan",
-// 		threshold: Globals.THRESHOLD,
-// 		direction: Hammer.DIRECTION_HORIZONTAL
-// 	});
-//
-// 	var vpan = new Pan({
-// 		event: "vpan",
-// 		threshold: Globals.THRESHOLD,
-// 		direction: Hammer.DIRECTION_VERTICAL
-// 	});
-//
-// 	var tap = new Hammer.Tap();
-// 	// var tap = new Hammer.Tap({
-// 	// 	threshold: Globals.THRESHOLD - 1,
-// 	// 	interval: 50,
-// 	// 	time: 200
-// 	// });
-// 	recognizers.push(vpan);
-// 	recognizers.push(hpan);
-// 	recognizers.push(tap);
-// 	manager.add(recognizers);
-//
-// 	hpan.recognizeWith([vpan]);
-// 	hpan.requireFailure([vpan]);
-// 	tap.recognizeWith([vpan, hpan]);
-//
-// 	// tap.requireFailure(vpan);
-//
-// 	// manager.set({ domevents: true });
-// 	return manager;
-// }
 
 /*https://gist.githubusercontent.com/jtangelder/361052976f044200ea17/raw/f54c2cef78d59da3f38286fad683471e1c976072/PreventGhostClick.js*/
 
@@ -6584,39 +6554,46 @@ function createInstance(el) {
 // 	);
 // }
 
-var lastTimeStamp = -1;
-var panSessionOpened = false;
-var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
-
 var touchHandlers = {};
-touchHandlers["vpanstart vpanend vpancancel hpanstart hpanend hpancancel"] = function(hev) {
-	// console.log("TouchManager:[%s]", hev.srcEvent.type);
-	panSessionOpened = !hev.isFinal;
-	if (hev.isFinal)
-		lastTimeStamp = hev.srcEvent.timeStamp;
-};
+var captureHandlers = {};
+var bubblingHandlers = {};
+
+// var lastTimeStamp = -1;
+// var panSessionOpened = false;
+// var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
+//
+// touchHandlers["vpanstart vpanend vpancancel"] =
+// 	touchHandlers["hpanstart hpanend hpancancel"] = function(hev) {
+// 		// console.log("TouchManager:[%s]", hev.srcEvent.type);
+// 		panSessionOpened = !hev.isFinal;
+// 		if (hev.isFinal)
+// 			lastTimeStamp = hev.srcEvent.timeStamp;
+// 	};
 // touchHandlers["hammer.input tap vpanmove hpanmove"] = function(hev) {
 // 	console.log("TouchManager:[%s -> %s]", hev.srcEvent.type, hev.type);
 // };
+//
+// var preventWhilePanning = function(domev) {
+// 	panSessionOpened && domev.preventDefault();
+// };
+// var preventWhileNotPanning = function(domev) {
+// 	!panSessionOpened && domev.preventDefault();
+// };
+// captureHandlers["click"] = function(domev) {
+// 	if (lastTimeStamp == domev.timeStamp) {
+// 		lastTimeStamp = -1;
+// 		domev.defaultPrevented || domev.preventDefault();
+// 		// domev.stopPropagation();
+// 	}
+// };
+// captureHandlers[upEventName] = preventWhilePanning;
 
-var captureHandlers = {};
-captureHandlers["click"] = function(domev) {
-	if (lastTimeStamp == domev.timeStamp) {
-		lastTimeStamp = -1;
-		domev.defaultPrevented || domev.preventDefault();
-		domev.stopPropagation();
-	}
-};
-captureHandlers["dragstart"] = function(domev) {
-	if (domev.target.nodeName == "IMG") {
-		domev.defaultPrevented || domev.preventDefault();
-	}
-};
-captureHandlers[upEventName] = function(domev) {
-	panSessionOpened && domev.preventDefault();
-};
+// captureHandlers["dragstart"] = function(domev) {
+// 	if (domev.target.nodeName == "IMG") {
+// 		domev.defaultPrevented || domev.preventDefault();
+// 	}
+// };
 
-var bubblingHandlers = {};
 
 // -------------------------------
 //
@@ -6633,6 +6610,7 @@ function addHandlers() {
 	for (eventName in bubblingHandlers)
 		if (bubblingHandlers.hasOwnProperty(eventName))
 			el.addEventListener(eventName, bubblingHandlers[eventName], false);
+	// document.addEventListener("touchmove", preventWhileNotPanning, false);
 }
 
 function removeHandlers() {
@@ -6643,6 +6621,7 @@ function removeHandlers() {
 	for (eventName in bubblingHandlers)
 		if (captureHandlers.hasOwnProperty(eventName))
 			el.removeEventListener(eventName, bubblingHandlers[eventName], true);
+	// document.removeEventListener("touchmove", preventWhileNotPanning, false);
 }
 
 /** @type {Hammer.Manager} */
@@ -6682,6 +6661,27 @@ var TouchManager = {
 };
 
 module.exports = TouchManager;
+
+/*
+// alt syntax
+function createInstance(el) {
+	return new Hammer(el, {
+		recognizers: [
+			[Tap],
+			[Pan, {
+				event: 'hpan',
+				direction: Hammer.DIRECTION_HORIZONTAL,
+				threshold: Globals.THRESHOLD
+			}],
+			[Pan, {
+				event: 'vpan',
+				direction: Hammer.DIRECTION_VERTICAL,
+				threshold: Globals.THRESHOLD
+			}, ['hpan']]
+		]
+	});
+}
+*/
 },{"app/control/Globals":34,"hammerjs":"hammerjs"}],61:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
@@ -6890,7 +6890,7 @@ var View = {
 	LAYOUT_INVALID: 16,
 
 	/** @const */
-	// RENDER_INVALID: 8 | 16,
+	CLICK_EVENT: "click", //window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup",
 
 	/** @type {module:app/view/base/ViewError} */
 	ViewError: require("app/view/base/ViewError"),
@@ -6906,7 +6906,6 @@ var View = {
 
 	/** @type {module:app/view/promise/whenViewIsAttached} */
 	whenViewIsAttached: require("app/view/promise/whenViewIsAttached"),
-
 
 	/** @type {module:app/view/promise/whenViewIsRendered} */
 	whenViewIsRendered: require("app/view/promise/whenViewIsRendered"),
@@ -7454,7 +7453,13 @@ var ViewProto = {
 	/* @param {Boolean}
 	/*/
 	setEnabled: function(enable) {
+		if (this._enabled == enable) return;
 		this._enabled = enable;
+		if (this._enabled) {
+			this.delegateEvents();
+		} else {
+			this.undelegateEvents();
+		}
 	},
 };
 //, View);
@@ -7483,7 +7488,7 @@ if (DEBUG) {
 module.exports = Backbone.View.extend(ViewProto, View);
 }).call(this,true)
 
-},{"app/view/base/CallbackQueue":56,"app/view/base/PrefixedEvents":59,"app/view/base/ViewError":62,"app/view/promise/whenViewIsAttached":82,"app/view/promise/whenViewIsRendered":83,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":113,"utils/prefixedProperty":114,"utils/prefixedStyleName":115}],62:[function(require,module,exports){
+},{"app/view/base/CallbackQueue":56,"app/view/base/PrefixedEvents":59,"app/view/base/ViewError":62,"app/view/promise/whenViewIsAttached":82,"app/view/promise/whenViewIsRendered":83,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":118,"utils/prefixedProperty":119,"utils/prefixedStyleName":120}],62:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -7699,17 +7704,17 @@ var VERTICAL_PROPS = {
 // var DIRECTION_UP = 8;
 // var DIRECTION_DOWN = 16;
 
-// function dirToStr(dir) {
-// 	if (dir === Hammer.DIRECTION_NONE) return 'NONE';
-// 	if (dir === Hammer.DIRECTION_LEFT) return 'LEFT';
-// 	if (dir === Hammer.DIRECTION_RIGHT) return 'RIGHT';
-// 	if (dir === Hammer.DIRECTION_UP) return 'UP';
-// 	if (dir === Hammer.DIRECTION_DOWN) return 'DOWN';
-// 	if (dir === Hammer.DIRECTION_HORIZONTAL) return 'HORIZONTAL';
-// 	if (dir === Hammer.DIRECTION_VERTICAL) return 'VERTICAL';
-// 	if (dir === Hammer.DIRECTION_ALL) return 'ALL';
-// 	return 'UNRECOGNIZED';
-// }
+var dirToStr = function(dir) {
+	if (dir === Hammer.DIRECTION_NONE) return 'NONE';
+	if (dir === Hammer.DIRECTION_LEFT) return 'LEFT';
+	if (dir === Hammer.DIRECTION_RIGHT) return 'RIGHT';
+	if (dir === Hammer.DIRECTION_UP) return 'UP';
+	if (dir === Hammer.DIRECTION_DOWN) return 'DOWN';
+	if (dir === Hammer.DIRECTION_HORIZONTAL) return 'HORIZONTAL';
+	if (dir === Hammer.DIRECTION_VERTICAL) return 'VERTICAL';
+	if (dir === Hammer.DIRECTION_ALL) return 'ALL';
+	return 'UNRECOGNIZED';
+}
 
 var isValidTouchManager = function(touch, direction) {
 	// var retval;
@@ -7821,7 +7826,7 @@ var CarouselProto = {
 
 	/** @override */
 	initialize: function(options) {
-		_.bindAll(this, "_onTouchEvent");
+		_.bindAll(this, "_onPointerEvent", "_onClick");
 
 		this.itemViews = new Container();
 		this.metrics = {};
@@ -7906,7 +7911,7 @@ var CarouselProto = {
 		// 	this.touch.off("tap", this._onTap);
 		// 	this.touch.off("hpanstart hpanmove hpanend hpancancel", this._onPan);
 		// }
-		this._toggleTouchEvents(false);
+		this._togglePointerEvents(false);
 		this.removeChildren();
 		View.prototype.remove.apply(this, arguments);
 		return this;
@@ -7997,7 +8002,7 @@ var CarouselProto = {
 		if (this._enabled !== enabled) {
 			this._enabled = enabled;
 			// toggle events immediately
-			this._toggleTouchEvents(enabled);
+			this._togglePointerEvents(enabled);
 			// dom manipulation on render (_renderEnabled)
 			// this._renderFlags |= View.STYLES_INVALID;
 			// this.requestRender();
@@ -8263,21 +8268,33 @@ var CarouselProto = {
 	/* toggle touch events
 	/* --------------------------- */
 
-	_toggleTouchEvents: function(enable) {
-		// console.log("%s::_toggleTouchEvents", this.cid, enable);
-		if (this._touchEventsEnabled !== enable) {
-			this._touchEventsEnabled = enable;
-			if (enable) {
-				this.touch.on("hpanstart hpanmove hpanend hpancancel tap", this._onTouchEvent);
-			} else {
-				this.touch.off("hpanstart hpanmove hpanend hpancancel tap", this._onTouchEvent);
-			}
+	_togglePointerEvents: function(enable) {
+		// console.log("%s::_togglePointerEvents", this.cid, enable);
+		if (this._pointerEventsEnabled == enable) return;
+
+		this._pointerEventsEnabled = enable;
+		if (enable) {
+			this.touch.on("hpanstart hpanmove hpanend hpancancel", this._onPointerEvent);
+			this.el.addEventListener(View.CLICK_EVENT, this._onClick, true);
+		} else {
+			this.touch.off("hpanstart hpanmove hpanend hpancancel", this._onPointerEvent);
+			this.el.removeEventListener(View.CLICK_EVENT, this._onClick, true);
 		}
 	},
 
-	_onTouchEvent: function(ev) {
-		// console.log("%s::_onTouchEvent", this.cid, ev.type);
+	_onPointerEvent: function(ev) {
+		// NOTE: https://github.com/hammerjs/hammer.js/pull/1118
+		if (ev.srcEvent.type === 'pointercancel')
+			return;
+		// console.log("%s::_onPointerEvent", this.cid, ev.type,
+		// 	dirToStr(ev.direction),
+		// 	dirToStr(ev.offsetDirection),
+		// 	dirToStr(this.direction),
+		// 	dirToStr(ev.direction | this.direction));
+		// if (ev.direction & this.direction) {
 		switch (ev.type) {
+			// case View.CLICK_EVENT:
+			// 	return this._onClick(ev);
 			case "tap":
 				return this._onTap(ev);
 			case "hpanstart":
@@ -8289,6 +8306,7 @@ var CarouselProto = {
 			case "hpancancel":
 				return this._onPanFinal(ev);
 		}
+		// }
 	},
 
 	/* --------------------------- *
@@ -8375,18 +8393,21 @@ var CarouselProto = {
 	/** @type {int} In pixels */
 	_tapGrow: 10,
 
-	getViewAtTapPos: function(pos, posAcross) {
-		if (this._tapAcrossBefore < posAcross && posAcross < this._tapAcrossAfter) {
-			if (pos < this._tapBefore) {
+	getViewAtTapPos: function(posAlong, posAcross) {
+		if ((this._tapAcrossBefore < posAcross) && (posAcross < this._tapAcrossAfter)) {
+			if (posAlong < this._tapBefore) {
 				return this._precedingView;
-			} else if (pos > this._tapAfter) {
+			} else
+			if (posAlong > this._tapAfter) {
 				return this._followingView;
 			}
 		}
-		return void 0;
+		return (void 0);
 	},
 
 	_onTap: function(ev) {
+		if (ev.defaultPrevented) return;
+
 		var targetView = View.findByDescendant(ev.target);
 		// if (!this.itemViews.contains(targetView)) {
 		// 	return;
@@ -8402,11 +8423,16 @@ var CarouselProto = {
 		} while ((targetView = targetView.parentView))
 
 		// this.selectFromView();
-
-		var bounds = this.el.getBoundingClientRect();
-		var tapX = ev.center.x - bounds.left;
-		var tapY = ev.center.y - bounds.top;
-		var tapCandidate = this.getViewAtTapPos(
+		var bounds, tapX, tapY, tapCandidate;
+		bounds = this.el.getBoundingClientRect();
+		if (ev.type == "tap") {
+			tapX = ev.center.x - bounds.left;
+			tapY = ev.center.y - bounds.top;
+		} else {
+			tapX = ev.clientX - bounds.left;
+			tapY = ev.clientY - bounds.top;
+		}
+		tapCandidate = this.getViewAtTapPos(
 			this.dirProp(tapX, tapY),
 			this.dirProp(tapY, tapX)
 		);
@@ -8433,6 +8459,11 @@ var CarouselProto = {
 			this.triggerSelectionEvents(tapCandidate, true);
 			// this.renderNow();
 		}
+	},
+
+	_onClick: function(ev) {
+		console.log("%s::_onClick", this.cid, ev.type);
+		this._onTap(ev);
 	},
 
 	/* --------------------------- *
@@ -8608,7 +8639,7 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":34,"app/view/base/View":61,"app/view/render/CarouselRenderer":84,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":114,"utils/prefixedStyleName":115,"utils/touch/SmoothPanRecognizer":121}],67:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":61,"app/view/render/CarouselRenderer":84,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":119,"utils/prefixedStyleName":120,"utils/touch/SmoothPanRecognizer":126}],67:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -9328,7 +9359,7 @@ if (DEBUG) {
 module.exports = FilterableListView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/View":61,"app/view/render/ClickableRenderer":85,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":106,"utils/css/getBoxEdgeStyles":109,"utils/prefixedProperty":114,"utils/promise/rejectAll":117,"utils/promise/resolveAll":118}],70:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/View":61,"app/view/render/ClickableRenderer":85,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":106,"utils/css/getBoxEdgeStyles":114,"utils/prefixedProperty":119,"utils/promise/rejectAll":122,"utils/promise/resolveAll":123}],70:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -9963,40 +9994,6 @@ var GraphView = CanvasView.extend({
 	},
 
 	_drawConnector: function(p, i, pp) {
-		if (DEBUG) {
-			var isRtl = p.qx < 0;
-			if (this._debugGraph && isRtl) {
-				var isFirst = i == 0;
-				var isLast = i == (pp.length - 1);
-				var gs = _dStyles[isFirst ? "salmon_dashed" : "lightskyblue_dashed"];
-
-				if (isFirst) {
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], pp.sMin);
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], pp.dMin);
-
-					CanvasHelper.drawHGuide(this._ctx, _dStyles["silver_dashed"], p.y1);
-					CanvasHelper.drawVGuide(this._ctx, _dStyles["silver_dashed"], p.x1);
-					CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
-				}
-				// if (isRtl) {
-				if (isFirst || isLast) {
-					// CanvasHelper.drawVGuide(this._ctx, gs, p.cx1 + (p.r1 * p.qx));
-					CanvasHelper.drawVGuide(this._ctx, gs, p.tx2);
-					CanvasHelper.drawVGuide(this._ctx, gs, p.cx2 - (p.r2 * p.qx));
-					// CanvasHelper.drawVGuide(this._ctx, gs, p.cx2);
-					// CanvasHelper.drawHGuide(this._ctx, gs, p.cy2);
-				}
-				// }
-				// _dStyles[p.dy > 0 ? "lightgreen" : "salmon"], p.cy2);
-				// if (isRtl) {
-				if (isFirst || isLast) {
-					this._ctx.save();
-					this._ctx.strokeStyle = _dStyles[(isFirst ? "red" : "blue")].strokeStyle;
-				}
-				// }
-			}
-		}
-
 		this._ctx.beginPath();
 		this._ctx.moveTo(p.x2, p.cy2);
 		this._ctx.arcTo(p.tx2, p.cy2, p.tx1, p.cy1, p.r2);
@@ -10015,33 +10012,6 @@ var GraphView = CanvasView.extend({
 
 		// this._ctx.lineTo(p.cx0, p.y1);
 		this._ctx.stroke();
-
-		if (DEBUG) {
-			if (this._debugGraph && isRtl) {
-
-				if (isFirst || isLast) {
-					this._ctx.restore();
-				}
-				var ps = _dStyles[isLast ? "midnightblue" : isFirst ? "sienna" : "grey"];
-				// if (isFirst)
-				// 	ps = _dStyles["sienna"];
-				// else if (isLast)
-				// 	ps = _dStyles["midnightblue"];
-				// else
-				// 	ps = _dStyles["grey"];
-
-				// CanvasHelper.drawCrosshair(this._ctx, ps, p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
-				CanvasHelper.drawCircle(this._ctx, ps, p.cx0, p.cy1, 1);
-
-				CanvasHelper.drawSquare(this._ctx, ps, p.cx2, p.cy2, 2);
-				CanvasHelper.drawSquare(this._ctx, ps, p.cx1, p.cy1, 2);
-				CanvasHelper.drawCircle(this._ctx, ps, p.tx1, p.cy1, 1);
-				CanvasHelper.drawCircle(this._ctx, ps, p.tx2, p.cy2, 1);
-
-				CanvasHelper.drawCircle(this._ctx, ps, p.x2, p.cy2, 3);
-				CanvasHelper.drawCrosshair(this._ctx, ps, p.x2, p.y2, 6);
-			}
-		}
 	},
 
 	_roundTo: function(n, p) {
@@ -10145,6 +10115,85 @@ var GraphView = CanvasView.extend({
 if (DEBUG) {
 	// GraphView.prototype._logFlags = "";
 
+	var applyFn = function(context, args) {
+		return Array.prototype.shift.apply(args).apply(context, args);
+	}
+
+	GraphView.prototype._drawConnector = _.wrap(GraphView.prototype._drawConnector, function(fn, p, i, pp) {
+		if (!this._debugGraph) {
+			// visual debug aids are off
+			return fn.call(this, p, i, pp);
+		}
+
+		// var isRtl = p.qx < 0;
+		var isFirst = i == 0;
+		var isLast = i == (pp.length - 1);
+		// guide color
+		var gs = _dStyles[isFirst ? "salmon_dashed" : "lightskyblue_dashed"];
+
+		if (isFirst) {
+			CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], pp.sMin);
+			CanvasHelper.drawVGuide(this._ctx, _dStyles["grey"], pp.dMin);
+		}
+
+		if (isFirst) {
+			CanvasHelper.drawHGuide(this._ctx, _dStyles["silver_dashed"], p.y1);
+			CanvasHelper.drawVGuide(this._ctx, _dStyles["silver_dashed"], p.x1);
+			CanvasHelper.drawCircle(this._ctx, _dStyles["midnightblue"], p.x1, p.y1, 10);
+		}
+		if (isFirst || isLast) {
+			// CanvasHelper.drawVGuide(this._ctx, gs, p.cx1 + (p.r1 * p.qx));
+			CanvasHelper.drawVGuide(this._ctx, gs, p.tx2);
+			CanvasHelper.drawVGuide(this._ctx, gs, p.cx2 - (p.r2 * p.qx));
+			// CanvasHelper.drawVGuide(this._ctx, gs, p.cx2);
+			// CanvasHelper.drawHGuide(this._ctx, gs, p.cy2);
+		}
+		if (isFirst || isLast) {
+			this._ctx.save();
+			this._ctx.strokeStyle = _dStyles[(isFirst ? "red" : "blue")].strokeStyle;
+			this._ctx.lineWidth *= 1.5;
+		}
+		// }
+
+		fn.call(this, p, i, pp);
+
+		// if (isRtl) {
+		if (isFirst || isLast) {
+			this._ctx.restore();
+		}
+		// point color
+		var pCol = isLast ? "midnightblue" : isFirst ? "sienna" : "grey";
+		var ps = _dStyles[pCol];
+		var pf = _dStyles[pCol + "_fill"];
+
+		// CanvasHelper.drawCrosshair(this._ctx, ps, p.x1 + ((p.r0 + p.di) * p.qx), p.cy1, 3);
+
+
+		if (isFirst || isLast) {
+			// moveTo(p.x2, p.cy2)
+			CanvasHelper.drawCrosshair(this._ctx, ps, p.x2, p.cy2, 10);
+			CanvasHelper.drawCircle(this._ctx, ps, p.x2, p.cy2, 3);
+
+			// arcTo #1: (p.tx2, p.cy2, p.tx1, p.cy1, p.r2)
+			CanvasHelper.drawSquare(this._ctx, ps, p.tx2, p.cy2, 4); // p1
+			CanvasHelper.drawCircle(this._ctx, pf, p.tx1, p.cy1, 2); // p2
+
+			// arcTo #2: (p.tx1, p.cy1, p.cx1, p.cy1, p.r1)
+			CanvasHelper.drawSquare(this._ctx, ps, p.tx1, p.cy1, 4); // p1
+			CanvasHelper.drawCircle(this._ctx, pf, p.cx1, p.cy1, 2); // p2
+
+			// arcTo #2: (p.cx0, p.cy1, p.cx0, p.y1, p.r0)
+			CanvasHelper.drawSquare(this._ctx, ps, p.cx0, p.cy1, 4); // p1
+			CanvasHelper.drawCircle(this._ctx, pf, p.cx0, p.y1, 2); // p2
+
+			CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.tx1, p.cy1, 4);
+			CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx1, p.cy1, 4);
+			CanvasHelper.drawCircle(this._ctx, _dStyles["green"], p.cx2, p.cy2, 4);
+		}
+		// }
+	});
+
+
 	GraphView.prototype._traceScroll = function(type) {
 		var tpl = "%s:[%s] DPR:%i " +
 			"[window: %i %i] " +
@@ -10170,20 +10219,18 @@ if (DEBUG) {
 		);
 	};
 
-	var debouncedLog = _.debounce(_.bind(console.log, console), 500, true);
-	var applyMethod = function(context, args) {
-		return Array.prototype.shift.apply(args).apply(context, args);
-	}
 	if (GraphView.prototype._logFlags.split(" ")["view.render"]) {
 		// GraphView.prototype._requestRender = _.wrap(CanvasView.prototype._requestRender, function(fn) {
 		// 	debouncedLog("%s::_requestRender", this.cid);
 		// 	return applyMethod(this, arguments);
 		// });
+		var debouncedLog = _.debounce(_.bind(console.log, console), 500, true);
+
 		GraphView.prototype._applyRender = _.wrap(CanvasView.prototype._applyRender, function(fn) {
 			var retval;
 			this._logFlags["view.render"] = false;
 			debouncedLog("%s::_applyRender [debounced]", this.cid);
-			retval = applyMethod(this, arguments);
+			retval = applyFn(this, arguments);
 			this._logFlags["view.render"] = true;
 			return retval;
 		});
@@ -10193,7 +10240,7 @@ if (DEBUG) {
 module.exports = GraphView;
 }).call(this,true)
 
-},{"app/control/Globals":34,"app/view/base/CanvasView":57,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":107,"utils/canvas/calcArcHConnector":108,"utils/geom/inflateRect":112}],71:[function(require,module,exports){
+},{"app/control/Globals":34,"app/view/base/CanvasView":57,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":107,"utils/canvas/calcArcHConnector":113,"utils/geom/inflateRect":117}],71:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -10409,11 +10456,9 @@ module.exports = GroupingListView;
 },{"app/view/component/FilterableListView":69,"app/view/render/ClickableRenderer":85,"app/view/render/LabelRenderer":92,"underscore":"underscore"}],72:[function(require,module,exports){
 /** @type {module:app/view/component/progress/CanvasProgressMeter} */
 module.exports = require("app/view/component/progress/CanvasProgressMeter3");
-/** @type {module:app/view/component/progress/SVGPathProgressMeter} */
-// module.exports = require("app/view/component/progress/SVGPathProgressMeter");
-/** @type {module:app/view/component/progress/SVGCircleProgressMeter} */
-// module.exports = require("app/view/component/progress/SVGCircleProgressMeter");
 
+// /** @type {module:app/view/component/progress/SVGPathProgressMeter} */
+// module.exports = require("app/view/component/progress/SVGPathProgressMeter");
 },{"app/view/component/progress/CanvasProgressMeter3":74}],73:[function(require,module,exports){
 /**
  * @module app/view/component/SelectableListView
@@ -10591,8 +10636,8 @@ module.exports = SelectableListView;
  * @module app/view/component/progress/CanvasProgressMeter
  */
 
-// /** @type {module:underscore} */
-// var _ = require("underscore");
+/** @type {module:underscore} */
+var _ = require("underscore");
 
 // /** @type {module:app/control/Globals} */
 // var Globals = require("app/control/Globals");
@@ -10600,6 +10645,45 @@ module.exports = SelectableListView;
 var CanvasView = require("app/view/base/CanvasView");
 // /** @type {module:app/view/base/Interpolator} */
 // var Interpolator = require("app/view/base/Interpolator");
+
+// var WHEEL_DATA = "M 1.00000 0.00000 L 0.600000 0.00000M 0.913545 0.406737 L 0.548127 0.244042M 0.669131 0.743145 L 0.401478 0.445887M 0.309017 0.951057 L 0.185410 0.570634M -0.104528 0.994522 L -0.0627171 0.596713M -0.500000 0.866025 L -0.300000 0.519615M -0.809017 0.587785 L -0.485410 0.352671M -0.978148 0.207912 L -0.586889 0.124747M -0.978148 -0.207912 L -0.586889 -0.124747M -0.809017 -0.587785 L -0.485410 -0.352671M -0.500000 -0.866025 L -0.300000 -0.519615M -0.104528 -0.994522 L -0.0627171 -0.596713M 0.309017 -0.951057 L 0.185410 -0.570634M 0.669131 -0.743145 L 0.401478 -0.445887M 0.913545 -0.406737 L 0.548127 -0.244042";
+// var WHEEL_DATA = [
+// 	[1, 0],
+// 	[0.9135454576426009, 0.40673664307580015],
+// 	[0.6691306063588582, 0.7431448254773942],
+// 	[0.30901699437494745, 0.9510565162951535],
+// 	[-0.10452846326765333, 0.9945218953682734],
+// 	[-0.4999999999999998, 0.8660254037844387],
+// 	[-0.8090169943749473, 0.5877852522924732],
+// 	[-0.9781476007338056, 0.20791169081775973],
+// 	[-0.9781476007338057, -0.20791169081775907],
+// 	[-0.8090169943749475, -0.587785252292473],
+// 	[-0.5000000000000004, -0.8660254037844385],
+// 	[-0.10452846326765423, -0.9945218953682733],
+// 	[0.30901699437494723, -0.9510565162951536],
+// 	[0.6691306063588578, -0.7431448254773946],
+// 	[0.9135454576426005, -0.40673664307580093]
+// ];
+
+var WHEEL_DATA = [
+	[1, 0],
+	[0.9238795325112867, 0.3826834323650898],
+	[0.7071067811865476, 0.7071067811865475],
+	[0.38268343236508984, 0.9238795325112867],
+	[6.123233995736766e-17, 1],
+	[-0.3826834323650897, 0.9238795325112867],
+	[-0.7071067811865475, 0.7071067811865476],
+	[-0.9238795325112867, 0.3826834323650899],
+	[-1, 1.2246467991473532e-16],
+	[-0.9238795325112868, -0.38268343236508967],
+	[-0.7071067811865477, -0.7071067811865475],
+	[-0.38268343236509034, -0.9238795325112865],
+	[-1.8369701987210297e-16, -1],
+	[0.38268343236509, -0.9238795325112866],
+	[0.7071067811865474, -0.7071067811865477],
+	[0.9238795325112865, -0.3826834323650904]
+];
+var WHEEL_NUM = WHEEL_DATA.length;
 
 // var ARC_ERR = 0.00001;
 // var ARC_ERR = 0.0;
@@ -10611,18 +10695,29 @@ var GAP_ARC = PI2 / 48;
 // var WAIT_CYCLE_VALUE = 1;
 // var WAIT_CYCLE_MS = 300; // milliseconds per interpolation loop
 
+/* NOTE: avoid negative rotations */
+var BASE_ROTATION = 1 - 0.25; // of PI2 (-90 degrees)
+
 var ARC_DEFAULTS = {
 	"amount": {
 		lineWidth: 0.8,
 		radiusOffset: 0
 	},
-	"not-available": {
-		lineWidth: 1.0,
-		lineDash: [0.3, 0.7]
-	},
 	"available": {
 		lineWidth: 0.8,
+		// lineDash: [1.3, 0.7],
 		inverse: "not-available"
+	},
+	"not-available": {
+		lineWidth: 0.8,
+		lineDash: [0.3, 0.7],
+		lineDashOffset: 0
+	},
+	"indeterminate": {
+		lineWidth: 1.5, //0.8,
+		lineDash: [0.3, 1.7],
+		// lineDash: [0.6, 1.4],
+		lineDashOffset: 0
 	},
 };
 
@@ -10644,6 +10739,7 @@ module.exports = CanvasView.extend({
 			amount: 0,
 			available: 0,
 			_loop: 0,
+			_ind: 0 // indeterminate animation goes backwards from 1
 		},
 		maxValues: {
 			amount: 1,
@@ -10653,6 +10749,32 @@ module.exports = CanvasView.extend({
 		labelFn: function(value, max) {
 			return ((value / max) * 100) | 0;
 		},
+	},
+
+	properties: {
+		indeterminate: {
+			get: function() {
+				return this._indeterminate;
+			},
+			set: function(value) {
+				this.setIndeterminate(value)
+			}
+		}
+	},
+
+	setIndeterminate: function(value) {
+		if (this._indeterminate !== value) {
+			this._indeterminate = value;
+			// this.interpolator.valueTo("_ind", 0, 0);
+			// if (value) {
+			// this.interpolator.valueTo("_ind", 1, 300);
+			// } else {
+			// 	this.interpolator.valueTo("_ind", 0, 0);
+			// }
+			// this.interpolator.updateValue("_ind");
+			// intrp.updateValue("_ind");
+			this.requestRender(CanvasView.MODEL_INVALID | CanvasView.LAYOUT_INVALID);
+		}
 	},
 
 	/* --------------------------- *
@@ -10666,49 +10788,57 @@ module.exports = CanvasView.extend({
 		// options = _.defaults(options, this.defaults);
 
 		this._labelFn = options.labelFn;
+		this._indeterminate = !!(options.indeterminate);
 		this._valueStyles = {};
 		this._canvasSize = null;
 		this._canvasOrigin = null;
 	},
 
-	measureCanvas: function(w, h) {
+	measureCanvas: function(w, h, s) {
 		this._canvasHeight = this._canvasWidth = Math.min(this._canvasWidth, this._canvasHeight);
 	},
 
-	_updateCanvas: function() {
-		CanvasView.prototype._updateCanvas.apply(this, arguments);
+	updateCanvas: function() {
+		// CanvasView.prototype._updateCanvas.apply(this, arguments);
 
 		// size, lines, gaps, dashes (this._valueStyles, GAP_ARC, this._arcRadius)
 		// --------------------------------
-		var arcName, arcObj, arcDefault;
-		var mapLineDash = function(n) {
-			return n * this.radius * GAP_ARC;
-		};
-		var sumFn = function(s, n) {
-			return s + n;
-		};
+		// var arcName, s, arcDefault;
+		// var mapLineDash = function(n) {
+		// 	return n * this.radius * GAP_ARC;
+		// };
+		// var sumFn = function(s, n) {
+		// 	return s + n;
+		// };
 
-		this._canvasSize = Math.min(this._canvasWidth, this._canvasHeight); // / this._canvasRatio;
-		this._maxDashArc = 0;
+		// this._canvasSize = Math.min(this._canvasWidth, this._canvasHeight);
 
-		for (arcName in ARC_DEFAULTS) {
-			arcDefault = ARC_DEFAULTS[arcName];
-			arcObj = this._valueStyles[arcName] = {};
-			arcObj.inverse = arcDefault.inverse; // copy inverse key
-			// arcObj.inverse2 = arcDefault.inverse2;
-			arcObj.lineWidth = arcDefault.lineWidth * this._canvasRatio;
-			arcObj.radius = (this._canvasSize - arcObj.lineWidth) / 2;
-			if (arcDefault.radiusOffset) {
-				arcObj.radius += arcDefault.radiusOffset * this._canvasRatio;
+		var s;
+		// this._maxDashArc = 0
+		for (var styleName in ARC_DEFAULTS) {
+			s = _.defaults({}, ARC_DEFAULTS[styleName]);
+			s.lineWidth *= this._canvasRatio;
+			s.radius = (this._canvasWidth - s.lineWidth) / 2;
+
+			if (s.radiusOffset) {
+				s.radius += s.radiusOffset * this._canvasRatio;
 			}
-			if (arcDefault.lineDash && arcDefault.lineDash.length) {
-				arcObj.lineDash = arcDefault.lineDash.map(mapLineDash, arcObj);
-				arcObj.lineDashArc = arcDefault.lineDash[0] * GAP_ARC;
-				arcObj.lineDashLength = arcObj.lineDash.reduce(sumFn);
-				this._maxDashArc = Math.max(this._maxDashArc, arcObj.lineDashArc);
+
+			if (_.isArray(s.lineDash)) {
+				s.lineDash = s.lineDash.map(function(val, i, arr) {
+					return val * this.radius * GAP_ARC;
+				}, s);
+
+				s.lineDashLength = s.lineDash.reduce(function(res, val, i, arr) {
+					return res + val;
+				}, 0);
+
+				s.lineDashArc = s.lineDash[0] * GAP_ARC;
+				// this._maxDashArc = Math.max(this._maxDashArc, s.lineDashArc);
 			} else {
-				arcObj.lineDashArc = 0;
+				s.lineDashArc = 0;
 			}
+			this._valueStyles[styleName] = s;
 		}
 
 		// baselineShift
@@ -10733,75 +10863,121 @@ module.exports = CanvasView.extend({
 	/* --------------------------- */
 
 	/** @override */
-	redraw: function(context, interpolator) {
+	redraw: function(ctx, intrp) {
 		this._clearCanvas(-this._canvasWidth / 2, -this._canvasHeight / 2, this._canvasWidth, this._canvasHeight);
 
-		var loopValue = interpolator._valueData["_loop"]._renderedValue || 0;
-		var amountData = interpolator._valueData["amount"];
-		var availableData = interpolator._valueData["available"];
+		var valData, arcVal, s;
+		valData = intrp._valueData["amount"];
 
-		var amountStyle = this._valueStyles["amount"];
-		var availableStyle = this._valueStyles["available"];
+		// indeterminate
+		// --------------------------------
+		if (this.indeterminate) {
+			var indVal = intrp._valueData["_ind"]._renderedValue || 0;
+			if (intrp.isAtTarget("_ind")) {
+				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") === -1)) {
+				intrp.valueTo("_ind", 0, 0);
+				intrp.valueTo("_ind", 1, 300);
+				intrp.updateValue("_ind");
+			}
+			// lineDashOffset animation
+			// --------------------------------
+			s = this._valueStyles["indeterminate"];
+			s.lineDashOffset = s.lineDashLength * (1 - indVal);
+			this._valueStyles["available"].inverse = "indeterminate";
+
+			// console.log("%s::redraw indVal:%o s.lineDashOffset:%o s.lineDash:%o", this.cid, indVal, s.lineDashOffset, s.lineDash[0]);
+
+			// draw spinning wheel
+			// --------------------------------
+			// this._ctx.save();
+			// this._ctx.rotate((PI2 / WHEEL_NUM) * indVal); // + GAP_ARC);
+			// this.drawWheel(this._valueStyles["amount"], 2 / 5, 3 / 5);
+			// this._ctx.restore();
+		} else {
+			if (!intrp.isAtTarget("_ind")) {
+				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") !== -1)) {
+				intrp.valueTo("_ind", 0, 0);
+				intrp.updateValue("_ind");
+			}
+			// lineDashOffset animation
+			// --------------------------------
+			this._valueStyles["available"].inverse = "not-available";
+		}
 
 		// amount label
 		// --------------------------------
-		this.drawLabel(this._labelFn(amountData._renderedValue, amountData._maxVal));
+		this.drawLabel(this._labelFn(valData._renderedValue, valData._maxVal));
 
 		// save ctx before drawing arcs
 		this._ctx.save();
 
-		// loop rotation
-		// --------------------------------
-		// if (interpolator.renderedKeys && (interpolator.renderedKeys.indexOf("amount") !== -1)) {
-		// 	console.log("%s::redraw (_loop) max: %s last: %s curr: %s", this.cid,
-		// 		amountData._maxVal,
-		// 		amountData._lastRenderedValue,
-		// 		amountData._renderedValue
-		// 	);
-		// }
-		if (interpolator.renderedKeys && (interpolator.renderedKeys.indexOf("amount") !== -1) && (amountData._lastRenderedValue > amountData._renderedValue)) {
+		/*
+		NOTE: If value "amount" has changed (with valueTo()) but no yet
+		interpolated, and its last rendered value is less, then its been reset
+		(a reload, a loop, etc): we trigger a 'loop' of the whole arc.
+		*/
+		// if (intrp.isAtTarget("amount") &&
+		if ((intrp.renderedKeys.indexOf("amount") !== -1) &&
+			(valData._lastRenderedValue > valData._renderedValue)) {
 			// trigger loop
-			interpolator.valueTo(1, 0, "_loop");
-			interpolator.valueTo(0, 750, "_loop");
-			interpolator.updateValue("_loop");
+			intrp.valueTo("_loop", 1, 0);
+			intrp.valueTo("_loop", 0, 750);
+			intrp.updateValue("_loop");
 		}
-		this._ctx.rotate(PI2 * ((1 - loopValue) - 0.25));
+		// valData = intrp._valueData["amount"];
+		var loopVal = intrp.getCurrentValue("_loop");
+		this._ctx.rotate((PI2 * (BASE_ROTATION + (1 - loopVal)))); // + GAP_ARC);
 
 		// amount arc
 		// --------------------------------
-		var amountGapArc = GAP_ARC;
+		// var amountGapArc = GAP_ARC;
 		var amountEndArc = 0;
-		var amountValue = loopValue + amountData._renderedValue / amountData._maxVal;
 
-		if (amountValue > 0) {
-			amountEndArc = this.drawArc(amountStyle, amountValue, amountGapArc, PI2 - amountGapArc);
-			this.drawEndCap(amountStyle, amountEndArc);
-			amountEndArc = amountEndArc + amountGapArc * 2;
+		s = this._valueStyles["amount"];
+		arcVal = loopVal + valData._renderedValue / valData._maxVal;
+		if (arcVal > 0) {
+			amountEndArc = this.drawArc(arcVal,
+				GAP_ARC,
+				PI2 - GAP_ARC,
+				amountEndArc, s);
+			this.drawEndCap(amountEndArc, s);
+			amountEndArc = amountEndArc + GAP_ARC * 2;
 		}
 
 		// available arc
 		// --------------------------------
-		var stepsNum = availableData.length || 1;
+		s = this._valueStyles["available"];
+		valData = intrp._valueData["available"];
+
+		var stepsNum = valData.length || 1;
 		var stepBaseArc = PI2 / stepsNum;
 		var stepAdjustArc = stepBaseArc % GAP_ARC;
-		var stepGapArc = GAP_ARC + (stepAdjustArc - availableStyle.lineDashArc) / 2;
+		var stepGapArc = GAP_ARC + (stepAdjustArc - s.lineDashArc) / 2;
 
-		if (Array.isArray(availableData)) {
-			for (var o, i = 0; i < stepsNum; i++) {
-				o = availableData[i];
-				this.drawArc(availableStyle, o._renderedValue / (o._maxVal / stepsNum), (i * stepBaseArc) + stepGapArc, ((i + 1) * stepBaseArc) - stepGapArc, amountEndArc);
+		if (Array.isArray(valData)) {
+			for (var i = 0; i < stepsNum; i++) {
+				arcVal = valData[i]._renderedValue / (valData[i]._maxVal / stepsNum);
+				this.drawArc(arcVal,
+					(i * stepBaseArc) + stepGapArc,
+					((i + 1) * stepBaseArc) - stepGapArc,
+					amountEndArc, s);
 			}
 		} else {
-			this.drawArc(availableStyle, availableData._renderedValue / availableData._maxVal, stepGapArc, PI2 - stepGapArc, amountEndArc);
+			arcVal = valData._renderedValue / valData._maxVal
+			this.drawArc(arcVal,
+				stepGapArc,
+				PI2 - stepGapArc,
+				amountEndArc, s);
 		}
 		// restore ctx after drawing arcs
 		this._ctx.restore();
 	},
 
-	drawArc: function(valueStyle, value, startArc, endArc, prevArc) {
-		var valArc, invStyle,
+	drawArc: function(value, startArc, endArc, prevArc, sVal) {
+		var valArc,
 			valStartArc, valEndArc,
 			invStartArc, invEndArc;
+		var sInv;
 		prevArc || (prevArc = 0);
 
 		valArc = endArc - startArc;
@@ -10809,52 +10985,98 @@ module.exports = CanvasView.extend({
 		valStartArc = Math.max(startArc, prevArc);
 		if (valEndArc > valStartArc) {
 			this._ctx.save();
-			this.applyValueStyle(valueStyle);
+			this.applyValueStyle(sVal);
 			this._ctx.beginPath();
-			this._ctx.arc(0, 0, valueStyle.radius, valEndArc, valStartArc, true);
+			this._ctx.arc(0, 0, sVal.radius, valEndArc, valStartArc, true);
 			this._ctx.stroke();
 			this._ctx.restore();
 		}
+
 		// if there's valueStyle, draw rest of span, minus prevArc overlap too
-		if (valueStyle.inverse !== void 0) {
-			invStyle = this._valueStyles[valueStyle.inverse];
+		if (sVal.inverse !== void 0) {
+			sInv = this._valueStyles[sVal.inverse];
+
 			invEndArc = valEndArc + (valArc * (1 - value));
 			invStartArc = Math.max(valEndArc, prevArc);
 			if (invEndArc > invStartArc) {
 				this._ctx.save();
-				this.applyValueStyle(invStyle);
+				this.applyValueStyle(sInv);
 				this._ctx.beginPath();
-				this._ctx.arc(0, 0, invStyle.radius, invEndArc, invStartArc, true);
+				this._ctx.arc(0, 0, sInv.radius, invEndArc, invStartArc, true);
 				this._ctx.stroke();
 				this._ctx.restore();
 			}
 		}
+
 		return valEndArc;
 	},
 
-	applyValueStyle: function(styleObj) {
-		this._ctx.lineWidth = styleObj.lineWidth;
-		if (styleObj.lineDash) {
-			this._ctx.setLineDash(styleObj.lineDash);
+	applyValueStyle: function(s) {
+		this._ctx.lineWidth = s.lineWidth;
+		if (_.isArray(s.lineDash)) {
+			this._ctx.setLineDash(s.lineDash);
 		}
-		if (styleObj.lineDashOffset) {
-			this._ctx.lineDashOffset = styleObj.lineDashOffset;
+		if (_.isNumber(s.lineDashOffset)) {
+			this._ctx.lineDashOffset = s.lineDashOffset;
 		}
 	},
 
-	drawLabel: function(labelString) {
-		var labelWidth = this._ctx.measureText(labelString).width;
-		this._ctx.fillText(labelString,
-			labelWidth * -0.5,
-			this._baselineShift, labelWidth);
-	},
-
-	drawEndCap: function(valueStyle, arcPos) {
-		var radius = valueStyle.radius;
+	drawWheel: function(s, r1, r2) {
 		this._ctx.save();
-		this._ctx.lineWidth = valueStyle.lineWidth;
+		this.applyValueStyle(s);
+		// this._ctx.lineDashArr = s.radius*0.5;
+		// this._ctx.lineDashOffset = s.radius * 0.5;
+		var cx, cy;
+		for (var i = 0; i < WHEEL_NUM; i++) {
+			this._ctx.beginPath();
+			cx = WHEEL_DATA[i][0] * s.radius;
+			cy = WHEEL_DATA[i][1] * s.radius;
+			this._ctx.moveTo(
+				cx * r1,
+				cy * r1);
+			this._ctx.lineTo(
+				cx * r2,
+				cy * r2);
+			this._ctx.stroke();
 
-		this._ctx.rotate(arcPos - GAP_ARC * 1.5);
+		}
+		this._ctx.restore();
+	},
+
+	// drawWheel: function() {
+	// 	var size = (this._canvasWidth / 2) * 0.8;
+	// 	this._ctx.save();
+	// 	this._ctx.scale(size, size);
+	// 	// this._ctx.lineDashOffset = (1 / size) * 0.1;
+	// 	this._ctx.lineWidth = (1 / size) * 1.2;
+	// 	this._ctx.stroke(new Path2D(WHEEL_DATA));
+	// 	this._ctx.restore();
+	// },
+
+	drawNotch: function(arcPos, length, s) {
+		var ex, ey, ec1, ec2;
+
+		ex = Math.cos(arcPos);
+		ey = Math.sin(arcPos);
+		ec1 = s.radius;
+		ec2 = s.radius - length;
+
+		this._ctx.save();
+		this.applyValueStyle(s);
+		this._ctx.lineCap = "square";
+		this._ctx.beginPath();
+		this._ctx.moveTo(ec1 * ex, ec1 * ey);
+		this._ctx.lineTo(ec2 * ex, ec2 * ey);
+		this._ctx.stroke();
+		this._ctx.restore();
+	},
+
+	drawEndCap: function(arcPos, s) {
+		var radius = s.radius;
+		this._ctx.save();
+		this._ctx.lineWidth = s.lineWidth;
+
+		this._ctx.rotate(arcPos - GAP_ARC * 2); // 1.5);
 		this._ctx.beginPath();
 		this._ctx.arc(0, 0, radius, GAP_ARC * 0.5, GAP_ARC * 2, false);
 		this._ctx.lineTo(radius - (GAP_ARC * radius), 0);
@@ -10864,6 +11086,13 @@ module.exports = CanvasView.extend({
 		this._ctx.stroke();
 		this._ctx.restore();
 	},
+
+	drawLabel: function(labelString) {
+		var labelWidth = this._ctx.measureText(labelString).width;
+		this._ctx.fillText(labelString,
+			labelWidth * -0.5,
+			this._baselineShift, labelWidth);
+	},
 });
 
 if (DEBUG) {
@@ -10871,7 +11100,7 @@ if (DEBUG) {
 }
 }).call(this,true)
 
-},{"app/view/base/CanvasView":57}],75:[function(require,module,exports){
+},{"app/view/base/CanvasView":57,"underscore":"underscore"}],75:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {Function} */
@@ -10953,7 +11182,7 @@ function initRootStyles(sheet, rootSelector, attrs, fgColor, bgColor, lnColor, h
 	s = {
 		"color": bgColorVal
 	}; // s = { "color" : revFgColorVal };
-	s["-webkit-font-smoothing"] = (hasDarkBg ? "auto" : "antialiased");
+	// s["-webkit-font-smoothing"] = (hasDarkBg ? "auto" : "antialiased");
 	// insertCSSRule(sheet, revSelector + " .color-fg", s);
 	// insertCSSRule(sheet, revSelector + ".color-fg", s);
 	insertCSSRule(sheet, selfAndDescendant(revSelector, ".color-fg"), s);
@@ -11562,7 +11791,7 @@ var CarouselRenderer = View.extend({
 });
 
 module.exports = CarouselRenderer;
-},{"app/view/base/View":61,"underscore":"underscore","utils/css/getBoxEdgeStyles":109}],85:[function(require,module,exports){
+},{"app/view/base/View":61,"underscore":"underscore","utils/css/getBoxEdgeStyles":114}],85:[function(require,module,exports){
 /**
  * @module app/view/render/ClickableRenderer
  */
@@ -12284,8 +12513,6 @@ module.exports = MediaRenderer;
 
 /** @type {module:underscore} */
 var _ = require("underscore");
-/** @type {Function} */
-// var Color = require("color");
 
 /** @type {module:app/view/MediaRenderer} */
 var MediaRenderer = require("app/view/render/MediaRenderer");
@@ -12304,21 +12531,38 @@ var visibilityStateProp = prefixedProperty("visibilityState", document);
 var visibilityChangeEvent = prefixedEvent("visibilitychange", document, "hidden");
 
 /** @type {Function} */
-// var duotone = require("utils/canvas/bitmap/duotone");
-// var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
-// var stackBlurMono = require("utils/canvas/bitmap/stackBlurMono");
-// var getAverageRGBA = require("utils/canvas/bitmap/getAverageRGBA");
-// var getAverageRGB = require("utils/canvas/bitmap/getAverageRGB");
+var Color = require("color");
 
-// /** @type {HTMLCanvasElement} */
-// var _sharedCanvas = null;
-// /** @return {HTMLCanvasElement} */
-// var getSharedCanvas = function() {
-// 	if (_sharedCanvas === null) {
-// 		_sharedCanvas = document.createElement("canvas");
-// 	}
-// 	return _sharedCanvas;
+/** @type {Function} */
+// var duotone = require("utils/canvas/bitmap/duotone");
+// var stackBlurMono = require("utils/canvas/bitmap/stackBlurMono");
+var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
+// var getAverageRGBA = require("utils/canvas/bitmap/getAverageRGBA");
+var getAverageRGB = require("utils/canvas/bitmap/getAverageRGB");
+// var inflateRect = require("utils/geom/inflateRect");
+
+/** @type {HTMLCanvasElement} */
+var _sharedCanvas = null;
+/** @return {HTMLCanvasElement} */
+var getSharedCanvas = function() {
+	if (_sharedCanvas === null) {
+		_sharedCanvas = document.createElement("canvas");
+	}
+	return _sharedCanvas;
+};
+
+// var SVG_NS = "http://www.w3.org/2000/svg";
+// var XLINK_NS = "http://www.w3.org/1999/xlink";
+//
+// var useIdSeed = 0
+// var createSVGUseElement = function() {
+// 	var svgEl = document.createElementNS(SVG_NS, "use");
+// 	svgEl.setAttributeNS(null, "id", name + (useIdSeed++));
+// 	svgEl.setAttributeNS(null, "class", [name, "symbol"].join(" "));
+// 	svgEl.setAttributeNS(XLINK_NS, "xlink:href", "#" + name);
+// 	return svgEl;
 // };
+
 
 // function logAttachInfo(view, name, level) {
 // 	if (["log", "info", "warn", "error"].indexOf(level) != -1) {
@@ -12366,8 +12610,25 @@ var PlayableRenderer = MediaRenderer.extend({
 			get: function() {
 				return this._overlay || (this._overlay = this.el.querySelector(".overlay"));
 			}
+		},
+		playbackState: {
+			get: function() {
+				return this._playbackState;
+			},
+			set: function(state) {
+				this._setPlaybackState(state);
+			}
 		}
 	},
+
+	// events: function() {
+	// 	var events = {};
+	// 	events[PlayableRenderer.CLICK_EVENT + " .play-toggle"] = "_onPlaybackToggle";
+	// 	return _.extend(events, _.result(this, MediaRenderer.prototype.events));
+	// },
+	// events: {
+	// 	"click .play-toggle":"_onPlaybackToggle"
+	// },
 
 	/** @override */
 	initialize: function(opts) {
@@ -12547,13 +12808,15 @@ var PlayableRenderer = MediaRenderer.extend({
 	_addDOMListeners: function() {
 		this.listenTo(this, "view:removed", this._removeDOMListeners);
 		document.addEventListener(visibilityChangeEvent, this._onVisibilityChange, false);
-		this.playToggle.addEventListener(this._toggleEvent, this._onPlaybackToggle, true);
+		this.playToggle.addEventListener(
+			this._toggleEvent, this._onPlaybackToggle, true);
 	},
 
 	_removeDOMListeners: function() {
 		this.stopListening(this, "view:removed", this._removeDOMListeners);
 		document.removeEventListener(visibilityChangeEvent, this._onVisibilityChange, false);
-		this.playToggle.removeEventListener(this._toggleEvent, this._onPlaybackToggle, true);
+		this.playToggle.removeEventListener(
+			this._toggleEvent, this._onPlaybackToggle, true);
 	},
 
 	/* visibility dom event
@@ -12573,7 +12836,7 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* --------------------------- */
 
 	/** @type {String} */
-	_toggleEvent: window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup",
+	_toggleEvent: MediaRenderer.CLICK_EVENT, //window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup",
 
 	_onPlaybackToggle: function(ev) {
 		console.log("%s[%sabled]::_onPlaybackToggle[%s] defaultPrevented: %s", this.cid, this.enabled ? "en" : "dis", ev.type, ev.defaultPrevented);
@@ -12654,6 +12917,30 @@ var PlayableRenderer = MediaRenderer.extend({
 	},
 
 	/* --------------------------- *
+	/* playbackState
+	/* --------------------------- */
+
+	/*_playbackState: null,
+
+	_playbackStateEnum: ["playing", "paused", "waiting", "ended"],
+
+	_setPlaybackState: function(key) {
+		if (this._playbackStateEnum.indexOf(key) === -1) {
+			throw new Error("Argument " + key + " invalid. Must be one of: " + this._playbackStateEnum.join(", "));
+		}
+		if (this._playbackState !== key) {
+			if (this._playbackState) {
+				this.content.classList.remove(this._playbackState);
+			} else {
+				this.content.classList.add("started");
+			}
+			this.content.classList.add(key);
+			this._playbackState = key;
+			this.trigger("playback:" + key);
+		}
+	},*/
+
+	/* --------------------------- *
 	/* abstract
 	/* --------------------------- */
 
@@ -12675,7 +12962,7 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* --------------------------- */
 
 	updateOverlay: function(mediaEl, targetEl, rectEl) {
-		// // this method is not critical, just catch and log all errors
+		// this method is not critical, just catch and log all errors
 		// try {
 		// 	this._updateOverlay(mediaEl, targetEl, rectEl)
 		// } catch (err) {
@@ -12727,7 +13014,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		return context;
 	},
 
-	/*
+	/**/
 	_updateOverlay: function(mediaEl, targetEl, rectEl) {
 		// src/dest rects
 		// ------------------------------
@@ -12761,10 +13048,10 @@ var PlayableRenderer = MediaRenderer.extend({
 		};
 
 		// native/display scale
-		var sW = this.model.get("w"),
-			sH = this.model.get("h"),
-			rsX = sW/this.metrics.media.width,
-			rsY = sH/this.metrics.media.height;
+		var sW = this.model.get("source").get("w"),
+			sH = this.model.get("source").get("h"),
+			rsX = sW / this.metrics.media.width,
+			rsY = sH / this.metrics.media.height;
 
 		// dest, scaled to native
 		var src = {
@@ -12808,21 +13095,25 @@ var PlayableRenderer = MediaRenderer.extend({
 		// Color, filter opts
 		// ------------------------------
 
-		// this.fgColor || (this.fgColor = new Color(this.model.attr("color")));
-		// this.bgColor || (this.bgColor = new Color(this.model.attr("background-color")));
-		//
-		// var opts = { radius: 20 };
-		// var isFgDark = this.fgColor.luminosity() < this.bgColor.luminosity();
-		// opts.x00 = isFgDark? this.fgColor.clone().lighten(0.5) : this.bgColor.clone().darken(0.5);
-		// opts.xFF = isFgDark? this.bgColor.clone().lighten(0.5) : this.fgColor.clone().darken(0.5);
-		//
+		this.fgColor || (this.fgColor = new Color(this.model.attr("color")));
+		this.bgColor || (this.bgColor = new Color(this.model.attr("background-color")));
+
+		var opts = { radius: 20 };
+		var isFgDark = this.fgColor.luminosity() < this.bgColor.luminosity();
+		opts.x00 = isFgDark ? this.fgColor.clone().lighten(0.5) : this.bgColor.clone().darken(0.5);
+		opts.xFF = isFgDark ? this.bgColor.clone().lighten(0.5) : this.fgColor.clone().darken(0.5);
+
+		stackBlurRGB(imageData, { radius: 40 });
 		// stackBlurMono(imageData, opts);
 		// duotone(imageData, opts);
-		// stackBlurRGB(imageData, { radius: 20 });
 		//
-		// context.putImageData(imageData, 0, 0);
-		// targetEl.style.backgroundImage = "url(" + canvas.toDataURL() + ")";
-	}*/
+		context.putImageData(imageData, 0, 0);
+		targetEl.style.backgroundOrigin = "border-box";
+		targetEl.style.backgroundClip = "content-box";
+		targetEl.style.backgroundSize = "100%";
+		// targetEl.style.padding = "0 0 5rem 0";
+		targetEl.style.backgroundImage = "url(" + canvas.toDataURL() + ")";
+	} /**/
 });
 
 /* ---------------------------
@@ -12836,7 +13127,6 @@ if (GA) {
 
 		// var readyEvents = ["playing", "waiting", "ended"];
 		// var userEvents = ["play", "pause"];
-
 
 		return PlayableRenderer.extend({
 
@@ -12909,17 +13199,17 @@ if (GA) {
 module.exports = PlayableRenderer;
 }).call(this,true)
 
-},{"app/view/render/MediaRenderer":93,"underscore":"underscore","underscore.string/dasherize":23,"utils/prefixedEvent":113,"utils/prefixedProperty":114}],95:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":93,"color":"color","underscore":"underscore","underscore.string/dasherize":23,"utils/canvas/bitmap/getAverageRGB":109,"utils/canvas/bitmap/stackBlurRGB":112,"utils/prefixedEvent":118,"utils/prefixedProperty":119}],95:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
-  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content\">\n	<div class=\"media-border content-size\"></div>\n	<div class=\"controls content-size\">\n		<canvas class=\"progress-meter\"></canvas>\n	</div>\n	<div class=\"sequence media-size\">\n		<img class=\"sequence-step current default\" alt=\""
+  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content\">\n	<div class=\"media-border content-size\"></div>\n	<div class=\"controls content-size\">\n	</div>\n	<div class=\"sequence media-size\">\n		<img class=\"sequence-step current default\" alt=\""
     + alias4(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"text","hash":{},"data":data}) : helper)))
     + "\" longdesc=\"#desc_m"
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
+    + "\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n			<svg class=\"play-toggle-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"-200 -200 400 400\" preserveAspectRatio=\"xMidYMid meet\" style=\"stroke:none;fill:none;\">\n				<defs>\n					<path id=\"pause-symbol\" style=\"fill:#fff;\" d=\"M-70 -70 h 50 v 140 h -50 Z M20 -70 h 50 v 140 h -50 Z\" style=\"fill:#fff;\"/>\n					<path id=\"play-symbol\" style=\"fill:#fff;\" d=\"M-60 -70 L90 0 L-60 70 Z\"/>\n						<path id=\"wheel-symbol\" style=\"stroke:#fff; stroke-width: 12px\" d=\"M160,100 L200,100 Z M151.961524,130 L186.60254,150 Z M130,151.961524 L150,186.60254 Z M100,160 L100,200 Z M70,151.961524 L50,186.60254 Z M48.0384758,130 L13.3974596,150 Z M40,100 L0,100 Z M48.0384758,70 L13.3974596,50 Z M70,48.0384758 L50,13.3974596 Z M100,40 L100,0 Z M130,48.0384758 L150,13.3974596 Z M151.961524,70 L186.60254,50\" transform=\"translate(-100 -100)\">\n						</path>\n				</defs>\n				<rect x=\"-200\" y=\"-200\" width=\"400\" height=\"400\" rx=\"20\" style=\"fill:#000;fill-opacity:0.2\"/>\n			</svg>\n		</div>\n	</div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":20}],96:[function(require,module,exports){
@@ -13327,7 +13617,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 		// progress-meter
 		// ---------------------------------
 		this.progressMeter = new ProgressMeter({
-			el: this.el.querySelector(".progress-meter"),
+			// el: this.el.querySelector(".progress-meter"),
 			values: {
 				available: this._sourceProgressByIdx.concat(),
 			},
@@ -13339,9 +13629,10 @@ var SequenceRenderer = PlayableRenderer.extend({
 			// backgroundColor: this.model.attr("background-color"),
 			labelFn: this._progressLabelFn.bind(this)
 		});
-
-		// this.el.querySelector(".top-bar")
-		//		.appendChild(this.progressMeter.render().el);
+		this.el.querySelector(".controls").appendChild(this.progressMeter.el);
+		// var el = this.el.querySelector(".progress-meter");
+		// el.parentNode.replaceChild(this.progressMeter.el, el);
+		// this.el.querySelector(".controls").appendChild(this.progressMeter.render().el);
 	},
 
 	_progressLabelFn: function() {
@@ -13420,7 +13711,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 	_updateItemProgress: function(progress, index) {
 		this._sourceProgressByIdx[index] = progress;
 		if (this.progressMeter) {
-			this.progressMeter.valueTo(this._sourceProgressByIdx, 300, "available");
+			this.progressMeter.valueTo("available", this._sourceProgressByIdx, 300);
 		}
 	},
 
@@ -13448,6 +13739,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 		} else {
 			this.timer.start(this._sequenceInterval);
 		}
+		this.progressMeter.indeterminate = !(this.sources.selected.has("prefetched") || this.sources.selected.has("error"));
 	},
 
 	/** @override */
@@ -13457,6 +13749,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 		if (this.timer.status == Timer.STARTED) {
 			this.timer.pause();
 		}
+		this.progressMeter.indeterminate = false;
 	},
 
 	/* --------------------------- *
@@ -13464,13 +13757,13 @@ var SequenceRenderer = PlayableRenderer.extend({
 	/* --------------------------- */
 
 	_onTimerStart: function(duration) {
-		this.progressMeter.valueTo(this.sources.selectedIndex + 1, duration, "amount");
+		this.progressMeter.valueTo("amount", this.sources.selectedIndex + 1, duration);
 		// init next renderer now to have smooth transitions
 		this._getItemRenderer(this.sources.followingOrFirst());
 	},
 
 	_onTimerResume: function(duration) {
-		this.progressMeter.valueTo(this.sources.selectedIndex + 1, duration, "amount");
+		this.progressMeter.valueTo("amount", this.sources.selectedIndex + 1, duration);
 	},
 
 	_onTimerPause: function(duration) {
@@ -13487,7 +13780,8 @@ var SequenceRenderer = PlayableRenderer.extend({
 		// this.progressMeter.valueTo(timerVal);
 		// this.progressMeter.valueTo(meterVal);
 
-		this.progressMeter.valueTo(this.progressMeter.getRenderedValue("amount"), 0, "amount");
+		// this.progressMeter.indeterminate = false;
+		this.progressMeter.valueTo("amount", this.progressMeter.getRenderedValue("amount"), 0);
 	},
 
 	_onTimerEnd: function() {
@@ -13503,11 +13797,12 @@ var SequenceRenderer = PlayableRenderer.extend({
 		var showNextView = function() {
 			context.requestAnimationFrame(function() {
 				context.content.classList.remove("waiting");
+				context.progressMeter.indeterminate = false;
+				// if (context.playbackRequested) {
+				context.content.classList.toggle("playback-error", nextSource.has("error"));
+				context.sources.select(nextSource); // NOTE: step increase done here
+				context.updateOverlay(nextView.el, context.overlay);
 				if (!context._paused) {
-					// if (context.playbackRequested) {
-					context.content.classList.toggle("playback-error", nextSource.has("error"));
-					context.sources.select(nextSource); // NOTE: step increase done here
-					// view.updateOverlay(nextView.el, view.overlay);
 					context.timer.start(context._sequenceInterval);
 					// console.log("%s::showNextView %sms %s", context.cid, context._sequenceInterval, nextSource.cid)
 				}
@@ -13521,6 +13816,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 			showNextView();
 		} else {
 			this.content.classList.add("waiting");
+			this.progressMeter.indeterminate = true;
 			/* TODO: add ga event 'media-waiting' */
 			// console.log("%s:[waiting] %sms %s", context.cid, nextSource.cid);
 			window.ga("send", "event", "sequence-renderer", "waiting", this.model.get("text"));
@@ -13651,9 +13947,9 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper;
 
-  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n			<canvas class=\"progress-meter\"></canvas>\n			<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n				<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n					<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n				</svg>\n			</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video preload=\"none\" width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
+  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n			<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n				<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n			</svg>\n		</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
     + container.escapeExpression(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"text","hash":{},"data":data}) : helper)))
-    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n		</div>\n	</div>\n</div>\n";
+    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size\">\n		<div class=\"play-toggle-hitarea play-toggle\">\n			<svg class=\"play-toggle-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"-200 -200 400 400\" preserveAspectRatio=\"xMidYMid meet\" style=\"stroke:none;fill:none;\">\n				<defs>\n					<path id=\"pause-symbol\" style=\"fill:#fff;\" d=\"M-70 -70 h 50 v 140 h -50 Z M20 -70 h 50 v 140 h -50 Z\" style=\"fill:#fff;\"/>\n					<path id=\"play-symbol\" style=\"fill:#fff;\" d=\"M-60 -70 L90 0 L-60 70 Z\"/>\n\n						<path style=\"stroke:#fff; stroke-width: 12px\" d=\"M160,100 L200,100 Z M151.961524,130 L186.60254,150 Z M130,151.961524 L150,186.60254 Z M100,160 L100,200 Z M70,151.961524 L50,186.60254 Z M48.0384758,130 L13.3974596,150 Z M40,100 L0,100 Z M48.0384758,70 L13.3974596,50 Z M70,48.0384758 L50,13.3974596 Z M100,40 L100,0 Z M130,48.0384758 L150,13.3974596 Z M151.961524,70 L186.60254,50\" transform=\"translate(-100 -100)\">\n						</path>\n						<path id=\"wheel-symbol\" style=\"stroke:#fff; stroke-width: 12px\" d=\"M160,100 L200,100 Z M151.961524,130 L186.60254,150 Z M130,151.961524 L150,186.60254 Z M100,160 L100,200 Z M70,151.961524 L50,186.60254 Z M48.0384758,130 L13.3974596,150 Z M40,100 L0,100 Z M48.0384758,70 L13.3974596,50 Z M70,48.0384758 L50,13.3974596 Z M100,40 L100,0 Z M130,48.0384758 L150,13.3974596 Z M151.961524,70 L186.60254,50\" transform=\"translate(-100 -100)\">\n						</path>\n\n				</defs>\n				<rect x=\"-200\" y=\"-200\" width=\"400\" height=\"400\" rx=\"20\" style=\"fill:#000;fill-opacity:0.2\"/>\n			</svg>\n		</div>\n	</div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":20}],98:[function(require,module,exports){
@@ -13704,6 +14000,10 @@ var formatTimecode = function(value) {
 	return (value | 0) + "S";
 };
 
+var VIDEO_CROP_PX = Globals.VIDEO_CROP_PX;
+var SYNC_TIMEOUT_MS = 1200;
+var SYNC_THRESHOLD_MS = 100;
+
 /**
  * @constructor
  * @type {module:app/view/render/VideoRenderer}
@@ -13717,36 +14017,46 @@ var VideoRenderer = PlayableRenderer.extend({
 	/** @type {Function} */
 	template: require("./VideoRenderer.hbs"),
 
-	events: (function() {
-		var ret = {};
-		ret[Globals.CLICK_EVENT + " fullscreen-toggle"] = "_onFullscreenToggle";
-		return ret;
-	}()),
+	// events: (function() {
+	// 	var ret = {};
+	// 	ret[PlayableRenderer.CLICK_EVENT + " .fullscreen-toggle"] = "_onFullscreenToggle";
+	// 	return ret;
+	// }()),
 
+	// events: function() {
+	// 	var events = {};
+	// 	events[PlayableRenderer.CLICK_EVENT + " .fullscreen-toggle"] = "_onFullscreenToggle";
+	// 	return _.extend(events, _.result(this, PlayableRenderer.prototype.events));
+	// },
 	// events: {
 	// 	"click .fullscreen-toggle": "_onFullscreenToggle",
 	// },
 
-	// properties: {
-	// 	paused: {
-	// 		get: function() {
-	// 			return this.video.paused;
-	// 		}
-	// 	},
-	// },
+	properties: {
+		fullscreenToggle: {
+			/** @return {HTMLElement} */
+			get: function() {
+				return this._fullscreenToggle || (this._fullscreenToggle = this.el.querySelector(".fullscreen-toggle"));
+			}
+		},
+	},
 
 	/** @override */
 	initialize: function(opts) {
 		PlayableRenderer.prototype.initialize.apply(this, arguments);
-
 		_.bindAll(this,
 			"_updatePlaybackState",
-			"_updatePlayedValue",
+			"_updateCurrTimeValue",
 			"_updateBufferedValue",
 			"_onMediaError",
 			"_onMediaEnded",
 			"_onMediaPlayingOnce",
-			"_onFullscreenChange"
+			"_onFullscreenChange",
+			"_onFullscreenToggle"
+		);
+		_.bindAll(this,
+			"_playbackTimeoutFn_playing",
+			"_playbackTimeoutFn_waiting"
 		);
 		// var onPeerSelect = function() {
 		// 	this.content.style.display = (this.getSelectionDistance() > 1)? "none": "";
@@ -13767,6 +14077,7 @@ var VideoRenderer = PlayableRenderer.extend({
 		// this.overlay = this.content.querySelector(".overlay");
 		this.video = this.content.querySelector("video");
 		// this.video.loop = this.model.attrs().hasOwnProperty("@video-loop");
+		this.video.preload = "none";
 		this.video.loop = this.model.attr("@video-loop") !== void 0;
 		this.video.src = this.findPlayableSource(this.video);
 	},
@@ -13774,12 +14085,12 @@ var VideoRenderer = PlayableRenderer.extend({
 	measure: function() {
 		PlayableRenderer.prototype.measure.apply(this, arguments);
 
-		// NOTE: Top/bottom 1px video crop
+		// NOTE: Vertical 1px video crop
 		// - Cropped in CSS: video, .poster { margin-top: -1px; margin-bottom: -1px;}
 		// - Cropped height is adjusted in metrics obj
 		// - Crop amount added back to actual video on render()
-		this.metrics.media.height -= 2;
-		this.metrics.content.height -= 2;
+		this.metrics.media.height += VIDEO_CROP_PX * 2;
+		this.metrics.content.height += VIDEO_CROP_PX * 2;
 	},
 
 	/** @override */
@@ -13803,7 +14114,7 @@ var VideoRenderer = PlayableRenderer.extend({
 		}
 
 		content.style.width = cssW;
-		content.style.height = (this.metrics.media.height - 1) + "px";
+		content.style.height = (this.metrics.media.height + VIDEO_CROP_PX) + "px";
 
 		// content-position
 		// ---------------------------------
@@ -13833,9 +14144,9 @@ var VideoRenderer = PlayableRenderer.extend({
 
 		// NOTE: elements below must use video's UNCROPPED height, so +2px
 		this.video.setAttribute("width", this.metrics.media.width);
-		this.video.setAttribute("height", this.metrics.media.height + 2);
+		this.video.setAttribute("height", this.metrics.media.height - VIDEO_CROP_PX * 2);
 		img.setAttribute("width", this.metrics.media.width);
-		img.setAttribute("height", this.metrics.media.height + 2);
+		img.setAttribute("height", this.metrics.media.height - VIDEO_CROP_PX * 2);
 
 		return this;
 	},
@@ -13850,24 +14161,29 @@ var VideoRenderer = PlayableRenderer.extend({
 			.then(PlayableRenderer.whenScrollingEnds)
 			.then(
 				function(view) {
+					console.log("%s::initializeAsync whenAttached", view.cid);
+					return view.whenAttached();
+				})
+			.then(
+				function(view) {
+					console.log("%s::initializeAsync whenVideoHasMetadata", view.cid);
 					return Promise.all([
 						view.whenVideoHasMetadata(view),
 						PlayableRenderer.whenDefaultImageLoads(view),
 					]).then(
 						function(arr) {
+							console.log("%s::initializeAsync whenVideoHasMetadata res", view.cid);
 							return Promise.resolve(view);
 						},
 						function(err) {
+							console.log("%s::initializeAsync whenVideoHasMetadata err", view.cid);
 							return Promise.reject(err);
 						}
 					);
 				})
 			.then(
 				function(view) {
-					return view.whenAttached();
-				})
-			.then(
-				function(view) {
+					console.log("%s::initializeAsync initializeAsync", view.cid);
 					view.initializePlayable();
 					view.updateOverlay(view.defaultImage, view.overlay);
 					view.addSelectionListeners();
@@ -13878,12 +14194,15 @@ var VideoRenderer = PlayableRenderer.extend({
 	initializePlayable: function() {
 		// video
 		// ---------------------------------
+		// if (this.model.source.has("prefetched")) {
+		// 	this.video.setAttribute("poster", this.model.source.get("prefetched"));
+		// }
 		this.addMediaListeners();
 
 		// progress-meter
 		// ---------------------------------
 		this.progressMeter = new ProgressMeter({
-			el: this.el.querySelector(".progress-meter"),
+			// el: this.el.querySelector(".progress-meter"),
 			maxValues: {
 				amount: this.video.duration,
 				available: this.video.duration,
@@ -13892,8 +14211,12 @@ var VideoRenderer = PlayableRenderer.extend({
 			// backgroundColor: this.model.attr("background-color"),
 			labelFn: this._progressLabelFn.bind(this)
 		});
-		// var parentEl = this.el.querySelector(".top-bar");
-		// parentEl.insertBefore(this.progressMeter.render().el, parentEl.firstChild);
+		this.el.querySelector(".controls").appendChild(this.progressMeter.el);
+		this._updatePlaybackSymbol("play-symbol");
+		// var el = this.el.querySelector(".progress-meter");
+		// el.parentNode.replaceChild(this.progressMeter.el, el);
+		// var parentEl = this.el.querySelector(".controls");
+		// parentEl.insertBefore(this.progressMeter.el, parentEl.firstChild);
 	},
 
 	_progressLabelFn: function(value, total) {
@@ -13917,7 +14240,7 @@ var VideoRenderer = PlayableRenderer.extend({
 			var eventHandlers = {
 				loadedmetadata: function(ev) {
 					if (ev) removeEventListeners();
-					// console.log("%s::whenVideoHasMetadata [%s] %s", view.cid, "resolved", ev? ev.type : "sync");
+					console.log("%s::whenVideoHasMetadata [%s] %s", view.cid, "resolved", ev ? ev.type : "sync");
 					resolve(view);
 				},
 				abort: function(ev) {
@@ -13939,6 +14262,11 @@ var VideoRenderer = PlayableRenderer.extend({
 					reject(err);
 				},
 			};
+			// mediaEl.setAttribute("preload", "metadata");
+			// mediaEl.preload = "metadata";
+			// mediaEl.loop = view.model.attr("@video-loop") !== void 0;
+			// mediaEl.src = view.findPlayableSource(mediaEl);
+
 			//  (mediaEl.preload == "auto" && mediaEl.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA)
 			// 	(mediaEl.preload == "metadata" && mediaEl.readyState >= HTMLMediaElement.HAVE_METADATA)
 			if (mediaEl.error) {
@@ -13964,6 +14292,7 @@ var VideoRenderer = PlayableRenderer.extend({
 						mediaEl.addEventListener(ev, eventHandlers[ev], false);
 					}
 				}
+				console.log("%s::initializeAsync whenVideoHasMetadata preload:%s", view.cid, mediaEl.preload);
 				mediaEl.preload = "metadata";
 			}
 		});
@@ -13998,31 +14327,78 @@ var VideoRenderer = PlayableRenderer.extend({
 		} else if (this.video.ended) {
 			this.video.currentTime = this.video.seekable.start(0);
 		}
+		this._updatePlaybackSymbol("pause-symbol");
 		this.video.play();
+		// var p = this.video.play();
+		// if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
+		// 	if (p) {
+		// 		p.then(function() {
+		// 			this.video.pause();
+		// 			this.content.classList.add("waiting");
+		// 		}.bind(this));
+		// 	} else {
+		// 		this.video.pause();
+		// 		this.content.classList.add("waiting");
+		// 	}
+		// 	var handler = function(ev) {
+		// 		this.video.removeEventListener("canplaythrough", handler, false);
+		// 		this.content.classList.remove("waiting");
+		// 		this.video.play();
+		// 	}.bind(this);
+		//
+		// 	this.video.addEventListener("canplaythrough", handler, false);
+		// }
 	},
 
 	/** @override */
 	_pauseMedia: function() {
+		this._updatePlaybackSymbol("play-symbol");
 		this.video.pause();
+	},
+
+	/* ---------------------------
+	/* DOM events
+	/* --------------------------- */
+
+	_addDOMListeners: function() {
+		PlayableRenderer.prototype._addDOMListeners.apply(this, arguments);
+		this.fullscreenToggle.addEventListener(
+			this._toggleEvent, this._onFullscreenToggle, true);
+	},
+
+	_removeDOMListeners: function() {
+		PlayableRenderer.prototype._removeDOMListeners.apply(this, arguments);
+		this.fullscreenToggle.removeEventListener(
+			this._toggleEvent, this._onFullscreenToggle, true);
+	},
+
+	/* ---------------------------
+	/* event helpers
+	/* --------------------------- */
+
+	addListener: function(target, events, handler, useCapture) {
+		(typeof events === "string") && (events = events.split(" "));
+		for (var i = 0; i < events.length; i++) {
+			target.addEventListener(events[i], handler, !!useCapture);
+		}
+	},
+
+	removeListener: function(target, events, handler, useCapture) {
+		(typeof events === "string") && (events = events.split(" "));
+		for (var i = 0; i < events.length; i++) {
+			target.removeEventListener(events[i], handler, !!useCapture);
+		}
 	},
 
 	/* ---------------------------
 	/* media events
 	/* --------------------------- */
 
-	// updatePlaybackEvents: "play playing waiting pause seeking seeked ended",
-	// updateBufferedEvents: "progress canplay canplaythrough playing timeupdate",//loadeddata
-
-	playingOnceEvent: "playing",
-	updatePlaybackEvents: "playing waiting pause",
-	updateBufferedEvents: "progress canplay canplaythrough play playing",
-	updatePlayedEvents: "timeupdate seeked",
-
 	addMediaListeners: function() {
 		if (!this._started) this.video.addEventListener(this.playingOnceEvent, this._onMediaPlayingOnce, false);
 		this.addListener(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
 		this.addListener(this.video, this.updateBufferedEvents, this._updateBufferedValue);
-		this.addListener(this.video, this.updatePlayedEvents, this._updatePlayedValue);
+		this.addListener(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
 		this.video.addEventListener("ended", this._onMediaEnded, false);
 		this.video.addEventListener("error", this._onMediaError, true);
 
@@ -14035,7 +14411,7 @@ var VideoRenderer = PlayableRenderer.extend({
 		if (!this._started) this.video.removeEventListener(this.playingOnceEvent, this._onMediaPlayingOnce, false);
 		this.removeListener(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
 		this.removeListener(this.video, this.updateBufferedEvents, this._updateBufferedValue);
-		this.removeListener(this.video, this.updatePlayedEvents, this._updatePlayedValue);
+		this.removeListener(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
 		this.video.removeEventListener("ended", this._onMediaEnded, false);
 		this.video.removeEventListener("error", this._onMediaError, true);
 	},
@@ -14057,14 +14433,6 @@ var VideoRenderer = PlayableRenderer.extend({
 		this.mediaState = "error";
 	},
 
-	_onMediaPlayingOnce: function(ev) {
-		this.video.removeEventListener(this.playingOnceEvent, this._onMediaPlayingOnce, false);
-		if (!this._started) {
-			this._started = true;
-			this.content.classList.add("started");
-		}
-	},
-
 	_onMediaEnded: function(ev) {
 		this.playbackRequested = false;
 		if (this.video.webkitDisplayingFullscreen) {
@@ -14075,40 +14443,181 @@ var VideoRenderer = PlayableRenderer.extend({
 		}
 	},
 
+	/* ---------------------------
+	/* _onMediaPlayingOnce
+	/* --------------------------- */
+
+	playingOnceEvent: "playing",
+
+	_onMediaPlayingOnce: function(ev) {
+		this.video.removeEventListener(this.playingOnceEvent, this._onMediaPlayingOnce, false);
+		if (!this._started) {
+			this._started = true;
+			this.content.classList.add("started");
+		}
+	},
+
+	/* ---------------------------
+	/* _updateCurrTimeValue
+	/* --------------------------- */
+
+	updateCurrTimeEvents: "playing waiting pause timeupdate seeked".split(" "),
+
+	_updateCurrTimeValue: function(ev) {
+		if (this.progressMeter) {
+			this.progressMeter.valueTo("amount", this.video.currentTime, 0);
+		}
+	},
+
+	/* ---------------------------
+	/* _updatePlaybackState
+	/* --------------------------- */
+
+	// updatePlaybackEvents: "play playing waiting pause seeking seeked ended",
+	updatePlaybackEvents: "playing waiting pause timeupdate".split(" "),
+
+	_isPlaybackWaiting: false,
+	_playbackStartTS: -1,
+	_playbackStartTC: -1,
+
 	_updatePlaybackState: function(ev) {
-		var classList = this.content.classList;
+		var isWaiting = false;
+		var symbolName = "play-symbol";
+
+		// NOTE: clearTimeout will cancel both setTimeout and setInterval IDs
+		window.clearTimeout(this._playbackTimeoutID);
+		this._playbackTimeoutID = -1;
+
 		if (this.playbackRequested) {
+			if (ev.type !== "timeupdate") {
+				this._playbackStartTS = ev.timeStamp;
+				this._playbackStartTC = this.video.currentTime;
+			}
 			switch (ev.type) {
-				case "pause":
+				case "timeupdate":
+					if (SYNC_THRESHOLD_MS < Math.abs((ev.timeStamp - this._playbackStartTS) -
+							((this.video.currentTime - this._playbackStartTC) * 1000))) {
+						this._playbackStartTS = ev.timeStamp;
+						this._playbackStartTC = this.video.currentTime;
+						this._playbackTimeoutID =
+							window.setTimeout(this._playbackTimeoutFn_waiting, SYNC_TIMEOUT_MS);
+						isWaiting = true;
+						symbolName = "wheel-symbol";
+						// break;
+					} else {
+						this._playbackTimeoutID =
+							window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
+						isWaiting = false;
+						symbolName = "pause-symbol";
+					}
+					break
+
+				case "seeked":
 				case "playing":
-					classList.remove("waiting");
+					this._playbackStartTS = ev.timeStamp;
+					this._playbackStartTC = this.video.currentTime;
+					this._playbackTimeoutID =
+						window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
+					/* continue */
+				case "pause":
+					isWaiting = false;
+					symbolName = (this.video.paused && !this.video.ended) ?
+						"pause-symbol" : "play-symbol";
 					break;
+
 				case "waiting":
-					classList.add("waiting");
+					isWaiting = true;
+					symbolName = "wheel-symbol";
 					break;
 			}
 		} else {
-			classList.remove("waiting");
+			isWaiting = false;
+			symbolName = "pause-symbol";
 		}
-		classList.toggle("ended", this.video.ended);
 
-		this._updatePlayedValue(ev);
+		this.progressMeter.indeterminate = isWaiting;
+		this.content.classList.toggle("ended", this.video.ended);
+		this.content.classList.toggle("waiting", isWaiting);
+		this._updatePlaybackSymbol(symbolName);
+		this._isPlaybackWaiting = isWaiting;
+
+		// this._currTimeTS = ev.timeStamp;
+		// this._currTimeVal = this.video.currentTime;
 	},
 
-	_updatePlayedValue: function(ev) {
-		this._currentTimeValue = this.video.currentTime;
-		if (this.progressMeter) {
-			this.progressMeter.valueTo(this._currentTimeValue, 0, "amount");
+	_playbackTimeoutID: -1,
+	_playbackTimeoutFn_playing: function() {
+		this._playbackTimeoutID = -1;
+
+		this._updatePlaybackSymbol("wheel-symbol");
+		this.content.classList.add("waiting");
+		this.progressMeter.indeterminate = true;
+		this._isPlaybackWaiting = true;
+	},
+
+	_playbackTimeoutFn_waiting: function() {
+		if (SYNC_THRESHOLD_MS < (this.video.currentTime - this._playbackStartTC) * 1000) {
+			this._playbackTimeoutID =
+				window.setTimeout(this._playbackTimeoutFn_waiting, SYNC_TIMEOUT_MS);
+		} else {
+			// since there is no event.timeStamp
+			// var delta = this.video.currentTime - this._playbackStartTC;
+			// this._playbackStartTS += delta * 1000;
+			this._playbackStartTS += SYNC_TIMEOUT_MS;
+			// this._playbackStartTS = window.performance.now();
+			this._playbackStartTC = this.video.currentTime;
+			this._playbackTimeoutID =
+				window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
+
+			this._updatePlaybackSymbol("pause-symbol");
+			this.content.classList.remove("waiting");
+			this.progressMeter.indeterminate = false;
+			this._isPlaybackWaiting = false;
 		}
 	},
+
+	// _checkPlaybackSync: function(ev) {
+	// 	this._playbackStartTS += Math.abs(
+	// 		(ev.timeStamp - this._currTimeTS) -
+	// 		(this.video.currentTime - this._currTimeVal) * 1000);
+	//
+	// 	if (this._playbackStartTS > 1500) {
+	// 		this._playbackStartTS = 0;
+	// 	}
+	// },
+
+	_playbackSymbolEl: null,
+	_playbackSymbolName: null,
+
+	_updatePlaybackSymbol: function(symbolName) {
+		if (this._playbackSymbolName !== symbolName) {
+			var svgDoc = this.el.querySelector(".play-toggle-symbol");
+			if (this._playbackSymbolEl) {
+				svgDoc.removeChild(this._playbackSymbolEl);
+			}
+			var svgSym = document.createElementNS("http://www.w3.org/2000/svg", "use");
+			svgSym.setAttributeNS(null, "class", symbolName + " symbol");
+			svgSym.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#" + symbolName);
+			svgDoc.appendChild(svgSym);
+			this._playbackSymbolEl = svgSym;
+			this._playbackSymbolName = symbolName;
+		}
+	},
+
+	/* ---------------------------
+	/* _updateBufferedValue
+	/* --------------------------- */
+
+	// updateBufferedEvents: "progress canplay canplaythrough playing timeupdate",//loadeddata
+	updateBufferedEvents: "progress canplay canplaythrough play playing",
 
 	_updateBufferedValue: function(ev) {
 		var bRanges = this.video.buffered;
 		if (bRanges.length > 0) {
 			this._bufferedValue = bRanges.end(bRanges.length - 1);
 			if (this.progressMeter && ((this.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) /*|| (this.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && this.video.networkState == HTMLMediaElement.NETWORK_LOADING)*/ )) {
-				this.progressMeter.valueTo(this._bufferedValue, 300, "available");
-				// this.progressMeter.valueTo(this._bufferedValue, Math.max(0, 1000 * (this._bufferedValue - (this.progressMeter.getValue("available") | 0))), "available");
+				this.progressMeter.valueTo("available", this._bufferedValue, 300);
+				// this.progressMeter.valueTo("available", this._bufferedValue, Math.max(0, 1000 * (this._bufferedValue - (this.progressMeter.getTargetValue("available") | 0))));
 			}
 		}
 	},
@@ -14159,24 +14668,6 @@ var VideoRenderer = PlayableRenderer.extend({
 				break;
 		}
 	},
-
-	/* ---------------------------
-	/* event helpers
-	/* --------------------------- */
-
-	addListener: function(target, events, handler, useCapture) {
-		(typeof events === "string") && (events = events.split(" "));
-		for (var i = 0; i < events.length; i++) {
-			target.addEventListener(events[i], handler, !!useCapture);
-		}
-	},
-
-	removeListener: function(target, events, handler, useCapture) {
-		(typeof events === "string") && (events = events.split(" "));
-		for (var i = 0; i < events.length; i++) {
-			target.removeEventListener(events[i], handler, !!useCapture);
-		}
-	},
 });
 
 /* ---------------------------
@@ -14200,13 +14691,13 @@ if (DEBUG) {
 		// ];
 
 		var mediaEvents = require("utils/event/mediaEventsEnum");
-		var updatePlaybackStateEvents, updateBufferedEvents, updatePlayedEvents;
+		var logPlaybackStateEvents, logBufferedEvents, logPlayedEvents;
 
-		// updatePlaybackStateEvents = ["playing", "waiting", "ended", "pause", "seeking", "seeked"];
-		// updateBufferedEvents = ["progress", "durationchange", "canplay", "play"];
-		// updatePlayedEvents = ["playing", "timeupdate"];
+		// logPlaybackStateEvents = ["playing", "waiting", "ended", "pause", "seeking", "seeked"];
+		// logBufferedEvents = ["progress", "durationchange", "canplay", "play"];
+		// logPlayedEvents = ["playing", "timeupdate"];
 
-		updatePlaybackStateEvents = [
+		logPlaybackStateEvents = [
 			"loadstart",
 			"progress",
 			"suspend",
@@ -14215,7 +14706,7 @@ if (DEBUG) {
 			"emptied",
 			"stalled",
 		];
-		updateBufferedEvents = [
+		logBufferedEvents = [
 			"loadedmetadata",
 			"loadeddata",
 			"canplay",
@@ -14226,14 +14717,17 @@ if (DEBUG) {
 			"seeked", // seeking changed to false
 			"ended", // ended is true
 		];
-		updatePlayedEvents = ["play", "pause"];
+		logPlayedEvents = [
+			"play",
+			"pause"
+		];
 
 		// Exclude some events from log
 		mediaEvents = _.without(mediaEvents, "resize", "error");
 		// Make sure event subsets exist in the main set
-		updatePlaybackStateEvents = _.intersection(mediaEvents, updatePlaybackStateEvents);
-		updateBufferedEvents = _.intersection(mediaEvents, updateBufferedEvents);
-		updatePlayedEvents = _.intersection(mediaEvents, updatePlayedEvents);
+		logPlaybackStateEvents = _.intersection(mediaEvents, logPlaybackStateEvents);
+		logBufferedEvents = _.intersection(mediaEvents, logBufferedEvents);
+		logPlayedEvents = _.intersection(mediaEvents, logPlayedEvents);
 
 		var readyStateSymbols = _.invert(_.pick(HTMLMediaElement,
 			function(val, key, obj) {
@@ -14274,7 +14768,7 @@ if (DEBUG) {
 		};
 
 		var getVideoStatsCols = function() {
-			return "0000.000 [Current/Total] [Seekable   ] [Buffered   ] networkState readyState      Playing";
+			return "0000.000 [Curr/Total] [Seekable]  [Buffered]  networkState readyState      Playback";
 			// return "0000.620 [t:  0.0  27.4] [s: 27.4 0/1] [b:  0.5 0/1] LOADING(2)   FUTURE_DATA(3)  :: (::)";
 		}
 
@@ -14289,16 +14783,17 @@ if (DEBUG) {
 			bRangeIdx = findRangeIndex(bRanges, currTime);
 			sRangeIdx = findRangeIndex(sRanges, currTime);
 			return [
-				"[t:" + lpad(currTime.toFixed(1), 5) +
-					" " + lpad((!isNaN(durTime) ? durTime.toFixed(1) : "-"), 5) + "]",
-				"[s:" + lpad((sRangeIdx >= 0 ? sRanges.end(sRangeIdx).toFixed(1) : "-"), 5) +
+				"[" + lpad(currTime.toFixed(1), 5) +
+					" " + lpad((!isNaN(durTime) ? durTime.toFixed(1) : "-"), 4) + "]",
+				"[" + lpad((sRangeIdx >= 0 ? sRanges.end(sRangeIdx).toFixed(1) : "-"), 5) +
 					" " + (sRangeIdx >= 0 ? sRangeIdx : "-") + "/" + sRanges.length + "]",
-				"[b:" + lpad((bRangeIdx >= 0 ? bRanges.end(bRangeIdx).toFixed(1) : "-"), 5) +
+				"[" + lpad((bRangeIdx >= 0 ? bRanges.end(bRangeIdx).toFixed(1) : "-"), 5) +
 					" " + (bRangeIdx >= 0 ? bRangeIdx : "-") + "/" + bRanges.length + "]",
 				rpad(networkStateToString(video).substr(8), 12),
 				rpad(readyStateToString(video).substr(5), 15),
-				(video.ended ? ">:" : (video.paused ? "::" : ">>")),
-			].join(" ");
+				(video.ended ? ">:" : (video.paused ? "::" : ">>"))
+				// video.playbackRate.toFixed(2) + " (" + video.defaultPlaybackRate.toFixed(2) + ")"
+			]; //.join(" ");
 		};
 
 		return VideoRenderer.extend({
@@ -14320,9 +14815,9 @@ if (DEBUG) {
 
 					var c = new Color(fgColor),
 						cc = 1;
-					if (updateBufferedEvents.indexOf(ev) != -1) c.mix(green, (cc /= 2));
-					if (updatePlayedEvents.indexOf(ev) != -1) c.mix(red, (cc /= 2));
-					if (updatePlaybackStateEvents.indexOf(ev) != -1) c.mix(blue, (cc /= 2));
+					if (logBufferedEvents.indexOf(ev) != -1) c.mix(green, (cc /= 2));
+					if (logPlayedEvents.indexOf(ev) != -1) c.mix(red, (cc /= 2));
+					if (logPlaybackStateEvents.indexOf(ev) != -1) c.mix(blue, (cc /= 2));
 					this.__logColors[ev] = c.rgbString();
 				}
 				this.video.addEventListener("error", this.__handleMediaEvent, true);
@@ -14360,18 +14855,58 @@ if (DEBUG) {
 				}
 			},
 
+			/** @override */
+			_playbackTimeoutFn_playing: function() {
+				VideoRenderer.prototype._playbackTimeoutFn_playing.apply(this, arguments);
+				// this.__logEvent(formatVideoStats(this.video).join(" "), "timeout-play");
+				this.__handleMediaEvent({
+					type: "timeout-play",
+					timeStamp: null
+				});
+			},
+
+			/** @override */
+			_playbackTimeoutFn_waiting: function() {
+				VideoRenderer.prototype._playbackTimeoutFn_waiting.apply(this, arguments);
+				// this.__logEvent(formatVideoStats(this.video).join(" "), "timeout-wait");
+				this.__handleMediaEvent({
+					type: "timeout-wait",
+					timeStamp: null
+				});
+			},
+
 			__handleMediaEvent: function(ev) {
-				var evmsg; //, errmsg;
-				// evmsg = formatVideoStats(this.video) + " " + rpad(this._lastPlaybackStates || "-", 9);
-				evmsg = formatVideoStats(this.video);
+				var evmsg = formatVideoStats(this.video);
+
 				if (this.playbackRequested === true) {
-					evmsg += " (>>)";
+					evmsg.push("(>>)");
 				} else if (this.playbackRequested === false) {
-					evmsg += " (::)";
+					evmsg.push("(::)");
 				} else {
-					evmsg += " (--)";
+					evmsg.push("(--)");
 				}
-				this.__logEvent(evmsg, ev.type);
+
+				if (this._playbackTimeoutID !== -1) {
+					evmsg.push(this.playbackRequested ? "-" : "!");
+				} else {
+					evmsg.push(this.playbackRequested ? "W" : "-");
+				}
+
+				var ts, tc;
+				if (this.updatePlaybackEvents.indexOf(ev.type)) {
+					// evmsg.push(this._playbackStartTS.toFixed(2));
+					ts = ev.timeStamp - this._playbackStartTS;
+					tc = this.video.currentTime - this._playbackStartTC;
+				} else {
+					ts = this._playbackStartTS;
+					tc = this._playbackStartTC;
+				}
+				ts *= .001; // s to ms
+				evmsg.push(Math.abs(tc - ts).toFixed(3));
+				// evmsg.push("TC:" + tc.toFixed(3));
+				// evmsg.push("TS:" + ts.toFixed(3));
+
+				this.__logEvent(evmsg.join(" "), ev.type);
 				if (ev.type === "error" || ev.type === "abort") {
 					this.__logMessage(formatVideoError(this.video), ev.type);
 				}
@@ -14400,7 +14935,7 @@ if (DEBUG) {
 module.exports = VideoRenderer;
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":97,"app/control/Globals":34,"app/view/component/ProgressMeter":72,"app/view/render/PlayableRenderer":94,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":111,"utils/prefixedEvent":113}],99:[function(require,module,exports){
+},{"./VideoRenderer.hbs":97,"app/control/Globals":34,"app/view/component/ProgressMeter":72,"app/view/render/PlayableRenderer":94,"color":"color","underscore":"underscore","underscore.string/lpad":28,"underscore.string/rpad":30,"utils/event/mediaEventsEnum":116,"utils/prefixedEvent":118}],99:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -15517,7 +16052,7 @@ TransformItem.prototype = Object.create({
 module.exports = TransformItem;
 }).call(this,true)
 
-},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":113,"utils/prefixedProperty":114,"utils/prefixedStyleName":115,"utils/strings/camelToDashed":119}],106:[function(require,module,exports){
+},{"app/control/Globals":34,"underscore":"underscore","utils/prefixedEvent":118,"utils/prefixedProperty":119,"utils/prefixedStyleName":120,"utils/strings/camelToDashed":124}],106:[function(require,module,exports){
 module.exports = function(a1, a2, dest) {
 	return a1.reduce(function(res, o, i, a) {
 		if (a2.indexOf(o) == -1) res.push(o);
@@ -15653,6 +16188,437 @@ module.exports = {
 	},
 };
 },{}],108:[function(require,module,exports){
+/*
+
+StackBlur - a fast almost Gaussian Blur For Canvas
+
+Version:  0.5
+Author: Mario Klingemann
+Contact:  mario@quasimondo.com
+Website: http://www.quasimondo.com/StackBlurForCanvas
+Twitter: @quasimondo
+
+In case you find this class useful - especially in commercial projects -
+I am not totally unhappy for a small donation to my PayPal account
+mario@quasimondo.de
+
+Or support me on flattr: 
+https://flattr.com/thing/72791/StackBlur-a-fast-almost-Gaussian-Blur-Effect-for-CanvasJavascript
+
+Copyright (c) 2010 Mario Klingemann
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+module.exports = function ()
+{
+	this.r = 0;
+	this.g = 0;
+	this.b = 0;
+	this.a = 0;
+	this.next = null;
+};
+
+},{}],109:[function(require,module,exports){
+module.exports = function (imageData, opts) {
+	var pixels = imageData.data;
+	var pixelsNum = pixels.length;
+	var rgbAvg = [0, 0, 0];
+	var i;
+	
+	for (i = 0; i < pixelsNum; i += 4) {
+		rgbAvg[0] += pixels[i];
+		rgbAvg[1] += pixels[i + 1];
+		rgbAvg[2] += pixels[i + 2];
+	}
+	for (i = 0; i < 3; i++) {
+		rgbAvg[i] = (rgbAvg[i] / (pixelsNum / 4)) | 0;
+	}
+	return rgbAvg;
+};
+
+},{}],110:[function(require,module,exports){
+/*
+
+StackBlur - a fast almost Gaussian Blur For Canvas
+
+Version:  0.5
+Author: Mario Klingemann
+Contact:  mario@quasimondo.com
+Website: http://www.quasimondo.com/StackBlurForCanvas
+Twitter: @quasimondo
+
+In case you find this class useful - especially in commercial projects -
+I am not totally unhappy for a small donation to my PayPal account
+mario@quasimondo.de
+
+Or support me on flattr: 
+https://flattr.com/thing/72791/StackBlur-a-fast-almost-Gaussian-Blur-Effect-for-CanvasJavascript
+
+Copyright (c) 2010 Mario Klingemann
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+module.exports = [
+		512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,
+		454,405,364,328,298,271,496,456,420,388,360,335,312,292,273,512,
+		482,454,428,405,383,364,345,328,312,298,284,271,259,496,475,456,
+		437,420,404,388,374,360,347,335,323,312,302,292,282,273,265,512,
+		497,482,468,454,441,428,417,405,394,383,373,364,354,345,337,328,
+		320,312,305,298,291,284,278,271,265,259,507,496,485,475,465,456,
+		446,437,428,420,412,404,396,388,381,374,367,360,354,347,341,335,
+		329,323,318,312,307,302,297,292,287,282,278,273,269,265,261,512,
+		505,497,489,482,475,468,461,454,447,441,435,428,422,417,411,405,
+		399,394,389,383,378,373,368,364,359,354,350,345,341,337,332,328,
+		324,320,316,312,309,305,301,298,294,291,287,284,281,278,274,271,
+		268,265,262,259,257,507,501,496,491,485,480,475,470,465,460,456,
+		451,446,442,437,433,428,424,420,416,412,408,404,400,396,392,388,
+		385,381,377,374,370,367,363,360,357,354,350,347,344,341,338,335,
+		332,329,326,323,320,318,315,312,310,307,304,302,299,297,294,292,
+		289,287,285,282,280,278,275,273,271,269,267,265,263,261,259];
+
+},{}],111:[function(require,module,exports){
+/*
+
+StackBlur - a fast almost Gaussian Blur For Canvas
+
+Version:  0.5
+Author: Mario Klingemann
+Contact:  mario@quasimondo.com
+Website: http://www.quasimondo.com/StackBlurForCanvas
+Twitter: @quasimondo
+
+In case you find this class useful - especially in commercial projects -
+I am not totally unhappy for a small donation to my PayPal account
+mario@quasimondo.de
+
+Or support me on flattr: 
+https://flattr.com/thing/72791/StackBlur-a-fast-almost-Gaussian-Blur-Effect-for-CanvasJavascript
+
+Copyright (c) 2010 Mario Klingemann
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+module.exports = [
+		9, 11, 12, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17,
+		17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 19,
+		19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 20, 20, 20,
+		20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21,
+		21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
+		21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22,
+		22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22,
+		22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 23,
+		23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+		23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+		23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+		23, 23, 23, 23, 23, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
+		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24 ];
+
+},{}],112:[function(require,module,exports){
+/* jshint ignore:start */
+/*
+
+StackBlur - a fast almost Gaussian Blur For Canvas
+
+Version:  0.5
+Author: Mario Klingemann
+Contact:  mario@quasimondo.com
+Website: http://www.quasimondo.com/StackBlurForCanvas
+Twitter: @quasimondo
+
+In case you find this class useful - especially in commercial projects -
+I am not totally unhappy for a small donation to my PayPal account
+mario@quasimondo.de
+
+Or support me on flattr:
+https://flattr.com/thing/72791/StackBlur-a-fast-almost-Gaussian-Blur-Effect-for-CanvasJavascript
+
+Copyright (c) 2010 Mario Klingemann
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+var mul_table = require("./mul_table");
+var shg_table = require("./shg_table");
+var BlurStack = require("./BlurStack");
+
+module.exports = function(imageData, opts) {
+	var pixels = imageData.data,
+		width = imageData.width,
+		height = imageData.height;
+	// var radius = opts.radius;
+
+	if (!opts.hasOwnProperty("radius") || isNaN(opts.radius) || opts.radius < 1) return;
+	var radius = opts.radius | 0;
+
+	var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum,
+		r_out_sum, g_out_sum, b_out_sum,
+		r_in_sum, g_in_sum, b_in_sum,
+		pr, pg, pb, rbs;
+
+	var div = radius + radius + 1;
+	var w4 = width << 2;
+	var widthMinus1 = width - 1;
+	var heightMinus1 = height - 1;
+	var radiusPlus1 = radius + 1;
+	var sumFactor = radiusPlus1 * (radiusPlus1 + 1) / 2;
+
+	var stackStart = new BlurStack();
+	var stack = stackStart;
+	for (i = 1; i < div; i++) {
+		stack = stack.next = new BlurStack();
+		if (i == radiusPlus1) var stackEnd = stack;
+	}
+	stack.next = stackStart;
+	var stackIn = null;
+	var stackOut = null;
+
+	yw = yi = 0;
+
+	var mul_sum = mul_table[radius];
+	var shg_sum = shg_table[radius];
+
+	for (y = 0; y < height; y++) {
+		r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
+
+		r_out_sum = radiusPlus1 * (pr = pixels[yi]);
+		g_out_sum = radiusPlus1 * (pg = pixels[yi + 1]);
+		b_out_sum = radiusPlus1 * (pb = pixels[yi + 2]);
+
+		r_sum += sumFactor * pr;
+		g_sum += sumFactor * pg;
+		b_sum += sumFactor * pb;
+
+		stack = stackStart;
+
+		for (i = 0; i < radiusPlus1; i++) {
+			stack.r = pr;
+			stack.g = pg;
+			stack.b = pb;
+			stack = stack.next;
+		}
+
+		for (i = 1; i < radiusPlus1; i++) {
+			p = yi + ((widthMinus1 < i ? widthMinus1 : i) << 2);
+			r_sum += (stack.r = (pr = pixels[p])) * (rbs = radiusPlus1 - i);
+			g_sum += (stack.g = (pg = pixels[p + 1])) * rbs;
+			b_sum += (stack.b = (pb = pixels[p + 2])) * rbs;
+
+			r_in_sum += pr;
+			g_in_sum += pg;
+			b_in_sum += pb;
+
+			stack = stack.next;
+		}
+
+		stackIn = stackStart;
+		stackOut = stackEnd;
+		for (x = 0; x < width; x++) {
+			pixels[yi] = (r_sum * mul_sum) >> shg_sum;
+			pixels[yi + 1] = (g_sum * mul_sum) >> shg_sum;
+			pixels[yi + 2] = (b_sum * mul_sum) >> shg_sum;
+
+			r_sum -= r_out_sum;
+			g_sum -= g_out_sum;
+			b_sum -= b_out_sum;
+
+			r_out_sum -= stackIn.r;
+			g_out_sum -= stackIn.g;
+			b_out_sum -= stackIn.b;
+
+			p = (yw + ((p = x + radius + 1) < widthMinus1 ? p : widthMinus1)) << 2;
+
+			r_in_sum += (stackIn.r = pixels[p]);
+			g_in_sum += (stackIn.g = pixels[p + 1]);
+			b_in_sum += (stackIn.b = pixels[p + 2]);
+
+			r_sum += r_in_sum;
+			g_sum += g_in_sum;
+			b_sum += b_in_sum;
+
+			stackIn = stackIn.next;
+
+			r_out_sum += (pr = stackOut.r);
+			g_out_sum += (pg = stackOut.g);
+			b_out_sum += (pb = stackOut.b);
+
+			r_in_sum -= pr;
+			g_in_sum -= pg;
+			b_in_sum -= pb;
+
+			stackOut = stackOut.next;
+
+			yi += 4;
+		}
+		yw += width;
+	}
+
+	for (x = 0; x < width; x++) {
+		g_in_sum = b_in_sum = r_in_sum = g_sum = b_sum = r_sum = 0;
+
+		yi = x << 2;
+		r_out_sum = radiusPlus1 * (pr = pixels[yi]);
+		g_out_sum = radiusPlus1 * (pg = pixels[yi + 1]);
+		b_out_sum = radiusPlus1 * (pb = pixels[yi + 2]);
+
+		r_sum += sumFactor * pr;
+		g_sum += sumFactor * pg;
+		b_sum += sumFactor * pb;
+
+		stack = stackStart;
+
+		for (i = 0; i < radiusPlus1; i++) {
+			stack.r = pr;
+			stack.g = pg;
+			stack.b = pb;
+			stack = stack.next;
+		}
+
+		yp = width;
+
+		for (i = 1; i <= radius; i++) {
+			yi = (yp + x) << 2;
+
+			r_sum += (stack.r = (pr = pixels[yi])) * (rbs = radiusPlus1 - i);
+			g_sum += (stack.g = (pg = pixels[yi + 1])) * rbs;
+			b_sum += (stack.b = (pb = pixels[yi + 2])) * rbs;
+
+			r_in_sum += pr;
+			g_in_sum += pg;
+			b_in_sum += pb;
+
+			stack = stack.next;
+
+			if (i < heightMinus1) {
+				yp += width;
+			}
+		}
+
+		yi = x;
+		stackIn = stackStart;
+		stackOut = stackEnd;
+		for (y = 0; y < height; y++) {
+			p = yi << 2;
+			pixels[p] = (r_sum * mul_sum) >> shg_sum;
+			pixels[p + 1] = (g_sum * mul_sum) >> shg_sum;
+			pixels[p + 2] = (b_sum * mul_sum) >> shg_sum;
+
+			r_sum -= r_out_sum;
+			g_sum -= g_out_sum;
+			b_sum -= b_out_sum;
+
+			r_out_sum -= stackIn.r;
+			g_out_sum -= stackIn.g;
+			b_out_sum -= stackIn.b;
+
+			p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1) * width)) << 2;
+
+			r_sum += (r_in_sum += (stackIn.r = pixels[p]));
+			g_sum += (g_in_sum += (stackIn.g = pixels[p + 1]));
+			b_sum += (b_in_sum += (stackIn.b = pixels[p + 2]));
+
+			stackIn = stackIn.next;
+
+			r_out_sum += (pr = stackOut.r);
+			g_out_sum += (pg = stackOut.g);
+			b_out_sum += (pb = stackOut.b);
+
+			r_in_sum -= pr;
+			g_in_sum -= pg;
+			b_in_sum -= pb;
+
+			stackOut = stackOut.next;
+
+			yi += width;
+		}
+	}
+	return imageData;
+};
+
+/* jshint ignore:end */
+
+},{"./BlurStack":108,"./mul_table":110,"./shg_table":111}],113:[function(require,module,exports){
 /**
  * @module utils/canvas/calcArcHConnector
  */
@@ -15797,7 +16763,7 @@ var drawArcConnector1 = function(ctx, x1, y1, x2, y2, r) {
 };
 */
 
-},{}],109:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, CSSStyleDeclaration */
 
@@ -15871,7 +16837,7 @@ module.exports = function(s, m, includeSizePos) {
 
 }).call(this,true)
 
-},{}],110:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 /**
  * @param {number} i current iteration
  * @param {number} s start value
@@ -15885,7 +16851,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],111:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -15919,7 +16885,7 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],112:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -15956,7 +16922,7 @@ module.exports = function(rect, dx, dy) {
 
 	return r;
 };
-},{}],113:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -16054,7 +17020,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":116}],114:[function(require,module,exports){
+},{"./prefixes":121}],119:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -16095,7 +17061,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":116}],115:[function(require,module,exports){
+},{"./prefixes":121}],120:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -16151,10 +17117,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":116}],116:[function(require,module,exports){
+},{"./prefixes":121}],121:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],117:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 module.exports = function(pp, reason) {
 	if (pp.length > 0) {
 		pp.forEach(function(p, i, a) {
@@ -16165,7 +17131,7 @@ module.exports = function(pp, reason) {
 	}
 	return pp;
 };
-},{}],118:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 module.exports = function(pp, result) {
 	if (pp.length != 0) {
 		pp.forEach(function(p, i, a) {
@@ -16176,19 +17142,19 @@ module.exports = function(pp, result) {
 	}
 	return pp;
 };
-},{}],119:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],120:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],121:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -16353,8 +17319,9 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],122:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],127:[function(require,module,exports){
 module.exports={
+	"video_crop_px": "0",
 	"transform_type": "3d",
 	"transitions": {
 		"ease": "ease-in-out",

@@ -1,7 +1,7 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-200 -200 400 400" preserveAspectRatio="xMidYMid meet" style="stroke:none">
 <defs>
 	<g id="rr">
-		<rect id="r1" x="50" y="-7" width="40" height="14" rx="7"/>
+		<rect id="r1" x="52" y="-6" width="38" height="12" rx="6"/>
 		<use xlink:href="#r1" transform="rotate( 30 0 0)"/>
 		<use xlink:href="#r1" transform="rotate( 60 0 0)"/>
 		<use xlink:href="#r1" transform="rotate( 90 0 0)"/>
@@ -13,15 +13,10 @@
 		<use xlink:href="#r1" transform="rotate(270 0 0)"/>
 		<use xlink:href="#r1" transform="rotate(300 0 0)"/>
 		<use xlink:href="#r1" transform="rotate(330 0 0)"/>
+		<animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="3s" repeatCount="indefinite" />
 	</g>
 </defs>
-<rect x="-200" y="-200" width="400" height="400" rx="10" style="fill:#000;fill-opacity:0.2"/>
-<g>
-	<use xlink:href="#rr" style="fill:#000" transform="translate(5 5)"/>
-	<animateTransform attributeName="transform" type="rotate" from="0 5 5" to="360 5 5" begin="0s" dur="3s" repeatCount="indefinite" />
-</g>
-<g>
-	<use xlink:href="#rr" style="fill:#fff"/>
-	<animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" begin="0s" dur="3s" repeatCount="indefinite" />
-</g>
+<rect x="-200" y="-200" width="400" height="400" rx="12" style="fill:#000000;fill-opacity:0.2"/>
+<use xlink:href="#rr" style="fill:#000000" transform="translate(5 5)"/>
+<use xlink:href="#rr" style="fill:#ffffff"/>>
 </svg>
