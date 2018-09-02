@@ -760,20 +760,12 @@ body {
   bottom: 0;
   right: 0; }
 
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg); } }
-
-@keyframes spin {
-  from {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg); } }
 @-webkit-keyframes flashEven {
   from {
     opacity: 1.00; }
   50% {
     opacity: 1.00; } }
+
 @keyframes flashEven {
   from {
     opacity: 1.00; }
@@ -789,58 +781,56 @@ body {
     opacity: 1.00; }
   50% {
     opacity: 1.00; } }
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+@keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
 .playable-renderer {
-  /*.play-toggle-symbol {
-  	display: block;
-  	.symbol {
-  		opacity: 0;
-  	}
-  }
-  :not(.started) {
-  	.play-toggle-symbol {
-  		.play-symbol {
-  			opacity: 1;
-  		}
-  	}
-  }
-  .started {
-  	.play-toggle-symbol {
-  		display: none;
-  		.symbol {
-  			opacity: 0;
-  		}
-  	}
-  	&.playing.waiting .play-toggle-symbol {
-  		display: block;
-  		.wheel-symbol {
-  			opacity: 1;
-  		}
-  	}
-  	&.paused.ended .play-toggle-symbol {
-  		display: block;
-  		.play-symbol {
-  			opacity: 1;
-  		}
-  	}
-  }*/
-  /* As background images */ }
+  /** As background images */ }
+  .playable-renderer .play-toggle-hitarea {
+    cursor: pointer; }
   .playable-renderer .play-toggle {
-    margin: 1rem;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: auto;
-    height: auto;
-    cursor: pointer;
     display: block;
-    position: absolute; }
-  .playable-renderer .play-toggle-symbol {
+    position: absolute;
     width: 49px;
     height: 49px;
-    top: calc(50% - 24px);
-    left: calc(50% - 24px);
-    position: absolute; }
+    margin-left: -24px;
+    left: 50%;
+    margin-top: -24px;
+    top: 50%;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px; }
+  .playable-renderer .play-toggle:before {
+    position: absolute;
+    display: inline-block;
+    width: 49px;
+    height: 49px; }
+  .playable-renderer .play-toggle:before,
+  .playable-renderer .paused:not(.started) .play-toggle:before,
+  .playable-renderer .playing .play-toggle:before {
+    content: url("../images/symbols/playback-play.svg"); }
+  .playable-renderer .paused .play-toggle:before {
+    content: url("../images/symbols/playback-pause.svg"); }
+  .playable-renderer .playing.waiting .play-toggle:before {
+    content: url("../images/symbols/playback-wait.svg");
+    -webkit-animation: 3s linear infinite spin;
+            animation: 3s linear infinite spin; }
+  .playable-renderer .paused.ended .play-toggle:before {
+    content: url("../images/symbols/playback-replay.svg"); }
+  .playable-renderer .play-toggle-symbol {
+    width: 49px;
+    height: 49px; }
   .playable-renderer .play-toggle {
     opacity: 1; }
   .playable-renderer .started {
@@ -857,9 +847,10 @@ body {
     :not(.scrolling) .playable-renderer .started.paused .play-toggle {
       -webkit-animation: 0.7s ease-in-out flashEven;
               animation: 0.7s ease-in-out flashEven; }
-    :not(.scrolling) .playable-renderer .started.playing.waiting .play-toggle-symbol {
-      -webkit-animation: 4s linear infinite spin;
-              animation: 4s linear infinite spin; }
+
+:not(.scrolling) .playable-renderer.selected .waiting .waiting-symbol, :not(.disabled) .playable-renderer.selected .waiting .waiting-symbol {
+  -webkit-animation: 4s linear infinite spin;
+          animation: 4s linear infinite spin; }
 
 .playable-renderer .controls {
   position: absolute; }
