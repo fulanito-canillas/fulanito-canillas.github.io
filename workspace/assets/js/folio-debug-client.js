@@ -10898,16 +10898,27 @@ module.exports = CanvasView.extend({
 			if (intrp.isAtTarget("_ind")) {
 				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") === -1)) {
 				intrp.valueTo("_ind", 0, 0);
-				intrp.valueTo("_ind", 1, 300);
+				intrp.valueTo("_ind", 1, 1000);
 				intrp.updateValue("_ind");
 			}
 			indVal = intrp._valueData["_ind"]._renderedValue || 0;
 
+			// draw spinning arc
+			// --------------------------------
+			// s = this._valueStyles["amount"];
+			// this._ctx.save();
+			// this._ctx.rotate(PI2 * (BASE_ROTATION + (indVal))); // + GAP_ARC);
+			// lastEndArc = this.drawArc(1,
+			// 	GAP_ARC,
+			// 	PI2 - GAP_ARC,
+			// 	0, s);
+			// this._ctx.restore();
+			// return;
+
 			// lineDashOffset animation
 			// --------------------------------
 			s = this._valueStyles["indeterminate"];
-			s.lineDashOffset = s.lineDashLength * (1 - indVal);
-
+			s.lineDashOffset = s.lineDashLength * ((1 - indVal) % 3) * 3;
 			this._valueStyles["available"].inverse = "indeterminate";
 
 			// console.log("%s::redraw indVal:%o s.lineDashOffset:%o s.lineDash:%o", this.cid, indVal, s.lineDashOffset, s.lineDash[0]);
@@ -10918,6 +10929,7 @@ module.exports = CanvasView.extend({
 			// this._ctx.rotate((PI2 / WHEEL_NUM) * indVal); // + GAP_ARC);
 			// this.drawWheel(this._valueStyles["amount"], 2 / 5, 3 / 5);
 			// this._ctx.restore();
+
 		} else {
 			if (!intrp.isAtTarget("_ind")) {
 				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") !== -1)) {
@@ -10955,18 +10967,18 @@ module.exports = CanvasView.extend({
 		// amount arc
 		// --------------------------------
 		// var amountGapArc = GAP_ARC;
-		var amountEndArc = 0;
+		var lastEndArc = 0;
 
 		s = this._valueStyles["amount"];
 		arcVal = loopVal + valData._renderedValue / valData._maxVal;
 
 		if (arcVal > 0) {
-			amountEndArc = this.drawArc(arcVal,
+			lastEndArc = this.drawArc(arcVal,
 				GAP_ARC,
 				PI2 - GAP_ARC,
-				amountEndArc, s);
-			this.drawEndCap(amountEndArc, s);
-			amountEndArc = amountEndArc + GAP_ARC * 2;
+				lastEndArc, s);
+			this.drawEndCap(lastEndArc, s);
+			lastEndArc = lastEndArc + GAP_ARC * 2;
 		}
 
 		// available arc
@@ -10985,14 +10997,14 @@ module.exports = CanvasView.extend({
 				this.drawArc(arcVal,
 					(i * stepBaseArc) + stepGapArc,
 					((i + 1) * stepBaseArc) - stepGapArc,
-					amountEndArc, s);
+					lastEndArc, s);
 			}
 		} else {
 			arcVal = valData._renderedValue / valData._maxVal;
 			this.drawArc(arcVal,
 				stepGapArc,
 				PI2 - stepGapArc,
-				amountEndArc, s);
+				lastEndArc, s);
 		}
 		// restore ctx after drawing arcs
 		this._ctx.restore();
@@ -12645,10 +12657,16 @@ var PlayableRenderer = MediaRenderer.extend({
 				return this._playToggle || (this._playToggle = this.el.querySelector(".play-toggle"));
 			}
 		},
+		playToggleSymbol: {
+			/** @return {HTMLElement} */
+			get: function() {
+				return this._playToggleSymbol || (this._playToggleSymbol = this.el.querySelector(".play-toggle-symbol"));
+			}
+		},
 		playToggleHitarea: {
 			/** @return {HTMLElement} */
 			get: function() {
-				return this._playToggle || (this._playToggle = this.el.querySelector(".play-toggle-hitarea"));
+				return this._playToggleHitarea || (this._playToggleHitarea = this.el.querySelector(".play-toggle-hitarea"));
 			}
 		},
 		playbackState: {
@@ -12965,22 +12983,25 @@ var PlayableRenderer = MediaRenderer.extend({
 	_playToggleSymbolName: null,
 
 	_setPlayToggleSymbol: function(symbolName) {
-		// if (this._playToggleSymbolName !== symbolName) {
-		// 	var svgDoc = this.el.querySelector(".play-toggle-symbol");
-		// 	if (this._playToggleSymbolEl) {
-		// 		svgDoc.removeChild(this._playToggleSymbolEl);
-		// 	}
-		// 	var svgSym = document.createElementNS("http://www.w3.org/2000/svg", "use");
-		// 	svgSym.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#" + symbolName);
-		// 	svgDoc.appendChild(svgSym);
-		// 	svgDoc.setAttributeNS(null, "class", symbolName + " play-toggle-symbol");
-		//
-		// 	this._playToggleSymbolEl = svgSym;
-		// 	this._playToggleSymbolName = symbolName;
-		// }
+		if (this._playToggleSymbolName !== symbolName) {
+			var svgDoc = this.el.querySelector("svg.play-toggle-symbol");
+			if (this._playToggleSymbolEl) {
+				svgDoc.removeChild(this._playToggleSymbolEl);
+			}
+			var svgSym = document.createElementNS("http://www.w3.org/2000/svg", "use");
+			svgSym.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", "#" + symbolName);
+			svgDoc.appendChild(svgSym);
+			svgDoc.setAttributeNS(null, "class", symbolName + " play-toggle-symbol");
+
+			this._playToggleSymbolEl = svgSym;
+			this._playToggleSymbolName = symbolName;
+		}
 	},
 
 	_renderPlaybackState: function() {
+		// this._setPlayToggleSymbol("waiting-symbol");
+		// this.content.classList.toggle("waiting", true);
+
 		if (!this.content.classList.contains("started")) {
 			this._setPlayToggleSymbol("play-symbol");
 		} else
@@ -12997,10 +13018,6 @@ var PlayableRenderer = MediaRenderer.extend({
 			this.progressMeter.indeterminate = this._isMediaWaiting();
 		}
 		this.content.classList.toggle("waiting", this._isMediaWaiting());
-
-		// if (!this.content.classList.contains("started")) {
-		// 	this.content.classList.add("started");
-		// }
 	},
 
 	/* --------------------------- *
@@ -13321,7 +13338,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias4(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"text","hash":{},"data":data}) : helper)))
     + "\" longdesc=\"#desc_m"
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<div class=\"play-toggle\">\n"
+    + "\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<div class=\"play-toggle\">\n			<!-- <canvas class=\"play-toggle-symbol\"/> -->\n"
     + ((stack1 = container.invokePartial(partials["../template/svg/PlayToggleSymbol.hbs"],depth0,{"name":"../template/svg/PlayToggleSymbol.hbs","data":data,"indent":"\t\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
     + "		</div>\n	</div>\n</div>\n";
 },"usePartial":true,"useData":true});
@@ -13589,7 +13606,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 				})
 			.then(function(view) {
 				view.initializePlayable();
-				view.updateOverlay(view.defaultImage, view.overlay);
+				view.updateOverlay(view.defaultImage, view.playToggle); //view.overlay);
 				view.addSelectionListeners();
 				return view;
 			});
@@ -13876,19 +13893,34 @@ var SequenceRenderer = PlayableRenderer.extend({
 		// this._renderPlaybackState();
 	},
 
+	/** @override */
+	_renderPlaybackState: function() {
+		// if (!this.content.classList.contains("started")) {
+		// 	this.content.classList.add("started");
+		// }
+		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
+	},
+
 	/* --------------------------- *
 	/* sequence private
 	/* --------------------------- */
 
 	_onTimerStart: function(duration) {
+		var item, view;
 		if (this.sources.selectedIndex === -1) {
-			this.sources.select(this.model.get("source"));
+			item = this.model.get("source");
 		} else {
-			this.sources.select(this.sources.followingOrFirst());
+			item = this.sources.followingOrFirst();
 		}
+		this.sources.select(item);
 
 		this.progressMeter.valueTo("amount", this.sources.selectedIndex + 1, duration);
-		this.content.classList.toggle("playback-error", this.sources.selected.has("error"));
+		this.content.classList.toggle("playback-error", item.has("error"));
+
+		view = this.itemViews.findByModel(item);
+		if (!item.has("error") && view !== null) {
+			this.updateOverlay(view.el, this.playToggle);
+		}
 
 		// init next renderer now to have smoother transitions
 		this._getItemRenderer(this.sources.followingOrFirst());
@@ -14141,7 +14173,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + ((stack1 = container.invokePartial(partials["../template/svg/FullscreenSymbol.hbs"],depth0,{"name":"../template/svg/FullscreenSymbol.hbs","data":data,"indent":"\t\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
     + "		</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
     + container.escapeExpression(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"text","hash":{},"data":data}) : helper)))
-    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<div class=\"play-toggle\">\n"
+    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<div class=\"play-toggle\">\n			<!-- <canvas class=\"play-toggle-symbol\"/> -->\n"
     + ((stack1 = container.invokePartial(partials["../template/svg/PlayToggleSymbol.hbs"],depth0,{"name":"../template/svg/PlayToggleSymbol.hbs","data":data,"indent":"\t\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
     + "		</div>\n	</div>\n</div>\n";
 },"usePartial":true,"useData":true});
@@ -14379,7 +14411,7 @@ var VideoRenderer = PlayableRenderer.extend({
 				function(view) {
 					console.log("%s::initializeAsync initializeAsync", view.cid);
 					view.initializePlayable();
-					view.updateOverlay(view.defaultImage, view.overlay);
+					view.updateOverlay(view.defaultImage, view.playToggle); //view.overlay);
 					view.addSelectionListeners();
 					return view;
 				});
@@ -14788,19 +14820,13 @@ var VideoRenderer = PlayableRenderer.extend({
 
 	/** @override */
 	_renderPlaybackState: function() {
+
+		if (this._started) {
+			this.updateOverlay(this.video, this.playToggle);
+		}
 		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
 		this.content.classList.toggle("ended", this.video.ended);
 	},
-
-	// _checkPlaybackSync: function(ev) {
-	// 	this._playbackStartTS += Math.abs(
-	// 		(ev.timeStamp - this._currTimeTS) -
-	// 		(this.video.currentTime - this._currTimeVal) * 1000);
-	//
-	// 	if (this._playbackStartTS > 1500) {
-	// 		this._playbackStartTS = 0;
-	// 	}
-	// },
 
 	/* ---------------------------
 	/* _updateBufferedValue
@@ -15298,7 +15324,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<svg class=\"play-toggle-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"-200 -200 400 400\" preserveAspectRatio=\"xMidYMid meet\" style=\"stroke:none;fill:none;\">\n	<defs>\n		<path id=\"pause-symbol\" style=\"fill:currentColor\" d=\"M-70 -70 h 50 v 140 h -50 Z M20 -70 h 50 v 140 h -50 Z\" style=\"fill:#fff;\"/>\n		<path id=\"play-symbol\" style=\"fill:currentColor\" d=\"M-60 -70 L90 0 L-60 70 Z\"/>\n		<path id=\"waiting-symbol\" d=\"M160,100 L200,100 Z M151.961524,130 L186.60254,150 Z M130,151.961524 L150,186.60254 Z M100,160 L100,200 Z M70,151.961524 L50,186.60254 Z M48.0384758,130 L13.3974596,150 Z M40,100 L0,100 Z M48.0384758,70 L13.3974596,50 Z M70,48.0384758 L50,13.3974596 Z M100,40 L100,0 Z M130,48.0384758 L150,13.3974596 Z M151.961524,70 L186.60254,50\" transform=\"translate(-100 -100)\" style=\"stroke:currentColor; stroke-width:10px\">\n		</path>\n		<path id=\"replay-symbol\" style=\"fill:currentColor\" d=\"M -40 -50 L65 0 L-40 50 Z M -132 -1.6e-14 A 132 132 0 1 0 -93.33809511662416 -93.33809511662439 L -76.36753236814704 -76.36753236814722 A 108 108 0 1 1 -108 -1.3e-14 H-85 L -120 -40 L -155 13e-14 Z\" />\n	</defs>\n</svg>\n";
+    return "<svg class=\"play-toggle-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"-200 -200 400 400\" preserveAspectRatio=\"xMidYMid meet\" style=\"stroke:none;fill:none;\">\n	<defs>\n		<path id=\"pause-symbol\" style=\"fill:currentColor\" d=\"M-70 -70 h 50 v 140 h -50 Z M20 -70 h 50 v 140 h -50 Z\" style=\"fill:#fff;\"/>\n		<path id=\"play-symbol\" style=\"fill:currentColor\" d=\"M-60 -70 L90 0 L-60 70 Z\"/>\n		<path id=\"waiting-symbol\" style=\"fill:none;stroke: currentColor;\" d=\"M 0 -90 A 90 90 0 1 0 0.00001 -90\"/>\n		</path>\n		<path id=\"replay-symbol\" style=\"fill:currentColor\" d=\"M -40 -50 L65 0 L-40 50 Z M -132 -1.6e-14 A 132 132 0 1 0 -93.33809511662416 -93.33809511662439 L -76.36753236814704 -76.36753236814722 A 108 108 0 1 1 -108 -1.3e-14 H-85 L -120 -40 L -155 13e-14 Z\" />\n	</defs>\n</svg>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":20}],106:[function(require,module,exports){

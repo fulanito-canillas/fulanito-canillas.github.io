@@ -795,6 +795,41 @@ body {
   to {
     -webkit-transform: rotate(360deg);
             transform: rotate(360deg); } }
+@-webkit-keyframes pathspin {
+  from {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+    stroke-dashoffset: 0;
+    stroke-dasharray: 424.5, 566; }
+  50% {
+    stroke-dashoffset: -141.5;
+    stroke-dasharray: 141.5, 566; }
+  to {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+    stroke-dashoffset: 0;
+    stroke-dasharray: 424.5, 566; } }
+@keyframes pathspin {
+  from {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+    stroke-dashoffset: 0;
+    stroke-dasharray: 424.5, 566; }
+  50% {
+    stroke-dashoffset: -141.5;
+    stroke-dasharray: 141.5, 566; }
+  to {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+    stroke-dashoffset: 0;
+    stroke-dasharray: 424.5, 566; } }
+.playable-renderer.selected .waiting-symbol use {
+  -webkit-animation: 1s linear infinite pathspin;
+          animation: 1s linear infinite pathspin;
+  stroke-width: 12px;
+  stroke-dashoffset: 0;
+  stroke-dasharray: 566, 792.4; }
+
 .playable-renderer {
   /** As background images */ }
   .playable-renderer .play-toggle-hitarea {
@@ -810,27 +845,8 @@ body {
     top: 50%;
     color: white;
     background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 2px; }
-  .playable-renderer .play-toggle:before {
-    position: absolute;
-    display: inline-block;
-    width: 49px;
-    height: 49px; }
-  .playable-renderer .play-toggle:before,
-  .playable-renderer .paused:not(.started) .play-toggle:before,
-  .playable-renderer .playing .play-toggle:before {
-    content: url("../images/symbols/playback-play.svg"); }
-  .playable-renderer .paused .play-toggle:before {
-    content: url("../images/symbols/playback-pause.svg"); }
-  .playable-renderer .playing.waiting .play-toggle:before {
-    content: url("../images/symbols/playback-wait.svg");
-    -webkit-animation: 3s linear infinite spin;
-            animation: 3s linear infinite spin; }
-  .playable-renderer .paused.ended .play-toggle:before {
-    content: url("../images/symbols/playback-replay.svg"); }
-  .playable-renderer .play-toggle-symbol {
-    width: 49px;
-    height: 49px; }
+    border-radius: 2px;
+    stroke-width: 1px; }
   .playable-renderer .play-toggle {
     opacity: 1; }
   .playable-renderer .started {
@@ -847,10 +863,9 @@ body {
     :not(.scrolling) .playable-renderer .started.paused .play-toggle {
       -webkit-animation: 0.7s ease-in-out flashEven;
               animation: 0.7s ease-in-out flashEven; }
-
-:not(.scrolling) .playable-renderer.selected .waiting .waiting-symbol, :not(.disabled) .playable-renderer.selected .waiting .waiting-symbol {
-  -webkit-animation: 4s linear infinite spin;
-          animation: 4s linear infinite spin; }
+  .playable-renderer .play-toggle-symbol {
+    width: 49px;
+    height: 49px; }
 
 .playable-renderer .controls {
   position: absolute; }
@@ -1640,7 +1655,7 @@ HTML.fullwidth-small {
     outline-offset: -0.25rem; }
   .debug-blocks-nav #navigation .graph {
     outline: 0.3rem dashed rgba(96, 159, 96, 0.25);
-    outline-offset: 0; }
+    outline-offset: -0.3rem; }
   .debug-blocks-nav #navigation #article-list-wrapper,
   .debug-blocks-nav #navigation #site-name-wrapper,
   .debug-blocks-nav #navigation .list {
@@ -1698,6 +1713,9 @@ HTML.fullwidth-small {
     background-color: rgba(32, 175, 223, 0.3); }
   .debug-blocks-content #content .media-item {
     background-color: rgba(32, 175, 223, 0.3); }
+  .debug-blocks-content #content .playable-renderer .play-toggle-hitarea {
+    outline: 1.5rem dashed rgba(65, 105, 225, 0.25);
+    outline-offset: -1.5rem; }
 
 .debug-mdown .mdown h1, .debug-mdown .mdown h2, .debug-mdown .mdown h3, .debug-mdown .mdown h4, .debug-mdown .mdown h5, .debug-mdown .mdown h6, .debug-mdown .mdown p, .debug-mdown .mdown ol, .debug-mdown .mdown ul, .debug-mdown .mdown dl {
   outline: 1px solid rgba(141, 177, 78, 0.9);
