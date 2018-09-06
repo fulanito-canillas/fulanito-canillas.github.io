@@ -360,8 +360,8 @@ body {
     -ms-user-select: none; }
 
 .filterable .list-item .label, .filterable .list-group .label, #site-name a, .article-button a {
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.92rem;
+  padding-right: 1.08rem;
   margin-left: -1.08rem;
   margin-right: -0.92rem; }
 
@@ -516,6 +516,7 @@ body {
 
 #site-name {
   font-weight: 600;
+  white-space: nowrap;
   position: absolute;
   display: block;
   top: 0;
@@ -534,6 +535,7 @@ body {
   width: 220px; }
 
 .article-button {
+  white-space: nowrap;
   position: absolute;
   display: block;
   -webkit-transform: translate(0, 0);
@@ -865,7 +867,10 @@ body {
               animation: 0.7s ease-in-out flashEven; }
   .playable-renderer .play-toggle-symbol {
     width: 49px;
-    height: 49px; }
+    height: 49px;
+    color: #ffffff;
+    font-family: "FolioFigures", monospace;
+    font-size: 24px; }
 
 .playable-renderer .controls {
   position: absolute; }
