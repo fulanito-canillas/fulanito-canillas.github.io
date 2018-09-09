@@ -1613,8 +1613,8 @@ require("raf-polyfill");
 require("matches-polyfill");
 require("fullscreen-polyfill");
 require("math-sign-polyfill");
-// require("mutation-polyfill");
-require("path2d-polyfill");
+require("mutation-polyfill");
+// require("path2d-polyfill");
 // }
 
 // function applyRequires() {
@@ -1777,7 +1777,7 @@ if (DEBUG) {
 }
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":77,"app/view/template/_helpers":104,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","path2d-polyfill":"path2d-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":77,"app/view/template/_helpers":104,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-polyfill":"mutation-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Controller
@@ -7359,7 +7359,7 @@ var ViewProto = {
 		this.trigger("view:render:after", this, flags);
 
 		if (this._renderFlags != 0) {
-			console.warn("%s::_applyRender [returned] flags: %s", this.cid, View.flagsToString(this._renderFlags), this._renderFlags);
+			console.warn("%s::_applyRender [returned] phase: %s flags: %s (%s)", this.cid, this._viewPhase, View.flagsToString(this._renderFlags), this._renderFlags);
 		}
 	},
 
@@ -9695,8 +9695,8 @@ var GraphView = CanvasView.extend({
 		bounds = this.el.getBoundingClientRect();
 		// bounds = getAbsoluteClientRect(this.el);
 		this._ctx.setTransform(this._canvasRatio, 0, 0, this._canvasRatio,
-			(-(bounds.left + window.scrollX) * this._canvasRatio) - 0.5,
-			(-(bounds.top + window.scrollY) * this._canvasRatio) - 0.5
+			(-(bounds.left + window.pageXOffset) * this._canvasRatio) - 0.5,
+			(-(bounds.top + window.pageYOffset) * this._canvasRatio) - 0.5
 		);
 
 		var i, ii, els;
@@ -9708,18 +9708,18 @@ var GraphView = CanvasView.extend({
 		this._a2b.qx = getRectDirX(srcRect, destRect);
 
 		els = this._listA.el.querySelectorAll(".label");
-		srcMin = srcRect.left + window.scrollX;
+		srcMin = srcRect.left + window.pageXOffset;
 		for (i = 0, ii = els.length; i < ii; i++) {
 			srcMin = Math.max(srcMin,
-				els[i].getBoundingClientRect().right + window.scrollX);
+				els[i].getBoundingClientRect().right + window.pageXOffset);
 		}
 		this._a2b.xMin = srcMin;
 
 		els = this._listB.el.querySelectorAll(".label");
-		destMin = destRect.left + window.scrollX;
+		destMin = destRect.left + window.pageXOffset;
 		for (i = 0, ii = els.length; i < ii; i++) {
 			destMin = Math.min(destMin,
-				els[i].getBoundingClientRect().left + window.scrollX);
+				els[i].getBoundingClientRect().left + window.pageXOffset);
 		}
 		this._a2b.destMinX = destMin;
 
@@ -9799,8 +9799,8 @@ var GraphView = CanvasView.extend({
 		for (i = 0, ii = els.length; i < ii; i++) {
 			// r = inflateRect(els[i].getBoundingClientRect(), 0, 0);
 			r = _.clone(els[i].getBoundingClientRect());
-			r.top += window.scrollY; // - 0.5;
-			r.left += window.scrollX; // - 0.5;
+			r.top += window.pageYOffset; // - 0.5;
+			r.left += window.pageXOffset; // - 0.5;
 			// r.innerText = els[i].innerText;
 			data.rects[i] = r;
 		}
@@ -9862,8 +9862,8 @@ var GraphView = CanvasView.extend({
 			x1 = rect.left;
 			y1 = rect.top + rect.height / 2;
 			if (qx > 0) x1 += rect.width;
-			x1 += window.scrollX;
-			y1 += window.scrollY;
+			x1 += window.pageXOffset;
+			y1 += window.pageYOffset;
 
 			// if (!sView._metrics) return;
 			// x1 = d.rect.left + sView.transform.tx
@@ -9883,8 +9883,8 @@ var GraphView = CanvasView.extend({
 				p.x2 = rect.left;
 				p.y2 = rect.top + rect.height / 2;
 				if (qx < 0) p.x2 += rect.width;
-				p.x2 += window.scrollX;
-				p.y2 += window.scrollY;
+				p.x2 += window.pageXOffset;
+				p.y2 += window.pageYOffset;
 
 				// p.x2 = d.destRect.left + ddView.transform.tx
 				// 	+ ddView._metrics.textLeft;
@@ -10260,7 +10260,7 @@ if (DEBUG) {
 			"[container: %i %i %i] " +
 			"[graph: %i %i %i]";
 		console.log(tpl, this.cid, type, this._canvasRatio,
-			window.scrollY,
+			window.pageYOffset,
 			window.pageYOffset,
 			document.documentElement.clientHeight,
 			document.documentElement.scrollTop,
@@ -10533,8 +10533,8 @@ var PlayToggleSymbol = {
 	WAITING: "waiting",
 	ENDED: "ended",
 };
-var PLAY_PATH = new Path2D("M -15 -17.5 L 22.5 0 L-15 17.5 Z");
-var PAUSE_PATH = new Path2D("M -17.5 -17.5 h 12.5 v 35 h -12.5 Z M5 -17.5 h 12.5 v 35 h -12.5 Z");
+// var PLAY_PATH = new Path2D("M -15 -17.5 L 22.5 0 L-15 17.5 Z");
+// var PAUSE_PATH = new Path2D("M -17.5 -17.5 h 12.5 v 35 h -12.5 Z M5 -17.5 h 12.5 v 35 h -12.5 Z");
 // var REPLAY_PATH = new Path2D("M -40 -50 L 65 0 L -40 50 Z M -132 -1.6e-14 A 132 132 0 1 0 -93.33809511662416 -93.33809511662439 L -76.36753236814704 -76.36753236814722 A 108 108 0 1 1 -108 -1.3e-14 H-85 L -120 -40 L -155 13e-14 Z");
 
 module.exports = CanvasView.extend({
@@ -10589,6 +10589,10 @@ module.exports = CanvasView.extend({
 		// this._ctx.restore();
 		// this._ctx.textBaseline = "middle";
 		this._ctx.lineWidth = 3 * this._canvasRatio;
+		this._ctx.shadowBlur = 0;
+		this._ctx.shadowColor = "#000000";
+		this._ctx.shadowOffsetX = 1;
+		this._ctx.shadowOffsetY = 1;
 		// reset matrix and translate 0,0 to center
 		this._ctx.setTransform(1, 0, 0, 1, this._canvasWidth / 2, this._canvasHeight / 2);
 		// this._ctx.save();
@@ -11638,13 +11642,25 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 			// request.timeout = 10000; // in milliseconds
 			request.responseType = "blob";
 
+			var errorFromEvent = function(ev) {
+				var err = new Error((ev.target.status > 0 ?
+					"http_" + request.statusText.replace(/\s/g, "_") :
+					ev.type + "_event").toUpperCase());
+				err.infoCode = ev.target.status;
+				err.infoSrc = url;
+				err.logEvent = ev;
+				err.logMessage = "_loadImageAsObjectURL::" + ev.type + " [reject]";
+				return err;
+			};
+
 			// if progressFn is supplied
 			// - - - - - - - - - - - - - - - - - -
 			if (progressFn) {
 				request.onprogress = function(ev) {
-					progressFn(ev.loaded / ev.total);
+					progressFn(ev.loaded / ev.total, request);
 				};
 			}
+
 			// resolved/success
 			// - - - - - - - - - - - - - - - - - -
 			request.onload = function(ev) {
@@ -11653,28 +11669,25 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 					// If successful, resolve the promise by passing back a reference url
 					resolve(URL.createObjectURL(request.response));
 				} else {
-					var err = new Error(("http_" + request.statusText.replace(/\s/g, "_")).toUpperCase());
-					err.infoCode = request.status;
-					err.infoSrc = url;
-					err.logEvent = ev;
-					err.logMessage = "_loadImageAsObjectURL::" + ev.type + " [reject]";
-					reject(err);
+					reject(errorFromEvent(ev));
 				}
+			};
+			// normal abort
+			// - - - - - - - - - - - - - - - - - -
+			request.onabort = function(ev) {
+				resolve(void 0);
 			};
 			// reject/failure
 			// - - - - - - - - - - - - - - - - - -
 			request.onerror = function(ev) {
-				var err = new Error((ev.type + "_event").toUpperCase());
-				err.infoCode = -1;
-				err.infoSrc = url;
-				err.logEvent = ev;
-				err.logMessage = "_loadImageAsObjectURL::" + ev.type + " [reject]";
-				reject(err);
+				reject(errorFromEvent(ev));
 			};
-			request.onabort = request.ontimeout = request.onerror;
+			request.ontimeout = request.onerror;
+
 			// finally
 			// - - - - - - - - - - - - - - - - - -
-			request.onloadend = function() {
+			request.onloadend = function(ev) {
+				console.log("_loadImageAsObjectURL::%s [cleanup] (%s)", ev ? ev.type : "no event", url);
 				request.onabort = request.ontimeout = request.onerror = void 0;
 				request.onload = request.onloadend = void 0;
 				if (progressFn) {
@@ -11686,7 +11699,7 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 		});
 	};
 } else {
-	module.exports = function(url) {
+	module.exports = function(url, progressFn) {
 		return Promise.resolve(url);
 	};
 }
@@ -11761,7 +11774,7 @@ module.exports = function(view) {
 			view.mediaState = "pending";
 
 			var sUrl = source.get("original");
-			var progressFn = function(progress) {
+			var progressFn = function(progress, ev) {
 				// console.log(logMessage, view.cid, "progress", progress);
 				view.updateMediaProgress(progress, sUrl);
 			};
@@ -14061,46 +14074,58 @@ var SequenceRenderer = PlayableRenderer.extend({
 
 	_preloadAllItems: function(view) {
 		view.once("view:remove", function() {
-			var silent = {
-				silent: true
-			};
+			var silent = { silent: true };
 			view.sources.forEach(function(item, index, sources) {
+				// view.stopListening(item, "change:progress");
 				var prefetched = item.get("prefetched");
 				if (prefetched && /^blob\:/.test(prefetched)) {
-					item.unset("prefetched", silent);
 					item.set("progress", 0, silent);
+					item.unset("prefetched", silent);
 					URL.revokeObjectURL(prefetched);
 				}
 			});
 		});
 		return view.sources.reduce(function(lastPromise, item, index, sources) {
 			return lastPromise.then(function(view) {
+				if (view._viewPhase === "disposed") {
+					/** do nothing */
+					return view;
+				} else
 				if (item.has("prefetched")) {
 					view._updateItemProgress(1, index);
 					return view;
 				} else {
+					var onItemProgress = function(item, progress) {
+						view._updateItemProgress(progress, index);
+					};
+					view.listenTo(item, "change:progress", onItemProgress);
+					view.once("view:remove", function(view) {
+						view.stopListening(item, "change:progress", onItemProgress);
+					});
 					return _loadImageAsObjectURL(item.get("original"),
-							function(progress) {
-								view._updateItemProgress(progress, index);
-								item.set("progress", progress);
+							function(progress, request) {
+								/* NOTE: Since we are calling URL.revokeObjectURL when view is removed, also abort incomplete requests. Otherwise, clear the callback reference from XMLHttpRequest.onprogress  */
+								if (view._viewPhase === "disposed") {
+									//console.warn("%s::_preloadAllItems aborting XHR [%s %s] (%s)", view.cid, request.status, request.readyState, item.get("original"), request);
+									request.abort();
+									// request.onprogress = void 0;
+								} else {
+									item.set("progress", progress);
+								}
 							})
 						.then(
 							function(pUrl) {
-								view._updateItemProgress(1, index);
 								item.set({
-									prefetched: pUrl,
-									progress: 1
+									"progress": pUrl ? 1 : 0,
+									"prefetched": pUrl
 								});
-								// item.set("prefetched", pUrl);
 								return view;
 							},
 							function(err) {
-								view._updateItemProgress(0, index);
 								item.set({
-									error: err,
-									progress: 0
+									"progress": 0,
+									"error": err
 								});
-								// item.set("error", err);
 								return view;
 							}
 						);
@@ -14765,7 +14790,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	whenVideoHasMetadata: function(view) {
 		// NOTE: not pretty !!!
 		return new Promise(function(resolve, reject) {
-			var mediaEl = view.video;
+			var videoEl = view.video;
 			var eventHandlers = {
 				loadedmetadata: function(ev) {
 					if (ev) removeEventListeners();
@@ -14779,50 +14804,53 @@ var VideoRenderer = PlayableRenderer.extend({
 				error: function(ev) {
 					if (ev) removeEventListeners();
 					var err;
-					if (mediaEl.error) {
-						err = new Error(_.invert(MediaError)[mediaEl.error.code]);
-						err.infoCode = mediaEl.error.code;
+					if (videoEl.error) {
+						err = new Error(_.invert(MediaError)[videoEl.error.code]);
+						err.infoCode = videoEl.error.code;
 					} else {
 						err = new Error("Unspecified error");
 					}
-					err.infoSrc = mediaEl.src;
+					err.infoSrc = videoEl.src;
 					err.logMessage = "whenVideoHasMetadata: " + err.name + " " + err.infoSrc;
 					err.logEvent = ev;
 					reject(err);
 				},
 			};
-			// mediaEl.setAttribute("preload", "metadata");
-			// mediaEl.preload = "metadata";
-			// mediaEl.loop = view.model.attr("@video-loop") !== void 0;
-			// mediaEl.src = view.findPlayableSource(mediaEl);
+			// videoEl.setAttribute("preload", "metadata");
+			// videoEl.preload = "metadata";
+			// videoEl.loop = view.model.attr("@video-loop") !== void 0;
+			// videoEl.src = view.findPlayableSource(videoEl);
 
-			//  (mediaEl.preload == "auto" && mediaEl.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA)
-			// 	(mediaEl.preload == "metadata" && mediaEl.readyState >= HTMLMediaElement.HAVE_METADATA)
-			if (mediaEl.error) {
+			//  (videoEl.preload == "auto" && videoEl.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA)
+			// 	(videoEl.preload == "metadata" && videoEl.readyState >= HTMLMediaElement.HAVE_METADATA)
+			if (videoEl.error) {
 				eventHandlers.error();
-			} else if (mediaEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
+			} else if (videoEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
 				eventHandlers.loadedmetadata();
 			} else {
-				var sources = mediaEl.querySelectorAll("source");
-				var errTarget = sources.length > 0 ? sources.item(sources.length - 1) : mediaEl;
-				var errCapture = errTarget === mediaEl; // use capture with HTMLMediaElement
+				var sources = videoEl.querySelectorAll("source");
+				var errTarget = sources.length > 0 ? sources.item(sources.length - 1) : videoEl;
+				var errCapture = errTarget === videoEl; // use capture with HTMLMediaElement
 
 				var removeEventListeners = function() {
 					errTarget.removeEventListener("error", eventHandlers.error, errCapture);
 					for (var ev in eventHandlers) {
 						if (ev !== "error" && eventHandlers.hasOwnProperty(ev)) {
-							mediaEl.removeEventListener(ev, eventHandlers[ev], false);
+							videoEl.removeEventListener(ev, eventHandlers[ev], false);
 						}
 					}
 				};
 				errTarget.addEventListener("error", eventHandlers.error, errCapture);
 				for (var ev in eventHandlers) {
 					if (ev !== "error" && eventHandlers.hasOwnProperty(ev)) {
-						mediaEl.addEventListener(ev, eventHandlers[ev], false);
+						videoEl.addEventListener(ev, eventHandlers[ev], false);
 					}
 				}
-				console.log("%s::initializeAsync whenVideoHasMetadata preload:%s", view.cid, mediaEl.preload);
-				mediaEl.preload = "metadata";
+				console.log("%s::initializeAsync whenVideoHasMetadata preload:%s", view.cid, videoEl.preload);
+				// videoEl.preload = "metadata";
+				// videoEl.playsinline = true;
+				videoEl.setAttribute("preload", "metadata");
+				videoEl.setAttribute("playsinline", "true");
 			}
 		});
 	},
