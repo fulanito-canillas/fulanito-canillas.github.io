@@ -10547,8 +10547,8 @@ module.exports = GroupingListView;
 
 /** @type {module:underscore} */
 var _ = require("underscore");
-/** @type {module:app/control/Globals} */
-var Globals = require("app/control/Globals");
+// /** @type {module:app/control/Globals} */
+// var Globals = require("app/control/Globals");
 /** @type {module:app/view/base/CanvasView} */
 var CanvasView = require("app/view/base/CanvasView");
 
@@ -10559,7 +10559,7 @@ var easeOut = require("utils/ease/fn/easeOutQuad");
 
 var LOOP_OFFSET = 1.833333;
 var PI2 = Math.PI * 2;
-var TIMESTEP = 400;
+var STEP_MS = 400;
 
 var PlayToggleSymbol = {
 	PLAY: "playing",
@@ -10567,185 +10567,183 @@ var PlayToggleSymbol = {
 	WAITING: "waiting",
 	ENDED: "ended",
 };
-// var PLAY_PATH = new Path2D("M -15 -17.5 L 22.5 0 L-15 17.5 Z");
-// var PAUSE_PATH = new Path2D("M -17.5 -17.5 h 12.5 v 35 h -12.5 Z M5 -17.5 h 12.5 v 35 h -12.5 Z");
-// var REPLAY_PATH = new Path2D("M -40 -50 L 65 0 L -40 50 Z M -132 -1.6e-14 A 132 132 0 1 0 -93.33809511662416 -93.33809511662439 L -76.36753236814704 -76.36753236814722 A 108 108 0 1 1 -108 -1.3e-14 H-85 L -120 -40 L -155 13e-14 Z");
 
 module.exports = CanvasView.extend({
 
-	/** @type {string} */
-	cidPrefix: "playToggleSymbol",
-	/** @type {string} */
-	className: "play-toggle-symbol",
+		/** @type {string} */
+		cidPrefix: "playToggleSymbol",
+		/** @type {string} */
+		className: "play-toggle-symbol",
 
-	defaults: {
-		values: {
-			_loop: 0,
-			_arc: 0,
-		},
-		maxValues: {
-			_loop: 1
-		},
-	},
-
-	properties: {
-		symbolName: {
-			get: function() {
-				return this._symbolName;
+		defaults: {
+			values: {
+				_loop: 0,
+				_arc: 0,
 			},
-			set: function(value) {
-				this._setSymbolName(value);
+			maxValues: {
+				_loop: 1
+			},
+			symbolName: "play",
+		},
+
+		properties: {
+			symbolName: {
+				get: function() {
+					return this._symbolName;
+				},
+				set: function(value) {
+					this._setSymbolName(value);
+				}
 			}
-		}
-	},
+		},
 
-	/** @override */
-	initialize: function(options) {
-		// TODO: cleanup options mess in CanvasView
-		CanvasView.prototype.initialize.apply(this, arguments);
-		this._setSymbolName = _.throttle(this._setSymbolName, TIMESTEP, {
-			leading: true,
-			trailing: true
-		});
-		// this._setSymbolName = _.debounce(this._setSymbolName, TIMESTEP);
-	},
+		/** @override */
+		initialize: function(options) {
+			// TODO: cleanup options mess in CanvasView
+			CanvasView.prototype.initialize.apply(this, arguments);
+			this._options = _.extend(this._options, _.pick(options, "symbolName"));
+			this.symbolName = this._options.symbolName;
+		},
 
-	_symbolName: null,
+		_symbolName: null,
 
-	_setSymbolName: function(value) {
-		console.log("%s::[set] symbol %o", this.cid, value);
-		if (this._symbolName !== value) {
-			this._symbolName = value;
-			this.requestRender(CanvasView.LAYOUT_INVALID);
-		}
-	},
-
-	measureCanvas: function(w, h, s) {
-		// make canvas square
-		this._canvasHeight = this._canvasWidth = Math.min(w, h);
-	},
-
-	updateCanvas: function(ctx, style) {
-		var mObj = this._getFontMetrics(this._fontFamily);
-		this._baselineShift = mObj ? (mObj.ascent + mObj.descent) / mObj.unitsPerEm : 0.7; // default value
-		this._baselineShift *= this._fontSize * 0.5; // apply to font-size, halve it
-		this._baselineShift = Math.round(this._baselineShift);
-
-		// this._ctx.restore();
-		// this._ctx.textBaseline = "middle";
-		this._ctx.lineWidth = 3 * this._canvasRatio;
-		this._ctx.shadowBlur = 0;
-		this._ctx.shadowColor = "#000000";
-		this._ctx.shadowOffsetX = 1;
-		this._ctx.shadowOffsetY = 1;
-		// reset matrix and translate 0,0 to center
-		this._ctx.setTransform(1, 0, 0, 1, this._canvasWidth / 2, this._canvasHeight / 2);
-		// this._ctx.save();
-	},
-
-	redraw: function(ctx, intrp, flags) {
-		this._clearCanvas(-this._canvasWidth / 2, -this._canvasHeight / 2,
-			this._canvasWidth, this._canvasHeight
-		);
-
-		var a, l, r;
-		r = this._canvasWidth / 4;
-
-		if (this._symbolName === 'waiting') {
-			if (intrp.getTargetValue('_arc') === 0) {
-				intrp
-					.valueTo('_arc', 1, 1 * TIMESTEP, easeIn)
-					// .valueTo('_arc', 1, 0)
-					.updateValue('_arc');
+		_setSymbolName: function(value) {
+			if (this._symbolName !== value) {
+				this._lastSymbolName = this._symbolName;
+				this._symbolName = value;
+				this.requestRender(CanvasView.LAYOUT_INVALID);
+				console.log("%s::[set] symbol %o (from %o)", this.cid, this._lastSymbolName, this._symbolName);
 			}
-		} else {
-			if (intrp.getTargetValue('_arc') === 1) {
-				intrp
-					.valueTo('_arc', 0, 1 * TIMESTEP, easeOut)
-					// .valueTo('_arc', 0, 0)
-					.updateValue('_arc');
+		},
+
+		measureCanvas: function(w, h, s) {
+			// make canvas square
+			this._canvasHeight = this._canvasWidth = Math.min(w, h);
+		},
+
+		updateCanvas: function(ctx, style) {
+			var mObj = this._getFontMetrics(this._fontFamily);
+			this._baselineShift = mObj ? (mObj.ascent + mObj.descent) / mObj.unitsPerEm : 0.7; // default value
+			this._baselineShift *= this._fontSize * 0.5; // apply to font-size, halve it
+			this._baselineShift = Math.round(this._baselineShift);
+			// double SQRT1_2: square within circle within square
+			this._radius = (this._canvasWidth / 2) * Math.SQRT1_2 * Math.SQRT1_2;
+			this._side = this._radius * Math.SQRT1_2;
+
+			// this._ctx.restore();
+			// this._ctx.textBaseline = "middle";
+			this._ctx.lineWidth = 3 * this._canvasRatio;
+			this._ctx.shadowBlur = 0;
+			this._ctx.shadowColor = "#000000";
+			this._ctx.shadowOffsetX = 1;
+			this._ctx.shadowOffsetY = 1;
+			// reset matrix and translate 0,0 to center
+			this._ctx.setTransform(1, 0, 0, 1, this._canvasWidth / 2, this._canvasHeight / 2);
+			// this._ctx.save();
+		},
+
+		redraw: function(ctx, intrp, flags) {
+			this._clearCanvas(-this._canvasWidth / 2, -this._canvasHeight / 2,
+				this._canvasWidth, this._canvasHeight
+			);
+
+			if (this._symbolName === 'waiting') {
+				if (intrp.getTargetValue('_arc') === 0) {
+					intrp.valueTo('_arc', 1, 1 * STEP_MS, easeIn).updateValue('_arc');
+				}
+			} else {
+				if (intrp.getTargetValue('_arc') === 1) {
+					intrp.valueTo('_arc', 0, 1 * STEP_MS, easeOut).updateValue('_arc');
+				}
 			}
-		}
-		a = intrp.getRenderedValue("_arc");
-
-		// while arc is > 0 loop indefinitely while spinning: restart if at end
-		if (a > 0) {
-			if (!intrp.paused && intrp.isAtTarget('_loop')) {
-				intrp
-					.valueTo('_loop', 0, 0)
-					.valueTo('_loop', 1, 2 * TIMESTEP)
-					.updateValue('_loop');
+			var a = intrp.getRenderedValue("_arc");
+			// while arc is > 0, loop indefinitely while spinning and restart
+			// if at end. Otherwise let interp exhaust arc duration
+			if (a > 0) {
+				if (!intrp.paused && intrp.isAtTarget('_loop')) {
+					intrp
+						.valueTo('_loop', 0, 0)
+						.valueTo('_loop', 1, 2 * STEP_MS)
+						.updateValue('_loop');
+				}
 			}
-		}
-		l = intrp.getRenderedValue("_loop");
+			var l = intrp.getRenderedValue("_loop");
+			// always render while arc is > 0
+			if (a > 0) {
+				// arc span bounce
+				var b = (l < 0.5 ? (l % 0.5) : 0.5 - (l % 0.5)) * 2;
+				// bounce + main arc span
+				var aa = (a * b * 0.25) + (a * 0.125) + .0001;
+				// rotation loop
+				var ll = l + LOOP_OFFSET;
 
-		if (a > 0) {
-			// arc span bounce
-			var b = (l < 0.5 ? (l % 0.5) : 0.5 - (l % 0.5)) * 2;
-			// bounce + main arc span
-			var aa = (a * b * 0.25) + (a * 0.125) + .0001;
-			// rotation loop
-			var ll = l + LOOP_OFFSET;
+				ctx.beginPath();
+				ctx.arc(0, 0, this._radius, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
+				ctx.stroke();
+			}
 
+			switch (this._symbolName) {
+				case "replay":
+				case "ended":
+				case "play":
+					// this.drawPlay(ctx, (1 - a) * s);
+					this.drawPlay(ctx, this._side);
+					ctx.fill();
+					break;
+				case "pause":
+					// this.drawPause(ctx, (1 - a) * s);
+					this.drawPause(ctx, this._side);
+					ctx.fill();
+					break;
+				case "waiting":
+					switch (this._lastSymbolName) {
+						case "replay":
+						case "ended":
+						case "play":
+							this.drawPlay(ctx, (1 - a) * this._side);
+							ctx.fill();
+							break;
+						case "pause":
+							this.drawPause(ctx, (1 - a) * this._side);
+							ctx.fill();
+							break;
+						default:
+							break;
+					}
+					break;
+				default:
+					break;
+			}
+		},
+
+		drawPlay: function(ctx, r) {
+			var tx = (1 - Math.SQRT1_2) * r;
 			ctx.beginPath();
-			ctx.arc(0, 0, r, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
-			ctx.stroke();
-		}
-		switch (this._symbolName) {
-			// case "waiting":
-			// 	break;
-			case "pause":
-				this.drawLabel(Globals.PAUSE_CHAR);
-				// ctx.fill(PAUSE_PATH);
-				break;
-			case "waiting":
-			case "replay":
-			case "ended":
-				// ctx.fill(REPLAY_PATH);
-			case "play":
-				this.drawLabel(Globals.PLAY_CHAR);
-				// ctx.fill(PLAY_PATH);
-			default:
-				break;
-		}
+			ctx.moveTo(tx + r, 0);
+			ctx.lineTo(tx - r, -r);
+			ctx.lineTo(tx - r, r);
+			ctx.closePath();
+		},
 
-		// if (isLooping) {
-		// } else {
-		// 	ctx.beginPath();
-		// 	ctx.arc(0, 0, radius,
-		// 		(arcStart + arcBase) * PI2,
-		// 		(arcEnd + arcBase) * PI2,
-		// 		true);
-		// 	ctx.stroke();
-		// }
+		drawPause: function(ctx, r) {
+			var w = (r * 2) / 3;
+			var h = (r * 2);
+			ctx.beginPath();
+			ctx.rect(-r, -r, w, h);
+			ctx.rect(r - w, -r, w, h);
+			ctx.closePath();
+		},
+
+		drawLabel: function(labelString) {
+			var labelWidth = this._ctx.measureText(labelString).width;
+			this._ctx.fillText(labelString,
+				labelWidth * -0.5,
+				// 0, labelWidth);
+				this._baselineShift, labelWidth);
+		},
 	},
-
-	// drawArc: function(ctx, arc, start, radius) {
-	// 	ctx.beginPath();
-	// 	ctx.arc(0, 0, radius,
-	// 		start * PI2,
-	// 		(arc + start) * PI2,
-	// 		true);
-	// 	ctx.stroke();
-	// },
-
-	// drawShape: function(ctx, data, open) {
-	// 	if (open) {
-	// 		ctx.stroke(new Path2D(data));
-	// 	} else {
-	// 		ctx.fill(new Path2D(data));
-	// 	}
-	// },
-
-	drawLabel: function(labelString) {
-		var labelWidth = this._ctx.measureText(labelString).width;
-		this._ctx.fillText(labelString,
-			labelWidth * -0.5,
-			// 0, labelWidth);
-			this._baselineShift, labelWidth);
-	},
-}, PlayToggleSymbol);
-},{"app/control/Globals":35,"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":118,"utils/ease/fn/easeOutQuad":119}],74:[function(require,module,exports){
+	PlayToggleSymbol);
+},{"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":118,"utils/ease/fn/easeOutQuad":119}],74:[function(require,module,exports){
 /** @type {module:app/view/component/progress/CanvasProgressMeter} */
 module.exports = require("app/view/component/progress/CanvasProgressMeter3");
 
@@ -10938,57 +10936,17 @@ var CanvasView = require("app/view/base/CanvasView");
 // /** @type {module:app/view/base/Interpolator} */
 // var Interpolator = require("app/view/base/Interpolator");
 
-// var WHEEL_DATA = "M 1.00000 0.00000 L 0.600000 0.00000M 0.913545 0.406737 L 0.548127 0.244042M 0.669131 0.743145 L 0.401478 0.445887M 0.309017 0.951057 L 0.185410 0.570634M -0.104528 0.994522 L -0.0627171 0.596713M -0.500000 0.866025 L -0.300000 0.519615M -0.809017 0.587785 L -0.485410 0.352671M -0.978148 0.207912 L -0.586889 0.124747M -0.978148 -0.207912 L -0.586889 -0.124747M -0.809017 -0.587785 L -0.485410 -0.352671M -0.500000 -0.866025 L -0.300000 -0.519615M -0.104528 -0.994522 L -0.0627171 -0.596713M 0.309017 -0.951057 L 0.185410 -0.570634M 0.669131 -0.743145 L 0.401478 -0.445887M 0.913545 -0.406737 L 0.548127 -0.244042";
-// var WHEEL_DATA = [
-// 	[1, 0],
-// 	[0.9135454576426009, 0.40673664307580015],
-// 	[0.6691306063588582, 0.7431448254773942],
-// 	[0.30901699437494745, 0.9510565162951535],
-// 	[-0.10452846326765333, 0.9945218953682734],
-// 	[-0.4999999999999998, 0.8660254037844387],
-// 	[-0.8090169943749473, 0.5877852522924732],
-// 	[-0.9781476007338056, 0.20791169081775973],
-// 	[-0.9781476007338057, -0.20791169081775907],
-// 	[-0.8090169943749475, -0.587785252292473],
-// 	[-0.5000000000000004, -0.8660254037844385],
-// 	[-0.10452846326765423, -0.9945218953682733],
-// 	[0.30901699437494723, -0.9510565162951536],
-// 	[0.6691306063588578, -0.7431448254773946],
-// 	[0.9135454576426005, -0.40673664307580093]
-// ];
-
-var WHEEL_DATA = [
-	[1, 0],
-	[0.9238795325112867, 0.3826834323650898],
-	[0.7071067811865476, 0.7071067811865475],
-	[0.38268343236508984, 0.9238795325112867],
-	[6.123233995736766e-17, 1],
-	[-0.3826834323650897, 0.9238795325112867],
-	[-0.7071067811865475, 0.7071067811865476],
-	[-0.9238795325112867, 0.3826834323650899],
-	[-1, 1.2246467991473532e-16],
-	[-0.9238795325112868, -0.38268343236508967],
-	[-0.7071067811865477, -0.7071067811865475],
-	[-0.38268343236509034, -0.9238795325112865],
-	[-1.8369701987210297e-16, -1],
-	[0.38268343236509, -0.9238795325112866],
-	[0.7071067811865474, -0.7071067811865477],
-	[0.9238795325112865, -0.3826834323650904]
-];
-var WHEEL_NUM = WHEEL_DATA.length;
-
-// var ARC_ERR = 0.00001;
-// var ARC_ERR = 0.0;
-// var PI = Math.PI;
 var PI2 = Math.PI * 2;
-
-var GAP_ARC = PI2 / 48;
-// var CAP_SCALE = 2; // cap arc = GAP_ARC * CAP_SCALE
-// var WAIT_CYCLE_VALUE = 1;
-// var WAIT_CYCLE_MS = 300; // milliseconds per interpolation loop
-
 /* NOTE: avoid negative rotations */
 var BASE_ROTATION = 1 - 0.25; // of PI2 (-90 degrees)
+var GAP_ARC = PI2 / 48;
+
+// /** @type {module:utils/ease/fn/easeInQuad} */
+// var easeIn = require("utils/ease/fn/easeInQuad");
+// /** @type {module:utils/ease/fn/easeOutQuad} */
+// var easeOut = require("utils/ease/fn/easeOutQuad");
+// var LOOP_OFFSET = 1.833333;
+// var STEP_MS = 400; // tween time base
 
 var ARC_DEFAULTS = {
 	"amount": {
@@ -11031,11 +10989,14 @@ module.exports = CanvasView.extend({
 			amount: 0,
 			available: 0,
 			_loop: 0,
-			_ind: 0 // indeterminate animation goes backwards from 1
+			_stalled_arc: 0,
+			_stalled_loop: 0,
 		},
 		maxValues: {
 			amount: 1,
 			available: 1,
+			_loop: 1,
+			_stalled_loop: 1,
 		},
 		useOpaque: true,
 		labelFn: function(value, max) {
@@ -11044,28 +11005,19 @@ module.exports = CanvasView.extend({
 	},
 
 	properties: {
-		indeterminate: {
+		stalled: {
 			get: function() {
-				return this._indeterminate;
+				return this._stalled;
 			},
 			set: function(value) {
-				this._setIndeterminate(value)
+				this._setStalled(value)
 			}
 		}
 	},
 
-	_setIndeterminate: function(value) {
-		if (this._indeterminate !== value) {
-			this._indeterminate = value;
-			// this.interpolator.valueTo("_ind", 0, 0);
-			// if (value) {
-			// this.interpolator.valueTo("_ind", 1, 300);
-			// } else {
-			// 	this.interpolator.valueTo("_ind", 0, 0);
-			// }
-			// this.interpolator.updateValue("_ind");
-			// intrp.updateValue("_ind");
-
+	_setStalled: function(value) {
+		if (this._stalled !== value) {
+			this._stalled = value;
 			// this.requestRender(CanvasView.MODEL_INVALID | CanvasView.LAYOUT_INVALID);
 		}
 	},
@@ -11081,7 +11033,7 @@ module.exports = CanvasView.extend({
 		// options = _.defaults(options, this.defaults);
 
 		this._labelFn = options.labelFn;
-		this._indeterminate = !!(options.indeterminate);
+		this._stalled = !!(options.stalled);
 		this._valueStyles = {};
 		this._canvasSize = null;
 		this._canvasOrigin = null;
@@ -11129,20 +11081,16 @@ module.exports = CanvasView.extend({
 			s = _.defaults({}, ARC_DEFAULTS[styleName]);
 			s.lineWidth *= this._canvasRatio;
 			s.radius = (this._canvasWidth - s.lineWidth) / 2;
-
 			if (s.radiusOffset) {
 				s.radius += s.radiusOffset * this._canvasRatio;
 			}
-
 			if (_.isArray(s.lineDash)) {
 				s.lineDash = s.lineDash.map(function(val, i, arr) {
 					return val * this.radius * GAP_ARC;
 				}, s);
-
 				s.lineDashLength = s.lineDash.reduce(function(res, val, i, arr) {
 					return res + val;
 				}, 0);
-
 				s.lineDashArc = s.lineDash[0] * GAP_ARC;
 				// this._maxDashArc = Math.max(this._maxDashArc, s.lineDashArc);
 			} else {
@@ -11185,8 +11133,10 @@ module.exports = CanvasView.extend({
 
 		// indeterminate
 		// --------------------------------
-		/*var indVal;
-		if (this.indeterminate) {
+
+		/*
+		var indVal;
+		if (this.stalled) {
 			// _ind loop indefinitely while indeterminate: restart if at end
 			if (intrp.isAtTarget("_ind")) {
 				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") === -1)) {
@@ -11200,13 +11150,13 @@ module.exports = CanvasView.extend({
 			// draw spinning arc
 			// --------------------------------
 			// s = this._valueStyles["amount"];
-			// this._ctx.save();
-			// this._ctx.rotate(PI2 * (BASE_ROTATION + (indVal))); // + GAP_ARC);
+			// ctx.save();
+			// ctx.rotate(PI2 * (BASE_ROTATION + (indVal))); // + GAP_ARC);
 			// lastEndArc = this.drawArc(1,
 			// 	GAP_ARC,
 			// 	PI2 - GAP_ARC,
 			// 	0, s);
-			// this._ctx.restore();
+			// ctx.restore();
 			// return;
 
 			// lineDashOffset animation
@@ -11219,10 +11169,10 @@ module.exports = CanvasView.extend({
 
 			// draw spinning wheel
 			// --------------------------------
-			// this._ctx.save();
-			// this._ctx.rotate((PI2 / WHEEL_NUM) * indVal); // + GAP_ARC);
+			// ctx.save();
+			// ctx.rotate((PI2 / WHEEL_NUM) * indVal); // + GAP_ARC);
 			// this.drawWheel(this._valueStyles["amount"], 2 / 5, 3 / 5);
-			// this._ctx.restore();
+			// ctx.restore();
 
 		} else {
 			if (!intrp.isAtTarget("_ind")) {
@@ -11236,7 +11186,7 @@ module.exports = CanvasView.extend({
 		}*/
 
 		// save ctx before drawing arcs
-		this._ctx.save();
+		ctx.save();
 
 		// loop (amount)
 		// --------------------------------
@@ -11256,7 +11206,7 @@ module.exports = CanvasView.extend({
 		}
 		// loopVal = intrp._valueData["_loop"]._renderedValue || 0;
 		loopVal = intrp.getCurrentValue("_loop");
-		this._ctx.rotate((PI2 * (BASE_ROTATION + (1 - loopVal)))); // + GAP_ARC);
+		ctx.rotate((PI2 * (BASE_ROTATION + (1 - loopVal)))); // + GAP_ARC);
 
 		// amount arc
 		// --------------------------------
@@ -11301,7 +11251,49 @@ module.exports = CanvasView.extend({
 				lastEndArc, s);
 		}
 		// restore ctx after drawing arcs
-		this._ctx.restore();
+		ctx.restore();
+
+
+		/*if (this._stalled) {
+			if (intrp.getTargetValue('_stalled_arc') === 0) {
+				intrp.valueTo('_stalled_arc', 1, 1 * STEP_MS, easeIn).updateValue('_stalled_arc');
+			}
+		} else {
+			if (intrp.getTargetValue('_stalled_arc') === 1) {
+				intrp.valueTo('_stalled_arc', 0, 1 * STEP_MS, easeOut).updateValue('_stalled_arc');
+			}
+		}
+		var a = intrp.getRenderedValue("_stalled_arc");
+		// while arc is > 0, loop indefinitely while spinning and restart
+		// if at end. Otherwise let interp exhaust arc duration
+		if (a > 0) {
+			if (!intrp.paused && intrp.isAtTarget('_stalled_loop')) {
+				intrp
+					.valueTo('_stalled_loop', 0, 0)
+					.valueTo('_stalled_loop', 1, 2 * STEP_MS)
+					.updateValue('_stalled_loop');
+			}
+		}
+		var l = intrp.getRenderedValue("_stalled_loop");
+		// always render while arc is > 0
+		if (a > 0) {
+			// arc span bounce
+			var b = (l < 0.5 ? (l % 0.5) : 0.5 - (l % 0.5)) * 2;
+			// bounce + main arc span
+			var aa = (a * b * 0.25) + (a * 0.125) + .0001;
+			// rotation loop
+			var ll = l + LOOP_OFFSET;
+
+			ctx.save();
+			ctx.lineWidth = 10;
+			ctx.globalCompositeOperation = "destination-out";
+			// ctx.strokeColor = 'red';
+			ctx.beginPath();
+			ctx.arc(0, 0, (this._canvasWidth - ctx.lineWidth) / 2, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
+			ctx.stroke();
+			ctx.restore();
+		}*/
+
 	},
 
 	drawArc: function(value, startArc, endArc, prevArc, style) {
@@ -11355,37 +11347,6 @@ module.exports = CanvasView.extend({
 		}
 	},
 
-	drawWheel: function(s, r1, r2) {
-		this._ctx.save();
-		this.applyValueStyle(s);
-		// this._ctx.lineDashArr = s.radius*0.5;
-		// this._ctx.lineDashOffset = s.radius * 0.5;
-		var cx, cy;
-		for (var i = 0; i < WHEEL_NUM; i++) {
-			this._ctx.beginPath();
-			cx = WHEEL_DATA[i][0] * s.radius;
-			cy = WHEEL_DATA[i][1] * s.radius;
-			this._ctx.moveTo(
-				cx * r1,
-				cy * r1);
-			this._ctx.lineTo(
-				cx * r2,
-				cy * r2);
-			this._ctx.stroke();
-
-		}
-		this._ctx.restore();
-	},
-
-	// drawWheel: function() {
-	// 	var size = (this._canvasWidth / 2) * 0.8;
-	// 	this._ctx.save();
-	// 	this._ctx.scale(size, size);
-	// 	// this._ctx.lineDashOffset = (1 / size) * 0.1;
-	// 	this._ctx.lineWidth = (1 / size) * 1.2;
-	// 	this._ctx.stroke(new Path2D(WHEEL_DATA));
-	// 	this._ctx.restore();
-	// },
 
 	drawNotch: function(arcPos, length, s) {
 		var ex, ey, ec1, ec2;
@@ -12963,26 +12924,26 @@ var PlayableRenderer = MediaRenderer.extend({
 				return this._playToggle || (this._playToggle = this.el.querySelector(".play-toggle"));
 			}
 		},
-		playToggleSymbol: {
-			/** @return {HTMLElement} */
-			get: function() {
-				return this._playToggleSymbol || (this._playToggleSymbol = this.el.querySelector(".play-toggle-symbol"));
-			}
-		},
+		// playToggleSymbol: {
+		// 	/** @return {HTMLElement} */
+		// 	get: function() {
+		// 		return this._playToggleSymbol || (this._playToggleSymbol = this.el.querySelector(".play-toggle-symbol"));
+		// 	}
+		// },
 		playToggleHitarea: {
 			/** @return {HTMLElement} */
 			get: function() {
 				return this._playToggleHitarea || (this._playToggleHitarea = this.el.querySelector(".play-toggle-hitarea"));
 			}
 		},
-		playbackState: {
-			get: function() {
-				return this._playbackState;
-			},
-			set: function(state) {
-				this._setPlaybackState(state);
-			}
-		}
+		// playbackState: {
+		// 	get: function() {
+		// 		return this._playbackState;
+		// 	},
+		// 	set: function(state) {
+		// 		this._setPlaybackState(state);
+		// 	}
+		// }
 	},
 
 	// events: function() {
@@ -13002,6 +12963,10 @@ var PlayableRenderer = MediaRenderer.extend({
 			"_onVisibilityChange"
 		);
 		this._setPlaybackRequested(this._playbackRequested);
+
+		// this._toggleWaiting = _.debounce(this._toggleWaiting, 500);
+		this._toggleWaiting = _.throttle(this._toggleWaiting, 1000, { leading: false, trailing: true });
+
 		// this.listenTo(this, "view:parentChange", function(childView, newParent, oldParent) {
 		// 	// logAttachInfo(this, "[view:parentChange]", "info");
 		// 	console.info("%s::[view:parentChange] '%s' to '%s'", this.cid, oldParent && oldParent.cid, newParent && newParent.cid);
@@ -13299,15 +13264,15 @@ var PlayableRenderer = MediaRenderer.extend({
 
 	_renderPlaybackState: function() {
 		if (this.progressMeter) {
-			this.progressMeter.indeterminate = this._isMediaWaiting();
+			this.progressMeter.stalled = this._isMediaWaiting();
 		}
 
 		// this._setPlayToggleSymbol("waiting");
 		// this.content.classList.toggle("waiting", true);
 
-		if (!this.content.classList.contains("started")) {
-			this._setPlayToggleSymbol("play");
-		} else
+		// if (!this.content.classList.contains("started")) {
+		// 	this._setPlayToggleSymbol("play");
+		// } else
 		if (this.playbackRequested) {
 			if (this._isMediaWaiting()) {
 				this._setPlayToggleSymbol("waiting");
@@ -13315,8 +13280,14 @@ var PlayableRenderer = MediaRenderer.extend({
 				this._setPlayToggleSymbol("play");
 			}
 		} else {
-			this._setPlayToggleSymbol("pause");
+			if (this.content.classList.contains("started")) {
+				this._setPlayToggleSymbol("pause");
+			} else {
+				this._setPlayToggleSymbol("play");
+			}
 		}
+		this.content.classList.toggle("playing", this.playbackRequested);
+		this.content.classList.toggle("paused", !this.playbackRequested);
 		this.content.classList.toggle("waiting", this._isMediaWaiting());
 	},
 
@@ -13355,22 +13326,22 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* waiting
 	/* --------------------------- */
 
-	_isWaiting: null,
+	_isWaiting: false,
 
 	_isMediaWaiting: function() {
 		return this._isWaiting;
 	},
 
 	_toggleWaiting: function(waiting) {
-		if (!_.isBoolean(waiting)) {
+		if (arguments.length === 0) {
 			waiting = !this._isWaiting;
 		}
-		if (this._isMediaPaused()) {
-			waiting = false;
-		}
+		// if (this._isMediaPaused()) {
+		// 	waiting = false;
+		// }
 		if (this._isWaiting !== waiting) {
 			this._isWaiting = waiting;
-			// this._renderPlaybackState();
+			this._renderPlaybackState();
 		}
 	},
 
@@ -14244,7 +14215,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 	/* --------------------------- */
 
 	_onTimerStart: function(duration) {
-		var item, view;
+		var item, currView;
 		if (this.sources.selectedIndex === -1) {
 			item = this.model.get("source");
 		} else {
@@ -14255,9 +14226,9 @@ var SequenceRenderer = PlayableRenderer.extend({
 		this.progressMeter.valueTo("amount", this.sources.selectedIndex + 1, duration);
 		this.content.classList.toggle("playback-error", item.has("error"));
 
-		view = this.itemViews.findByModel(item);
-		if (!item.has("error") && view !== null) {
-			this.updateOverlay(view.el, this.playToggle);
+		currView = this.itemViews.findByModel(item);
+		if (!item.has("error") && currView !== null) {
+			this.updateOverlay(currView.el, this.playToggle);
 		}
 
 		// init next renderer now to have smoother transitions
@@ -14320,7 +14291,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 		} else {
 			// console.log("%s:[waiting] %sms %s", context.cid, nextSource.cid);
 			this._toggleWaiting(true);
-			this._renderPlaybackState();
+			// this._renderPlaybackState();
 			// this.content.classList.add("waiting");
 			/* TODO: add ga event 'media-waiting' */
 			// window.ga("send", "event", "sequence-renderer", "waiting", this.model.get("text"));
@@ -14329,7 +14300,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 				// this.stopListening(nextSource, "change:prefetched change:error");
 				// console.log("%s:[playing] %sms %s", context.cid, nextSource.cid);
 				this._toggleWaiting(false);
-				this._renderPlaybackState();
+				// this._renderPlaybackState();
 				// this.content.classList.add("waiting");
 				/* TODO: add ga event 'media-playing' */
 				// window.ga("send", "event", "sequence-renderer", "playing", this.model.get("text"));
@@ -15136,8 +15107,9 @@ var VideoRenderer = PlayableRenderer.extend({
 		}
 
 		this._toggleWaiting(isWaiting);
-		this._renderPlaybackState();
-		// this.progressMeter.indeterminate = isWaiting;
+		// this._renderPlaybackState();
+
+		// this.progressMeter.stalled = isWaiting;
 		// this.content.classList.toggle("ended", this.video.ended);
 		// this.content.classList.toggle("waiting", isWaiting);
 		// this._setPlayToggleSymbol(symbolName);
@@ -15152,10 +15124,11 @@ var VideoRenderer = PlayableRenderer.extend({
 		this._playbackTimeoutID = -1;
 
 		this._toggleWaiting(true);
-		this._renderPlaybackState();
+		// this._renderPlaybackState();
+
 		// this._setPlayToggleSymbol("waiting-symbol");
 		// this.content.classList.add("waiting");
-		// this.progressMeter.indeterminate = true;
+		// this.progressMeter.stalled = true;
 		// this._isPlaybackWaiting = true;
 	},
 
@@ -15174,10 +15147,11 @@ var VideoRenderer = PlayableRenderer.extend({
 				window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
 
 			this._toggleWaiting(false);
-			this._renderPlaybackState();
+			// this._renderPlaybackState();
+
 			// this._setPlayToggleSymbol("pause-symbol");
 			// this.content.classList.remove("waiting");
-			// this.progressMeter.indeterminate = false;
+			// this.progressMeter.stalled = false;
 			// this._isPlaybackWaiting = false;
 
 		}
