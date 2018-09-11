@@ -10989,14 +10989,13 @@ module.exports = CanvasView.extend({
 			amount: 0,
 			available: 0,
 			_loop: 0,
-			_stalled_arc: 0,
-			_stalled_loop: 0,
+			// _stalled_arc: 0,
+			// _stalled_loop: 0,
 		},
 		maxValues: {
 			amount: 1,
 			available: 1,
-			_loop: 1,
-			_stalled_loop: 1,
+			// _stalled_loop: 1,
 		},
 		useOpaque: true,
 		labelFn: function(value, max) {
@@ -11018,7 +11017,7 @@ module.exports = CanvasView.extend({
 	_setStalled: function(value) {
 		if (this._stalled !== value) {
 			this._stalled = value;
-			// this.requestRender(CanvasView.MODEL_INVALID | CanvasView.LAYOUT_INVALID);
+			this.requestRender(CanvasView.MODEL_INVALID | CanvasView.LAYOUT_INVALID);
 		}
 	},
 
@@ -11285,11 +11284,12 @@ module.exports = CanvasView.extend({
 			var ll = l + LOOP_OFFSET;
 
 			ctx.save();
-			ctx.lineWidth = 10;
+			ctx.lineWidth = 10 * this._canvasRatio;
+			ctx.globalAlpha = 1;
 			ctx.globalCompositeOperation = "destination-out";
-			// ctx.strokeColor = 'red';
+			ctx.strokeColor = 'red';
 			ctx.beginPath();
-			ctx.arc(0, 0, (this._canvasWidth - ctx.lineWidth) / 2, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
+			ctx.arc(0, 0, (this._canvasWidth) / 2, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
 			ctx.stroke();
 			ctx.restore();
 		}*/
