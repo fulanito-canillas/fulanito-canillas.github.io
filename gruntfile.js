@@ -94,11 +94,11 @@ module.exports = function(grunt) {
 			ignoreErrors: true
 		},
 		"index-dev": {
-			options: { url: "<%= paths.srcRoot %>/?force-debug" },
+			options: { url: "<%= paths.srcRoot %>/?force-debug=yes" },
 			dest: "index.html"
 		},
 		// "index-dist": {
-		// 	options: { url: "<%= paths.srcRoot %>/?force-nodebug" },
+		// 	options: { url: "<%= paths.srcRoot %>/?force-nodebug=yes" },
 		// 	dest: "index.dist.html"
 		// },
 		// "data-json": {
