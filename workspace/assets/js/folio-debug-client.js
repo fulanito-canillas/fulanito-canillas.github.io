@@ -10726,8 +10726,8 @@ module.exports = CanvasView.extend({
 		},
 
 		drawPause: function(ctx, r) {
-			var w = (r * 2) / 3;
-			var h = (r * 2);
+			var w = r * 0.75;
+			var h = r * 2;
 			ctx.beginPath();
 			ctx.rect(-r, -r, w, h);
 			ctx.rect(r - w, -r, w, h);
