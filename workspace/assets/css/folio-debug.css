@@ -137,6 +137,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 .app.fullwidth .article-view.mdown h2 {
   margin-bottom: 1rem; }
 
+/* 1f6_2 */
 /* 1f3_1f6 */
 /* 1f3_1f5 */
 .carousel .mdown h6, .article-view.mdown h3, .article-view.mdown h4, .app.fullwidth .carousel .mdown h3, .app.fullwidth .carousel .mdown h4,
@@ -845,10 +846,7 @@ body {
     left: 50%;
     margin-top: -24px;
     top: 50%;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
-    stroke-width: 1px; }
+    color: #ffffff; }
   .playable-renderer .play-toggle {
     opacity: 1; }
   .playable-renderer .started {
@@ -865,9 +863,6 @@ body {
     :not(.scrolling) .playable-renderer .started.playing:not(.waiting) .play-toggle {
       -webkit-animation: 0.7s ease-in-out flashOdd;
               animation: 0.7s ease-in-out flashOdd; }
-    :not(.scrolling) .playable-renderer .started.playing.waiting .waiting-symbol {
-      -webkit-animation: 0.7s ease-in-out flashEven;
-              animation: 0.7s ease-in-out flashEven; }
   .playable-renderer .play-toggle-symbol {
     width: 49px;
     height: 49px;

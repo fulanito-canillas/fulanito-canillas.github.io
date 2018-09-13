@@ -1613,7 +1613,7 @@ require("raf-polyfill");
 require("matches-polyfill");
 require("fullscreen-polyfill");
 require("math-sign-polyfill");
-require("mutation-polyfill");
+// require("mutation-polyfill");
 // require("path2d-polyfill");
 // }
 
@@ -1775,9 +1775,10 @@ if (DEBUG) {
 		});
 	}*/
 }
+
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":77,"app/view/template/_helpers":104,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-polyfill":"mutation-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":76,"app/view/template/_helpers":103,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Controller
@@ -2017,6 +2018,7 @@ var Controller = Backbone.Router.extend({
 
 
 module.exports = new Controller();
+
 }).call(this,true)
 
 },{"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"backbone":"backbone","underscore":"underscore"}],35:[function(require,module,exports){
@@ -2246,9 +2248,10 @@ module.exports = (function() {
 
 	return g;
 }());
+
 }).call(this,true)
 
-},{"../../../sass/variables.json":132,"underscore":"underscore"}],36:[function(require,module,exports){
+},{"../../../sass/variables.json":131,"underscore":"underscore"}],36:[function(require,module,exports){
 /**
  * @module app/view/DebugToolbar
  */
@@ -2454,6 +2457,7 @@ module.exports = View.extend({
 });
 
 module.exports.prototype._logFlags = "";
+
 },{"./template/DebugToolbar.SVGGrid.hbs":37,"./template/DebugToolbar.hbs":38,"app/control/Globals":35,"app/view/base/View":62,"cookies-js":"cookies-js","underscore":"underscore"}],37:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
@@ -2641,6 +2645,7 @@ module.exports = BaseModel.extend({
 	// 	BaseModel.apply(this, arguments);
 	// }
 });
+
 },{"backbone":"backbone"}],40:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
@@ -2725,6 +2730,7 @@ module.exports = BaseModel.extend({
 		return this.get("domid");
 	}
 });
+
 },{"app/model/BaseModel":41,"underscore":"underscore"}],41:[function(require,module,exports){
 /**
  * @module app/model/BaseModel
@@ -2807,6 +2813,7 @@ var BaseModel = {
  */
 module.exports = Backbone.Model.extend.call(Backbone.Model, BaseModelProto, BaseModel);
 // module.exports = Model.extend(BaseModelProto, BaseModel);
+
 },{"backbone":"backbone","underscore":"underscore"}],42:[function(require,module,exports){
 /**
  * @module app/model/SelectableCollection
@@ -2976,6 +2983,7 @@ var ArticleCollection = SelectableCollection.extend({
 });
 
 module.exports = new ArticleCollection();
+
 },{"app/model/SelectableCollection":42,"app/model/item/ArticleItem":48}],44:[function(require,module,exports){
 /**
  * @module app/model/collection/BundleCollection
@@ -3132,6 +3140,7 @@ module.exports = function(bootstrap) {
 
 	// bootstrap["params"] = bootstrap["articles-all"] = bootstrap["types-all"] = bootstrap["keywords-all"] = bootstrap["bundles-all"] = bootstrap["media-all"] = null;
 };
+
 },{"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/model/collection/KeywordCollection":45,"app/model/collection/TypeCollection":46,"underscore":"underscore"}],48:[function(require,module,exports){
 /**
  * @module app/model/item/ArticleItem
@@ -3158,6 +3167,7 @@ module.exports = BaseItem.extend({
 	},
 
 });
+
 },{"app/model/BaseItem":40}],49:[function(require,module,exports){
 /**
  * @module app/model/item/BundleItem
@@ -3273,7 +3283,8 @@ module.exports = BaseItem.extend({
 		return this._attrs || (this._attrs = _.defaults({}, this.get("attrs"), attrsDefault));
 	},
 });
-},{"app/control/Globals":35,"app/model/BaseItem":40,"app/model/SelectableCollection":42,"app/model/item/MediaItem":51,"color":"color","underscore":"underscore","utils/strings/stripTags":130}],50:[function(require,module,exports){
+
+},{"app/control/Globals":35,"app/model/BaseItem":40,"app/model/SelectableCollection":42,"app/model/item/MediaItem":51,"color":"color","underscore":"underscore","utils/strings/stripTags":129}],50:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -3461,7 +3472,8 @@ module.exports = BaseItem.extend({
 	// },
 
 });
-},{"app/control/Globals":35,"app/model/BaseItem":40,"app/model/SelectableCollection":42,"app/model/item/SourceItem":52,"color":"color","underscore":"underscore","utils/strings/stripTags":130}],52:[function(require,module,exports){
+
+},{"app/control/Globals":35,"app/model/BaseItem":40,"app/model/SelectableCollection":42,"app/model/item/SourceItem":52,"color":"color","underscore":"underscore","utils/strings/stripTags":129}],52:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3661,10 +3673,10 @@ var AppViewProto = {
 	/** @override */
 	events: {
 		"visibilitychange": function(ev) {
-			console.log(ev.type);
+			console.log("%s:[%s]", this.cid, ev.type);
 		},
 		"fullscreenchange": function(ev) {
-			console.log(ev.type);
+			console.log("%s:[%s] fullscreen: %o", this.cid, ev.type, (document.fullscreenElement !== null), document.fullscreen);
 		},
 		"dragstart": function(ev) {
 			if (ev.target.nodeName == "IMG" || ev.target.nodeName == "A") {
@@ -3971,7 +3983,8 @@ var AppViewProto = {
 					view.el.classList.remove("skip-transitions");
 					console.groupEnd();
 				})
-			}).renderNow();
+			});
+		if (document.fullscreenElement === null) this.renderNow();
 	},
 
 	/* -------------------------------
@@ -4109,9 +4122,10 @@ if (DEBUG) {
 /* @type {module:app/view/AppView}
 /*/
 module.exports = View.extend(AppViewProto, AppView);
+
 }).call(this,true)
 
-},{"app/control/Controller":34,"app/control/Globals":35,"app/debug/DebugToolbar":36,"app/model/AppState":39,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/ContentView":55,"app/view/NavigationView":56,"app/view/base/TouchManager":61,"app/view/base/View":62,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":130}],55:[function(require,module,exports){
+},{"app/control/Controller":34,"app/control/Globals":35,"app/debug/DebugToolbar":36,"app/model/AppState":39,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/ContentView":55,"app/view/NavigationView":56,"app/view/base/TouchManager":61,"app/view/base/View":62,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":129}],55:[function(require,module,exports){
 /**
  * @module app/view/ContentView
  */
@@ -4157,8 +4171,8 @@ var ImageRenderer = require("app/view/render/ImageRenderer");
 var VideoRenderer = require("app/view/render/VideoRenderer");
 /** @type {module:app/view/render/SequenceRenderer} */
 var SequenceRenderer = require("app/view/render/SequenceRenderer");
-// /** @type {module:app/view/component/ProgressMeter} */
-// var ProgressMeter = require("app/view/component/ProgressMeter");
+// /** @type {module:app/view/component/CanvasProgressMeter} */
+// var ProgressMeter = require("app/view/component/CanvasProgressMeter");
 
 /** @type {Function} */
 var carouselEmptyTemplate = require("./template/Carousel.EmptyRenderer.Bundle.hbs");
@@ -4688,7 +4702,8 @@ var ContentView = View.extend({
 });
 
 module.exports = ContentView;
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":101,"./template/CollectionStack.Media.hbs":102,"app/control/Controller":34,"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/base/View":62,"app/view/component/ArticleView":66,"app/view/component/Carousel":67,"app/view/component/CollectionStack":69,"app/view/component/SelectableListView":75,"app/view/render/CarouselRenderer":86,"app/view/render/DotNavigationRenderer":91,"app/view/render/ImageRenderer":93,"app/view/render/SequenceRenderer":98,"app/view/render/VideoRenderer":100,"underscore":"underscore","utils/TransformHelper":107}],56:[function(require,module,exports){
+
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":100,"./template/CollectionStack.Media.hbs":101,"app/control/Controller":34,"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/base/View":62,"app/view/component/ArticleView":66,"app/view/component/Carousel":68,"app/view/component/CollectionStack":70,"app/view/component/SelectableListView":75,"app/view/render/CarouselRenderer":85,"app/view/render/DotNavigationRenderer":90,"app/view/render/ImageRenderer":92,"app/view/render/SequenceRenderer":97,"app/view/render/VideoRenderer":99,"underscore":"underscore","utils/TransformHelper":106}],56:[function(require,module,exports){
 /* global MutationObserver */
 /**
 /* @module app/view/NavigationView
@@ -5708,7 +5723,8 @@ var NavigationView = View.extend({
 });
 
 module.exports = NavigationView;
-},{"app/control/Controller":34,"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/model/collection/KeywordCollection":45,"app/model/collection/TypeCollection":46,"app/view/base/View":62,"app/view/component/ArticleButton":65,"app/view/component/FilterableListView":70,"app/view/component/GraphView":71,"app/view/component/GroupingListView":72,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":107}],57:[function(require,module,exports){
+
+},{"app/control/Controller":34,"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/model/collection/KeywordCollection":45,"app/model/collection/TypeCollection":46,"app/view/base/View":62,"app/view/component/ArticleButton":65,"app/view/component/FilterableListView":71,"app/view/component/GraphView":72,"app/view/component/GroupingListView":73,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":106}],57:[function(require,module,exports){
 var PriorityQueue = function(offset) {
 	this._offset = offset | 0;
 	this._items = [];
@@ -5912,6 +5928,7 @@ CallbackQueue.prototype = Object.create({
 });
 
 module.exports = CallbackQueue;
+
 },{}],58:[function(require,module,exports){
 (function (DEBUG){
 /* global Path2D */
@@ -6256,9 +6273,10 @@ if (DEBUG) {
 }
 
 module.exports = CanvasView;
+
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/base/Interpolator":59,"app/view/base/View":62,"underscore":"underscore","utils/css/getBoxEdgeStyles":117}],59:[function(require,module,exports){
+},{"app/control/Globals":35,"app/view/base/Interpolator":59,"app/view/base/View":62,"underscore":"underscore","utils/css/getBoxEdgeStyles":116}],59:[function(require,module,exports){
 /**
  * @module app/view/base/Interpolator
  */
@@ -6533,7 +6551,8 @@ Interpolator.prototype = Object.create({
 });
 
 module.exports = Interpolator;
-},{"underscore":"underscore","utils/ease/fn/linear":120}],60:[function(require,module,exports){
+
+},{"underscore":"underscore","utils/ease/fn/linear":119}],60:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -6575,7 +6594,7 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":123}],61:[function(require,module,exports){
+},{"utils/prefixedEvent":122}],61:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
@@ -6764,6 +6783,7 @@ function createInstance(el) {
 	});
 }
 */
+
 },{"app/control/Globals":35,"hammerjs":"hammerjs"}],62:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
@@ -7570,9 +7590,10 @@ if (DEBUG) {
 }
 
 module.exports = Backbone.View.extend(ViewProto, View);
+
 }).call(this,true)
 
-},{"app/view/base/CallbackQueue":57,"app/view/base/PrefixedEvents":60,"app/view/base/ViewError":63,"app/view/promise/whenViewIsAttached":84,"app/view/promise/whenViewIsRendered":85,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":123,"utils/prefixedProperty":124,"utils/prefixedStyleName":125}],63:[function(require,module,exports){
+},{"app/view/base/CallbackQueue":57,"app/view/base/PrefixedEvents":60,"app/view/base/ViewError":63,"app/view/promise/whenViewIsAttached":83,"app/view/promise/whenViewIsRendered":84,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":122,"utils/prefixedProperty":123,"utils/prefixedStyleName":124}],63:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -7643,6 +7664,7 @@ var ArticleButton = View.extend({
 	},
 });
 module.exports = ArticleButton;
+
 },{"./ArticleButton.hbs":64,"app/view/base/View":62}],66:[function(require,module,exports){
 /**
 /* @module app/view/component/ArticleView
@@ -7689,7 +7711,485 @@ var ArticleView = View.extend({
 	},
 });
 module.exports = ArticleView;
+
 },{"app/view/base/View":62}],67:[function(require,module,exports){
+(function (DEBUG){
+/**
+ * @module app/view/component/progress/CanvasProgressMeter
+ */
+
+/** @type {module:underscore} */
+var _ = require("underscore");
+
+// /** @type {module:app/control/Globals} */
+// var Globals = require("app/control/Globals");
+/** @type {module:app/view/base/CanvasView} */
+var CanvasView = require("app/view/base/CanvasView");
+// /** @type {module:app/view/base/Interpolator} */
+// var Interpolator = require("app/view/base/Interpolator");
+
+var PI2 = Math.PI * 2;
+/* NOTE: avoid negative rotations */
+var BASE_ROTATION = 1 - 0.25; // of PI2 (-90 degrees)
+var GAP_ARC = PI2 / 48;
+
+/** @type {module:utils/ease/fn/easeInQuad} */
+var easeIn = require("utils/ease/fn/easeInQuad");
+/** @type {module:utils/ease/fn/easeOutQuad} */
+var easeOut = require("utils/ease/fn/easeOutQuad");
+
+var LOOP_OFFSET = 1.833333;
+var STEP_MS = 400; // tween time base
+
+var ARC_DEFAULTS = {
+	"amount": {
+		lineWidth: 0.75,
+		radiusOffset: 0
+	},
+	"available": {
+		lineWidth: 0.75,
+		// lineDash: [1.3, 0.7],
+		inverse: "not-available"
+	},
+	"not-available": {
+		lineWidth: 0.8,
+		lineDash: [0.3, 0.7],
+		lineDashOffset: 0
+	},
+	"indeterminate": {
+		lineWidth: 2.0, //0.8,
+		lineDash: [0.3, 1.7],
+		// lineDash: [0.6, 1.4],
+		lineDashOffset: 0
+	},
+};
+
+/**
+ * @constructor
+ * @type {module:app/view/component/progress/CanvasProgressMeter}
+ */
+module.exports = CanvasView.extend({
+
+	/** @type {string} */
+	cidPrefix: "canvasProgressMeter",
+	/** @type {string} */
+	className: "progress-meter canvas-progress-meter",
+
+	defaultKey: "amount",
+
+	defaults: {
+		values: {
+			amount: 0,
+			available: 0,
+			_loop: 0,
+			_stalled_arc: 0,
+			_stalled_loop: 0,
+		},
+		maxValues: {
+			amount: 1,
+			available: 1,
+			_stalled_loop: 1,
+		},
+		useOpaque: true,
+		labelFn: function(value, max) {
+			return ((value / max) * 100) | 0;
+		},
+	},
+
+	properties: {
+		stalled: {
+			get: function() {
+				return false; //this._stalled;
+			},
+			set: function(value) {
+				// this._setStalled(value)
+			}
+		}
+	},
+
+	_setStalled: function(value) {
+		if (this._stalled !== value) {
+			this._stalled = value;
+			this.requestRender(CanvasView.MODEL_INVALID | CanvasView.LAYOUT_INVALID);
+		}
+	},
+
+	/* --------------------------- *
+	/* children/layout
+	/* --------------------------- */
+
+	/** @override */
+	initialize: function(options) {
+		// TODO: cleanup options mess in CanvasView
+		CanvasView.prototype.initialize.apply(this, arguments);
+		// options = _.defaults(options, this.defaults);
+
+		this._labelFn = options.labelFn;
+		this._stalled = !!(options.stalled);
+		this._valueStyles = {};
+		this._canvasSize = null;
+		this._canvasOrigin = null;
+	},
+
+	_needsLoop: false,
+
+	/** @override */
+	valueTo: function(key, value, duration) {
+		if (key === "amount" && value < this.interpolator.getCurrentValue("amount")) {
+			this._needsLoop = true;
+		}
+		CanvasView.prototype.valueTo.apply(this, arguments);
+	},
+
+	/* --------------------------- *
+	/* private
+	/* --------------------------- */
+
+	/** @override */
+	measureCanvas: function(w, h, s) {
+		// make canvas square
+		this._canvasHeight = this._canvasWidth = Math.min(w, h);
+	},
+
+	/** @override */
+	updateCanvas: function() {
+		// CanvasView.prototype._updateCanvas.apply(this, arguments);
+
+		// size, lines, gaps, dashes (this._valueStyles, GAP_ARC, this._arcRadius)
+		// --------------------------------
+		// var arcName, s, arcDefault;
+		// var mapLineDash = function(n) {
+		// 	return n * this.radius * GAP_ARC;
+		// };
+		// var sumFn = function(s, n) {
+		// 	return s + n;
+		// };
+
+		// this._canvasSize = Math.min(this._canvasWidth, this._canvasHeight);
+
+		var s;
+		// this._maxDashArc = 0
+		for (var styleName in ARC_DEFAULTS) {
+			s = _.defaults({}, ARC_DEFAULTS[styleName]);
+			s.lineWidth *= this._canvasRatio;
+			s.radius = (this._canvasWidth - s.lineWidth) / 2;
+			if (s.radiusOffset) {
+				s.radius += s.radiusOffset * this._canvasRatio;
+			}
+			if (_.isArray(s.lineDash)) {
+				s.lineDash = s.lineDash.map(function(val, i, arr) {
+					return val * this.radius * GAP_ARC;
+				}, s);
+				s.lineDashLength = s.lineDash.reduce(function(res, val, i, arr) {
+					return res + val;
+				}, 0);
+				s.lineDashArc = s.lineDash[0] * GAP_ARC;
+				// this._maxDashArc = Math.max(this._maxDashArc, s.lineDashArc);
+			} else {
+				s.lineDashArc = 0;
+			}
+			this._valueStyles[styleName] = s;
+		}
+
+		// baselineShift
+		// --------------------------------
+		// NOTE: Center baseline: use ascent data to center to x-height, or sort-of.
+		// with ascent/descent values (0.7, -0.3), x-height is 0.4
+		var mObj = this._getFontMetrics(this._fontFamily);
+		this._baselineShift = mObj ? (mObj.ascent + mObj.descent) / mObj.unitsPerEm : 0.7; // default value
+		this._baselineShift *= this._fontSize * 0.5; // apply to font-size, halve it
+		this._baselineShift = Math.round(this._baselineShift);
+
+		// save canvas context
+		// --------------------------------
+		// reset matrix and translate 0,0 to center
+		this._ctx.restore();
+		this._ctx.setTransform(1, 0, 0, 1, this._canvasWidth / 2, this._canvasHeight / 2);
+		this._ctx.save();
+	},
+
+	/** @override */
+	redraw: function(ctx, intrp, flags) {
+		this._clearCanvas(-this._canvasWidth / 2, -this._canvasHeight / 2,
+			this._canvasWidth, this._canvasHeight
+		);
+
+		var s, // reused style objects
+			valData, // reused for interpolated data
+			arcVal; // reused arc values
+
+		// amount label
+		// --------------------------------
+		valData = intrp._valueData["amount"];
+		this.drawLabel(this._labelFn(valData._renderedValue, valData._maxVal));
+
+		// indeterminate
+		// --------------------------------
+
+		/*
+		var indVal;
+		if (this.stalled) {
+			// _ind loop indefinitely while indeterminate: restart if at end
+			if (intrp.isAtTarget("_ind")) {
+				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") === -1)) {
+				intrp.valueTo("_ind", 0, 0);
+				intrp.valueTo("_ind", 1, 1000);
+				intrp.updateValue("_ind");
+			}
+			indVal = intrp.getCurrentValue("_ind");
+			//indVal = intrp._valueData["_ind"]._renderedValue || 0;
+
+			// draw spinning arc
+			// --------------------------------
+			// s = this._valueStyles["amount"];
+			// ctx.save();
+			// ctx.rotate(PI2 * (BASE_ROTATION + (indVal))); // + GAP_ARC);
+			// lastEndArc = this.drawArc(1,
+			// 	GAP_ARC,
+			// 	PI2 - GAP_ARC,
+			// 	0, s);
+			// ctx.restore();
+			// return;
+
+			// lineDashOffset animation
+			// --------------------------------
+			s = this._valueStyles["indeterminate"];
+			s.lineDashOffset = s.lineDashLength * ((1 - indVal) % 3) * 3;
+			this._valueStyles["available"].inverse = "indeterminate";
+
+			// console.log("%s::redraw indVal:%o s.lineDashOffset:%o s.lineDash:%o", this.cid, indVal, s.lineDashOffset, s.lineDash[0]);
+
+			// draw spinning wheel
+			// --------------------------------
+			// ctx.save();
+			// ctx.rotate((PI2 / WHEEL_NUM) * indVal); // + GAP_ARC);
+			// this.drawWheel(this._valueStyles["amount"], 2 / 5, 3 / 5);
+			// ctx.restore();
+
+		} else {
+			if (!intrp.isAtTarget("_ind")) {
+				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") !== -1)) {
+				intrp.valueTo("_ind", 0, 0);
+				intrp.updateValue("_ind");
+			}
+			// lineDashOffset animation
+			// --------------------------------
+			this._valueStyles["available"].inverse = "not-available";
+		}*/
+
+		// save ctx before drawing arcs
+		ctx.save();
+
+		// loop (amount)
+		// --------------------------------
+		var loopVal;
+		/*
+		NOTE: If value "amount" has changed (with valueTo()) but no yet
+		interpolated, and its last rendered value is less, then its been reset
+		(a reload, a loop, etc): we trigger a 'loop' of the whole arc.
+		*/
+		// if ((intrp.renderedKeys.indexOf("amount") !== -1) && (valData._lastRenderedValue > valData._renderedValue)) {
+		if (this._needsLoop) {
+			this._needsLoop = false;
+			// trigger loop
+			intrp.valueTo("_loop", 1, 0);
+			intrp.valueTo("_loop", 0, 750);
+			intrp.updateValue("_loop");
+		}
+		// loopVal = intrp._valueData["_loop"]._renderedValue || 0;
+		loopVal = intrp.getCurrentValue("_loop");
+		ctx.rotate((PI2 * (BASE_ROTATION + (1 - loopVal)))); // + GAP_ARC);
+
+		// amount arc
+		// --------------------------------
+		// var amountGapArc = GAP_ARC;
+		var lastEndArc = 0;
+
+		s = this._valueStyles["amount"];
+		arcVal = loopVal + valData._renderedValue / valData._maxVal;
+
+		if (arcVal > 0) {
+			lastEndArc = this.drawArc(arcVal,
+				GAP_ARC,
+				PI2 - GAP_ARC,
+				lastEndArc, s);
+			this.drawEndCap(lastEndArc, s);
+			lastEndArc = lastEndArc + GAP_ARC * 2;
+		}
+
+		// available arc
+		// --------------------------------
+		s = this._valueStyles["available"];
+		valData = intrp._valueData["available"];
+
+		var stepsNum = valData.length || 1;
+		var stepBaseArc = PI2 / stepsNum;
+		var stepAdjustArc = stepBaseArc % GAP_ARC;
+		var stepGapArc = GAP_ARC + (stepAdjustArc - s.lineDashArc) / 2;
+
+		if (Array.isArray(valData)) {
+			for (var i = 0; i < stepsNum; i++) {
+				arcVal = valData[i]._renderedValue / (valData[i]._maxVal / stepsNum);
+				this.drawArc(arcVal,
+					(i * stepBaseArc) + stepGapArc,
+					((i + 1) * stepBaseArc) - stepGapArc,
+					lastEndArc, s);
+			}
+		} else {
+			arcVal = valData._renderedValue / valData._maxVal;
+			this.drawArc(arcVal,
+				stepGapArc,
+				PI2 - stepGapArc,
+				lastEndArc, s);
+		}
+		// restore ctx after drawing arcs
+		// keep rotation transform
+		//ctx.restore();
+
+		if (this._stalled) {
+			if (intrp.getTargetValue('_stalled_arc') === 0) {
+				intrp.valueTo('_stalled_arc', 1, 1 * STEP_MS, easeIn).updateValue('_stalled_arc');
+			}
+		} else {
+			if (intrp.getTargetValue('_stalled_arc') === 1) {
+				intrp.valueTo('_stalled_arc', 0, 1 * STEP_MS, easeOut).updateValue('_stalled_arc');
+			}
+		}
+		var a = intrp.getRenderedValue("_stalled_arc");
+		// while arc is > 0, loop indefinitely while spinning and restart
+		// if at end. Otherwise let interp exhaust arc duration
+		if (a > 0) {
+			if (!intrp.paused && intrp.isAtTarget('_stalled_loop')) {
+				intrp
+					.valueTo('_stalled_loop', 0, 0)
+					.valueTo('_stalled_loop', 1, 2 * STEP_MS)
+					.updateValue('_stalled_loop');
+			}
+		}
+		var l = intrp.getRenderedValue("_stalled_loop");
+		// always render while arc is > 0
+		if (a > 0) {
+			// arc span bounce
+			var b = (l < 0.5 ? (l % 0.5) : 0.5 - (l % 0.5)) * 2;
+			// bounce + main arc span
+			var aa = (a * b * 0.25) + (a * 0.125) + .0001;
+			// rotation loop
+			var ll = l + LOOP_OFFSET;
+
+			ctx.save();
+			ctx.lineWidth = 10 * this._canvasRatio;
+			ctx.globalAlpha = 1;
+			ctx.globalCompositeOperation = "destination-out";
+			ctx.strokeColor = 'red';
+			ctx.beginPath();
+			ctx.arc(0, 0, (this._canvasWidth) / 2, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
+			ctx.stroke();
+			ctx.restore();
+		}
+		ctx.restore();
+	},
+
+	drawArc: function(value, startArc, endArc, prevArc, style) {
+		var valArc,
+			valStartArc,
+			valEndArc,
+			invStyle,
+			invStartArc,
+			invEndArc;
+
+		prevArc || (prevArc = 0);
+
+		valArc = endArc - startArc;
+		valEndArc = startArc + (valArc * value);
+		valStartArc = Math.max(startArc, prevArc);
+		if (valEndArc > valStartArc) {
+			this._ctx.save();
+			this.applyValueStyle(style);
+			this._ctx.beginPath();
+			this._ctx.arc(0, 0, style.radius, valEndArc, valStartArc, true);
+			this._ctx.stroke();
+			this._ctx.restore();
+		}
+
+		// if there's valueStyle, draw rest of span, minus prevArc overlap too
+		if (style.inverse !== void 0) {
+			invStyle = this._valueStyles[style.inverse];
+
+			invEndArc = valEndArc + (valArc * (1 - value));
+			invStartArc = Math.max(valEndArc, prevArc);
+			if (invEndArc > invStartArc) {
+				this._ctx.save();
+				this.applyValueStyle(invStyle);
+				this._ctx.beginPath();
+				this._ctx.arc(0, 0, invStyle.radius, invEndArc, invStartArc, true);
+				this._ctx.stroke();
+				this._ctx.restore();
+			}
+		}
+
+		return valEndArc;
+	},
+
+	applyValueStyle: function(s) {
+		this._ctx.lineWidth = s.lineWidth;
+		if (_.isArray(s.lineDash)) {
+			this._ctx.setLineDash(s.lineDash);
+		}
+		if (_.isNumber(s.lineDashOffset)) {
+			this._ctx.lineDashOffset = s.lineDashOffset;
+		}
+	},
+
+
+	drawNotch: function(arcPos, length, s) {
+		var ex, ey, ec1, ec2;
+
+		ex = Math.cos(arcPos);
+		ey = Math.sin(arcPos);
+		ec1 = s.radius;
+		ec2 = s.radius - length;
+
+		this._ctx.save();
+		this.applyValueStyle(s);
+		this._ctx.lineCap = "square";
+		this._ctx.beginPath();
+		this._ctx.moveTo(ec1 * ex, ec1 * ey);
+		this._ctx.lineTo(ec2 * ex, ec2 * ey);
+		this._ctx.stroke();
+		this._ctx.restore();
+	},
+
+	drawEndCap: function(arcPos, s) {
+		var radius = s.radius;
+		this._ctx.save();
+		this._ctx.lineWidth = s.lineWidth;
+
+		this._ctx.rotate(arcPos - GAP_ARC * 2); // 1.5);
+		this._ctx.beginPath();
+		this._ctx.arc(0, 0, radius, GAP_ARC * 0.5, GAP_ARC * 2, false);
+		this._ctx.lineTo(radius - (GAP_ARC * radius), 0);
+		this._ctx.closePath();
+
+		this._ctx.fill();
+		this._ctx.stroke();
+		this._ctx.restore();
+	},
+
+	drawLabel: function(labelString) {
+		var labelWidth = this._ctx.measureText(labelString).width;
+		this._ctx.fillText(labelString,
+			labelWidth * -0.5,
+			this._baselineShift, labelWidth);
+	},
+});
+
+if (DEBUG) {
+	module.exports.prototype._logFlags = "";
+}
+
+}).call(this,true)
+
+},{"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":117,"utils/ease/fn/easeOutQuad":118}],68:[function(require,module,exports){
 /**
 /* @module app/view/component/Carousel
 /*/
@@ -8723,7 +9223,8 @@ var CarouselProto = {
 };
 
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
-},{"app/control/Globals":35,"app/view/base/View":62,"app/view/render/CarouselRenderer":86,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":124,"utils/prefixedStyleName":125,"utils/touch/SmoothPanRecognizer":131}],68:[function(require,module,exports){
+
+},{"app/control/Globals":35,"app/view/base/View":62,"app/view/render/CarouselRenderer":85,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":123,"utils/prefixedStyleName":124,"utils/touch/SmoothPanRecognizer":130}],69:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -8732,7 +9233,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"id","hash":{},"data":data}) : helper)));
 },"useData":true});
 
-},{"hbsfy/runtime":20}],69:[function(require,module,exports){
+},{"hbsfy/runtime":20}],70:[function(require,module,exports){
 /**
  * @module app/view/component/CollectionStack
  */
@@ -8832,7 +9333,8 @@ module.exports = View.extend({
 		}
 	},
 });
-},{"./CollectionStack.hbs":68,"app/view/base/View":62}],70:[function(require,module,exports){
+
+},{"./CollectionStack.hbs":69,"app/view/base/View":62}],71:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/view/component/FilterableListView
@@ -9441,9 +9943,10 @@ if (DEBUG) {
 }
 
 module.exports = FilterableListView;
+
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/base/View":62,"app/view/render/ClickableRenderer":87,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":109,"utils/css/getBoxEdgeStyles":117,"utils/prefixedProperty":124,"utils/promise/rejectAll":127,"utils/promise/resolveAll":128}],71:[function(require,module,exports){
+},{"app/control/Globals":35,"app/view/base/View":62,"app/view/render/ClickableRenderer":86,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":108,"utils/css/getBoxEdgeStyles":116,"utils/prefixedProperty":123,"utils/promise/rejectAll":126,"utils/promise/resolveAll":127}],72:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -10325,9 +10828,10 @@ if (DEBUG) {
 }
 
 module.exports = GraphView;
+
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/base/CanvasView":58,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":110,"utils/canvas/calcArcHConnector":116,"utils/geom/inflateRect":122}],72:[function(require,module,exports){
+},{"app/control/Globals":35,"app/view/base/CanvasView":58,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":109,"utils/canvas/calcArcHConnector":115,"utils/geom/inflateRect":121}],73:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -10540,7 +11044,8 @@ var GroupingListView = FilterableListView.extend({
 });
 
 module.exports = GroupingListView;
-},{"app/view/component/FilterableListView":70,"app/view/render/ClickableRenderer":87,"app/view/render/LabelRenderer":94,"underscore":"underscore"}],73:[function(require,module,exports){
+
+},{"app/view/component/FilterableListView":71,"app/view/render/ClickableRenderer":86,"app/view/render/LabelRenderer":93,"underscore":"underscore"}],74:[function(require,module,exports){
 /**
  * @module app/view/component/PlayToggleSymbol
  */
@@ -10557,9 +11062,9 @@ var easeIn = require("utils/ease/fn/easeInQuad");
 /** @type {module:utils/ease/fn/easeOutQuad} */
 var easeOut = require("utils/ease/fn/easeOutQuad");
 
-var LOOP_OFFSET = 1.833333;
 var PI2 = Math.PI * 2;
-var STEP_MS = 400;
+var LOOP_OFFSET = 1.833333;
+var INTEP_MS = require("app/control/Globals").TRANSITION_DURATION;
 
 var PlayToggleSymbol = {
 	PLAY: "playing",
@@ -10573,7 +11078,7 @@ module.exports = CanvasView.extend({
 		/** @type {string} */
 		cidPrefix: "playToggleSymbol",
 		/** @type {string} */
-		className: "play-toggle-symbol",
+		className: "play-toggle",
 
 		defaults: {
 			values: {
@@ -10605,14 +11110,14 @@ module.exports = CanvasView.extend({
 			this.symbolName = this._options.symbolName;
 		},
 
-		_symbolName: null,
+		_symbolName: "",
 
 		_setSymbolName: function(value) {
 			if (this._symbolName !== value) {
 				this._lastSymbolName = this._symbolName;
 				this._symbolName = value;
 				this.requestRender(CanvasView.LAYOUT_INVALID);
-				console.log("%s::[set] symbol %o (from %o)", this.cid, this._lastSymbolName, this._symbolName);
+				console.log("%s::[set] symbol %o (from %o)", this.cid, this._symbolName, this._lastSymbolName);
 			}
 		},
 
@@ -10628,7 +11133,7 @@ module.exports = CanvasView.extend({
 			this._baselineShift = Math.round(this._baselineShift);
 			// double SQRT1_2: square within circle within square
 			this._radius = (this._canvasWidth / 2) * Math.SQRT1_2 * Math.SQRT1_2;
-			this._side = this._radius * Math.SQRT1_2;
+			this._side = this._radius * Math.SQRT1_2; // * Math.SQRT1_2;
 
 			// this._ctx.restore();
 			// this._ctx.textBaseline = "middle";
@@ -10643,17 +11148,25 @@ module.exports = CanvasView.extend({
 		},
 
 		redraw: function(ctx, intrp, flags) {
-			this._clearCanvas(-this._canvasWidth / 2, -this._canvasHeight / 2,
+			this._clearCanvas(
+				-this._canvasWidth / 2, -this._canvasHeight / 2,
 				this._canvasWidth, this._canvasHeight
 			);
+			ctx.save();
+			ctx.fillStyle = "rgba(0,0,0,0.2)";
+			this.drawRoundRect(ctx,
+				-this._canvasWidth / 2, -this._canvasHeight / 2,
+				this._canvasWidth, this._canvasHeight, 3 * this._canvasRatio);
+			ctx.fill();
+			ctx.restore();
 
 			if (this._symbolName === 'waiting') {
 				if (intrp.getTargetValue('_arc') === 0) {
-					intrp.valueTo('_arc', 1, 1 * STEP_MS, easeIn).updateValue('_arc');
+					intrp.valueTo('_arc', 1, 1 * INTEP_MS, easeIn).updateValue('_arc');
 				}
 			} else {
 				if (intrp.getTargetValue('_arc') === 1) {
-					intrp.valueTo('_arc', 0, 1 * STEP_MS, easeOut).updateValue('_arc');
+					intrp.valueTo('_arc', 0, 1 * INTEP_MS, easeOut).updateValue('_arc');
 				}
 			}
 			var a = intrp.getRenderedValue("_arc");
@@ -10661,9 +11174,10 @@ module.exports = CanvasView.extend({
 			// if at end. Otherwise let interp exhaust arc duration
 			if (a > 0) {
 				if (!intrp.paused && intrp.isAtTarget('_loop')) {
+					// console.log("%s::redraw [loop]", this.cid, this.parentView.cid);
 					intrp
 						.valueTo('_loop', 0, 0)
-						.valueTo('_loop', 1, 2 * STEP_MS)
+						.valueTo('_loop', 1, 2 * INTEP_MS)
 						.updateValue('_loop');
 				}
 			}
@@ -10716,6 +11230,20 @@ module.exports = CanvasView.extend({
 			}
 		},
 
+		drawRoundRect: function(ctx, x, y, w, h, r) {
+			ctx.beginPath();
+			ctx.moveTo(x, y + r);
+			ctx.quadraticCurveTo(x, y, x + r, y);
+			ctx.lineTo(x + w - r, y);
+			ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+			ctx.lineTo(x + w, y + h - r);
+			ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+			ctx.lineTo(x + r, y + h);
+			ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+			ctx.closePath();
+			// ctx.fill();
+		},
+
 		drawPlay: function(ctx, r) {
 			var tx = (1 - Math.SQRT1_2) * r;
 			ctx.beginPath();
@@ -10743,13 +11271,8 @@ module.exports = CanvasView.extend({
 		},
 	},
 	PlayToggleSymbol);
-},{"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":118,"utils/ease/fn/easeOutQuad":119}],74:[function(require,module,exports){
-/** @type {module:app/view/component/progress/CanvasProgressMeter} */
-module.exports = require("app/view/component/progress/CanvasProgressMeter3");
 
-// /** @type {module:app/view/component/progress/SVGPathProgressMeter} */
-// module.exports = require("app/view/component/progress/SVGPathProgressMeter");
-},{"app/view/component/progress/CanvasProgressMeter3":76}],75:[function(require,module,exports){
+},{"app/control/Globals":35,"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":117,"utils/ease/fn/easeOutQuad":118}],75:[function(require,module,exports){
 /**
  * @module app/view/component/SelectableListView
  */
@@ -10920,482 +11443,7 @@ var SelectableListView = View.extend({
 
 module.exports = SelectableListView;
 
-},{"app/view/base/View":62,"app/view/render/ClickableRenderer":87,"app/view/render/DefaultSelectableRenderer":89,"backbone.babysitter":"backbone.babysitter"}],76:[function(require,module,exports){
-(function (DEBUG){
-/**
- * @module app/view/component/progress/CanvasProgressMeter
- */
-
-/** @type {module:underscore} */
-var _ = require("underscore");
-
-// /** @type {module:app/control/Globals} */
-// var Globals = require("app/control/Globals");
-/** @type {module:app/view/base/CanvasView} */
-var CanvasView = require("app/view/base/CanvasView");
-// /** @type {module:app/view/base/Interpolator} */
-// var Interpolator = require("app/view/base/Interpolator");
-
-var PI2 = Math.PI * 2;
-/* NOTE: avoid negative rotations */
-var BASE_ROTATION = 1 - 0.25; // of PI2 (-90 degrees)
-var GAP_ARC = PI2 / 48;
-
-// /** @type {module:utils/ease/fn/easeInQuad} */
-// var easeIn = require("utils/ease/fn/easeInQuad");
-// /** @type {module:utils/ease/fn/easeOutQuad} */
-// var easeOut = require("utils/ease/fn/easeOutQuad");
-// var LOOP_OFFSET = 1.833333;
-// var STEP_MS = 400; // tween time base
-
-var ARC_DEFAULTS = {
-	"amount": {
-		lineWidth: 0.75,
-		radiusOffset: 0
-	},
-	"available": {
-		lineWidth: 0.75,
-		// lineDash: [1.3, 0.7],
-		inverse: "not-available"
-	},
-	"not-available": {
-		lineWidth: 0.8,
-		lineDash: [0.3, 0.7],
-		lineDashOffset: 0
-	},
-	"indeterminate": {
-		lineWidth: 2.0, //0.8,
-		lineDash: [0.3, 1.7],
-		// lineDash: [0.6, 1.4],
-		lineDashOffset: 0
-	},
-};
-
-/**
- * @constructor
- * @type {module:app/view/component/progress/CanvasProgressMeter}
- */
-module.exports = CanvasView.extend({
-
-	/** @type {string} */
-	cidPrefix: "canvasProgressMeter",
-	/** @type {string} */
-	className: "progress-meter canvas-progress-meter",
-
-	defaultKey: "amount",
-
-	defaults: {
-		values: {
-			amount: 0,
-			available: 0,
-			_loop: 0,
-			// _stalled_arc: 0,
-			// _stalled_loop: 0,
-		},
-		maxValues: {
-			amount: 1,
-			available: 1,
-			// _stalled_loop: 1,
-		},
-		useOpaque: true,
-		labelFn: function(value, max) {
-			return ((value / max) * 100) | 0;
-		},
-	},
-
-	properties: {
-		stalled: {
-			get: function() {
-				return this._stalled;
-			},
-			set: function(value) {
-				this._setStalled(value)
-			}
-		}
-	},
-
-	_setStalled: function(value) {
-		if (this._stalled !== value) {
-			this._stalled = value;
-			this.requestRender(CanvasView.MODEL_INVALID | CanvasView.LAYOUT_INVALID);
-		}
-	},
-
-	/* --------------------------- *
-	/* children/layout
-	/* --------------------------- */
-
-	/** @override */
-	initialize: function(options) {
-		// TODO: cleanup options mess in CanvasView
-		CanvasView.prototype.initialize.apply(this, arguments);
-		// options = _.defaults(options, this.defaults);
-
-		this._labelFn = options.labelFn;
-		this._stalled = !!(options.stalled);
-		this._valueStyles = {};
-		this._canvasSize = null;
-		this._canvasOrigin = null;
-	},
-
-	_needsLoop: false,
-
-	/** @override */
-	valueTo: function(key, value, duration) {
-		if (key === "amount" && value < this.interpolator.getCurrentValue("amount")) {
-			this._needsLoop = true;
-		}
-		CanvasView.prototype.valueTo.apply(this, arguments);
-	},
-
-	/* --------------------------- *
-	/* private
-	/* --------------------------- */
-
-	/** @override */
-	measureCanvas: function(w, h, s) {
-		// make canvas square
-		this._canvasHeight = this._canvasWidth = Math.min(w, h);
-	},
-
-	/** @override */
-	updateCanvas: function() {
-		// CanvasView.prototype._updateCanvas.apply(this, arguments);
-
-		// size, lines, gaps, dashes (this._valueStyles, GAP_ARC, this._arcRadius)
-		// --------------------------------
-		// var arcName, s, arcDefault;
-		// var mapLineDash = function(n) {
-		// 	return n * this.radius * GAP_ARC;
-		// };
-		// var sumFn = function(s, n) {
-		// 	return s + n;
-		// };
-
-		// this._canvasSize = Math.min(this._canvasWidth, this._canvasHeight);
-
-		var s;
-		// this._maxDashArc = 0
-		for (var styleName in ARC_DEFAULTS) {
-			s = _.defaults({}, ARC_DEFAULTS[styleName]);
-			s.lineWidth *= this._canvasRatio;
-			s.radius = (this._canvasWidth - s.lineWidth) / 2;
-			if (s.radiusOffset) {
-				s.radius += s.radiusOffset * this._canvasRatio;
-			}
-			if (_.isArray(s.lineDash)) {
-				s.lineDash = s.lineDash.map(function(val, i, arr) {
-					return val * this.radius * GAP_ARC;
-				}, s);
-				s.lineDashLength = s.lineDash.reduce(function(res, val, i, arr) {
-					return res + val;
-				}, 0);
-				s.lineDashArc = s.lineDash[0] * GAP_ARC;
-				// this._maxDashArc = Math.max(this._maxDashArc, s.lineDashArc);
-			} else {
-				s.lineDashArc = 0;
-			}
-			this._valueStyles[styleName] = s;
-		}
-
-		// baselineShift
-		// --------------------------------
-		// NOTE: Center baseline: use ascent data to center to x-height, or sort-of.
-		// with ascent/descent values (0.7, -0.3), x-height is 0.4
-		var mObj = this._getFontMetrics(this._fontFamily);
-		this._baselineShift = mObj ? (mObj.ascent + mObj.descent) / mObj.unitsPerEm : 0.7; // default value
-		this._baselineShift *= this._fontSize * 0.5; // apply to font-size, halve it
-		this._baselineShift = Math.round(this._baselineShift);
-
-		// save canvas context
-		// --------------------------------
-		// reset matrix and translate 0,0 to center
-		this._ctx.restore();
-		this._ctx.setTransform(1, 0, 0, 1, this._canvasWidth / 2, this._canvasHeight / 2);
-		this._ctx.save();
-	},
-
-	/** @override */
-	redraw: function(ctx, intrp, flags) {
-		this._clearCanvas(-this._canvasWidth / 2, -this._canvasHeight / 2,
-			this._canvasWidth, this._canvasHeight
-		);
-
-		var s, // reused style objects
-			valData, // reused for interpolated data
-			arcVal; // reused arc values
-
-		// amount label
-		// --------------------------------
-		valData = intrp._valueData["amount"];
-		this.drawLabel(this._labelFn(valData._renderedValue, valData._maxVal));
-
-		// indeterminate
-		// --------------------------------
-
-		/*
-		var indVal;
-		if (this.stalled) {
-			// _ind loop indefinitely while indeterminate: restart if at end
-			if (intrp.isAtTarget("_ind")) {
-				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") === -1)) {
-				intrp.valueTo("_ind", 0, 0);
-				intrp.valueTo("_ind", 1, 1000);
-				intrp.updateValue("_ind");
-			}
-			indVal = intrp.getCurrentValue("_ind");
-			//indVal = intrp._valueData["_ind"]._renderedValue || 0;
-
-			// draw spinning arc
-			// --------------------------------
-			// s = this._valueStyles["amount"];
-			// ctx.save();
-			// ctx.rotate(PI2 * (BASE_ROTATION + (indVal))); // + GAP_ARC);
-			// lastEndArc = this.drawArc(1,
-			// 	GAP_ARC,
-			// 	PI2 - GAP_ARC,
-			// 	0, s);
-			// ctx.restore();
-			// return;
-
-			// lineDashOffset animation
-			// --------------------------------
-			s = this._valueStyles["indeterminate"];
-			s.lineDashOffset = s.lineDashLength * ((1 - indVal) % 3) * 3;
-			this._valueStyles["available"].inverse = "indeterminate";
-
-			// console.log("%s::redraw indVal:%o s.lineDashOffset:%o s.lineDash:%o", this.cid, indVal, s.lineDashOffset, s.lineDash[0]);
-
-			// draw spinning wheel
-			// --------------------------------
-			// ctx.save();
-			// ctx.rotate((PI2 / WHEEL_NUM) * indVal); // + GAP_ARC);
-			// this.drawWheel(this._valueStyles["amount"], 2 / 5, 3 / 5);
-			// ctx.restore();
-
-		} else {
-			if (!intrp.isAtTarget("_ind")) {
-				// if (intrp.renderedKeys && (intrp.renderedKeys.indexOf("_ind") !== -1)) {
-				intrp.valueTo("_ind", 0, 0);
-				intrp.updateValue("_ind");
-			}
-			// lineDashOffset animation
-			// --------------------------------
-			this._valueStyles["available"].inverse = "not-available";
-		}*/
-
-		// save ctx before drawing arcs
-		ctx.save();
-
-		// loop (amount)
-		// --------------------------------
-		var loopVal;
-		/*
-		NOTE: If value "amount" has changed (with valueTo()) but no yet
-		interpolated, and its last rendered value is less, then its been reset
-		(a reload, a loop, etc): we trigger a 'loop' of the whole arc.
-		*/
-		// if ((intrp.renderedKeys.indexOf("amount") !== -1) && (valData._lastRenderedValue > valData._renderedValue)) {
-		if (this._needsLoop) {
-			this._needsLoop = false;
-			// trigger loop
-			intrp.valueTo("_loop", 1, 0);
-			intrp.valueTo("_loop", 0, 750);
-			intrp.updateValue("_loop");
-		}
-		// loopVal = intrp._valueData["_loop"]._renderedValue || 0;
-		loopVal = intrp.getCurrentValue("_loop");
-		ctx.rotate((PI2 * (BASE_ROTATION + (1 - loopVal)))); // + GAP_ARC);
-
-		// amount arc
-		// --------------------------------
-		// var amountGapArc = GAP_ARC;
-		var lastEndArc = 0;
-
-		s = this._valueStyles["amount"];
-		arcVal = loopVal + valData._renderedValue / valData._maxVal;
-
-		if (arcVal > 0) {
-			lastEndArc = this.drawArc(arcVal,
-				GAP_ARC,
-				PI2 - GAP_ARC,
-				lastEndArc, s);
-			this.drawEndCap(lastEndArc, s);
-			lastEndArc = lastEndArc + GAP_ARC * 2;
-		}
-
-		// available arc
-		// --------------------------------
-		s = this._valueStyles["available"];
-		valData = intrp._valueData["available"];
-
-		var stepsNum = valData.length || 1;
-		var stepBaseArc = PI2 / stepsNum;
-		var stepAdjustArc = stepBaseArc % GAP_ARC;
-		var stepGapArc = GAP_ARC + (stepAdjustArc - s.lineDashArc) / 2;
-
-		if (Array.isArray(valData)) {
-			for (var i = 0; i < stepsNum; i++) {
-				arcVal = valData[i]._renderedValue / (valData[i]._maxVal / stepsNum);
-				this.drawArc(arcVal,
-					(i * stepBaseArc) + stepGapArc,
-					((i + 1) * stepBaseArc) - stepGapArc,
-					lastEndArc, s);
-			}
-		} else {
-			arcVal = valData._renderedValue / valData._maxVal;
-			this.drawArc(arcVal,
-				stepGapArc,
-				PI2 - stepGapArc,
-				lastEndArc, s);
-		}
-		// restore ctx after drawing arcs
-		ctx.restore();
-
-
-		/*if (this._stalled) {
-			if (intrp.getTargetValue('_stalled_arc') === 0) {
-				intrp.valueTo('_stalled_arc', 1, 1 * STEP_MS, easeIn).updateValue('_stalled_arc');
-			}
-		} else {
-			if (intrp.getTargetValue('_stalled_arc') === 1) {
-				intrp.valueTo('_stalled_arc', 0, 1 * STEP_MS, easeOut).updateValue('_stalled_arc');
-			}
-		}
-		var a = intrp.getRenderedValue("_stalled_arc");
-		// while arc is > 0, loop indefinitely while spinning and restart
-		// if at end. Otherwise let interp exhaust arc duration
-		if (a > 0) {
-			if (!intrp.paused && intrp.isAtTarget('_stalled_loop')) {
-				intrp
-					.valueTo('_stalled_loop', 0, 0)
-					.valueTo('_stalled_loop', 1, 2 * STEP_MS)
-					.updateValue('_stalled_loop');
-			}
-		}
-		var l = intrp.getRenderedValue("_stalled_loop");
-		// always render while arc is > 0
-		if (a > 0) {
-			// arc span bounce
-			var b = (l < 0.5 ? (l % 0.5) : 0.5 - (l % 0.5)) * 2;
-			// bounce + main arc span
-			var aa = (a * b * 0.25) + (a * 0.125) + .0001;
-			// rotation loop
-			var ll = l + LOOP_OFFSET;
-
-			ctx.save();
-			ctx.lineWidth = 10 * this._canvasRatio;
-			ctx.globalAlpha = 1;
-			ctx.globalCompositeOperation = "destination-out";
-			ctx.strokeColor = 'red';
-			ctx.beginPath();
-			ctx.arc(0, 0, (this._canvasWidth) / 2, ((1 - aa) + ll) * PI2, (aa + ll) * PI2, false);
-			ctx.stroke();
-			ctx.restore();
-		}*/
-
-	},
-
-	drawArc: function(value, startArc, endArc, prevArc, style) {
-		var valArc,
-			valStartArc,
-			valEndArc,
-			invStyle,
-			invStartArc,
-			invEndArc;
-
-		prevArc || (prevArc = 0);
-
-		valArc = endArc - startArc;
-		valEndArc = startArc + (valArc * value);
-		valStartArc = Math.max(startArc, prevArc);
-		if (valEndArc > valStartArc) {
-			this._ctx.save();
-			this.applyValueStyle(style);
-			this._ctx.beginPath();
-			this._ctx.arc(0, 0, style.radius, valEndArc, valStartArc, true);
-			this._ctx.stroke();
-			this._ctx.restore();
-		}
-
-		// if there's valueStyle, draw rest of span, minus prevArc overlap too
-		if (style.inverse !== void 0) {
-			invStyle = this._valueStyles[style.inverse];
-
-			invEndArc = valEndArc + (valArc * (1 - value));
-			invStartArc = Math.max(valEndArc, prevArc);
-			if (invEndArc > invStartArc) {
-				this._ctx.save();
-				this.applyValueStyle(invStyle);
-				this._ctx.beginPath();
-				this._ctx.arc(0, 0, invStyle.radius, invEndArc, invStartArc, true);
-				this._ctx.stroke();
-				this._ctx.restore();
-			}
-		}
-
-		return valEndArc;
-	},
-
-	applyValueStyle: function(s) {
-		this._ctx.lineWidth = s.lineWidth;
-		if (_.isArray(s.lineDash)) {
-			this._ctx.setLineDash(s.lineDash);
-		}
-		if (_.isNumber(s.lineDashOffset)) {
-			this._ctx.lineDashOffset = s.lineDashOffset;
-		}
-	},
-
-
-	drawNotch: function(arcPos, length, s) {
-		var ex, ey, ec1, ec2;
-
-		ex = Math.cos(arcPos);
-		ey = Math.sin(arcPos);
-		ec1 = s.radius;
-		ec2 = s.radius - length;
-
-		this._ctx.save();
-		this.applyValueStyle(s);
-		this._ctx.lineCap = "square";
-		this._ctx.beginPath();
-		this._ctx.moveTo(ec1 * ex, ec1 * ey);
-		this._ctx.lineTo(ec2 * ex, ec2 * ey);
-		this._ctx.stroke();
-		this._ctx.restore();
-	},
-
-	drawEndCap: function(arcPos, s) {
-		var radius = s.radius;
-		this._ctx.save();
-		this._ctx.lineWidth = s.lineWidth;
-
-		this._ctx.rotate(arcPos - GAP_ARC * 2); // 1.5);
-		this._ctx.beginPath();
-		this._ctx.arc(0, 0, radius, GAP_ARC * 0.5, GAP_ARC * 2, false);
-		this._ctx.lineTo(radius - (GAP_ARC * radius), 0);
-		this._ctx.closePath();
-
-		this._ctx.fill();
-		this._ctx.stroke();
-		this._ctx.restore();
-	},
-
-	drawLabel: function(labelString) {
-		var labelWidth = this._ctx.measureText(labelString).width;
-		this._ctx.fillText(labelString,
-			labelWidth * -0.5,
-			this._baselineShift, labelWidth);
-	},
-});
-
-if (DEBUG) {
-	module.exports.prototype._logFlags = "";
-}
-}).call(this,true)
-
-},{"app/view/base/CanvasView":58,"underscore":"underscore"}],77:[function(require,module,exports){
+},{"app/view/base/View":62,"app/view/render/ClickableRenderer":86,"app/view/render/DefaultSelectableRenderer":88,"backbone.babysitter":"backbone.babysitter"}],76:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {Function} */
@@ -11617,7 +11665,8 @@ module.exports = function() {
 			attrs, fgColor, bgColor, lnColor, hasDarkBg);
 	});
 };
-},{"app/control/Globals":35,"app/model/collection/BundleCollection":44,"color":"color","underscore":"underscore"}],78:[function(require,module,exports){
+
+},{"app/control/Globals":35,"app/model/collection/BundleCollection":44,"color":"color","underscore":"underscore"}],77:[function(require,module,exports){
 /*global XMLHttpRequest */
 
 // var _ = require("underscore");
@@ -11696,7 +11745,8 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 		return Promise.resolve(url);
 	};
 }
-},{}],79:[function(require,module,exports){
+
+},{}],78:[function(require,module,exports){
 module.exports = function(image, resolveEmpty) {
 	return new Promise(function(resolve, reject) {
 		if (!(image instanceof window.HTMLImageElement)) {
@@ -11740,7 +11790,7 @@ module.exports = function(image, resolveEmpty) {
 	});
 };
 
-},{}],80:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {module:app/view/promise/_whenImageLoads} */
@@ -11813,7 +11863,8 @@ module.exports = function(view) {
 		}
 	});
 };
-},{"app/view/promise/_loadImageAsObjectURL":78,"app/view/promise/_whenImageLoads":79,"underscore":"underscore"}],81:[function(require,module,exports){
+
+},{"app/view/promise/_loadImageAsObjectURL":77,"app/view/promise/_whenImageLoads":78,"underscore":"underscore"}],80:[function(require,module,exports){
 /* global Promise */
 /** @type {module:app/view/base/ViewError} */
 var ViewError = require("app/view/base/ViewError");
@@ -11895,7 +11946,7 @@ module.exports = function(view) {
 };
 */
 
-},{"app/view/base/ViewError":63,"app/view/promise/whenViewIsAttached":84}],82:[function(require,module,exports){
+},{"app/view/base/ViewError":63,"app/view/promise/whenViewIsAttached":83}],81:[function(require,module,exports){
 /** @type {module:app/view/base/ViewError} */
 var ViewError = require("app/view/base/ViewError");
 
@@ -11943,7 +11994,7 @@ module.exports = function(view, distance) {
 	});
 };
 
-},{"app/view/base/ViewError":63}],83:[function(require,module,exports){
+},{"app/view/base/ViewError":63}],82:[function(require,module,exports){
 // /** @type {module:app/view/base/ViewError} */
 // var ViewError = require("app/view/base/ViewError");
 
@@ -11954,7 +12005,8 @@ var whenSelectionDistanceIs = require("app/view/promise/whenSelectionDistanceIs"
 module.exports = function(view) {
 	return whenSelectionDistanceIs(view, 1);
 };
-},{"app/view/promise/whenSelectionDistanceIs":82}],84:[function(require,module,exports){
+
+},{"app/view/promise/whenSelectionDistanceIs":81}],83:[function(require,module,exports){
 module.exports = function(view) {
 	return new Promise(function(resolve, reject) {
 		if (view.attached) {
@@ -11967,7 +12019,7 @@ module.exports = function(view) {
 	});
 };
 
-},{}],85:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 module.exports = function(view) {
 	return new Promise(function(resolve, reject) {
 		if (!view.invalidated) {
@@ -11979,7 +12031,8 @@ module.exports = function(view) {
 		}
 	});
 };
-},{}],86:[function(require,module,exports){
+
+},{}],85:[function(require,module,exports){
 /**
  * @module app/view/render/CarouselRenderer
  */
@@ -12095,7 +12148,8 @@ var CarouselRenderer = View.extend({
 });
 
 module.exports = CarouselRenderer;
-},{"app/view/base/View":62,"underscore":"underscore","utils/css/getBoxEdgeStyles":117}],87:[function(require,module,exports){
+
+},{"app/view/base/View":62,"underscore":"underscore","utils/css/getBoxEdgeStyles":116}],86:[function(require,module,exports){
 /**
  * @module app/view/render/ClickableRenderer
  */
@@ -12149,7 +12203,8 @@ var ClickableRenderer = LabelRenderer.extend({
 });
 
 module.exports = ClickableRenderer;
-},{"app/view/render/LabelRenderer":94}],88:[function(require,module,exports){
+
+},{"app/view/render/LabelRenderer":93}],87:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12162,7 +12217,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</span></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],89:[function(require,module,exports){
+},{"hbsfy/runtime":20}],88:[function(require,module,exports){
 /**
  * @module app/view/render/DefaultSelectableRenderer
  */
@@ -12202,7 +12257,7 @@ var DefaultSelectableRenderer = ClickableRenderer.extend({
 
 module.exports = DefaultSelectableRenderer;
 
-},{"./DefaultSelectableRenderer.hbs":88,"app/view/render/ClickableRenderer":87}],90:[function(require,module,exports){
+},{"./DefaultSelectableRenderer.hbs":87,"app/view/render/ClickableRenderer":86}],89:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12215,7 +12270,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\"><b> </b></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],91:[function(require,module,exports){
+},{"hbsfy/runtime":20}],90:[function(require,module,exports){
 /**
  * @module app/view/render/DotNavigationRenderer
  */
@@ -12278,7 +12333,8 @@ var DotNavigationRenderer = View.extend({
 });
 
 module.exports = DotNavigationRenderer;
-},{"./DotNavigationRenderer.hbs":90,"app/view/base/View":62}],92:[function(require,module,exports){
+
+},{"./DotNavigationRenderer.hbs":89,"app/view/base/View":62}],91:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12291,7 +12347,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],93:[function(require,module,exports){
+},{"hbsfy/runtime":20}],92:[function(require,module,exports){
 /**
  * @module app/view/render/ImageRenderer
  */
@@ -12396,7 +12452,7 @@ var ImageRenderer = MediaRenderer.extend({
 
 module.exports = ImageRenderer;
 
-},{"./ImageRenderer.hbs":92,"./MediaRenderer":95}],94:[function(require,module,exports){
+},{"./ImageRenderer.hbs":91,"./MediaRenderer":94}],93:[function(require,module,exports){
 /**
  * @module app/view/render/LabelRenderer
  */
@@ -12442,7 +12498,7 @@ var LabelRenderer = View.extend({
 
 module.exports = LabelRenderer;
 
-},{"app/view/base/View":62}],95:[function(require,module,exports){
+},{"app/view/base/View":62}],94:[function(require,module,exports){
 (function (DEBUG){
 /*global XMLHttpRequest, HTMLMediaElement, MediaError*/
 /**
@@ -12807,9 +12863,10 @@ if (DEBUG) {
  * @type {module:app/view/render/MediaRenderer}
  */
 module.exports = MediaRenderer;
+
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":103,"app/model/item/MediaItem":51,"app/view/promise/whenDefaultImageLoads":80,"app/view/promise/whenScrollingEnds":81,"app/view/promise/whenSelectionIsContiguous":83,"app/view/render/CarouselRenderer":86,"color":"color","underscore":"underscore","underscore.string/lpad":29}],96:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":102,"app/model/item/MediaItem":51,"app/view/promise/whenDefaultImageLoads":79,"app/view/promise/whenScrollingEnds":80,"app/view/promise/whenSelectionIsContiguous":82,"app/view/render/CarouselRenderer":85,"color":"color","underscore":"underscore","underscore.string/lpad":29}],95:[function(require,module,exports){
 (function (GA){
 /**
  * @module app/view/render/PlayableRenderer
@@ -12822,8 +12879,10 @@ var _ = require("underscore");
 var MediaRenderer = require("app/view/render/MediaRenderer");
 // /** @type {module:app/view/component/PlayToggleSymbol} */
 var PlayToggleSymbol = require("app/view/component/PlayToggleSymbol");
-// /** @type {module:app/view/component/ProgressMeter} */
-// var ProgressMeter = require("app/view/component/ProgressMeter");
+// /** @type {module:app/view/component/CanvasProgressMeter} */
+// var ProgressMeter = require("app/view/component/CanvasProgressMeter");
+
+var WAIT_DEBOUNCE_MS = require("app/control/Globals").TRANSITION_DURATION;
 
 /** @type {Function} */
 var prefixedProperty = require("utils/prefixedProperty");
@@ -12936,14 +12995,6 @@ var PlayableRenderer = MediaRenderer.extend({
 				return this._playToggleHitarea || (this._playToggleHitarea = this.el.querySelector(".play-toggle-hitarea"));
 			}
 		},
-		// playbackState: {
-		// 	get: function() {
-		// 		return this._playbackState;
-		// 	},
-		// 	set: function(state) {
-		// 		this._setPlaybackState(state);
-		// 	}
-		// }
 	},
 
 	// events: function() {
@@ -12965,7 +13016,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		this._setPlaybackRequested(this._playbackRequested);
 
 		// this._toggleWaiting = _.debounce(this._toggleWaiting, 500);
-		this._toggleWaiting = _.throttle(this._toggleWaiting, 1000, { leading: false, trailing: true });
+		this._toggleWaiting = _.throttle(this._toggleWaiting, WAIT_DEBOUNCE_MS, { leading: true, trailing: true });
 
 		// this.listenTo(this, "view:parentChange", function(childView, newParent, oldParent) {
 		// 	// logAttachInfo(this, "[view:parentChange]", "info");
@@ -13072,7 +13123,9 @@ var PlayableRenderer = MediaRenderer.extend({
 		if (this._playToggleSymbol) this._playToggleSymbol.paused = true;
 
 		this._removeDOMListeners();
+		// this._validatePlayback(false);
 		this.togglePlayback(false);
+
 		// this._validatePlayback(this.model.selected);
 		// this._validatePlayback();
 	},
@@ -13134,13 +13187,13 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* view:scrollstart view:scrollend
 	/* --------------------------- */
 
-	/*_onScrollStart: function() {
-		this.togglePlayback(false);
-	},
-
-	_onScrollEnd: function() {
-		this._validatePlayback();
-	},*/
+	// _onScrollStart: function() {
+	// 	this.togglePlayback(false);
+	// },
+	//
+	// _onScrollEnd: function() {
+	// 	this._validatePlayback();
+	// },
 
 	/* listen to DOM events
 	/* --------------------------- */
@@ -13208,6 +13261,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// } else {
 		// 	this.togglePlayback(false);
 		// }
+		this._renderPlaybackState();
 	},
 
 	/* --------------------------- *
@@ -13231,8 +13285,8 @@ var PlayableRenderer = MediaRenderer.extend({
 		} else {
 			this._pauseMedia();
 		}
-		// this.setImmediate(this._renderPlaybackState);
-		this._renderPlaybackState();
+		/* NOTE: called from _setPlaybackRequested */
+		// this._renderPlaybackState();
 	},
 
 	_canResumePlayback: function() {
@@ -13266,7 +13320,6 @@ var PlayableRenderer = MediaRenderer.extend({
 		if (this.progressMeter) {
 			this.progressMeter.stalled = this._isMediaWaiting();
 		}
-
 		// this._setPlayToggleSymbol("waiting");
 		// this.content.classList.toggle("waiting", true);
 
@@ -13286,21 +13339,27 @@ var PlayableRenderer = MediaRenderer.extend({
 				this._setPlayToggleSymbol("play");
 			}
 		}
+		if (!this._started && this.playbackRequested) {
+			this._started = true;
+			this.content.classList.add("started");
+		}
 		this.content.classList.toggle("playing", this.playbackRequested);
 		this.content.classList.toggle("paused", !this.playbackRequested);
 		this.content.classList.toggle("waiting", this._isMediaWaiting());
+
+		//console.log("%s::_renderPlaybackState [play: %s] [wait: %s] [symbol: %s]", this.cid, this.playbackRequested, this._isMediaWaiting(), this._playToggleSymbol.symbolName);
 	},
 
 	_playToggleSymbol: null,
 	_setPlayToggleSymbol: function(symbolName) {
 		if (this._playToggleSymbol === null) {
 			this._playToggleSymbol = new PlayToggleSymbol({
-				el: this.el.querySelector(".play-toggle-symbol"),
+				el: this.el.querySelector(".play-toggle"),
 			});
 		}
-		console.log("%s::_setPlayToggleSymbol [enabled:%s] [selected:%s]", this.cid, this.enabled, this.parentView.collection.selected === this.model);
+		//console.log("%s::_setPlayToggleSymbol [enabled: %s] [selected: %s] [symbol: %s]", this.cid, this.enabled, !!(this.model.selected), symbolName);
 
-		this._playToggleSymbol.paused = !(this.enabled && this.parentView.collection.selected === this.model);
+		this._playToggleSymbol.paused = !(this.attached && this.enabled && this.parentView.collection.selected === this.model);
 		this._playToggleSymbol.symbolName = symbolName;
 	},
 
@@ -13344,30 +13403,6 @@ var PlayableRenderer = MediaRenderer.extend({
 			this._renderPlaybackState();
 		}
 	},
-
-	/* --------------------------- *
-	/* playbackState
-	/* --------------------------- */
-
-	/*_playbackState: null,
-
-	_playbackStateEnum: ["playing", "paused", "waiting", "ended"],
-
-	_setPlaybackState: function(key) {
-		if (this._playbackStateEnum.indexOf(key) === -1) {
-			throw new Error("Argument " + key + " invalid. Must be one of: " + this._playbackStateEnum.join(", "));
-		}
-		if (this._playbackState !== key) {
-			if (this._playbackState) {
-				this.content.classList.remove(this._playbackState);
-			} else {
-				this.content.classList.add("started");
-			}
-			this.content.classList.add(key);
-			this._playbackState = key;
-			this.trigger("playback:" + key);
-		}
-	},*/
 
 	/* --------------------------- *
 	/* abstract
@@ -13562,21 +13597,23 @@ if (GA) {
 			/** @override */
 			initialize: function() {
 				var retval = PlayableRenderer.prototype.initialize.apply(this, arguments);
-				this._playbackRequestedDefault = this.playbackRequested;
+				this._gaEventSuffix = this.playbackRequested ? "-autoplay" : "";
 				return retval;
 			},
 
+			/** @override */
 			_onPlaybackToggle: function(ev) {
 				var retval = PlayableRenderer.prototype._onPlaybackToggle.apply(this, arguments);
-				var o = {
-					hitType: "event",
-					eventCategory: dasherize(this.cidPrefix),
-					eventAction: this.playbackRequested ? "play" : "pause",
-					eventLabel: this.model.get("text"),
-				};
-				if (this._playbackRequestedDefault)
-					o.eventAction += "-autoplay";
-				window.ga("send", o);
+				if (window.ga) {
+					window.ga("send", {
+						hitType: "event",
+						eventCategory: dasherize(this.cidPrefix),
+						eventAction: (this.playbackRequested ? "play" : "pause") + this._gaEventSuffix,
+						eventLabel: this.model.get("text"),
+					});
+				} else {
+					console.warn("%s::_onPlaybackToggle window.ga is %s", this.cid, window.ga);
+				}
 				return retval;
 			},
 
@@ -13626,9 +13663,10 @@ if (GA) {
 // }
 
 module.exports = PlayableRenderer;
+
 }).call(this,true)
 
-},{"app/view/component/PlayToggleSymbol":73,"app/view/render/MediaRenderer":95,"color":"color","underscore":"underscore","underscore.string/dasherize":24,"utils/canvas/bitmap/getAverageRGB":112,"utils/canvas/bitmap/stackBlurRGB":115,"utils/prefixedEvent":123,"utils/prefixedProperty":124}],97:[function(require,module,exports){
+},{"app/control/Globals":35,"app/view/component/PlayToggleSymbol":74,"app/view/render/MediaRenderer":94,"color":"color","underscore":"underscore","underscore.string/dasherize":24,"utils/canvas/bitmap/getAverageRGB":111,"utils/canvas/bitmap/stackBlurRGB":114,"utils/prefixedEvent":122,"utils/prefixedProperty":123}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13638,10 +13676,10 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias4(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"text","hash":{},"data":data}) : helper)))
     + "\" longdesc=\"#desc_m"
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<div class=\"play-toggle\">\n			<canvas class=\"play-toggle-symbol\"/>\n		</div>\n	</div>\n</div>\n";
+    + "\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<canvas class=\"play-toggle\"/>\n	</div>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],98:[function(require,module,exports){
+},{"hbsfy/runtime":20}],97:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/render/SequenceRenderer
@@ -13667,8 +13705,8 @@ var PlayableRenderer = require("app/view/render/PlayableRenderer");
 /** @type {module:app/control/Globals} */
 var Globals = require("app/control/Globals");
 
-/** @type {module:app/view/component/ProgressMeter} */
-var ProgressMeter = require("app/view/component/ProgressMeter");
+/** @type {module:app/view/component/CanvasProgressMeter} */
+var ProgressMeter = require("app/view/component/CanvasProgressMeter");
 
 /** @type {module:utils/Timer} */
 var Timer = require("utils/Timer");
@@ -14490,9 +14528,10 @@ if (DEBUG) {
 }
 
 module.exports = SequenceRenderer;
+
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":103,"./SequenceRenderer.hbs":97,"app/control/Globals":35,"app/view/base/View":62,"app/view/component/ProgressMeter":74,"app/view/promise/_loadImageAsObjectURL":78,"app/view/promise/_whenImageLoads":79,"app/view/promise/whenSelectionDistanceIs":82,"app/view/render/PlayableRenderer":96,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/capitalize":23,"underscore.string/lpad":29,"utils/Timer":106}],99:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":102,"./SequenceRenderer.hbs":96,"app/control/Globals":35,"app/view/base/View":62,"app/view/component/CanvasProgressMeter":67,"app/view/promise/_loadImageAsObjectURL":77,"app/view/promise/_whenImageLoads":78,"app/view/promise/whenSelectionDistanceIs":81,"app/view/render/PlayableRenderer":95,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/capitalize":23,"underscore.string/lpad":29,"utils/Timer":105}],98:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 var partial$0 = require('../template/svg/FullscreenSymbol.hbs');
@@ -14502,12 +14541,12 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
 
   return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<canvas class=\"progress-meter\"></canvas>\n		<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n"
     + ((stack1 = container.invokePartial(partials["../template/svg/FullscreenSymbol.hbs"],depth0,{"name":"../template/svg/FullscreenSymbol.hbs","data":data,"indent":"\t\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
-    + "		</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video width=\"240\" height=\"180\"></video>\n		<img class=\"poster default\" alt=\""
+    + "		</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video width=\"240\" height=\"180\" muted playsinline></video>\n		<img class=\"poster default\" alt=\""
     + container.escapeExpression(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"text","hash":{},"data":data}) : helper)))
-    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<div class=\"play-toggle\">\n			<canvas class=\"play-toggle-symbol\"/>\n		</div>\n	</div>\n</div>\n";
+    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<canvas class=\"play-toggle\"/>\n	</div>\n</div>\n";
 },"usePartial":true,"useData":true});
 
-},{"../template/svg/FullscreenSymbol.hbs":105,"hbsfy/runtime":20}],100:[function(require,module,exports){
+},{"../template/svg/FullscreenSymbol.hbs":104,"hbsfy/runtime":20}],99:[function(require,module,exports){
 (function (DEBUG){
 /*global HTMLMediaElement, MediaError*/
 /**
@@ -14531,8 +14570,8 @@ var _ = require("underscore");
 var Globals = require("app/control/Globals");
 /** @type {module:app/view/render/PlayableRenderer} */
 var PlayableRenderer = require("app/view/render/PlayableRenderer");
-/** @type {module:app/view/component/ProgressMeter} */
-var ProgressMeter = require("app/view/component/ProgressMeter");
+/** @type {module:app/view/component/CanvasProgressMeter} */
+var ProgressMeter = require("app/view/component/CanvasProgressMeter");
 // /** @type {module:utils/prefixedStyleName} */
 // var prefixedStyleName = require("utils/prefixedStyleName");
 /** @type {module:utils/prefixedEvent} */
@@ -14605,7 +14644,7 @@ var VideoRenderer = PlayableRenderer.extend({
 			"_updateBufferedValue",
 			"_onMediaError",
 			"_onMediaEnded",
-			"_onMediaPlayingOnce",
+			// "_onMediaPlayingOnce",
 			"_onFullscreenChange",
 			"_onFullscreenToggle"
 		);
@@ -14632,7 +14671,17 @@ var VideoRenderer = PlayableRenderer.extend({
 		// this.overlay = this.content.querySelector(".overlay");
 		this.video = this.content.querySelector("video");
 		// this.video.loop = this.model.attrs().hasOwnProperty("@video-loop");
-		this.video.preload = "none";
+
+		// this.video.setAttribute("muted", "muted");
+		// this.video.setAttribute("playsinline", "playsinline");
+		// if (this.model.attr("@video-loop") !== void 0) {
+		// 	this.video.setAttribute("loop", "loop");
+		// }
+		this.video.setAttribute("preload", "none");
+
+		// this.video.muted = true;
+		// this.video.playsinline = true;
+		// this.video.preload = "auto";
 		this.video.loop = this.model.attr("@video-loop") !== void 0;
 		this.video.src = this.findPlayableSource(this.video);
 	},
@@ -14725,16 +14774,9 @@ var VideoRenderer = PlayableRenderer.extend({
 					return Promise.all([
 						view.whenVideoHasMetadata(view),
 						PlayableRenderer.whenDefaultImageLoads(view),
-					]).then(
-						function(arr) {
-							console.log("%s::initializeAsync whenVideoHasMetadata res", view.cid);
-							return Promise.resolve(view);
-						},
-						function(err) {
-							console.log("%s::initializeAsync whenVideoHasMetadata err", view.cid);
-							return Promise.reject(err);
-						}
-					);
+					]).then(function() {
+						return view;
+					});
 				})
 			.then(
 				function(view) {
@@ -14749,10 +14791,10 @@ var VideoRenderer = PlayableRenderer.extend({
 	initializePlayable: function() {
 		// video
 		// ---------------------------------
-		// if (this.model.source.has("prefetched")) {
-		// 	this.video.setAttribute("poster", this.model.source.get("prefetched"));
-		// }
-		this.addMediaListeners();
+		if (this.model.source.has("prefetched")) {
+			// this.video.setAttribute("poster", this.model.source.get("prefetched"));
+			this.video.poster = this.model.source.get("prefetched");
+		}
 
 		// progress-meter
 		// ---------------------------------
@@ -14774,6 +14816,9 @@ var VideoRenderer = PlayableRenderer.extend({
 
 		// this._setPlayToggleSymbol("play-symbol");
 		this._renderPlaybackState();
+
+		// listen to video events
+		this.addMediaListeners();
 	},
 
 	_progressLabelFn: function(value, total) {
@@ -14819,13 +14864,10 @@ var VideoRenderer = PlayableRenderer.extend({
 					reject(err);
 				},
 			};
-			// videoEl.setAttribute("preload", "metadata");
-			// videoEl.preload = "metadata";
-			// videoEl.loop = view.model.attr("@video-loop") !== void 0;
-			// videoEl.src = view.findPlayableSource(videoEl);
 
 			//  (videoEl.preload == "auto" && videoEl.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA)
 			// 	(videoEl.preload == "metadata" && videoEl.readyState >= HTMLMediaElement.HAVE_METADATA)
+
 			if (videoEl.error) {
 				eventHandlers.error();
 			} else if (videoEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
@@ -14849,11 +14891,18 @@ var VideoRenderer = PlayableRenderer.extend({
 						videoEl.addEventListener(ev, eventHandlers[ev], false);
 					}
 				}
-				console.log("%s::initializeAsync whenVideoHasMetadata preload:%s", view.cid, videoEl.preload);
+				/* NOTE: MS Edge ignores js property, using setAttribute */
+				videoEl.setAttribute("preload", "auto");
+
+				// videoEl.setAttribute("poster", view.get("source").get("original"));
+				// videoEl.setAttribute("preload", "metadata");
+				// videoEl.poster = view.model.get("source").get("original");
 				// videoEl.preload = "metadata";
-				// videoEl.playsinline = true;
-				videoEl.setAttribute("preload", "metadata");
-				videoEl.setAttribute("playsinline", "true");
+				// videoEl.loop = view.model.attr("@video-loop") !== void 0;
+				// videoEl.src = view.findPlayableSource(videoEl);
+				// videoEl.load();
+
+				console.log("%s::initializeAsync whenVideoHasMetadata preload:%s", view.cid, videoEl.preload);
 			}
 		});
 	},
@@ -14882,13 +14931,63 @@ var VideoRenderer = PlayableRenderer.extend({
 		if (this.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && this.video.seekable.length == 0) {
 			console.warn(this.cid, "WTF! got video data, but cannot seek, calling load()");
 			// this._logMessage("call:load", "got video data, but cannot seek, calling load()", "orange");
-			this.video.load();
+			if (_.isFunction(this.video.load)) {
+				this.video.load();
+			}
 			// this.video.currentTime = 0;
 		} else if (this.video.ended) {
 			this.video.currentTime = this.video.seekable.start(0);
 		}
+
+
+		/* Change the preload attr */
+		// if (this.video.preload !== "auto") {
+		// 	this.video.preload = "auto";
+		// }
+		// if (this.video.getAttribute("preload") !== "auto") {
+		// 	this.video.setAttribute("preload", "auto");
+		// }
+
+		/* */
+		// if (this.video.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA && this.video.networkState === HTMLMediaElement.NETWORK_IDLE && (this.video.buffered.end(0) < this.video.duration)) {
+		// 	this._toggleWaiting(true);
+		// 	// this.video.load();
+		// 	this.video.addEventListener("canplaythrough", handler, false);
+		// }
+
+		// if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
+		// 	var handler = function(ev) {
+		// 		this.video.removeEventListener("canplaythrough", handler, false);
+		// 		this.video.play();
+		// 	}.bind(this);
+		// 	this.video.addEventListener("canplaythrough", handler, false);
+		//
+		// 	if (this.video.readyState < 2 && this.video.networkState < 2 && _.isFunction(this.video.load)) {
+		// 		this.video.load();
+		// 	}
+		// 	this._toggleWaiting(true);
+		// }
+
+		/* if not enough data */
+		if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
+			// if (this.video.networkState == HTMLMediaElement.NETWORK_IDLE) {
+			// 	this.video.load();
+			// }
+			var handler = function(ev) {
+				this.video.removeEventListener("canplaythrough", handler, false);
+				this._toggleWaiting(false);
+				this.playbackRequested && this.video.play();
+			}.bind(this);
+			this.video.addEventListener("canplaythrough", handler, false);
+			this._toggleWaiting(true);
+			// }
+		}
+		/* play*/
+		else {
+			this.video.play();
+		}
+
 		// this._setPlayToggleSymbol("pause-symbol");
-		this.video.play();
 		// this._renderPlaybackState();
 
 		// var p = this.video.play();
@@ -14902,13 +15001,6 @@ var VideoRenderer = PlayableRenderer.extend({
 		// 		this.video.pause();
 		// 		this.content.classList.add("waiting");
 		// 	}
-		// 	var handler = function(ev) {
-		// 		this.video.removeEventListener("canplaythrough", handler, false);
-		// 		this.content.classList.remove("waiting");
-		// 		this.video.play();
-		// 	}.bind(this);
-		//
-		// 	this.video.addEventListener("canplaythrough", handler, false);
 		// }
 	},
 
@@ -14958,9 +15050,9 @@ var VideoRenderer = PlayableRenderer.extend({
 	/* --------------------------- */
 
 	addMediaListeners: function() {
-		if (!this._started) {
-			this.addListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
-		}
+		// if (!this._started) {
+		// 	this.addListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
+		// }
 		this.addListener(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
 		this.addListener(this.video, this.updateBufferedEvents, this._updateBufferedValue);
 		this.addListener(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
@@ -14973,9 +15065,9 @@ var VideoRenderer = PlayableRenderer.extend({
 	removeMediaListeners: function() {
 		this.off("view:removed", this.removeMediaListeners, this);
 
-		if (!this._started) {
-			this.removeListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
-		}
+		// if (!this._started) {
+		// 	this.removeListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
+		// }
 		this.removeListener(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
 		this.removeListener(this.video, this.updateBufferedEvents, this._updateBufferedValue);
 		this.removeListener(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
@@ -15007,6 +15099,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	},
 
 	_exitFullscreen: function() {
+		/* NOTE: polyfill should handle this on iOS? */
 		if (this.video.webkitDisplayingFullscreen) {
 			this.video.webkitExitFullscreen();
 		}
@@ -15019,21 +15112,21 @@ var VideoRenderer = PlayableRenderer.extend({
 	/* _onMediaPlayingOnce
 	/* --------------------------- */
 
-	playingOnceEvents: "playing waiting",
-
-	_onMediaPlayingOnce: function(ev) {
-		this.removeListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
-		if (!this._started) {
-			this._started = true;
-			this.content.classList.add("started");
-		}
-	},
+	// playingOnceEvents: "playing waiting",
+	//
+	// _onMediaPlayingOnce: function(ev) {
+	// 	this.removeListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
+	// 	if (!this._started) {
+	// 		this._started = true;
+	// 		this.content.classList.add("started");
+	// 	}
+	// },
 
 	/* ---------------------------
 	/* _updateCurrTimeValue
 	/* --------------------------- */
 
-	updateCurrTimeEvents: "playing waiting pause timeupdate seeked".split(" "),
+	updateCurrTimeEvents: "playing waiting pause timeupdate seeked", //.split(" "),
 
 	_updateCurrTimeValue: function(ev) {
 		if (this.progressMeter) {
@@ -15046,7 +15139,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	/* --------------------------- */
 
 	// updatePlaybackEvents: "play playing waiting pause seeking seeked ended",
-	updatePlaybackEvents: "playing waiting pause timeupdate seeked".split(" "),
+	updatePlaybackEvents: "playing waiting pause timeupdate seeked", //.split(" "),
 
 	_isPlaybackWaiting: false,
 	_playbackStartTS: -1,
@@ -15159,12 +15252,19 @@ var VideoRenderer = PlayableRenderer.extend({
 
 	/** @override */
 	_renderPlaybackState: function() {
-
-		if (this._started) {
+		if (this.mediaState === "ready") {
 			this.updateOverlay(this.video, this.playToggle);
 		}
-		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
+		//console.log("%s::_renderPlaybackState ended: %o", this.cid, this.video.ended);
 		this.content.classList.toggle("ended", this.video.ended);
+		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
+	},
+
+	_setPlayToggleSymbol: function(symbolName) {
+		// if (this.video.ended) {
+		// 	console.log("%s::_setPlayToggleSymbol %s -> ended", this.cid, symbolName);
+		// }
+		return PlayableRenderer.prototype._setPlayToggleSymbol.call(this, this.video.ended ? "ended" : symbolName);
 	},
 
 	/* ---------------------------
@@ -15175,7 +15275,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	updateBufferedEvents: "progress canplay canplaythrough play playing",
 
 	_updateBufferedValue: function(ev) {
-		if (!this._started) return;
+		// if (!this._started) return;
 		var bRanges = this.video.buffered;
 		if (bRanges.length > 0) {
 			this._bufferedValue = bRanges.end(bRanges.length - 1);
@@ -15227,8 +15327,8 @@ var VideoRenderer = PlayableRenderer.extend({
 				this.video.addEventListener("webkitendfullscreen", this._onFullscreenChange, false);
 				break;
 			case "webkitendfullscreen":
-				this.video.controls = false;
 				this.video.removeEventListener("webkitendfullscreen", this._onFullscreenChange, false);
+				this.video.controls = false;
 				break;
 		}
 	},
@@ -15502,9 +15602,10 @@ if (DEBUG) {
 }
 
 module.exports = VideoRenderer;
+
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":99,"app/control/Globals":35,"app/view/component/ProgressMeter":74,"app/view/render/PlayableRenderer":96,"color":"color","underscore":"underscore","underscore.string/lpad":29,"underscore.string/rpad":31,"utils/event/mediaEventsEnum":121,"utils/prefixedEvent":123}],101:[function(require,module,exports){
+},{"./VideoRenderer.hbs":98,"app/control/Globals":35,"app/view/component/CanvasProgressMeter":67,"app/view/render/PlayableRenderer":95,"color":"color","underscore":"underscore","underscore.string/lpad":29,"underscore.string/rpad":31,"utils/event/mediaEventsEnum":120,"utils/prefixedEvent":122}],100:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -15517,7 +15618,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],102:[function(require,module,exports){
+},{"hbsfy/runtime":20}],101:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -15532,7 +15633,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],103:[function(require,module,exports){
+},{"hbsfy/runtime":20}],102:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
@@ -15555,7 +15656,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],104:[function(require,module,exports){
+},{"hbsfy/runtime":20}],103:[function(require,module,exports){
 // var Handlebars = require("handlebars")["default"];
 var Handlebars = require("hbsfy/runtime");
 /** @type {Function} */
@@ -15652,14 +15753,14 @@ for (var helper in helpers) {
 
 // module.exports = Handlebars;
 
-},{"app/control/Globals":35,"color":"color","hbsfy/runtime":20}],105:[function(require,module,exports){
+},{"app/control/Globals":35,"color":"color","hbsfy/runtime":20}],104:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<svg class=\"fullscreen-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n	<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n</svg>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],106:[function(require,module,exports){
+},{"hbsfy/runtime":20}],105:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {module:backbone} */
@@ -15803,7 +15904,7 @@ Object.defineProperties(Timer, {
 
 module.exports = Timer;
 
-},{"backbone":"backbone","underscore":"underscore"}],107:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],106:[function(require,module,exports){
 /* -------------------------------
 /* Imports
 /* ------------------------------- */
@@ -16064,7 +16165,8 @@ TransformHelper.prototype = Object.create({
 });
 
 module.exports = TransformHelper;
-},{"./TransformItem":108}],108:[function(require,module,exports){
+
+},{"./TransformItem":107}],107:[function(require,module,exports){
 (function (DEBUG){
 /* -------------------------------
  * Imports
@@ -16626,16 +16728,18 @@ TransformItem.prototype = Object.create({
 });
 
 module.exports = TransformItem;
+
 }).call(this,true)
 
-},{"app/control/Globals":35,"underscore":"underscore","utils/prefixedEvent":123,"utils/prefixedProperty":124,"utils/prefixedStyleName":125,"utils/strings/camelToDashed":129}],109:[function(require,module,exports){
+},{"app/control/Globals":35,"underscore":"underscore","utils/prefixedEvent":122,"utils/prefixedProperty":123,"utils/prefixedStyleName":124,"utils/strings/camelToDashed":128}],108:[function(require,module,exports){
 module.exports = function(a1, a2, dest) {
 	return a1.reduce(function(res, o, i, a) {
 		if (a2.indexOf(o) == -1) res.push(o);
 		return res;
 	}, (dest !== void 0) ? dest : []);
 };
-},{}],110:[function(require,module,exports){
+
+},{}],109:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
 var splice = Array.prototype.splice;
@@ -16763,7 +16867,8 @@ module.exports = {
 		_drawShape(this.rect, s, ctx, a1, a2, a3, a4);
 	},
 };
-},{}],111:[function(require,module,exports){
+
+},{}],110:[function(require,module,exports){
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -16805,8 +16910,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-module.exports = function ()
-{
+module.exports = function() {
 	this.r = 0;
 	this.g = 0;
 	this.b = 0;
@@ -16814,13 +16918,13 @@ module.exports = function ()
 	this.next = null;
 };
 
-},{}],112:[function(require,module,exports){
-module.exports = function (imageData, opts) {
+},{}],111:[function(require,module,exports){
+module.exports = function(imageData, opts) {
 	var pixels = imageData.data;
 	var pixelsNum = pixels.length;
 	var rgbAvg = [0, 0, 0];
 	var i;
-	
+
 	for (i = 0; i < pixelsNum; i += 4) {
 		rgbAvg[0] += pixels[i];
 		rgbAvg[1] += pixels[i + 1];
@@ -16832,7 +16936,7 @@ module.exports = function (imageData, opts) {
 	return rgbAvg;
 };
 
-},{}],113:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -16875,24 +16979,24 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 module.exports = [
-		512,512,456,512,328,456,335,512,405,328,271,456,388,335,292,512,
-		454,405,364,328,298,271,496,456,420,388,360,335,312,292,273,512,
-		482,454,428,405,383,364,345,328,312,298,284,271,259,496,475,456,
-		437,420,404,388,374,360,347,335,323,312,302,292,282,273,265,512,
-		497,482,468,454,441,428,417,405,394,383,373,364,354,345,337,328,
-		320,312,305,298,291,284,278,271,265,259,507,496,485,475,465,456,
-		446,437,428,420,412,404,396,388,381,374,367,360,354,347,341,335,
-		329,323,318,312,307,302,297,292,287,282,278,273,269,265,261,512,
-		505,497,489,482,475,468,461,454,447,441,435,428,422,417,411,405,
-		399,394,389,383,378,373,368,364,359,354,350,345,341,337,332,328,
-		324,320,316,312,309,305,301,298,294,291,287,284,281,278,274,271,
-		268,265,262,259,257,507,501,496,491,485,480,475,470,465,460,456,
-		451,446,442,437,433,428,424,420,416,412,408,404,400,396,392,388,
-		385,381,377,374,370,367,363,360,357,354,350,347,344,341,338,335,
-		332,329,326,323,320,318,315,312,310,307,304,302,299,297,294,292,
-		289,287,285,282,280,278,275,273,271,269,267,265,263,261,259];
+		512, 512, 456, 512, 328, 456, 335, 512, 405, 328, 271, 456, 388, 335, 292, 512,
+		454, 405, 364, 328, 298, 271, 496, 456, 420, 388, 360, 335, 312, 292, 273, 512,
+		482, 454, 428, 405, 383, 364, 345, 328, 312, 298, 284, 271, 259, 496, 475, 456,
+		437, 420, 404, 388, 374, 360, 347, 335, 323, 312, 302, 292, 282, 273, 265, 512,
+		497, 482, 468, 454, 441, 428, 417, 405, 394, 383, 373, 364, 354, 345, 337, 328,
+		320, 312, 305, 298, 291, 284, 278, 271, 265, 259, 507, 496, 485, 475, 465, 456,
+		446, 437, 428, 420, 412, 404, 396, 388, 381, 374, 367, 360, 354, 347, 341, 335,
+		329, 323, 318, 312, 307, 302, 297, 292, 287, 282, 278, 273, 269, 265, 261, 512,
+		505, 497, 489, 482, 475, 468, 461, 454, 447, 441, 435, 428, 422, 417, 411, 405,
+		399, 394, 389, 383, 378, 373, 368, 364, 359, 354, 350, 345, 341, 337, 332, 328,
+		324, 320, 316, 312, 309, 305, 301, 298, 294, 291, 287, 284, 281, 278, 274, 271,
+		268, 265, 262, 259, 257, 507, 501, 496, 491, 485, 480, 475, 470, 465, 460, 456,
+		451, 446, 442, 437, 433, 428, 424, 420, 416, 412, 408, 404, 400, 396, 392, 388,
+		385, 381, 377, 374, 370, 367, 363, 360, 357, 354, 350, 347, 344, 341, 338, 335,
+		332, 329, 326, 323, 320, 318, 315, 312, 310, 307, 304, 302, 299, 297, 294, 292,
+		289, 287, 285, 282, 280, 278, 275, 273, 271, 269, 267, 265, 263, 261, 259];
 
-},{}],114:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -16950,9 +17054,9 @@ module.exports = [
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
-		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24 ];
+		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24];
 
-},{}],115:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /* jshint ignore:start */
 /*
 
@@ -17194,7 +17298,7 @@ module.exports = function(imageData, opts) {
 
 /* jshint ignore:end */
 
-},{"./BlurStack":111,"./mul_table":113,"./shg_table":114}],116:[function(require,module,exports){
+},{"./BlurStack":110,"./mul_table":112,"./shg_table":113}],115:[function(require,module,exports){
 /**
  * @module utils/canvas/calcArcHConnector
  */
@@ -17339,7 +17443,7 @@ var drawArcConnector1 = function(ctx, x1, y1, x2, y2, r) {
 };
 */
 
-},{}],117:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, CSSStyleDeclaration */
 
@@ -17413,19 +17517,19 @@ module.exports = function(s, m, includeSizePos) {
 
 }).call(this,true)
 
-},{}],118:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 /* easeInQuad */
 module.exports = function(x, t, b, c, d) {
 	return c * (t /= d) * t + b;
 };
-//EOF
-},{}],119:[function(require,module,exports){
+
+},{}],118:[function(require,module,exports){
 /* easeOutQuad */
 module.exports = function(t, b, c, d) {
 	return -c * (t /= d) * (t - 2) + b;
 };
-//EOF
-},{}],120:[function(require,module,exports){
+
+},{}],119:[function(require,module,exports){
 /**
  * @param {number} i current iteration
  * @param {number} s start value
@@ -17439,7 +17543,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],121:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -17473,7 +17577,8 @@ module.exports = [
 	"resize",
 	"volumechange",
 ];
-},{}],122:[function(require,module,exports){
+
+},{}],121:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -17510,7 +17615,8 @@ module.exports = function(rect, dx, dy) {
 
 	return r;
 };
-},{}],123:[function(require,module,exports){
+
+},{}],122:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -17608,7 +17714,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":126}],124:[function(require,module,exports){
+},{"./prefixes":125}],123:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -17649,7 +17755,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":126}],125:[function(require,module,exports){
+},{"./prefixes":125}],124:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -17705,10 +17811,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":126}],126:[function(require,module,exports){
+},{"./prefixes":125}],125:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],127:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 module.exports = function(pp, reason) {
 	if (pp.length > 0) {
 		pp.forEach(function(p, i, a) {
@@ -17719,7 +17825,8 @@ module.exports = function(pp, reason) {
 	}
 	return pp;
 };
-},{}],128:[function(require,module,exports){
+
+},{}],127:[function(require,module,exports){
 module.exports = function(pp, result) {
 	if (pp.length != 0) {
 		pp.forEach(function(p, i, a) {
@@ -17730,19 +17837,20 @@ module.exports = function(pp, result) {
 	}
 	return pp;
 };
-},{}],129:[function(require,module,exports){
+
+},{}],128:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],130:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],131:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -17907,7 +18015,7 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],132:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],131:[function(require,module,exports){
 module.exports={
 	"video_crop_px": "0",
 	"transform_type": "3d",
