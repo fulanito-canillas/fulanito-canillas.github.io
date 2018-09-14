@@ -2728,6 +2728,20 @@ module.exports = BaseModel.extend({
 
 	toString: function() {
 		return this.get("domid");
+	},
+
+	getDistanceToSelected: function() {
+		if (this.collection && this.collection.selectedIndex > 0) {
+			return this.collection.indexOf(this) - this.collection.selectedIndex;
+		}
+		return -1;
+	},
+
+	getIndex: function() {
+		if (this.collection) {
+			return this.collection.indexOf(this);
+		}
+		return -1;
 	}
 });
 
@@ -7354,6 +7368,42 @@ var ViewProto = {
 		return this;
 	},
 
+	/* ---------------------------
+	/* event helpers
+	/* --------------------------- */
+
+	addListener: function(target, events, handler, useCapture) {
+		(typeof events === "string") && (events = events.split(" "));
+		for (var i = 0; i < events.length; i++) {
+			target.addEventListener(events[i], handler, !!useCapture);
+		}
+		return this;
+	},
+
+	removeListener: function(target, events, handler, useCapture) {
+		(typeof events === "string") && (events = events.split(" "));
+		for (var i = 0; i < events.length; i++) {
+			target.removeEventListener(events[i], handler, !!useCapture);
+		}
+		return this;
+	},
+
+	listenToElementOnce: function(target, event, handler, useCapture) {
+		var cleanup, wrapper, ctx;
+		ctx = this;
+		cleanup = function() {
+			ctx.off("view:remove", cleanup);
+			target.removeEventListener(event, wrapper, useCapture);
+		};
+		wrapper = function(ev) {
+			cleanup();
+			handler.call(ctx, ev);
+		};
+		ctx.on("view:remove", cleanup);
+		target.addEventListener(event, wrapper, useCapture);
+		return this;
+	},
+
 	/* -------------------------------
 	/* requestAnimationFrame
 	/* ------------------------------- */
@@ -11099,7 +11149,7 @@ module.exports = CanvasView.extend({
 				set: function(value) {
 					this._setSymbolName(value);
 				}
-			}
+			},
 		},
 
 		/** @override */
@@ -11121,6 +11171,10 @@ module.exports = CanvasView.extend({
 			}
 		},
 
+		setBackgroundData: function(imageData) {
+			this._backgroundData = imageData;
+		},
+
 		measureCanvas: function(w, h, s) {
 			// make canvas square
 			this._canvasHeight = this._canvasWidth = Math.min(w, h);
@@ -11132,6 +11186,8 @@ module.exports = CanvasView.extend({
 			this._baselineShift *= this._fontSize * 0.5; // apply to font-size, halve it
 			this._baselineShift = Math.round(this._baselineShift);
 			// double SQRT1_2: square within circle within square
+
+			this._canvasOffsetX = this._canvasOffsetY = this._canvasWidth / 2;
 			this._radius = (this._canvasWidth / 2) * Math.SQRT1_2 * Math.SQRT1_2;
 			this._side = this._radius * Math.SQRT1_2; // * Math.SQRT1_2;
 
@@ -11143,22 +11199,33 @@ module.exports = CanvasView.extend({
 			this._ctx.shadowOffsetX = 1;
 			this._ctx.shadowOffsetY = 1;
 			// reset matrix and translate 0,0 to center
-			this._ctx.setTransform(1, 0, 0, 1, this._canvasWidth / 2, this._canvasHeight / 2);
+			this._ctx.setTransform(1, 0, 0, 1, this._canvasOffsetX, this._canvasOffsetY);
 			// this._ctx.save();
 		},
 
 		redraw: function(ctx, intrp, flags) {
 			this._clearCanvas(
-				-this._canvasWidth / 2, -this._canvasHeight / 2,
+				-this._canvasOffsetX, -this._canvasOffsetY,
 				this._canvasWidth, this._canvasHeight
 			);
+			// if (this._backgroundData) {
+			// 	ctx.save();
+			// 	ctx.transform(1, 0, 0, 1, -this._canvasRatio, -this._canvasRatio);
+			// 	// ctx.setTransform(1 / this._canvasRatio, 0, 0, 1 / this._canvasRatio, 0, 0);
+			// 	ctx.putImageData(this._backgroundData,
+			// 		(this._backgroundData.width / this._canvasRatio),
+			// 		(this._backgroundData.height / this._canvasRatio)
+			// 	);
+			// 	ctx.restore();
+			// } else {
 			ctx.save();
 			ctx.fillStyle = "rgba(0,0,0,0.2)";
 			this.drawRoundRect(ctx,
-				-this._canvasWidth / 2, -this._canvasHeight / 2,
+				-this._canvasOffsetX, -this._canvasOffsetY,
 				this._canvasWidth, this._canvasHeight, 3 * this._canvasRatio);
 			ctx.fill();
 			ctx.restore();
+			// }
 
 			if (this._symbolName === 'waiting') {
 				if (intrp.getTargetValue('_arc') === 0) {
@@ -12576,7 +12643,7 @@ var MediaRenderer = CarouselRenderer.extend({
 	},
 
 	whenInitialized: function(view) {
-		// console.log("%s::whenInitialized [%s]", view.cid, "resolved");
+		console.log("%s::whenInitialized [%s]", view.cid, "resolved");
 		view.mediaState = "ready";
 		view.placeholder.removeAttribute("data-progress");
 		return view;
@@ -12736,6 +12803,8 @@ var MediaRenderer = CarouselRenderer.extend({
 	},
 }, {
 	LOG_TO_SCREEN: true,
+	/** @type {module:app/view/promise/whenSelectionDistanceIs} */
+	whenSelectionDistanceIs: require("app/view/promise/whenSelectionDistanceIs"),
 
 	/** @type {module:app/view/promise/whenSelectionIsContiguous} */
 	whenSelectionIsContiguous: require("app/view/promise/whenSelectionIsContiguous"),
@@ -12866,7 +12935,7 @@ module.exports = MediaRenderer;
 
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":102,"app/model/item/MediaItem":51,"app/view/promise/whenDefaultImageLoads":79,"app/view/promise/whenScrollingEnds":80,"app/view/promise/whenSelectionIsContiguous":82,"app/view/render/CarouselRenderer":85,"color":"color","underscore":"underscore","underscore.string/lpad":29}],95:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":102,"app/model/item/MediaItem":51,"app/view/promise/whenDefaultImageLoads":79,"app/view/promise/whenScrollingEnds":80,"app/view/promise/whenSelectionDistanceIs":81,"app/view/promise/whenSelectionIsContiguous":82,"app/view/render/CarouselRenderer":85,"color":"color","underscore":"underscore","underscore.string/lpad":29}],95:[function(require,module,exports){
 (function (GA){
 /**
  * @module app/view/render/PlayableRenderer
@@ -12877,8 +12946,6 @@ var _ = require("underscore");
 
 /** @type {module:app/view/MediaRenderer} */
 var MediaRenderer = require("app/view/render/MediaRenderer");
-// /** @type {module:app/view/component/PlayToggleSymbol} */
-var PlayToggleSymbol = require("app/view/component/PlayToggleSymbol");
 // /** @type {module:app/view/component/CanvasProgressMeter} */
 // var ProgressMeter = require("app/view/component/CanvasProgressMeter");
 
@@ -13008,15 +13075,16 @@ var PlayableRenderer = MediaRenderer.extend({
 
 	/** @override */
 	initialize: function(opts) {
-		MediaRenderer.prototype.initialize.apply(this, arguments);
+		this._playToggleSymbol = {};
+		// this._toggleWaiting = _.debounce(this._toggleWaiting, 500);
+		this._toggleWaiting = _.throttle(this._toggleWaiting, WAIT_DEBOUNCE_MS, { leading: true, trailing: true });
+
 		_.bindAll(this,
 			"_onPlaybackToggle",
 			"_onVisibilityChange"
 		);
+		MediaRenderer.prototype.initialize.apply(this, arguments);
 		this._setPlaybackRequested(this._playbackRequested);
-
-		// this._toggleWaiting = _.debounce(this._toggleWaiting, 500);
-		this._toggleWaiting = _.throttle(this._toggleWaiting, WAIT_DEBOUNCE_MS, { leading: true, trailing: true });
 
 		// this.listenTo(this, "view:parentChange", function(childView, newParent, oldParent) {
 		// 	// logAttachInfo(this, "[view:parentChange]", "info");
@@ -13058,13 +13126,12 @@ var PlayableRenderer = MediaRenderer.extend({
 		this._validatePlayback();
 		// } else {
 		// 	// if selected, pause media
-		// 	this.model.selected && this.togglePlayback(false);
-		// 	// this.togglePlayback(false);
+		// 	this.model.selected && this._togglePlayback(false);
+		// 	// this._togglePlayback(false);
 		// }
 		// console.log("%s::setEnabled", this.cid, this.enabled);
-		if (this._playToggleSymbol) {
-			this._playToggleSymbol.enabled = this.enabled;
-		}
+		// this._playToggleSymbol.paused = (this.enabled && this.model.selected);
+		//}
 	},
 
 	/* ---------------------------
@@ -13106,7 +13173,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		if (this.parentView) this._onParentChange(this, this.parentView, null);
 
 		// this.enabled = true;
-		if (this._playToggleSymbol) this._playToggleSymbol.paused = !this.enabled;
+		this._playToggleSymbol.paused = !this.enabled;
 
 		this._addDOMListeners();
 		this._validatePlayback();
@@ -13119,12 +13186,11 @@ var PlayableRenderer = MediaRenderer.extend({
 		this.stopListening(this, "view:parentChange", this._onParentChange);
 		if (this.parentView) this._onParentChange(this, null, this.parentView);
 
-		// this.enabled = false;
-		if (this._playToggleSymbol) this._playToggleSymbol.paused = true;
+		this._playToggleSymbol.paused = true;
 
 		this._removeDOMListeners();
-		// this._validatePlayback(false);
-		this.togglePlayback(false);
+		this._validatePlayback(false);
+		// this._togglePlayback(false);
 
 		// this._validatePlayback(this.model.selected);
 		// this._validatePlayback();
@@ -13141,7 +13207,7 @@ var PlayableRenderer = MediaRenderer.extend({
 
 	_onScrollChange: function() {
 		if (this.parentView === null) {
-			this.togglePlayback(false);
+			// this._togglePlayback(false);
 			throw new Error(this.cid + "::_onScrollChange parentView is null");
 		}
 		// console.log("[scroll] %s::_onScrollChange %s.scrolling: %s", this.cid, this.parentView.cid, this.parentView.scrolling);
@@ -13150,7 +13216,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// if (!this.parentView.scrolling) {
 		this._validatePlayback();
 		// } else {
-		// 	this.togglePlayback(false);
+		// 	this._togglePlayback(false);
 		// }
 	},
 
@@ -13188,7 +13254,7 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* --------------------------- */
 
 	// _onScrollStart: function() {
-	// 	this.togglePlayback(false);
+	// 	this._togglePlayback(false);
 	// },
 	//
 	// _onScrollEnd: function() {
@@ -13201,15 +13267,13 @@ var PlayableRenderer = MediaRenderer.extend({
 	_addDOMListeners: function() {
 		this.listenTo(this, "view:removed", this._removeDOMListeners);
 		document.addEventListener(visibilityChangeEvent, this._onVisibilityChange, false);
-		this.playToggleHitarea.addEventListener(
-			this._toggleEvent, this._onPlaybackToggle, true);
+		this.playToggleHitarea.addEventListener(this._toggleEvent, this._onPlaybackToggle, true);
 	},
 
 	_removeDOMListeners: function() {
 		this.stopListening(this, "view:removed", this._removeDOMListeners);
 		document.removeEventListener(visibilityChangeEvent, this._onVisibilityChange, false);
-		this.playToggleHitarea.removeEventListener(
-			this._toggleEvent, this._onPlaybackToggle, true);
+		this.playToggleHitarea.removeEventListener(this._toggleEvent, this._onPlaybackToggle, true);
 	},
 
 	/* visibility dom event
@@ -13220,7 +13284,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// if (document[visibilityStateProp] != "hidden") {
 		this._validatePlayback();
 		// } else {
-		// 	this.togglePlayback(false);
+		// 	this._togglePlayback(false);
 		// }
 	},
 
@@ -13259,18 +13323,18 @@ var PlayableRenderer = MediaRenderer.extend({
 		// if (this.playbackRequested) {
 		this._validatePlayback();
 		// } else {
-		// 	this.togglePlayback(false);
+		// 	this._togglePlayback(false);
 		// }
 		this._renderPlaybackState();
 	},
 
 	/* --------------------------- *
-	/* togglePlayback
+	/* _togglePlayback
 	/* --------------------------- */
 
-	/** @override */
-	togglePlayback: function(newPlayState) {
-		// console.log("[scroll] %s::togglePlayback [%s -> %s] (requested: %s)", this.cid,
+	/** @param {Boolean} */
+	_togglePlayback: function(newPlayState) {
+		// console.log("[scroll] %s::_togglePlayback [%s -> %s] (requested: %s)", this.cid,
 		// 		(this._isMediaPaused()? "pause" : "play"),
 		// 		(newPlayState? "play" : "pause"),
 		// 		this.playbackRequested
@@ -13306,10 +13370,11 @@ var PlayableRenderer = MediaRenderer.extend({
 		// a 'shortcircuit' boolean argument can be passed, and if false,
 		// skip _canResumePlayback and pause playback right away
 		if (arguments.length != 0 && !shortcircuit) {
-			this.togglePlayback(false);
+			this._togglePlayback(false);
 		} else {
-			this.togglePlayback(this._canResumePlayback());
+			this._togglePlayback(this._canResumePlayback());
 		}
+		this._playToggleSymbol.paused = !(this.attached && this.enabled && this.model.selected);
 	},
 
 	/* ---------------------------
@@ -13339,27 +13404,18 @@ var PlayableRenderer = MediaRenderer.extend({
 				this._setPlayToggleSymbol("play");
 			}
 		}
-		if (!this._started && this.playbackRequested) {
-			this._started = true;
-			this.content.classList.add("started");
-		}
-		this.content.classList.toggle("playing", this.playbackRequested);
-		this.content.classList.toggle("paused", !this.playbackRequested);
-		this.content.classList.toggle("waiting", this._isMediaWaiting());
+		var cls = this.content.classList;
+		cls.toggle("playing", this.playbackRequested);
+		cls.toggle("paused", !this.playbackRequested);
+		cls.toggle("waiting", this._isMediaWaiting());
 
 		//console.log("%s::_renderPlaybackState [play: %s] [wait: %s] [symbol: %s]", this.cid, this.playbackRequested, this._isMediaWaiting(), this._playToggleSymbol.symbolName);
 	},
 
-	_playToggleSymbol: null,
 	_setPlayToggleSymbol: function(symbolName) {
-		if (this._playToggleSymbol === null) {
-			this._playToggleSymbol = new PlayToggleSymbol({
-				el: this.el.querySelector(".play-toggle"),
-			});
-		}
 		//console.log("%s::_setPlayToggleSymbol [enabled: %s] [selected: %s] [symbol: %s]", this.cid, this.enabled, !!(this.model.selected), symbolName);
 
-		this._playToggleSymbol.paused = !(this.attached && this.enabled && this.parentView.collection.selected === this.model);
+		// this._playToggleSymbol.paused = !(this.attached && this.enabled && !!(this.model.selected));
 		this._playToggleSymbol.symbolName = symbolName;
 	},
 
@@ -13434,7 +13490,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// }
 	},
 
-	_drawMediaElement: function(context, mediaEl, dest) {
+	_drawMediaElement: function(ctx, mediaEl, dest) {
 		// destination rect
 		// NOTE: mediaEl is expected to have the same dimensions in this.metrics.media
 		mediaEl || (mediaEl = this.defaultImage);
@@ -13460,26 +13516,26 @@ var PlayableRenderer = MediaRenderer.extend({
 		};
 
 		// resize canvas
-		// var canvas = context.canvas;
+		// var canvas = ctx.canvas;
 		// if (canvas.width !== dest.width || canvas.height !== dest.height) {
 		// 	canvas.width = dest.width;
 		// 	canvas.height = dest.height;
 		// }
-		context.canvas.width = dest.width;
-		context.canvas.height = dest.height;
+		ctx.canvas.width = dest.width;
+		ctx.canvas.height = dest.height;
 
 		// copy image to canvas
-		context.clearRect(0, 0, dest.width, dest.height);
-		context.drawImage(mediaEl,
+		ctx.clearRect(0, 0, dest.width, dest.height);
+		ctx.drawImage(mediaEl,
 			src.x, src.y, src.width, src.height,
 			0, 0, dest.width, dest.height // destination rect
 		);
 
-		return context;
+		return ctx;
 	},
 
 	/**/
-	_updateOverlay: function(mediaEl, targetEl, rectEl) {
+	_getImageData: function(mediaEl, targetEl, rectEl) {
 		// src/dest rects
 		// ------------------------------
 		rectEl || (rectEl = targetEl);
@@ -13503,7 +13559,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		}
 
 		// destination rect
-		var RECT_GROW = 20;
+		var RECT_GROW = 0;
 		var dest = {
 			x: tX - RECT_GROW,
 			y: tY - RECT_GROW,
@@ -13527,26 +13583,29 @@ var PlayableRenderer = MediaRenderer.extend({
 
 		// Copy image to canvas
 		// ------------------------------
-		var canvas, context, imageData;
-
 		// canvas = document.createElement("canvas");
 		// canvas.style.width  = dest.width + "px";
 		// canvas.style.height = dest.height + "px";
 
-		canvas = getSharedCanvas();
+		var canvas = getSharedCanvas();
 		if (canvas.width !== dest.width || canvas.height !== dest.height) {
 			canvas.width = dest.width;
 			canvas.height = dest.height;
 		}
-		context = canvas.getContext("2d");
-		context.clearRect(0, 0, dest.width, dest.height);
-		context.drawImage(mediaEl,
+		var ctx = canvas.getContext("2d");
+		ctx.clearRect(0, 0, dest.width, dest.height);
+		ctx.drawImage(mediaEl,
 			src.x, src.y, src.width, src.height,
 			0, 0, dest.width, dest.height // destination rect
 		);
-		imageData = context.getImageData(0, 0, dest.width, dest.height);
+		return ctx.getImageData(0, 0, dest.width, dest.height);
+	},
 
+	_updateOverlay: function(mediaEl, targetEl, rectEl) {
+		var canvas, ctx;
+		var imageData = this._getImageData(mediaEl, targetEl, rectEl);
 		var avgColor = Color().rgb(getAverageRGB(imageData));
+
 		// var avgHex = avgColor.hexString(), els = this.el.querySelectorAll("img, video");
 		// for (var i = 0; i < els.length; i++) {
 		// 	els.item(i).style.backgroundColor = avgHex;
@@ -13570,8 +13629,14 @@ var PlayableRenderer = MediaRenderer.extend({
 		stackBlurRGB(imageData, { radius: 40 });
 		// stackBlurMono(imageData, opts);
 		// duotone(imageData, opts);
-		//
-		context.putImageData(imageData, 0, 0);
+
+		ctx = getSharedCanvas();
+		if (canvas.width !== imageData.width || canvas.height !== imageData.height) {
+			canvas.width = imageData.width;
+			canvas.height = imageData.height;
+		}
+		ctx = canvas.getContext("2d");
+		ctx.putImageData(imageData, 0, 0);
 		targetEl.style.backgroundOrigin = "border-box";
 		targetEl.style.backgroundClip = "content-box";
 		targetEl.style.backgroundSize = "100%";
@@ -13618,8 +13683,8 @@ if (GA) {
 			},
 
 			// /** @override */
-			// togglePlayback: function(newPlayState) {
-			// 	var retval = PlayableRenderer.prototype.togglePlayback.apply(this, arguments);
+			// _togglePlayback: function(newPlayState) {
+			// 	var retval = PlayableRenderer.prototype._togglePlayback.apply(this, arguments);
 			// 	window.ga("send", {
 			// 		hitType: "event",
 			// 		eventCategory: "Playable",
@@ -13633,40 +13698,39 @@ if (GA) {
 }
 
 // if (DEBUG) {
+// 	PlayableRenderer.prototype._logFlags = "";
 //
-// PlayableRenderer = (function(PlayableRenderer) {
-// 	if (!PlayableRenderer.LOG_TO_SCREEN) return PlayableRenderer;
+// 	PlayableRenderer = (function(PlayableRenderer) {
+// 		if (!PlayableRenderer.LOG_TO_SCREEN) return PlayableRenderer;
 //
-// 	/** @type {module:underscore.strings/lpad} */
-// 	var lpad = require("underscore.string/lpad");
+// 		/** @type {module:underscore.strings/lpad} */
+// 		var lpad = require("underscore.string/lpad");
 //
-// 	return PlayableRenderer.extend({
-// 		_canResumePlayback: function() {
-// 			var retval = PlayableRenderer.prototype._canResumePlayback.apply(this.arguments);
-// 			console.log("[scroll] %s::_canResumePlayback():%s", this.cid, retval,
-// 			{
-// 				"enabled": this.enabled,
-// 				"selected": (!!this.model.selected),
-// 				"playbackRequested": this.playbackRequested,
-// 				"attached": this.attached,
-// 				"parentView": (this.parentView && this.parentView.cid),
-// 				"!scrolling": (this.parentView && !this.parentView.scrolling),
-// 				"mediaState": this.mediaState,
-// 				// "!document.hidden": !document[visibilityHiddenProp],
-// 				"visibilityState": document[visibilityStateProp]
-// 			});
-// 			return retval;
-// 		},
-// 	});
-// })(PlayableRenderer);
-//
+// 		return PlayableRenderer.extend({
+// 			_canResumePlayback: function() {
+// 				var retval = PlayableRenderer.prototype._canResumePlayback.apply(this.arguments);
+// 				console.log("[scroll] %s::_canResumePlayback():%s", this.cid, retval, {
+// 					"enabled": this.enabled,
+// 					"selected": (!!this.model.selected),
+// 					"playbackRequested": this.playbackRequested,
+// 					"attached": this.attached,
+// 					"parentView": (this.parentView && this.parentView.cid),
+// 					"!scrolling": (this.parentView && !this.parentView.scrolling),
+// 					"mediaState": this.mediaState,
+// 					// "!document.hidden": !document[visibilityHiddenProp],
+// 					"visibilityState": document[visibilityStateProp]
+// 				});
+// 				return retval;
+// 			},
+// 		});
+// 	})(PlayableRenderer);
 // }
 
 module.exports = PlayableRenderer;
 
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/component/PlayToggleSymbol":74,"app/view/render/MediaRenderer":94,"color":"color","underscore":"underscore","underscore.string/dasherize":24,"utils/canvas/bitmap/getAverageRGB":111,"utils/canvas/bitmap/stackBlurRGB":114,"utils/prefixedEvent":122,"utils/prefixedProperty":123}],96:[function(require,module,exports){
+},{"app/control/Globals":35,"app/view/render/MediaRenderer":94,"color":"color","underscore":"underscore","underscore.string/dasherize":24,"utils/canvas/bitmap/getAverageRGB":111,"utils/canvas/bitmap/stackBlurRGB":114,"utils/prefixedEvent":122,"utils/prefixedProperty":123}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13707,6 +13771,8 @@ var Globals = require("app/control/Globals");
 
 /** @type {module:app/view/component/CanvasProgressMeter} */
 var ProgressMeter = require("app/view/component/CanvasProgressMeter");
+// /** @type {module:app/view/component/PlayToggleSymbol} */
+var PlayToggleSymbol = require("app/view/component/PlayToggleSymbol");
 
 /** @type {module:utils/Timer} */
 var Timer = require("utils/Timer");
@@ -13965,8 +14031,6 @@ var SequenceRenderer = PlayableRenderer.extend({
 		this.placeholder = this.el.querySelector(".placeholder");
 		this.sequence = this.content.querySelector(".sequence");
 
-		this.content.classList.add("started");
-
 		// styles
 		// ---------------------------------
 		var s, attrs = this.model.attrs();
@@ -14049,19 +14113,25 @@ var SequenceRenderer = PlayableRenderer.extend({
 		// model
 		// ---------------------------------
 		// this.sources.select(this.model.get("source"));
-		// this.content.classList.add("started");
+		this.content.classList.add("started");
 
 		// Sequence model
 		// ---------------------------------
-		// this.sources = this._createSourceCollection(this.model);
-		whenSelectionDistanceIs(this, 0).then(this._preloadAllItems, function(err) {
-			return (err instanceof View.ViewError) ? (void 0) : err; // Ignore ViewError
-		});
+		whenSelectionDistanceIs(this, 0)
+			// .then(function(view) {
+			// 	/* defaultImage is loaded, add `started` rightaway */
+			// 	view.content.classList.add("started");
+			// 	return view;
+			// })
+			.then(this._preloadAllItems, function(err) {
+				return (err instanceof View.ViewError) ? (void 0) : err; // Ignore ViewError
+			});
 
 		this._sequenceInterval = Math.max(parseInt(this.model.attr("@sequence-interval")), MIN_STEP_INTERVAL) || DEFAULT_STEP_INTERVAL;
 
 		// timer
 		// ---------------------------------
+		/* timer will be started when _validatePlayback is called from _onModelSelected */
 		this.timer = new Timer();
 		this.listenTo(this, "view:removed", function() {
 			this.timer.stop();
@@ -14090,6 +14160,8 @@ var SequenceRenderer = PlayableRenderer.extend({
 		// ---------------------------------
 		this.progressMeter = new ProgressMeter({
 			el: this.el.querySelector(".progress-meter"),
+			color: this.model.attr("color"),
+			// backgroundColor: this.model.attr("background-color"),
 			values: {
 				available: this._sourceProgressByIdx.concat(),
 			},
@@ -14097,20 +14169,19 @@ var SequenceRenderer = PlayableRenderer.extend({
 				amount: this.sources.length,
 				available: this.sources.length,
 			},
-			color: this.model.attr("color"),
-			// backgroundColor: this.model.attr("background-color"),
-			labelFn: this._progressLabelFn.bind(this)
+			labelFn: (function() {
+				if (this.playbackRequested === false) return Globals.PAUSE_CHAR;
+				return (this.sources.selectedIndex + 1) + "/" + this.sources.length;
+			}).bind(this)
 		});
 		// this.el.querySelector(".top-bar")
 		//		.appendChild(this.progressMeter.render().el);
 
-		// this._setPlayToggleSymbol("play-symbol");
-		// this._renderPlaybackState();
-	},
-
-	_progressLabelFn: function() {
-		if (this.playbackRequested === false) return Globals.PAUSE_CHAR;
-		return (this.sources.selectedIndex + 1) + "/" + this.sources.length;
+		// play-toggle-symbol
+		// ---------------------------------
+		var opts = this._playToggleSymbol || {};
+		opts.el = this.el.querySelector(".play-toggle")
+		this._playToggleSymbol = new PlayToggleSymbol(opts);
 	},
 
 	_preloadAllItems: function(view) {
@@ -14531,7 +14602,7 @@ module.exports = SequenceRenderer;
 
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":102,"./SequenceRenderer.hbs":96,"app/control/Globals":35,"app/view/base/View":62,"app/view/component/CanvasProgressMeter":67,"app/view/promise/_loadImageAsObjectURL":77,"app/view/promise/_whenImageLoads":78,"app/view/promise/whenSelectionDistanceIs":81,"app/view/render/PlayableRenderer":95,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/capitalize":23,"underscore.string/lpad":29,"utils/Timer":105}],98:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":102,"./SequenceRenderer.hbs":96,"app/control/Globals":35,"app/view/base/View":62,"app/view/component/CanvasProgressMeter":67,"app/view/component/PlayToggleSymbol":74,"app/view/promise/_loadImageAsObjectURL":77,"app/view/promise/_whenImageLoads":78,"app/view/promise/whenSelectionDistanceIs":81,"app/view/render/PlayableRenderer":95,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/capitalize":23,"underscore.string/lpad":29,"utils/Timer":105}],98:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 var partial$0 = require('../template/svg/FullscreenSymbol.hbs');
@@ -14572,16 +14643,24 @@ var Globals = require("app/control/Globals");
 var PlayableRenderer = require("app/view/render/PlayableRenderer");
 /** @type {module:app/view/component/CanvasProgressMeter} */
 var ProgressMeter = require("app/view/component/CanvasProgressMeter");
+// /** @type {module:app/view/component/PlayToggleSymbol} */
+var PlayToggleSymbol = require("app/view/component/PlayToggleSymbol");
+
+// var stackBlurMono = require("utils/canvas/bitmap/stackBlurMono");
+var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
+
 // /** @type {module:utils/prefixedStyleName} */
 // var prefixedStyleName = require("utils/prefixedStyleName");
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
 
+// var whenViewIsAttached = require("app/view/promise/whenViewIsAttached");
+// /** @type {Function} */
+// var whenSelectionDistanceIs = require("app/view/promise/whenSelectionDistanceIs");
+
 /* --------------------------- *
 /* private static
 /* --------------------------- */
-
-// var whenViewIsAttached = require("app/view/promise/whenViewIsAttached");
 
 var fullscreenChangeEvent = prefixedEvent("fullscreenchange", document);
 // var fullscreenErrorEvent = prefixedEvent("fullscreenerror", document);
@@ -14678,6 +14757,7 @@ var VideoRenderer = PlayableRenderer.extend({
 		// 	this.video.setAttribute("loop", "loop");
 		// }
 		this.video.setAttribute("preload", "none");
+		if (this.video.controlList) this.video.controlList.add("nodownload");
 
 		// this.video.muted = true;
 		// this.video.playsinline = true;
@@ -14763,50 +14843,69 @@ var VideoRenderer = PlayableRenderer.extend({
 		return Promise.resolve(this)
 			.then(PlayableRenderer.whenSelectionIsContiguous)
 			.then(PlayableRenderer.whenScrollingEnds)
+			.then(PlayableRenderer.whenViewIsAttached)
 			.then(
 				function(view) {
-					console.log("%s::initializeAsync whenAttached", view.cid);
-					return view.whenAttached();
-				})
-			.then(
-				function(view) {
-					console.log("%s::initializeAsync whenVideoHasMetadata", view.cid);
+					console.log("%s::initializeAsync [attached, scrollend, selected > %o, preload:%s] ('%o')", view.cid, view.model.getDistanceToSelected(), view.video.preload, view.model.get("name"));
 					return Promise.all([
-						view.whenVideoHasMetadata(view),
 						PlayableRenderer.whenDefaultImageLoads(view),
+						view.whenVideoHasMetadata(view),
 					]).then(function() {
 						return view;
 					});
 				})
 			.then(
 				function(view) {
-					console.log("%s::initializeAsync initializeAsync", view.cid);
+					console.log("%s::initializeAsync [defaultImage, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
 					view.initializePlayable();
 					view.updateOverlay(view.defaultImage, view.playToggle); //view.overlay);
 					view.addSelectionListeners();
 					return view;
-				});
+				})
+			.then(function(view) {
+				return PlayableRenderer.whenSelectionDistanceIs(view, 0);
+			})
+			.then(function(view) {
+				view.video.setAttribute("preload", "auto");
+				view.video.preload = "auto";
+				console.log("%s::initializeAsync [selected, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
+				return view;
+			});
+
+		// videoEl.setAttribute("preload", "metadata");
 	},
 
 	initializePlayable: function() {
-		// video
+		// play-toggle-symbol
 		// ---------------------------------
-		if (this.model.source.has("prefetched")) {
-			// this.video.setAttribute("poster", this.model.source.get("prefetched"));
-			this.video.poster = this.model.source.get("prefetched");
-		}
+		var view = new PlayToggleSymbol(_.extend({
+			el: this.el.querySelector(".play-toggle")
+		}, this._playToggleSymbol || {}));
+
+		// var imageData = stackBlurRGB(this._getImageData(this.defaultImage, view.el), { radius: 5 });
+		// view.setBackgroundData(imageData);
+
+		this._playToggleSymbol = view;
 
 		// progress-meter
 		// ---------------------------------
 		this.progressMeter = new ProgressMeter({
 			el: this.el.querySelector(".progress-meter"),
+			color: this.model.attr("color"),
+			// backgroundColor: this.model.attr("background-color"),
 			maxValues: {
 				amount: this.video.duration,
 				available: this.video.duration,
 			},
-			color: this.model.attr("color"),
-			// backgroundColor: this.model.attr("background-color"),
-			labelFn: this._progressLabelFn.bind(this)
+			labelFn: (function(value, total) {
+				if (!this._started || this.video.ended || isNaN(value)) {
+					return formatTimecode(total);
+				} else if (!this.playbackRequested) {
+					return Globals.PAUSE_CHAR;
+				} else {
+					return formatTimecode(total - value);
+				}
+			}).bind(this)
 		});
 		// this.el.querySelector(".controls").appendChild(this.progressMeter.el);
 		// var el = this.el.querySelector(".progress-meter");
@@ -14818,17 +14917,9 @@ var VideoRenderer = PlayableRenderer.extend({
 		this._renderPlaybackState();
 
 		// listen to video events
+		// ---------------------------------
+		// this.video.poster = this.model.get("source").get("original");
 		this.addMediaListeners();
-	},
-
-	_progressLabelFn: function(value, total) {
-		if (!this._started || this.video.ended || isNaN(value)) {
-			return formatTimecode(total);
-		} else if (!this.playbackRequested) {
-			return Globals.PAUSE_CHAR;
-		} else {
-			return formatTimecode(total - value);
-		}
 	},
 
 	/* ---------------------------
@@ -14892,17 +14983,17 @@ var VideoRenderer = PlayableRenderer.extend({
 					}
 				}
 				/* NOTE: MS Edge ignores js property, using setAttribute */
-				videoEl.setAttribute("preload", "auto");
+				videoEl.setAttribute("preload", "metadata");
+				videoEl.preload = "metadata";
 
 				// videoEl.setAttribute("poster", view.get("source").get("original"));
 				// videoEl.setAttribute("preload", "metadata");
 				// videoEl.poster = view.model.get("source").get("original");
-				// videoEl.preload = "metadata";
 				// videoEl.loop = view.model.attr("@video-loop") !== void 0;
 				// videoEl.src = view.findPlayableSource(videoEl);
 				// videoEl.load();
 
-				console.log("%s::initializeAsync whenVideoHasMetadata preload:%s", view.cid, videoEl.preload);
+				console.log("%s::whenVideoHasMetadata [preload:%s]", view.cid, videoEl.preload);
 			}
 		});
 	},
@@ -14970,17 +15061,21 @@ var VideoRenderer = PlayableRenderer.extend({
 
 		/* if not enough data */
 		if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
-			// if (this.video.networkState == HTMLMediaElement.NETWORK_IDLE) {
-			// 	this.video.load();
-			// }
-			var handler = function(ev) {
-				this.video.removeEventListener("canplaythrough", handler, false);
-				this._toggleWaiting(false);
-				this.playbackRequested && this.video.play();
-			}.bind(this);
-			this.video.addEventListener("canplaythrough", handler, false);
-			this._toggleWaiting(true);
-			// }
+			if (this.video.networkState == HTMLMediaElement.NETWORK_IDLE) {
+				this.video.play();
+			} else {
+				// var handler = function(ev) {
+				// 	this.video.removeEventListener("canplaythrough", handler, false);
+				// 	this._toggleWaiting(false);
+				// 	this.playbackRequested && this.video.play();
+				// }.bind(this);
+				// this.video.addEventListener("canplaythrough", handler, false);
+				this._toggleWaiting(true);
+				this.listenToElementOnce(this.video, "canplaythrough", function() {
+					this._toggleWaiting(false);
+					this.playbackRequested && this.video.play();
+				});
+			}
 		}
 		/* play*/
 		else {
@@ -15025,24 +15120,6 @@ var VideoRenderer = PlayableRenderer.extend({
 		PlayableRenderer.prototype._removeDOMListeners.apply(this, arguments);
 		this.fullscreenToggle.removeEventListener(
 			this._toggleEvent, this._onFullscreenToggle, true);
-	},
-
-	/* ---------------------------
-	/* event helpers
-	/* --------------------------- */
-
-	addListener: function(target, events, handler, useCapture) {
-		(typeof events === "string") && (events = events.split(" "));
-		for (var i = 0; i < events.length; i++) {
-			target.addEventListener(events[i], handler, !!useCapture);
-		}
-	},
-
-	removeListener: function(target, events, handler, useCapture) {
-		(typeof events === "string") && (events = events.split(" "));
-		for (var i = 0; i < events.length; i++) {
-			target.removeEventListener(events[i], handler, !!useCapture);
-		}
 	},
 
 	/* ---------------------------
@@ -15255,8 +15332,15 @@ var VideoRenderer = PlayableRenderer.extend({
 		if (this.mediaState === "ready") {
 			this.updateOverlay(this.video, this.playToggle);
 		}
-		//console.log("%s::_renderPlaybackState ended: %o", this.cid, this.video.ended);
-		this.content.classList.toggle("ended", this.video.ended);
+		console.log("%s::_renderPlaybackState started:%o ended: %o", this.cid, this.video.played.length, this.video.ended);
+
+		var cls = this.content.classList;
+		if (!this._started && this.playbackRequested) {
+			this._started = true;
+			cls.add("started");
+		}
+		// cls.toggle("started", (this.video.played.length > 0));
+		cls.toggle("ended", this.video.ended);
 		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
 	},
 
@@ -15605,7 +15689,7 @@ module.exports = VideoRenderer;
 
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":98,"app/control/Globals":35,"app/view/component/CanvasProgressMeter":67,"app/view/render/PlayableRenderer":95,"color":"color","underscore":"underscore","underscore.string/lpad":29,"underscore.string/rpad":31,"utils/event/mediaEventsEnum":120,"utils/prefixedEvent":122}],100:[function(require,module,exports){
+},{"./VideoRenderer.hbs":98,"app/control/Globals":35,"app/view/component/CanvasProgressMeter":67,"app/view/component/PlayToggleSymbol":74,"app/view/render/PlayableRenderer":95,"color":"color","underscore":"underscore","underscore.string/lpad":29,"underscore.string/rpad":31,"utils/canvas/bitmap/stackBlurRGB":114,"utils/event/mediaEventsEnum":120,"utils/prefixedEvent":122}],100:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
