@@ -8763,7 +8763,7 @@ var CarouselProto = {
 
 	removeChildren: function() {
 		this.itemViews.each(this.removeItemView, this);
-		this.emptyView = void 0;
+		this.emptyView = (void 0);
 	},
 
 	removeItemView: function(view) {
@@ -9016,7 +9016,7 @@ var CarouselProto = {
 			view && view.el.classList.add("candidate");
 			this._panCandidateView = view;
 		}
-		if (cView === void 0) {
+		if (cView === (void 0)) {
 			delta *= Globals.HPAN_OUT_DRAG;
 		}
 
@@ -9044,12 +9044,12 @@ var CarouselProto = {
 			/* choose next scroll target */
 			scrollCandidate = this.getViewAtPanDir(ev.offsetDirection);
 		}
-		this._scrollCandidateView = scrollCandidate || void 0;
+		this._scrollCandidateView = scrollCandidate || (void 0);
 
 		if (this._panCandidateView && (this._panCandidateView !== scrollCandidate)) {
 			this._panCandidateView.el.classList.remove("candidate");
 		}
-		this._panCandidateView = void 0;
+		this._panCandidateView = (void 0);
 		this.el.classList.remove("panning");
 
 		this.scrollBy(0, Carousel.ANIMATED);
@@ -9144,7 +9144,7 @@ var CarouselProto = {
 	/* --------------------------- */
 
 	triggerSelectionEvents: function(view, internal) {
-		if (view === void 0 || this._internalSelection) {
+		if (view === (void 0) || this._internalSelection) {
 			return;
 		}
 
@@ -9158,14 +9158,16 @@ var CarouselProto = {
 	},
 
 	selectFromView: function() {
-		if (this._scrollCandidateView === void 0) {
+		if (this._scrollCandidateView === (void 0)) {
 			return;
 		}
 		var view = this._scrollCandidateView;
-		this._scrollCandidateView = void 0;
-		view.el.classList.remove("candidate");
 
 		this.triggerSelectionEvents(view, true);
+
+		// this._scrollCandidateView = (void 0);
+		// view.el.classList.remove("candidate");
+		// this.requestAnimationFrame(function() {});
 	},
 
 	adjustToSelection: function() {
@@ -9210,6 +9212,10 @@ var CarouselProto = {
 		this._selectedView.el.classList.remove("selected");
 		this.adjustToSelection();
 		this._selectedView.el.classList.add("selected");
+		if (this._scrollCandidateView) {
+			this._scrollCandidateView.el.classList.remove("candidate");
+			this._scrollCandidateView = (void 0);
+		}
 
 		if (!this._internalSelection) {
 			this._setScrolling(true);
@@ -9290,7 +9296,7 @@ var CarouselProto = {
 	// },
 
 	// _onScrollEnd: function(exec) {
-	// 	this._scrollEndCancellable = void 0;
+	// 	this._scrollEndCancellable = (void 0);
 	// 	// this.el.classList.remove("disabled-changing");
 	// 	if (exec) {
 	// 		this._setScrolling(false);
@@ -15110,14 +15116,14 @@ var VideoRenderer = PlayableRenderer.extend({
 		/* if not enough data */
 		if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
 			if (this.video.networkState == HTMLMediaElement.NETWORK_IDLE) {
-				this.video.play();
-			} else {
-				this._toggleWaiting(true);
-				this.listenToElementOnce(this.video, "canplaythrough", function() {
-					this._toggleWaiting(false);
-					this.playbackRequested && this.video.play();
-				});
-			}
+				this.video.load();
+			} //else {
+			this._toggleWaiting(true);
+			this.listenToElementOnce(this.video, "canplaythrough", function() {
+				this._toggleWaiting(false);
+				this.playbackRequested && this.video.play();
+			});
+			//}
 		}
 		/* play*/
 		else {

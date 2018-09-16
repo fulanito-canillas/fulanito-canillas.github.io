@@ -214,7 +214,7 @@ $breakpoints: (
 	"desktop-large": "only screen and (min-width: 1824px)",
 	"iphone4": "only screen and (min-device-pixel-ratio: 1.5)"
 );
-.test:after {
+.test::after {
 	content: quote(inspect(map-get($breakpoints, "unquoted")));
 }
 */
@@ -628,22 +628,15 @@ body {
     cursor: grabbing; }
   .carousel.disabled .carousel-item .content {
     cursor: default !important; }
-  .carousel-item .content {
-    -webkit-transition: opacity 0.316s ease-in-out 0.034s;
-            transition: opacity 0.316s ease-in-out 0.034s; }
 
 .empty-item .content {
   -webkit-transition: opacity 0.124s ease-in-out 0.034s;
           transition: opacity 0.124s ease-in-out 0.034s;
   opacity: 0.06; }
-  .empty-item .content .s {
-    -webkit-transition: background-color 0.124s ease-in-out 0.034s;
-            transition: background-color 0.124s ease-in-out 0.034s;
-    background-color: currentColor; }
 .empty-item.candidate .content, .empty-item.selected .content {
   opacity: 1.0; }
-.carousel.disabled .empty-item.candidate .content, .carousel.disabled .empty-item.selected .content {
-  opacity: 0.06; }
+  .carousel.disabled .empty-item.candidate .content, .carousel.disabled .empty-item.selected .content {
+    opacity: 0.06; }
 
 .media-item {
   	/*
@@ -672,14 +665,23 @@ body {
   .media-item .placeholder {
     overflow: hidden; }
   .media-item .content {
-    opacity: 0; }
+    opacity: 0;
+    visibility: hidden;
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s; }
   .media-item.error .content, .media-item.idle .content {
     visibility: hidden; }
   .empty-item.selected + .media-item.ready .content, .media-item.candidate.ready .content, .media-item.selected.ready .content {
-    opacity: 1; }
-    .carousel.disabled .empty-item.selected + .media-item.ready .content, .carousel.disabled .media-item.candidate.ready .content, .carousel.disabled .media-item.selected.ready .content {
-      opacity: 0; }
-  .media-item .placeholder:before {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-start 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-start 0.034s; }
+  .carousel.disabled .media-item .content {
+    opacity: 0 !important;
+    visibility: hidden;
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s; }
+  .media-item .placeholder::before {
     font-size: 9rem;
     font-weight: bold;
     line-height: 0.9;
@@ -688,28 +690,28 @@ body {
     position: absolute;
     top: 0;
     left: 0; }
-  .media-item.pending .placeholder:before, .media-item.ready .placeholder:before {
+  .media-item.pending .placeholder::before, .media-item.ready .placeholder::before {
     font: 300 12rem/0.9 "FolioFigures", Consolas, Menlo, "Andale Mono", monospace;
     letter-spacing: -0.05em; }
-  .media-item .placeholder:before {
+  .media-item .placeholder::before {
     -webkit-transition: opacity 0.316s ease-in-out 0.418s;
             transition: opacity 0.316s ease-in-out 0.418s;
     opacity: 0; }
-  .empty-item.selected + .media-item.pending .placeholder:before, .media-item.candidate.pending .placeholder:before, .media-item.selected.pending .placeholder:before {
+  .empty-item.selected + .media-item.pending .placeholder::before, .media-item.candidate.pending .placeholder::before, .media-item.selected.pending .placeholder::before {
     opacity: 1; }
-  .empty-item.selected + .media-item.error .placeholder:before, .media-item.candidate.error .placeholder:before, .media-item.selected.error .placeholder:before {
+  .empty-item.selected + .media-item.error .placeholder::before, .media-item.candidate.error .placeholder::before, .media-item.selected.error .placeholder::before {
     opacity: 1; }
-  .media-item .placeholder:before {
+  .media-item .placeholder::before {
     content: ""; }
-  .media-item.idle .placeholder:before {
+  .media-item.idle .placeholder::before {
     content: "Waiting"; }
-  .media-item.error .placeholder:before {
+  .media-item.error .placeholder::before {
     content: "Error"; }
-  .media-item.pending .placeholder:before {
+  .media-item.pending .placeholder::before {
     content: "00%"; }
-  .media-item.ready .placeholder:before {
-    content: "Ready"; }
-  .media-item.candidate.pending .placeholder[data-progress]:before, .media-item.selected.pending .placeholder[data-progress]:before, .empty-item.selected + .media-item.pending .placeholder[data-progress]:before {
+  .media-item.ready .placeholder::before {
+    content: "100%"; }
+  .media-item.candidate.pending .placeholder[data-progress]::before, .media-item.selected.pending .placeholder[data-progress]::before, .empty-item.selected + .media-item.pending .placeholder[data-progress]::before {
     content: attr(data-progress) "%"; }
 
 .media-item .placeholder {
@@ -784,20 +786,6 @@ body {
     opacity: 1.00; }
   50% {
     opacity: 1.00; } }
-@-webkit-keyframes spin {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg); }
-  to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg); } }
-@keyframes spin {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg); }
-  to {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg); } }
 /*
 $path_length: 566;
 @keyframes pathspin {
@@ -1075,16 +1063,16 @@ $path_length: 566;
     width: 0;
     margin: 0;
     padding: 0; }
-  .dots-fontface .list-item a:before {
+  .dots-fontface .list-item a::before {
     font: 70%/1.5 "FolioFigures", monospace;
     width: 1.5em;
     display: inline-block;
     text-align: center; }
-  .dots-fontface .list-item a:before {
+  .dots-fontface .list-item a::before {
     content: "\25CB"; }
-  .dots-fontface .list-item.selected a:before {
+  .dots-fontface .list-item.selected a::before {
     content: "\25CF"; }
-  .dots-fontface .list-item.empty-item a:before {
+  .dots-fontface .list-item.empty-item a::before {
     content: "\25A4"; }
   .dots-fontface .list-item.selected, .dots-fontface .list-item.selected a {
     cursor: default; }
@@ -1374,7 +1362,7 @@ $path_length: 566;
       right: 32vw; }
     .app.fullwidth .media-carousel .media-item {
       height: calc(100% - 4rem - 3rem ); }
-      .app.fullwidth .media-carousel .media-item .placeholder:before {
+      .app.fullwidth .media-carousel .media-item .placeholder::before {
         font-size: 18vw;
         padding: 5%; }
       .app.fullwidth .media-carousel .media-item .error-message {
@@ -1618,7 +1606,7 @@ HTML.fullwidth-small {
 /* indigo:			hsl(275, 100%, 25%); */
 /* */
 /* Crimson	DC 14 3C	220  20  60 */
-.debug-blocks-content #content .media-item::after, .debug-blocks-content #content .media-item .content::after,
+.debug-blocks-content #content .carousel::after, .debug-blocks-content #content .selected + .media-item::after, .debug-blocks-content #content .selected + .media-item .content::after, .debug-blocks-content #content .media-item::after, .debug-blocks-content #content .media-item .content::after,
 .debug-mdown .mdown h1::before,
 .debug-mdown .mdown h2::before,
 .debug-mdown .mdown h3::before,
@@ -1641,16 +1629,18 @@ HTML.fullwidth-small {
   text-transform: uppercase;
   letter-spacing: normal; }
 
-.debug-blocks-content #content .media-item::after, .debug-blocks-content #content .media-item .content::after {
+.debug-blocks-content #content .carousel::after, .debug-blocks-content #content .selected + .media-item::after, .debug-blocks-content #content .selected + .media-item .content::after, .debug-blocks-content #content .media-item::after, .debug-blocks-content #content .media-item .content::after {
   content: attr(class);
   z-index: 999;
   width: 12em;
   word-spacing: 12em;
+  background-color: rgba(0, 0, 0, 0.3);
   height: auto;
-  right: auto;
-  left: 0;
-  background-color: rgba(32, 175, 223, 0.3);
   padding: 1em; }
+
+.debug-blocks-content #content .carousel::after, .debug-blocks-content #content .selected + .media-item::after, .debug-blocks-content #content .selected + .media-item .content::after {
+  right: auto;
+  left: 0; }
 
 .debug-tx #navigation.container-changing {
   outline: 0.5rem dashed rgba(250, 126, 112, 0.25);
