@@ -3696,7 +3696,10 @@ var AppViewProto = {
 			if (ev.target.nodeName == "IMG" || ev.target.nodeName == "A") {
 				ev.defaultPrevented || ev.preventDefault();
 			}
-		}
+		},
+		"touchmove body": function(ev) {
+			ev.defaultPrevented || ev.preventDefault();
+		},
 	},
 
 	properties: {
@@ -3743,6 +3746,15 @@ var AppViewProto = {
 		// 	hpanLogFn("%s::_hpanEnableFn -> %o\n%o", this.cid, retval, arguments);
 		// 	return !!retval;
 		// }.bind(this);
+		document.body.addEventListener("touchmove", function(ev) {
+			// if (DEBUG) {
+			// 	var el = ev.target;
+			// 	do
+			// 		if (el.classList.contains("debug-log")) return;
+			// 	while ((el = el.parentElement))
+			// }
+			ev.preventDefault();
+		}, { passive: false });
 
 		touchEl = this.content;
 		// touchEl = document.body;
@@ -6635,80 +6647,110 @@ var Pan = Hammer.Pan;
  * @return {Hammer.Manager}
  */
 function createInstance(el) {
+	var manager = new Hammer.Manager(el);
+	// manager.set({ domevents: true });
+
 	// var tap = new Hammer.Tap({
 	// 	threshold: Globals.PAN_THRESHOLD - 1
 	// });
+	// manager.add(tap);
 	var hpan = new Pan({
 		event: "hpan",
 		direction: Hammer.DIRECTION_HORIZONTAL,
-		// threshold: Globals.PAN_THRESHOLD,
+		threshold: Globals.PAN_THRESHOLD,
 		// touchAction: "pan-y",
 	});
+	manager.add(hpan);
+
 	// var vpan = new Pan({
 	// 	event: "vpan",
 	// 	direction: Hammer.DIRECTION_VERTICAL,
 	// 	// threshold: Globals.PAN_THRESHOLD,
 	// 	// touchAction: "pan-x",
 	// });
-
-	var manager = new Hammer.Manager(el);
-	// manager.set({ domevents: true });
-	manager.add([hpan]);
-	// manager.add([hpan, vpan]);
-	// manager.add([tap, hpan, vpan]);
+	// manager.add(vpan);
 	// vpan.requireFailure(hpan);
+
 	return manager;
 }
 
-/*https://gist.githubusercontent.com/jtangelder/361052976f044200ea17/raw/f54c2cef78d59da3f38286fad683471e1c976072/PreventGhostClick.js*/
-
-// function	logEvent(message) {
-// 	console.log(message, domev.type,
-// 		"panSessionOpened: " + panSessionOpened,
-// 		"defaultPrevented: " + domev.defaultPrevented
-// 	);
-// }
+/* -------------------------------
+/* Global hammer handlers
+/* ------------------------------- */
 
 var touchHandlers = {};
+
+/*https://gist.githubusercontent.com/jtangelder/361052976f044200ea17/raw/f54c2cef78d59da3f38286fad683471e1c976072/PreventGhostClick.js*/
+var lastTimeStamp = -1;
+var panSessionOpened = false;
+
+var saveTimeStamp = function(hev) {
+	panSessionOpened = !hev.isFinal;
+	if (hev.isFinal) {
+		lastTimeStamp = hev.srcEvent.timeStamp;
+	}
+};
+touchHandlers["vpanstart vpanend vpancancel"] =
+	touchHandlers["hpanstart hpanend hpancancel"] = saveTimeStamp;
+
+var preventSrcEvent = function(hev) {
+	hev.srcEvent.preventDefault();
+};
+touchHandlers["vpanstart vpanmove vpanend vpancancel"] =
+	touchHandlers["hpanstart hpanmove hpanend hpancancel"] = preventSrcEvent;
+
+// var logHammerEvent = function(hev) {
+// 	var msgs = [];
+// 	var domev = hev.srcEvent;
+// 	msgs.push(panSessionOpened ? "panning" : "pan: " + lastTimeStamp.toFixed(3));
+// 	if (domev.defaultPrevented) msgs.push("prevented");
+// 	console.log("TouchManager %s [%s] [%o]",
+// 		domev.timeStamp.toFixed(3),
+// 		domev.type,
+// 		hev.type,
+// 		msgs.join(", ")
+// 	);
+// };
+// touchHandlers[[
+// 	"vpanstart", "vpanend", "vpancancel", "vpanmove",
+// 	"hpanstart", "hpanend", "hpancancel", "hpanmove"
+// ].join(" ")] = logHammerEvent;
+
+/* -------------------------------
+/* DOM event handlers
+/* ------------------------------- */
+
 var captureHandlers = {};
 var bubblingHandlers = {};
+var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
 
-// var lastTimeStamp = -1;
-// var panSessionOpened = false;
-// var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
-//
-// touchHandlers["vpanstart vpanend vpancancel"] =
-// 	touchHandlers["hpanstart hpanend hpancancel"] = function(hev) {
-// 		// console.log("TouchManager:[%s]", hev.srcEvent.type);
-// 		panSessionOpened = !hev.isFinal;
-// 		if (hev.isFinal)
-// 			lastTimeStamp = hev.srcEvent.timeStamp;
-// 	};
-// touchHandlers["hammer.input tap vpanmove hpanmove"] = function(hev) {
-// 	console.log("TouchManager:[%s -> %s]", hev.srcEvent.type, hev.type);
-// };
-//
-// var preventWhilePanning = function(domev) {
-// 	panSessionOpened && domev.preventDefault();
-// };
+/* eslint-disable-next-line */
+var logDOMEvent = function(domev, msg) {
+	var msgs = [];
+	if (domev.defaultPrevented) msgs.push("prevented");
+	if (msg) msgs.push(msg);
+	console.log("TouchManager %s [%o]",
+		domev.timeStamp.toFixed(3),
+		domev.type,
+		msgs.join(", ")
+	);
+};
+var preventWhilePanning = function(domev) {
+	panSessionOpened && domev.preventDefault();
+};
 // var preventWhileNotPanning = function(domev) {
 // 	!panSessionOpened && domev.preventDefault();
 // };
-// captureHandlers["click"] = function(domev) {
-// 	if (lastTimeStamp == domev.timeStamp) {
-// 		lastTimeStamp = -1;
-// 		domev.defaultPrevented || domev.preventDefault();
-// 		// domev.stopPropagation();
-// 	}
-// };
-// captureHandlers[upEventName] = preventWhilePanning;
+captureHandlers[upEventName] = preventWhilePanning;
 
-// captureHandlers["dragstart"] = function(domev) {
-// 	if (domev.target.nodeName == "IMG") {
-// 		domev.defaultPrevented || domev.preventDefault();
-// 	}
-// };
+captureHandlers["click"] = function(domev) {
+	if (lastTimeStamp === domev.timeStamp) {
+		lastTimeStamp = -1;
+		domev.defaultPrevented || domev.preventDefault();
+	}
+};
 
+// captureHandlers["touchmove"] = captureHandlers["mousemove"] = logDOMEvent;
 
 // -------------------------------
 //
@@ -7442,7 +7484,7 @@ var ViewProto = {
 	_applyRender: function(tstamp) {
 		if (DEBUG) {
 			if (this._logFlags["view.render"]) {
-				console.log("%s::_applyRender   [%s]",
+				console.log("%s::_applyRender [%s]",
 					this.cid, this._traceRenderStatus(),
 					this._logFlags["view.trace"] ?
 					this._logRenderCallers.join("\n") : "");
@@ -7494,7 +7536,7 @@ var ViewProto = {
 			this._renderQueueId = renderQueue.request(this._applyRender, isNaN(this.viewDepth) ? Number.MAX_VALUE : this.viewDepth);
 		}
 		if (DEBUG) {
-			if (this._logFlags["view.render"]) {
+			if (this._logFlags["view.trace"]) {
 				// if (this._logFlags["view.trace"]) {
 				// 	console.groupCollapsed(this.cid + "::_requestRender [" + this._traceRenderStatus() + "] trace");
 				// 	console.trace();
@@ -8456,6 +8498,7 @@ var CarouselProto = {
 	events: {
 		// "mousedown": "_onMouseDown", "mouseup": "_onMouseUp",
 		"transitionend .carousel-item.selected": "_onScrollTransitionEnd",
+		"click .carousel-item:not(.selected)": "_onClick",
 	},
 
 	/** @override */
@@ -9042,37 +9085,33 @@ var CarouselProto = {
 	_onTap: function(ev) {
 		if (ev.defaultPrevented) return;
 
+		var tapCandidate;
 		var targetView = View.findByDescendant(ev.target);
+		// console.log("%s::_onTap %o", this.cid, targetView.cid, ev.target);
 		// if (!this.itemViews.contains(targetView)) {
 		// 	return;
 		// }
 		do {
 			if (this._selectedView === targetView) {
-				// console.log("%s tap ocurred on selected: %o", this.cid, targetView);
-				return;
+				tapCandidate = null;
+				break;
+			} else if (this === targetView.parentView) {
+				tapCandidate = targetView;
+				break;
 			} else if (this === targetView) {
-				// console.log("%s tap ocurred on carousel: %o", this.cid, targetView);
+				var bounds, tapX, tapY;
+				bounds = this.el.getBoundingClientRect();
+				tapX = (ev.type == "tap" ? ev.center.x : ev.clientX) - bounds.left;
+				tapY = (ev.type == "tap" ? ev.center.y : ev.clientY) - bounds.top;
+				tapCandidate = this.getViewAtTapPos(
+					this.dirProp(tapX, tapY),
+					this.dirProp(tapY, tapX)
+				);
 				break;
 			}
 		} while ((targetView = targetView.parentView))
 
-		// this.selectFromView();
-		var bounds, tapX, tapY, tapCandidate;
-		bounds = this.el.getBoundingClientRect();
-		if (ev.type == "tap") {
-			tapX = ev.center.x - bounds.left;
-			tapY = ev.center.y - bounds.top;
-		} else {
-			tapX = ev.clientX - bounds.left;
-			tapY = ev.clientY - bounds.top;
-		}
-		tapCandidate = this.getViewAtTapPos(
-			this.dirProp(tapX, tapY),
-			this.dirProp(tapY, tapX)
-		);
-
 		if (tapCandidate) {
-			console.log("%s::_onTap %o", this.cid, ev);
 			ev.preventDefault();
 			// ev.stopPropagation();
 
@@ -9096,7 +9135,7 @@ var CarouselProto = {
 	},
 
 	_onClick: function(ev) {
-		console.log("%s::_onClick", this.cid, ev.type);
+		console.log("%s::_onClick", this.cid, ev.type, ev);
 		this._onTap(ev);
 	},
 
@@ -9981,7 +10020,7 @@ if (DEBUG) {
 	].join(" ");
 
 	FilterableListView.prototype._printStats = function(lastFilteredItems) {
-		console.log("%o::renderFrame %s filtered:%o(=%o)/%o (changed:%o, in:%o, out:%o)", this.cid,
+		if (this._logFlags["view.trace"]) console.log("%s::renderFrame %s filtered:%o(=%o)/%o (changed:%o, in:%o, out:%o)", this.cid,
 			this.filteredItems.length > 0 ? "has" : "has not",
 			this.filteredItems.length,
 			lastFilteredItems ? (this.filteredItems.length + this._filteredIncoming.length) - this._filteredOutgoing.length : this.filteredItems.length,
@@ -11167,7 +11206,7 @@ module.exports = CanvasView.extend({
 				this._lastSymbolName = this._symbolName;
 				this._symbolName = value;
 				this.requestRender(CanvasView.LAYOUT_INVALID);
-				console.log("%s::[set] symbol %o (from %o)", this.cid, this._symbolName, this._lastSymbolName);
+				console.log("%s::[set] symbol %o (from %o)", this.cid, this._symbolName, this._lastSymbolName, this.paused ? "paused" : "");
 			}
 		},
 
@@ -11229,11 +11268,11 @@ module.exports = CanvasView.extend({
 
 			if (this._symbolName === 'waiting') {
 				if (intrp.getTargetValue('_arc') === 0) {
-					intrp.valueTo('_arc', 1, 1 * INTEP_MS, easeIn).updateValue('_arc');
+					intrp.valueTo('_arc', 1, 0 * INTEP_MS, easeIn).updateValue('_arc');
 				}
 			} else {
 				if (intrp.getTargetValue('_arc') === 1) {
-					intrp.valueTo('_arc', 0, 1 * INTEP_MS, easeOut).updateValue('_arc');
+					intrp.valueTo('_arc', 0, 0 * INTEP_MS, easeOut).updateValue('_arc');
 				}
 			}
 			var a = intrp.getRenderedValue("_arc");
@@ -11796,7 +11835,7 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 			// finally
 			// - - - - - - - - - - - - - - - - - -
 			request.onloadend = function(ev) {
-				console.log("_loadImageAsObjectURL::%s [cleanup] (%s)", ev ? ev.type : "no event", url);
+				//console.log("_loadImageAsObjectURL::%s [cleanup] (%s)", ev ? ev.type : "no event", url);
 				request.onabort = request.ontimeout = request.onerror = void 0;
 				request.onload = request.onloadend = void 0;
 				if (progressFn) {
@@ -12652,25 +12691,12 @@ var MediaRenderer = CarouselRenderer.extend({
 	whenInitializeError: function(err) {
 		if (err instanceof CarouselRenderer.ViewError) {
 			// NOTE: ignore ViewError type
-			// console.log("%s::whenInitializeError", err.view.cid, err.message);
 			return;
 		} else if (err instanceof Error) {
 			console.error(err.stack);
 		}
-		this.renderMediaError(err);
 		this.placeholder.removeAttribute("data-progress");
 		this.mediaState = "error";
-		// this.placeholder.innerHTML = errorTemplate(err);
-		// this.placeholder.removeAttribute("data-progress");
-		// this.mediaState = "error";
-
-		console.error("%s::initializeAsync [%s (caught)]: %s", this.cid, err.name,
-			(err.info && err.info.logMessage) || err.message);
-		err.logEvent && console.log(err.logEvent);
-	},
-
-	renderMediaError: function(err) {
-		this.placeholder.innerHTML = err ? errorTemplate(err) : "";
 	},
 
 	updateMediaProgress: function(progress, id) {
@@ -12838,7 +12864,6 @@ if (DEBUG) {
 
 			/** @override */
 			initialize: function() {
-				MediaRenderer.prototype.initialize.apply(this, arguments);
 
 				var fgColor = new Color(this.model.attr("color"));
 				var bgColor = new Color(this.model.attr("background-color"));
@@ -12852,6 +12877,7 @@ if (DEBUG) {
 				this.__logStartTime = Date.now();
 				this.__rafId = -1;
 				this.__onFrame = this.__onFrame.bind(this);
+				MediaRenderer.prototype.initialize.apply(this, arguments);
 			},
 
 			initializeAsync: function() {
@@ -12892,11 +12918,34 @@ if (DEBUG) {
 				return ret;
 			},
 
+			whenInitializeError: function(err) {
+				// NOTE: not calling super
+				// MediaRenderer.prototype.whenInitializeError.apply(this, arguments);
+				if (err instanceof CarouselRenderer.ViewError) {
+					// NOTE: ignore ViewError type
+					// console.warn("%s::whenInitializeError ", err.view.cid, err.message);
+					return;
+				} else if (err instanceof Error) {
+					console.error(err.stack);
+				}
+				// this.placeholder.innerHTML = err ? errorTemplate(err) : "";
+				this.placeholder.removeAttribute("data-progress");
+				this.mediaState = "error";
+
+				// console.error("%s::initializeAsync [%s (caught)]: %s", this.cid, err.name, (err.info && err.info.logMessage) || err.message);
+				// err.logEvent && console.log(err.logEvent);
+			},
+
+			/* --------------------------- *
+			/* log methods
+			/* --------------------------- */
+
 			__logMessage: function(msg, logtype, color) {
 				var logEntryEl = document.createElement("pre");
 
+				logtype || (logtype = "-")
 				logEntryEl.textContent = this.__getTStamp() + " " + msg;
-				logEntryEl.setAttribute("data-logtype", logtype || "-");
+				logEntryEl.setAttribute("data-logtype", logtype);
 				logEntryEl.style.color = color || this.__logColors[logtype] || this.__logColors.normal;
 
 				this.__logElement.appendChild(logEntryEl);
@@ -12936,7 +12985,7 @@ module.exports = MediaRenderer;
 }).call(this,true)
 
 },{"../template/ErrorBlock.hbs":102,"app/model/item/MediaItem":51,"app/view/promise/whenDefaultImageLoads":79,"app/view/promise/whenScrollingEnds":80,"app/view/promise/whenSelectionDistanceIs":81,"app/view/promise/whenSelectionIsContiguous":82,"app/view/render/CarouselRenderer":85,"color":"color","underscore":"underscore","underscore.string/lpad":29}],95:[function(require,module,exports){
-(function (GA){
+(function (DEBUG,GA){
 /**
  * @module app/view/render/PlayableRenderer
  */
@@ -13064,20 +13113,11 @@ var PlayableRenderer = MediaRenderer.extend({
 		},
 	},
 
-	// events: function() {
-	// 	var events = {};
-	// 	events[PlayableRenderer.CLICK_EVENT + " .play-toggle"] = "_onPlaybackToggle";
-	// 	return _.extend(events, _.result(this, MediaRenderer.prototype.events));
-	// },
-	// events: {
-	// 	"click .play-toggle":"_onPlaybackToggle"
-	// },
-
 	/** @override */
 	initialize: function(opts) {
 		this._playToggleSymbol = {};
 		// this._toggleWaiting = _.debounce(this._toggleWaiting, 500);
-		this._toggleWaiting = _.throttle(this._toggleWaiting, WAIT_DEBOUNCE_MS, { leading: true, trailing: true });
+		// this._toggleWaiting = _.throttle(this._toggleWaiting, WAIT_DEBOUNCE_MS, { leading: true, trailing: true });
 
 		_.bindAll(this,
 			"_onPlaybackToggle",
@@ -13191,9 +13231,6 @@ var PlayableRenderer = MediaRenderer.extend({
 		this._removeDOMListeners();
 		this._validatePlayback(false);
 		// this._togglePlayback(false);
-
-		// this._validatePlayback(this.model.selected);
-		// this._validatePlayback();
 	},
 
 	/* view:parentChange handlers 3
@@ -13319,13 +13356,14 @@ var PlayableRenderer = MediaRenderer.extend({
 		classList.toggle("paused", value === false);
 		classList.toggle("requested", value === true || value === false);
 
+		this._renderPlaybackState();
+
 		// this._validatePlayback(this.playbackRequested);
 		// if (this.playbackRequested) {
 		this._validatePlayback();
 		// } else {
 		// 	this._togglePlayback(false);
 		// }
-		this._renderPlaybackState();
 	},
 
 	/* --------------------------- *
@@ -13334,11 +13372,13 @@ var PlayableRenderer = MediaRenderer.extend({
 
 	/** @param {Boolean} */
 	_togglePlayback: function(newPlayState) {
-		// console.log("[scroll] %s::_togglePlayback [%s -> %s] (requested: %s)", this.cid,
-		// 		(this._isMediaPaused()? "pause" : "play"),
-		// 		(newPlayState? "play" : "pause"),
-		// 		this.playbackRequested
-		// 	);
+		if (DEBUG) this.__logMessage([
+				"args:", Array.prototype.join.apply(arguments),
+				"paused:", (this._isMediaPaused() ? "pause" : "play"),
+				"media-state:", this.mediaState,
+				].join(" "),
+			"toggle-playback");
+
 		if (_.isBoolean(newPlayState) && newPlayState !== this._isMediaPaused()) {
 			return; // requested state is current, do nothing
 		} else {
@@ -13391,6 +13431,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// if (!this.content.classList.contains("started")) {
 		// 	this._setPlayToggleSymbol("play");
 		// } else
+
 		if (this.playbackRequested) {
 			if (this._isMediaWaiting()) {
 				this._setPlayToggleSymbol("waiting");
@@ -13417,6 +13458,9 @@ var PlayableRenderer = MediaRenderer.extend({
 
 		// this._playToggleSymbol.paused = !(this.attached && this.enabled && !!(this.model.selected));
 		this._playToggleSymbol.symbolName = symbolName;
+		if (this._playToggleSymbol.renderFlags) {
+			this._playToggleSymbol.renderNow();
+		}
 	},
 
 	// _playToggleSymbolSvg: null,
@@ -13728,7 +13772,7 @@ if (GA) {
 
 module.exports = PlayableRenderer;
 
-}).call(this,true)
+}).call(this,true,true)
 
 },{"app/control/Globals":35,"app/view/render/MediaRenderer":94,"color":"color","underscore":"underscore","underscore.string/dasherize":24,"utils/canvas/bitmap/getAverageRGB":111,"utils/canvas/bitmap/stackBlurRGB":114,"utils/prefixedEvent":122,"utils/prefixedProperty":123}],96:[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14117,7 +14161,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 
 		// Sequence model
 		// ---------------------------------
-		whenSelectionDistanceIs(this, 0)
+		PlayableRenderer.whenSelectionDistanceIs(this, 0)
 			// .then(function(view) {
 			// 	/* defaultImage is loaded, add `started` rightaway */
 			// 	view.content.classList.add("started");
@@ -14861,21 +14905,21 @@ var VideoRenderer = PlayableRenderer.extend({
 					view.updateOverlay(view.defaultImage, view.playToggle); //view.overlay);
 					view.addSelectionListeners();
 					return view;
-				})
-			.then(function(view) {
-				return PlayableRenderer.whenSelectionDistanceIs(view, 0);
-			})
+				});
+
+		// videoEl.setAttribute("preload", "metadata");
+	},
+
+	initializePlayable: function() {
+		// When selected for the first time
+		// ---------------------------------
+		PlayableRenderer.whenSelectionDistanceIs(this, 0)
 			.then(function(view) {
 				view.video.setAttribute("preload", "auto");
 				view.video.preload = "auto";
 				console.log("%s::initializeAsync [selected, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
 				return view;
 			});
-
-		// videoEl.setAttribute("preload", "metadata");
-	},
-
-	initializePlayable: function() {
 		// play-toggle-symbol
 		// ---------------------------------
 		var view = new PlayToggleSymbol(_.extend({
@@ -15009,6 +15053,11 @@ var VideoRenderer = PlayableRenderer.extend({
 	/* PlayableRenderer implementation
 	/* --------------------------- */
 
+	// /** @override */
+	// _canResumePlayback: function() {
+	// 	return PlayableRenderer.prototype._canResumePlayback.apply(this, arguments) && this.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+	// },
+
 	/** @override initial value */
 	_playbackRequested: false,
 
@@ -15029,7 +15078,6 @@ var VideoRenderer = PlayableRenderer.extend({
 		} else if (this.video.ended) {
 			this.video.currentTime = this.video.seekable.start(0);
 		}
-
 
 		/* Change the preload attr */
 		// if (this.video.preload !== "auto") {
@@ -15064,12 +15112,6 @@ var VideoRenderer = PlayableRenderer.extend({
 			if (this.video.networkState == HTMLMediaElement.NETWORK_IDLE) {
 				this.video.play();
 			} else {
-				// var handler = function(ev) {
-				// 	this.video.removeEventListener("canplaythrough", handler, false);
-				// 	this._toggleWaiting(false);
-				// 	this.playbackRequested && this.video.play();
-				// }.bind(this);
-				// this.video.addEventListener("canplaythrough", handler, false);
 				this._toggleWaiting(true);
 				this.listenToElementOnce(this.video, "canplaythrough", function() {
 					this._toggleWaiting(false);
@@ -15206,6 +15248,9 @@ var VideoRenderer = PlayableRenderer.extend({
 	updateCurrTimeEvents: "playing waiting pause timeupdate seeked", //.split(" "),
 
 	_updateCurrTimeValue: function(ev) {
+		if (this.video.played.length) {
+			this.content.classList.add("started");
+		}
 		if (this.progressMeter) {
 			this.progressMeter.valueTo("amount", this.video.currentTime, 0);
 		}
@@ -15323,22 +15368,29 @@ var VideoRenderer = PlayableRenderer.extend({
 			// this.content.classList.remove("waiting");
 			// this.progressMeter.stalled = false;
 			// this._isPlaybackWaiting = false;
-
 		}
 	},
 
 	/** @override */
 	_renderPlaybackState: function() {
+		this.__logMessage([
+			"mediaState:", this.mediaState,
+			"played:", this.video.played.length,
+			"ended:", this.video.ended,
+			"playToggleSymbol.paused:", this._playToggleSymbol.paused
+		].join(" "), "_renderPlaybackState");
+		console.log("%s::_renderPlaybackState mediaState:%s played:%o ended: %o", this.cid, this.mediaState, this.video.played.length, this.video.ended);
+
 		if (this.mediaState === "ready") {
 			this.updateOverlay(this.video, this.playToggle);
 		}
-		console.log("%s::_renderPlaybackState started:%o ended: %o", this.cid, this.video.played.length, this.video.ended);
 
 		var cls = this.content.classList;
-		if (!this._started && this.playbackRequested) {
-			this._started = true;
-			cls.add("started");
-		}
+		// if (!this._started && this.playbackRequested &&
+		// 		this.video.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA) {
+		// 	this._started = true;
+		// 	cls.add("started");
+		// }
 		// cls.toggle("started", (this.video.played.length > 0));
 		cls.toggle("ended", this.video.ended);
 		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
@@ -15641,6 +15693,7 @@ if (DEBUG) {
 				} else {
 					evmsg.push(this.playbackRequested ? "W" : "-");
 				}
+				evmsg.push(this._playToggleSymbol.symbolName);
 
 				var ts, tc;
 				if ((this.updatePlaybackEvents.indexOf(ev.type) > -1) || ev.isTimeout) {

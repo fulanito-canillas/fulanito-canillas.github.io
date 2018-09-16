@@ -675,9 +675,9 @@ body {
     opacity: 0; }
   .media-item.error .content, .media-item.idle .content {
     visibility: hidden; }
-  .media-item.candidate.ready .content, .media-item.selected.ready .content, .empty-item.selected + .media-item.ready .content {
+  .empty-item.selected + .media-item.ready .content, .media-item.candidate.ready .content, .media-item.selected.ready .content {
     opacity: 1; }
-    .carousel.disabled .media-item.candidate.ready .content, .carousel.disabled .media-item.selected.ready .content, .carousel.disabled .empty-item.selected + .media-item.ready .content {
+    .carousel.disabled .empty-item.selected + .media-item.ready .content, .carousel.disabled .media-item.candidate.ready .content, .carousel.disabled .media-item.selected.ready .content {
       opacity: 0; }
   .media-item .placeholder:before {
     font-size: 9rem;
@@ -695,9 +695,9 @@ body {
     -webkit-transition: opacity 0.316s ease-in-out 0.418s;
             transition: opacity 0.316s ease-in-out 0.418s;
     opacity: 0; }
-  .media-item.candidate.pending .placeholder:before, .media-item.selected.pending .placeholder:before, .empty-item.selected + .media-item.pending .placeholder:before {
+  .empty-item.selected + .media-item.pending .placeholder:before, .media-item.candidate.pending .placeholder:before, .media-item.selected.pending .placeholder:before {
     opacity: 1; }
-  .media-item.candidate.error .placeholder:before, .media-item.selected.error .placeholder:before, .empty-item.selected + .media-item.error .placeholder:before {
+  .empty-item.selected + .media-item.error .placeholder:before, .media-item.candidate.error .placeholder:before, .media-item.selected.error .placeholder:before {
     opacity: 1; }
   .media-item .placeholder:before {
     content: ""; }
@@ -708,7 +708,7 @@ body {
   .media-item.pending .placeholder:before {
     content: "00%"; }
   .media-item.ready .placeholder:before {
-    content: "99%"; }
+    content: "Ready"; }
   .media-item.candidate.pending .placeholder[data-progress]:before, .media-item.selected.pending .placeholder[data-progress]:before, .empty-item.selected + .media-item.pending .placeholder[data-progress]:before {
     content: attr(data-progress) "%"; }
 
@@ -854,6 +854,9 @@ $path_length: 566;
     :not(.scrolling) .playable-renderer .started.paused .play-toggle {
       -webkit-animation: 0.7s ease-in-out flashEven;
               animation: 0.7s ease-in-out flashEven; }
+    :not(.scrolling) .playable-renderer .started.paused.ended .play-toggle {
+      -webkit-animation: none;
+              animation: none; }
     :not(.scrolling) .playable-renderer .started.playing:not(.waiting) .play-toggle {
       -webkit-animation: 0.7s ease-in-out flashOdd;
               animation: 0.7s ease-in-out flashOdd; }
@@ -1615,6 +1618,40 @@ HTML.fullwidth-small {
 /* indigo:			hsl(275, 100%, 25%); */
 /* */
 /* Crimson	DC 14 3C	220  20  60 */
+.debug-blocks-content #content .media-item::after, .debug-blocks-content #content .media-item .content::after,
+.debug-mdown .mdown h1::before,
+.debug-mdown .mdown h2::before,
+.debug-mdown .mdown h3::before,
+.debug-mdown .mdown h4::before,
+.debug-mdown .mdown h5::before,
+.debug-mdown .mdown h6::before,
+.debug-mdown .mdown p::before,
+.debug-mdown .mdown ol::before,
+.debug-mdown .mdown ul::before,
+.debug-mdown .mdown dl::before {
+  position: absolute;
+  display: block;
+  right: 0;
+  bottom: 0;
+  height: 1.2em;
+  padding: 0.1em 0.2em;
+  margin: 0;
+  color: white;
+  font: 800 8px/120% "Lucida Grande", "Lucida Sans", Calibri, Tahoma, Verdana, Kalimati, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: normal; }
+
+.debug-blocks-content #content .media-item::after, .debug-blocks-content #content .media-item .content::after {
+  content: attr(class);
+  z-index: 999;
+  width: 12em;
+  word-spacing: 12em;
+  height: auto;
+  right: auto;
+  left: 0;
+  background-color: rgba(32, 175, 223, 0.3);
+  padding: 1em; }
+
 .debug-tx #navigation.container-changing {
   outline: 0.5rem dashed rgba(250, 126, 112, 0.25);
   outline-offset: -0.5rem; }
@@ -1720,18 +1757,7 @@ HTML.fullwidth-small {
   background-color: rgba(141, 177, 78, 0.1);
   position: relative; }
   .debug-mdown .mdown h1::before, .debug-mdown .mdown h2::before, .debug-mdown .mdown h3::before, .debug-mdown .mdown h4::before, .debug-mdown .mdown h5::before, .debug-mdown .mdown h6::before, .debug-mdown .mdown p::before, .debug-mdown .mdown ol::before, .debug-mdown .mdown ul::before, .debug-mdown .mdown dl::before {
-    position: absolute;
-    display: block;
-    right: 0;
-    bottom: 0;
-    height: 1.2em;
-    padding: 0.1em 0.2em;
-    margin: 0;
-    color: white;
-    background: #8db14e;
-    font: 800 8px/120% "Lucida Grande", "Lucida Sans", Calibri, Tahoma, Verdana, Kalimati, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: normal; }
+    background: #8db14e; }
 .debug-mdown .mdown h1::before {
   content: 'h1'; }
 .debug-mdown .mdown h2::before {
