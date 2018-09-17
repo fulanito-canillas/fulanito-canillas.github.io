@@ -1607,15 +1607,16 @@ console.info("Portfolio App started");
 // function applyPolyfills() {
 require("Modernizr");
 require("setimmediate");
-require("es6-promise").polyfill();
+require("es6-promise/auto");
 require("classlist-polyfill");
 require("raf-polyfill");
 require("matches-polyfill");
 require("fullscreen-polyfill");
 require("math-sign-polyfill");
-// require("mutation-polyfill");
 // require("path2d-polyfill");
-// }
+if (!window.Modernizr.mutationobserver) {
+	require("mutation-polyfill");
+}
 
 // function applyRequires() {
 require("backbone").$ = require("backbone.native");
@@ -1778,7 +1779,7 @@ if (DEBUG) {
 
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":76,"app/view/template/_helpers":103,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise":"es6-promise","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":76,"app/view/template/_helpers":103,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise/auto":"es6-promise/auto","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-polyfill":"mutation-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Controller
@@ -3697,9 +3698,9 @@ var AppViewProto = {
 				ev.defaultPrevented || ev.preventDefault();
 			}
 		},
-		"touchmove body": function(ev) {
-			ev.defaultPrevented || ev.preventDefault();
-		},
+		// "touchmove body": function(ev) {
+		// 	ev.defaultPrevented || ev.preventDefault();
+		// },
 	},
 
 	properties: {
@@ -3746,15 +3747,6 @@ var AppViewProto = {
 		// 	hpanLogFn("%s::_hpanEnableFn -> %o\n%o", this.cid, retval, arguments);
 		// 	return !!retval;
 		// }.bind(this);
-		document.body.addEventListener("touchmove", function(ev) {
-			// if (DEBUG) {
-			// 	var el = ev.target;
-			// 	do
-			// 		if (el.classList.contains("debug-log")) return;
-			// 	while ((el = el.parentElement))
-			// }
-			ev.preventDefault();
-		}, { passive: false });
 
 		touchEl = this.content;
 		// touchEl = document.body;
@@ -3840,6 +3832,7 @@ var AppViewProto = {
 		// 	Globals.BREAKPOINTS[s].addListener(this._onBreakpointChange);
 		// }, this);
 
+
 		/* initialize controller/model listeners BEFORE views register their own */
 		this.listenTo(controller, "route", this._onRoute);
 		// this.listenTo(controller, "change:after", this._afterControllerChanged);
@@ -3859,6 +3852,39 @@ var AppViewProto = {
 			vpan: vtouch,
 			hpan: htouch,
 		});
+
+		this.listenTo(this.navigationView, "view:collapsed:measured", function(view) {
+			this.el.scrollTop = 1;
+			if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
+				this.el.style.overflowY = "hidden";
+			} else {
+				this.el.style.overflowY = "";
+			}
+			console.log("%s:[view:collapsed:measured] css:%o val:%o", this.cid,
+				this.navigationView.el.style.height,
+				this.navigationView.el.scrollHeight,
+				this.el.scrollTop, this.el.scrollHeight, this.el.clientHeight,
+				(this.el.scrollHeight - 1) <= this.el.clientHeight,
+				this.el.style.overflowY
+			);
+		});
+
+		this.el.addEventListener("touchmove", function(ev) {
+			var sy, sh, ch;
+			sy = this.el.scrollTop;
+			sh = this.el.scrollHeight - 1;
+			ch = this.el.clientHeight;
+			if (sh <= ch) {
+				ev.preventDefault();
+			}
+			console.log("%s:[touchmove] " +
+				"sy:[1>%o>=%s = %o] " +
+				"sh:[%o<=%o = %o]", this.cid,
+				sy, sh - ch, (1 <= sy <= (sh - ch)),
+				sh, ch, (sh <= ch),
+				(ev.defaultPrevented ? "prevented" : "not prevented")
+			);
+		}.bind(this), { capture: false, passive: false });
 
 		/* Google Analytics */
 		if (window.ga && window.GA_ID) {
@@ -3959,34 +3985,31 @@ var AppViewProto = {
 	/* --------------------------- */
 
 	_onModelChange: function() {
-		// console.log("%s::_onModelChange [START]", this.cid);
-		console.group(this.cid + "::_onModelChange");
-		Object.keys(this.model.changedAttributes()).forEach(function(key) {
-			console.info("%s::_onModelChange %s: %s -> %s", this.cid, key,
-				this.model.previous(key),
-				this.model.get(key));
-		}, this);
+		if (DEBUG) {
+			console.group(this.cid + "::_onModelChange");
+			console.groupCollapsed("changes");
+			Object.keys(this.model.changedAttributes()).forEach(function(key) {
+				console.info("%s::_onModelChange %s: %s -> %s", this.cid, key,
+					this.model.previous(key),
+					this.model.get(key));
+			}, this);
 
 		["Article", "Bundle", "Media"].forEach(function(name) {
-			var key = name.toLowerCase();
-			console[this.hasChanged("with" + name) == this.hasAnyChanged(key) ? "log" : "warn"].call(console, "%s::_onModelChange with%s: %o with%sChanged: %o", this.cid,
-				name, this.has(key),
-				name, this.hasAnyChanged(key)
-			);
-		}, this.model);
+				var key = name.toLowerCase();
+				console[this.hasChanged("with" + name) == this.hasAnyChanged(key) ? "log" : "warn"].call(console, "%s::_onModelChange with%s: %o with%sChanged: %o", this.cid,
+					name, this.has(key),
+					name, this.hasAnyChanged(key)
+				);
+			}, this.model);
+			console.groupEnd();
 
-		// console.log("%s::_onModelChange %o", this.cid,
-		// 	// arguments
-		// 	// _.clone(this.model.attributes),
-		// 	// this.model.changedAttributes()
-		// );
-
-		this.requestRender(View.MODEL_INVALID)
-			// .requestChildrenRender(View.MODEL_INVALID)
-			.once("view:render:after", function(view, flags) {
-				console.info("%s::_onModelChange [render complete]", view.cid);
-				console.groupEnd();
-			});
+			this.requestRender(View.MODEL_INVALID)
+				// .requestChildrenRender(View.MODEL_INVALID)
+				.once("view:render:after", function(view, flags) {
+					console.info("%s::_onModelChange [view:render:after]", view.cid);
+					console.groupEnd();
+				});
+		}
 	},
 
 	/* -------------------------------
@@ -4007,6 +4030,7 @@ var AppViewProto = {
 					console.info("%s::_onResize [view:render:after][raf]", view.cid);
 					view.skipTransitions = false;
 					view.el.classList.remove("skip-transitions");
+					this.el.scrollTop = 1;
 					console.groupEnd();
 				})
 			});
@@ -4036,23 +4060,26 @@ var AppViewProto = {
 		/* request children render:  set 'now' flag if size is invalid */
 		// this.requestChildrenRender(flags, flags & View.SIZE_INVALID);
 
-		// if (flags & (View.MODEL_INVALID | View.SIZE_INVALID)) {
-		// 	this.navigation.style.touchAction = !this._hasOverflowY(this.container) ? "pan-x" : "";
-		// 	this.content.style.touchAction = this._hpanEnableFn() ? "pan-y" : "";
-		// 	this.requestAnimationFrame(function() {
-		// 		if (this._hpanEnableFn() && this._vpanEnableFn()) {
-		// 			this.content.style.touchAction = "none";
-		// 		} else if (this._hpanEnableFn()) {
-		// 			this.content.style.touchAction = "pan-y";
-		// 		} else if (this._vpanEnableFn()) {
-		// 			this.content.style.touchAction = "pan-x";
-		// 		} else {
-		// 			this.content.style.touchAction = "auto";
-		// 		}
-		// 		// 	document.body.scrollTop = 0;
-		// 		// 	window.scroll({ top: 0, behavior: "smooth" });
-		// 	});
+		// if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
+		// 	this.el.scrollTop = 1;
+		// 	this.el.style.overflowY = "hidden";
+		// } else {
+		// 	this.el.style.overflowY = "";
 		// }
+		// this.navigationView.whenRendered().then(function(view) {
+		// 	this.requestAnimationFrame(function() {
+		// 		console.log("%s::renderFrame [raf] css:%o val:%o",
+		// 			this.cid,
+		// 			this.navigationView.el.style.height,
+		// 			this.navigationView.el.scrollHeight,
+		// 			this.el.scrollTop,
+		// 			this.el.scrollHeight - 1,
+		// 			this.el.clientHeight,
+		// 			(this.el.scrollHeight - 1) <= this.el.clientHeight,
+		// 			this.el.style.overflowY
+		// 		);
+		// 	});
+		// }.bind(this));
 	},
 
 	/* -------------------------------
@@ -4931,10 +4958,40 @@ var NavigationView = View.extend({
 			// 			(o.hasTransition ? o.transition.name : "-");
 			// 	}));
 		}
-
+		// if (this.model.hasChanged("collapsed") && this.model.get("collapsed")) {
+		// 	this.el.style.height = "";
+		// 	// this.el.style.minHeight = hval + "px";
+		// 	this.graph.el.style.height = "";
+		// }
 
 		// promise handlers
 		// - - - - - - - - - - - - - - - - -
+
+		var measureRenderedLists = function(result) {
+			// var hval = result.reduce(function(a, o) {
+			// 	return Math.max(a, o.metrics.height);
+			// }, 0);
+			var hval = Math.max(
+				this.bundleList.metrics.height,
+				this.keywordList.metrics.height);
+
+			if (this.model.get("collapsed")) {
+				this.el.style.height = "";
+				// this.el.style.minHeight = hval + "px";
+				this.graph.el.style.height = "";
+			} else {
+				this.el.style.height = hval + "px";
+				// this.el.style.minHeight = "";
+				this.graph.el.style.height = hval + "px";
+			}
+			// this.el.style.height = this.model.get("collapsed") ? "" : "100%";
+			// this.vpanGroup.style.height = hval;
+			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
+			console.log("%s:[whenListsRenderedDone] height set to %s", this.cid, this.model.get("collapsed") ? hval + "px" : "[not set]", result);
+			this.trigger("view:collapsed:measured", this);
+			return result;
+		}.bind(this);
+
 		var toggleGraph = function(result) {
 			this.graph.enabled = !this.model.get("collapsed");
 			this.graph.valueTo("a2b", 0, 0);
@@ -4944,31 +5001,12 @@ var NavigationView = View.extend({
 			return result;
 		}.bind(this);
 
-		var measureRenderedLists = function(result) {
-			// var hval = result.reduce(function(a, o) {
-			// 	return Math.max(a, o.metrics.height);
-			// }, 0);
-			var hval = this.model.get("collapsed") ?
-				"" : Math.max(
-					this.bundleList.metrics.height,
-					this.keywordList.metrics.height) + "px";
-
-			this.el.style.height = hval;
-			// this.el.style.height = this.model.get("collapsed") ? "" : "100%";
-			// this.vpanGroup.style.height = hval;
-			this.graph.el.style.height = hval;
-			this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID);
-			console.log("%s:[whenListsRenderedDone] height set to %s", this.cid, hval || "[not set]", result);
-			return result;
-		}.bind(this);
-
 		var whenCollapsedChangeDone = function(result) {
 			console.log("%s:[whenCollapsedChangeDone][flags: %s]", this.cid, View.flagsToString(flags), result);
 			this.el.classList.remove("container-changing");
+			this.trigger("view:collapsed:end", this);
 			return result;
 		}.bind(this);
-
-
 
 		// promises
 		// - - - - - - - - - - - - - - - - -
@@ -6694,10 +6732,11 @@ touchHandlers["vpanstart vpanend vpancancel"] =
 	touchHandlers["hpanstart hpanend hpancancel"] = saveTimeStamp;
 
 var preventSrcEvent = function(hev) {
+	console.log(hev.type, "preventDefault");
 	hev.srcEvent.preventDefault();
 };
-touchHandlers["vpanstart vpanmove vpanend vpancancel"] =
-	touchHandlers["hpanstart hpanmove hpanend hpancancel"] = preventSrcEvent;
+touchHandlers["vpanmove vpanend vpancancel"] =
+	touchHandlers["hpanmove hpanend hpancancel"] = preventSrcEvent;
 
 // var logHammerEvent = function(hev) {
 // 	var msgs = [];
@@ -6722,7 +6761,7 @@ touchHandlers["vpanstart vpanmove vpanend vpancancel"] =
 
 var captureHandlers = {};
 var bubblingHandlers = {};
-var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
+// var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
 
 /* eslint-disable-next-line */
 var logDOMEvent = function(domev, msg) {
@@ -6735,13 +6774,13 @@ var logDOMEvent = function(domev, msg) {
 		msgs.join(", ")
 	);
 };
-var preventWhilePanning = function(domev) {
-	panSessionOpened && domev.preventDefault();
-};
+// var preventWhilePanning = function(domev) {
+// panSessionOpened && domev.preventDefault();
+// };
 // var preventWhileNotPanning = function(domev) {
 // 	!panSessionOpened && domev.preventDefault();
 // };
-captureHandlers[upEventName] = preventWhilePanning;
+// captureHandlers[upEventName] = preventWhilePanning;
 
 captureHandlers["click"] = function(domev) {
 	if (lastTimeStamp === domev.timeStamp) {

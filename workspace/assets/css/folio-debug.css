@@ -666,21 +666,18 @@ body {
     overflow: hidden; }
   .media-item .content {
     opacity: 0;
-    visibility: hidden;
-    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s;
-            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s; }
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s; }
   .media-item.error .content, .media-item.idle .content {
     visibility: hidden; }
   .empty-item.selected + .media-item.ready .content, .media-item.candidate.ready .content, .media-item.selected.ready .content {
     opacity: 1;
-    visibility: visible;
-    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-start 0.034s;
-            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-start 0.034s; }
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s; }
   .carousel.disabled .media-item .content {
     opacity: 0 !important;
-    visibility: hidden;
-    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s;
-            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s step-end 0.034s; }
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s; }
   .media-item .placeholder::before {
     font-size: 9rem;
     font-weight: bold;
@@ -846,8 +843,8 @@ $path_length: 566;
       -webkit-animation: none;
               animation: none; }
     :not(.scrolling) .playable-renderer .started.playing:not(.waiting) .play-toggle {
-      -webkit-animation: 0.7s ease-in-out flashOdd;
-              animation: 0.7s ease-in-out flashOdd; }
+      -webkit-animation: 0.525s ease-in-out flashOdd;
+              animation: 0.525s ease-in-out flashOdd; }
   .playable-renderer .play-toggle-symbol {
     width: 49px;
     height: 49px;
@@ -1242,6 +1239,9 @@ $path_length: 566;
     padding-right: 220px; }
 .app.fullwidth {
   /* body */ }
+  @media (orientation: landscape) {
+    #container {
+      min-height: calc(100% + 1px); } }
   .app.fullwidth #navigation {
     width: auto;
     max-width: none;
@@ -1290,7 +1290,7 @@ $path_length: 566;
         width: 16vw;
         -webkit-transform: translate(-100%, 0);
                 transform: translate(-100%, 0); }
-  .app.fullwidth.with-media .container-collapsed #keyword-list {
+  .app.fullwidth.with-bundle .container-collapsed #keyword-list {
     opacity: 0;
     visibility: 0; }
   .app.fullwidth #keyword-list-wrapper {
