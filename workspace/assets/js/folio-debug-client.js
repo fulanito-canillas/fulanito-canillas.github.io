@@ -3650,8 +3650,8 @@ var ContentView = require("app/view/ContentView");
 
 /** @type {module:app/view/base/TouchManager} */
 var TouchManager = require("app/view/base/TouchManager");
-// /** @type {module:hammerjs} */
-// var Hammer = require("hammerjs");
+/** @type {module:hammerjs} */
+var Hammer = require("hammerjs");
 // /** @type {module:utils/touch/SmoothPanRecognizer} */
 // var Pan = require("utils/touch/SmoothPanRecognizer");
 // /** @type {module:hammerjs.Tap} */
@@ -3781,8 +3781,6 @@ var AppViewProto = {
 		// });
 		// hpan.requireFailure(vpan);
 		// vpan.requireFailure(hpan);
-
-		// vtouch = new Hammer.Manager(this.navigation);
 		// vtouch.add([]);
 
 		// htouch = vtouch = new Hammer.Manager(this.content);
@@ -3853,40 +3851,90 @@ var AppViewProto = {
 			hpan: htouch,
 		});
 
-		this.listenTo(this.navigationView, "view:collapsed:measured", function(view) {
+		/* TouchEvents fixups
+		 * ------------------------------- */
+		var traceTouchEvent = function(msg, traceObj) {
+			if (msg.hasOwnProperty("type")) {
+				msg = msg.type + " : " +
+					(msg.defaultPrevented ? "prevented" : "not prevented");
+			}
+			var sy, sh, ch;
+			sy = this.el.scrollTop;
+			sh = this.el.scrollHeight - 1;
+			ch = this.el.clientHeight;
+			console.log("%s:[%s] " +
+				"sy:[1>%o>=%s = %o] " +
+				"sh:[%o<=%o = %o] " +
+				"nav:[css:%o val:%o]",
+				this.cid, msg,
+				sy, sh - ch, (1 <= sy <= (sh - ch)),
+				sh, ch, (sh <= ch),
+				this.navigationView.el.style.height,
+				this.navigationView.el.scrollHeight,
+				traceObj || ""
+			);
+		}.bind(this);
+
+
+		// var scrolltouch = new Hammer.Manager(this.el);
+		// scrolltouch.add(new Hammer.Pan({ direction: Hammer.DIRECTION_VERTICAL, threshold: 0 }));
+		// scrolltouch.on("panmove", function(ev) {
+		//
+		// 	// var sy, sh, ch;
+		// 	// sy = this.el.scrollTop;
+		// 	// sh = this.el.scrollHeight - 1;
+		// 	// ch = this.el.clientHeight;
+		// 	//
+		// 	// if ((1 > sy) && (ev.direction | Hammer.DIRECTION_DOWN)) {
+		// 	// 	ev.preventDefault();
+		// 	// 	console.log("%s:[panmove] %s", this.cid, "prevent at top");
+		// 	// } else
+		// 	// if ((sy > (sh - ch)) && (ev.direction | Hammer.DIRECTION_UP)) {
+		// 	// 	ev.preventDefault();
+		// 	// 	console.log("%s:[panmove] %s", this.cid, "prevent at bottom");
+		// 	// }
+		// 	if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
+		// 		ev.srcEvent.preventDefault();
+		// 	}
+		// 	// traceTouchEvent(ev);
+		// }.bind(this));
+
+		var touchOpts = { capture: false, passive: false };
+		var onTouchStart = function(ev) {
+			this.el.addEventListener("touchmove", onTouchMove, touchOpts);
+			this.el.addEventListener("touchend", onTouchEnd, touchOpts);
+			this.el.addEventListener("touchcancel", onTouchEnd, touchOpts);
+		}.bind(this);
+
+		var onTouchMove = function(ev) {
+			if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
+				ev.preventDefault();
+			}
+			traceTouchEvent(ev);
+		}.bind(this);
+
+		var onTouchEnd = function(ev) {
+			this.el.removeEventListener("touchmove", onTouchMove, touchOpts);
+			this.el.removeEventListener("touchend", onTouchEnd, touchOpts);
+			this.el.removeEventListener("touchcancel", onTouchEnd, touchOpts);
+		}.bind(this);
+
+		this.el.addEventListener("touchstart", onTouchStart);
+
+		var onMeasured = function(view) {
 			this.el.scrollTop = 1;
 			if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
 				this.el.style.overflowY = "hidden";
 			} else {
 				this.el.style.overflowY = "";
 			}
-			console.log("%s:[view:collapsed:measured] css:%o val:%o", this.cid,
-				this.navigationView.el.style.height,
-				this.navigationView.el.scrollHeight,
-				this.el.scrollTop, this.el.scrollHeight, this.el.clientHeight,
-				(this.el.scrollHeight - 1) <= this.el.clientHeight,
-				this.el.style.overflowY
-			);
-		});
+			traceTouchEvent("view:collapsed:measured");
+		};
+		this.listenTo(this.navigationView, "view:collapsed:measured", onMeasured);
 
-		this.el.addEventListener("touchmove", function(ev) {
-			var sy, sh, ch;
-			sy = this.el.scrollTop;
-			sh = this.el.scrollHeight - 1;
-			ch = this.el.clientHeight;
-			if (sh <= ch) {
-				ev.preventDefault();
-			}
-			console.log("%s:[touchmove] " +
-				"sy:[1>%o>=%s = %o] " +
-				"sh:[%o<=%o = %o]", this.cid,
-				sy, sh - ch, (1 <= sy <= (sh - ch)),
-				sh, ch, (sh <= ch),
-				(ev.defaultPrevented ? "prevented" : "not prevented")
-			);
-		}.bind(this), { capture: false, passive: false });
 
-		/* Google Analytics */
+		/* Google Analytics
+		 * ------------------------------- */
 		if (window.ga && window.GA_ID) {
 			controller
 				.once("route", function() {
@@ -4178,7 +4226,7 @@ module.exports = View.extend(AppViewProto, AppView);
 
 }).call(this,true)
 
-},{"app/control/Controller":34,"app/control/Globals":35,"app/debug/DebugToolbar":36,"app/model/AppState":39,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/ContentView":55,"app/view/NavigationView":56,"app/view/base/TouchManager":61,"app/view/base/View":62,"backbone":"backbone","underscore":"underscore","utils/strings/stripTags":129}],55:[function(require,module,exports){
+},{"app/control/Controller":34,"app/control/Globals":35,"app/debug/DebugToolbar":36,"app/model/AppState":39,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/ContentView":55,"app/view/NavigationView":56,"app/view/base/TouchManager":61,"app/view/base/View":62,"backbone":"backbone","hammerjs":"hammerjs","underscore":"underscore","utils/strings/stripTags":129}],55:[function(require,module,exports){
 /**
  * @module app/view/ContentView
  */
