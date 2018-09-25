@@ -1614,9 +1614,9 @@ require("matches-polyfill");
 require("fullscreen-polyfill");
 require("math-sign-polyfill");
 // require("path2d-polyfill");
-if (!window.Modernizr.mutationobserver) {
-	require("mutation-polyfill");
-}
+// if (!window.Modernizr.mutationobserver) {
+// 	require("mutation-observer");
+// }
 
 // function applyRequires() {
 require("backbone").$ = require("backbone.native");
@@ -1779,7 +1779,14 @@ if (DEBUG) {
 
 }).call(this,true)
 
-},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":47,"app/view/AppView":54,"app/view/helper/createColorStyleSheet":76,"app/view/template/_helpers":103,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise/auto":"es6-promise/auto","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-polyfill":"mutation-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
+},{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":48,"app/view/AppView":55,"app/view/helper/createColorStyleSheet":77,"app/view/template/_helpers":104,"backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise/auto":"es6-promise/auto","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","raf-polyfill":"raf-polyfill","setimmediate":22,"underscore":"underscore","webfontloader":"webfontloader"}],34:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<svg class=\"cog-symbol icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\">\n	<path d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n</svg>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":20}],35:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Controller
@@ -2022,7 +2029,7 @@ module.exports = new Controller();
 
 }).call(this,true)
 
-},{"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"backbone":"backbone","underscore":"underscore"}],35:[function(require,module,exports){
+},{"app/model/collection/ArticleCollection":44,"app/model/collection/BundleCollection":45,"backbone":"backbone","underscore":"underscore"}],36:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/control/Globals
@@ -2252,7 +2259,7 @@ module.exports = (function() {
 
 }).call(this,true)
 
-},{"../../../sass/variables.json":131,"underscore":"underscore"}],36:[function(require,module,exports){
+},{"../../../sass/variables.json":134,"underscore":"underscore"}],37:[function(require,module,exports){
 /**
  * @module app/view/DebugToolbar
  */
@@ -2344,6 +2351,8 @@ module.exports = View.extend({
 
 		/* toggle container classes
 		/* - - - - - - - - - - - - - - - - */
+		this.initializeClassToggle("debug-state",
+			this.el.querySelector("#toggle-state a"), container);
 		this.initializeClassToggle("debug-blocks-nav",
 			this.el.querySelector("#toggle-blocks-nav a"), container);
 		this.initializeClassToggle("debug-blocks-content",
@@ -2438,6 +2447,11 @@ module.exports = View.extend({
 		}
 		this.backendEl.setAttribute("href", attrVal);
 
+		if (this.model.hasChanged("routeName")) {
+			document.body.setAttribute("last-route", this.model.previous("routeName"));
+			document.body.setAttribute("current-route", this.model.get("routeName"));
+		}
+
 		if (this.model.hasChanged("media")) {
 			if (this.model.has("media")) {
 				this.mediaInfoEl.textContent = sizeTemplate(this.model.get("media").get("source").toJSON());
@@ -2459,16 +2473,18 @@ module.exports = View.extend({
 
 module.exports.prototype._logFlags = "";
 
-},{"./template/DebugToolbar.SVGGrid.hbs":37,"./template/DebugToolbar.hbs":38,"app/control/Globals":35,"app/view/base/View":62,"cookies-js":"cookies-js","underscore":"underscore"}],37:[function(require,module,exports){
+},{"./template/DebugToolbar.SVGGrid.hbs":38,"./template/DebugToolbar.hbs":39,"app/control/Globals":36,"app/view/base/View":63,"cookies-js":"cookies-js","underscore":"underscore"}],38:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<svg id=\"debug-grid\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMaxYMid slice\" viewport-fill=\"hsl(0,0%,100%)\" viewport-fill-opacity=\"1\" style=\"fill:none;stroke:none;stroke-width:1px;fill:none;fill-rule:evenodd;\">\n<defs>\n	<pattern id=\"pat-baseline-12px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"12\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"3\" y2=\"3\" stroke-opacity=\"0.125\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"6\" y2=\"6\" stroke-opacity=\"0.375\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"9\" y2=\"9\" stroke-opacity=\"0.125\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-24px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"24\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-10px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"10\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.00\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"5\" y2=\"5\" stroke-opacity=\"0.75\"/>\n	</pattern>\n	<pattern id=\"pat-baseline-20px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n	<pattern id=\"pat-cols-220px\" x=\"0\" y=\"0\" width=\"220\" height=\"36\" patternUnits=\"userSpaceOnUse\">\n		<rect transform=\"translate(0,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<rect transform=\"translate(200,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<line transform=\"translate(20 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,60%)\" stroke-opacity=\"0.2\"/>\n		<line transform=\"translate(200 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.2\"/>\n\n		<line transform=\"translate(140 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n		<line transform=\"translate(80 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n\n		<line transform=\"translate(0 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n		<line transform=\"translate(220 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n	</pattern>\n</defs>\n<g id=\"debug-grid-body\" transform=\"translate(0 0.5)\">\n	<rect id=\"baseline\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	<g id=\"debug-grid-container\">\n		<g id=\"debug-grid-content\">\n			<rect id=\"baseline-content\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n			<line id=\"gct0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n			<line id=\"gct1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		</g>\n		<line id=\"gnv0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		<line id=\"gnv1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n	</g>\n\n	<g id=\"abs-cols\">\n		<rect id=\"columns\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	</g>\n\n	<g id=\"rel-cols\">\n		<line id=\"le\" class=\"vguide edge\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"re\" class=\"vguide edge\" x1=\"100%\" x2=\"100%\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gl0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"gl1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gr0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"gr1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gm\" class=\"vguide\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	</g>\n</g>\n</svg>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],38:[function(require,module,exports){
+},{"hbsfy/runtime":20}],39:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
+var partial$0 = require('../../View/template/svg/CogSymbol.hbs');
+HandlebarsCompiler.registerPartial('../../View/template/svg/CogSymbol.hbs', partial$0);
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -2498,18 +2514,20 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.escapeExpression;
 
-  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n		<svg class=\"icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\">\n			<path id=\"cog\" d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n		</svg>\n	</dt>\n"
+  return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n"
+    + ((stack1 = container.invokePartial(partials["../../View/template/svg/CogSymbol.hbs"],depth0,{"name":"../../View/template/svg/CogSymbol.hbs","data":data,"indent":"\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
+    + "	</dt>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
     + alias2((helpers.global || (depth0 && depth0.global) || helpers.helperMissing).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
-    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-blocks-nav\">\n		<a href=\"#toggle-blocks-nav\" class=\"color-fg color-bg\">Nav</a>\n	</dd>\n	<dd id=\"toggle-blocks-content\">\n		<a href=\"#toggle-blocks-content\" class=\"color-fg color-bg\">Content</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-tx\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n	<dd id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
+    + "symphony/\" class=\"color-fg color-bg\" target=\"_blank\">CMS</a>\n	</dd>\n	<dd id=\"toggle-tests\">\n		<a href=\"#toggle-tests\" class=\"color-fg color-bg\">Tests</a>\n	</dd>\n	<dd id=\"toggle-state\">\n		<a href=\"#toggle-state\" class=\"color-fg color-bg\">Route</a>\n	</dd>\n	<dd id=\"toggle-blocks-nav\">\n		<a href=\"#toggle-blocks-nav\" class=\"color-fg color-bg\">Nav</a>\n	</dd>\n	<dd id=\"toggle-blocks-content\">\n		<a href=\"#toggle-blocks-content\" class=\"color-fg color-bg\">Content</a>\n	</dd>\n	<dd id=\"toggle-mdown\">\n		<a href=\"#toggle-mdown\" class=\"color-fg color-bg\">Markdown</a>\n	</dd>\n	<dd id=\"toggle-tx\">\n		<a href=\"#toggle-tx\" class=\"color-fg color-bg\">TX/FX</a>\n	</dd>\n	<dd id=\"toggle-grid-bg\">\n		<a href=\"#toggle-grid-bg\" class=\"color-fg color-bg\">Grid</a>\n	</dd>\n	<dd id=\"toggle-graph\">\n		<a href=\"#toggle-graph\" class=\"color-fg color-bg\">Graph</a>\n	</dd>\n	<dd id=\"toggle-logs\">\n		<a href=\"#toggle-logs\" class=\"color-fg color-bg\">Logs</a>\n	</dd>\n	<dd id=\"media-info\">\n		<span></span>\n	</dd>\n	<dd id=\"viewport-info\">\n		<span></span>\n	</dd>\n	<dd id=\"app-state\">\n		<span class=\"color-fg color-bg\" data-prop=\"collapsed\">c</span><span class=\"color-fg color-bg\" data-prop=\"withBundle\">b</span><span class=\"color-fg color-bg\" data-prop=\"withMedia\">m</span><span class=\"color-fg color-bg\" data-prop=\"withArticle\">a</span>\n	</dd>\n</dl>\n<div id=\"test-results\">\n	<h6>Tests <a id=\"toggle-passed\" href=\"#toggle-passed\">Passed</a></h6>\n	<p>"
     + alias2(container.lambda(((stack1 = (depth0 != null ? depth0.navigator : depth0)) != null ? stack1.userAgent : stack1), depth0))
     + "</p>\n	<ul>\n"
     + ((stack1 = helpers.each.call(alias1,(depth0 != null ? depth0.tests : depth0),{"name":"each","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	</ul>\n</div>\n";
-},"useData":true});
+},"usePartial":true,"useData":true});
 
-},{"hbsfy/runtime":20}],39:[function(require,module,exports){
+},{"../../View/template/svg/CogSymbol.hbs":34,"hbsfy/runtime":20}],40:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2647,7 +2665,7 @@ module.exports = BaseModel.extend({
 	// }
 });
 
-},{"backbone":"backbone"}],40:[function(require,module,exports){
+},{"backbone":"backbone"}],41:[function(require,module,exports){
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
@@ -2746,7 +2764,7 @@ module.exports = BaseModel.extend({
 	}
 });
 
-},{"app/model/BaseModel":41,"underscore":"underscore"}],41:[function(require,module,exports){
+},{"app/model/BaseModel":42,"underscore":"underscore"}],42:[function(require,module,exports){
 /**
  * @module app/model/BaseModel
  * @requires module:backbone
@@ -2829,7 +2847,7 @@ var BaseModel = {
 module.exports = Backbone.Model.extend.call(Backbone.Model, BaseModelProto, BaseModel);
 // module.exports = Model.extend(BaseModelProto, BaseModel);
 
-},{"backbone":"backbone","underscore":"underscore"}],42:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],43:[function(require,module,exports){
 /**
  * @module app/model/SelectableCollection
  */
@@ -2975,7 +2993,7 @@ var SelectableCollection = Backbone.Collection.extend({
 
 module.exports = SelectableCollection;
 
-},{"backbone":"backbone","underscore":"underscore"}],43:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],44:[function(require,module,exports){
 /**
  * @module app/model/collection/ArticleCollection
  */
@@ -2999,7 +3017,7 @@ var ArticleCollection = SelectableCollection.extend({
 
 module.exports = new ArticleCollection();
 
-},{"app/model/SelectableCollection":42,"app/model/item/ArticleItem":48}],44:[function(require,module,exports){
+},{"app/model/SelectableCollection":43,"app/model/item/ArticleItem":49}],45:[function(require,module,exports){
 /**
  * @module app/model/collection/BundleCollection
  */
@@ -3039,7 +3057,7 @@ var BundleCollection = SelectableCollection.extend({
 
 module.exports = new BundleCollection();
 
-},{"app/model/SelectableCollection":42,"app/model/item/BundleItem":49}],45:[function(require,module,exports){
+},{"app/model/SelectableCollection":43,"app/model/item/BundleItem":50}],46:[function(require,module,exports){
 /**
  * @module app/model/collection/KeywordCollection
  * @requires module:backbone
@@ -3064,7 +3082,7 @@ var KeywordCollection = SelectableCollection.extend({
 
 module.exports = new KeywordCollection();
 
-},{"app/model/SelectableCollection":42,"app/model/item/KeywordItem":50}],46:[function(require,module,exports){
+},{"app/model/SelectableCollection":43,"app/model/item/KeywordItem":51}],47:[function(require,module,exports){
 /**
  * @module app/model/collection/TypeCollection
  * @requires module:backbone
@@ -3089,7 +3107,7 @@ var TypeCollection = Backbone.Collection.extend({
 
 module.exports = new TypeCollection();
 
-},{"app/model/item/TypeItem":53,"backbone":"backbone"}],47:[function(require,module,exports){
+},{"app/model/item/TypeItem":54,"backbone":"backbone"}],48:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 
@@ -3156,7 +3174,7 @@ module.exports = function(bootstrap) {
 	// bootstrap["params"] = bootstrap["articles-all"] = bootstrap["types-all"] = bootstrap["keywords-all"] = bootstrap["bundles-all"] = bootstrap["media-all"] = null;
 };
 
-},{"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/model/collection/KeywordCollection":45,"app/model/collection/TypeCollection":46,"underscore":"underscore"}],48:[function(require,module,exports){
+},{"app/control/Globals":36,"app/model/collection/ArticleCollection":44,"app/model/collection/BundleCollection":45,"app/model/collection/KeywordCollection":46,"app/model/collection/TypeCollection":47,"underscore":"underscore"}],49:[function(require,module,exports){
 /**
  * @module app/model/item/ArticleItem
  */
@@ -3183,7 +3201,7 @@ module.exports = BaseItem.extend({
 
 });
 
-},{"app/model/BaseItem":40}],49:[function(require,module,exports){
+},{"app/model/BaseItem":41}],50:[function(require,module,exports){
 /**
  * @module app/model/item/BundleItem
  * @requires module:backbone
@@ -3299,7 +3317,7 @@ module.exports = BaseItem.extend({
 	},
 });
 
-},{"app/control/Globals":35,"app/model/BaseItem":40,"app/model/SelectableCollection":42,"app/model/item/MediaItem":51,"color":"color","underscore":"underscore","utils/strings/stripTags":129}],50:[function(require,module,exports){
+},{"app/control/Globals":36,"app/model/BaseItem":41,"app/model/SelectableCollection":43,"app/model/item/MediaItem":52,"color":"color","underscore":"underscore","utils/strings/stripTags":132}],51:[function(require,module,exports){
 /**
  * @module app/model/item/KeywordItem
  * @requires module:app/model/BaseItem
@@ -3340,7 +3358,7 @@ module.exports = BaseItem.extend({
 	// }
 });
 
-},{"app/model/BaseItem":40}],51:[function(require,module,exports){
+},{"app/model/BaseItem":41}],52:[function(require,module,exports){
 /**
  * @module app/model/item/MediaItem
  * @requires module:backbone
@@ -3488,7 +3506,7 @@ module.exports = BaseItem.extend({
 
 });
 
-},{"app/control/Globals":35,"app/model/BaseItem":40,"app/model/SelectableCollection":42,"app/model/item/SourceItem":52,"color":"color","underscore":"underscore","utils/strings/stripTags":129}],52:[function(require,module,exports){
+},{"app/control/Globals":36,"app/model/BaseItem":41,"app/model/SelectableCollection":43,"app/model/item/SourceItem":53,"color":"color","underscore":"underscore","utils/strings/stripTags":132}],53:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/model/item/SourceItem
@@ -3587,7 +3605,7 @@ module.exports = BaseItem.extend({
 
 }).call(this,true)
 
-},{"app/model/BaseItem":40}],53:[function(require,module,exports){
+},{"app/model/BaseItem":41}],54:[function(require,module,exports){
 /**
  * @module app/model/item/TypeItem
  */
@@ -3615,7 +3633,7 @@ module.exports = BaseItem.extend({
 
 });
 
-},{"app/model/BaseItem":40}],54:[function(require,module,exports){
+},{"app/model/BaseItem":41}],55:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/view/AppView
@@ -3663,18 +3681,11 @@ var Hammer = require("hammerjs");
 // var vpanLogFn = _.debounce(console.log.bind(console), 100, false);
 // var hpanLogFn = _.debounce(console.log.bind(console), 100, false);
 
-var AppView = {
-	getInstance: function() {
-		if (!(window.app instanceof this)) {
-			window.app = new(this)({
-				model: new AppState()
-			});
-		}
-		return window.app;
-	}
-};
-
-var AppViewProto = {
+/**
+ * @constructor
+ * @type {module:app/view/AppView}
+ */
+module.exports = View.extend({
 
 	/** @override */
 	cidPrefix: "app",
@@ -3827,7 +3838,7 @@ var AppViewProto = {
 		(vg. Carousel) require update on resize */
 		// this._onBreakpointChange = this._onBreakpointChange.bind(this);
 		// Object.keys(Globals.BREAKPOINTS).forEach(function(s) {
-		// 	Globals.BREAKPOINTS[s].addListener(this._onBreakpointChange);
+		// 	Globals.BREAKPOINTS[s].addListeners(this._onBreakpointChange);
 		// }, this);
 
 
@@ -3910,7 +3921,7 @@ var AppViewProto = {
 			if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
 				ev.preventDefault();
 			}
-			traceTouchEvent(ev);
+			//traceTouchEvent(ev);
 		}.bind(this);
 
 		var onTouchEnd = function(ev) {
@@ -3928,7 +3939,7 @@ var AppViewProto = {
 			} else {
 				this.el.style.overflowY = "";
 			}
-			traceTouchEvent("view:collapsed:measured");
+			//traceTouchEvent("view:collapsed:measured");
 		};
 		this.listenTo(this.navigationView, "view:collapsed:measured", onMeasured);
 
@@ -4034,7 +4045,7 @@ var AppViewProto = {
 
 	_onModelChange: function() {
 		if (DEBUG) {
-			console.group(this.cid + "::_onModelChange");
+			console.groupCollapsed(this.cid + "::_onModelChange");
 			console.groupCollapsed("changes");
 			Object.keys(this.model.changedAttributes()).forEach(function(key) {
 				console.info("%s::_onModelChange %s: %s -> %s", this.cid, key,
@@ -4042,7 +4053,7 @@ var AppViewProto = {
 					this.model.get(key));
 			}, this);
 
-		["Article", "Bundle", "Media"].forEach(function(name) {
+			["Article", "Bundle", "Media"].forEach(function(name) {
 				var key = name.toLowerCase();
 				console[this.hasChanged("with" + name) == this.hasAnyChanged(key) ? "log" : "warn"].call(console, "%s::_onModelChange with%s: %o with%sChanged: %o", this.cid,
 					name, this.has(key),
@@ -4051,13 +4062,14 @@ var AppViewProto = {
 			}, this.model);
 			console.groupEnd();
 
-			this.requestRender(View.MODEL_INVALID)
-				// .requestChildrenRender(View.MODEL_INVALID)
-				.once("view:render:after", function(view, flags) {
-					console.info("%s::_onModelChange [view:render:after]", view.cid);
-					console.groupEnd();
-				});
+			this.once("view:render:after", function(view, flags) {
+				console.info("%s::_onModelChange [view:render:after]", view.cid);
+				console.groupEnd();
+			});
 		}
+
+		this.requestRender(View.MODEL_INVALID);
+		// this.requestChildrenRender(View.MODEL_INVALID);
 	},
 
 	/* -------------------------------
@@ -4190,43 +4202,42 @@ var AppViewProto = {
 		/* flag dark background */
 		cls.toggle("color-dark", hasDarkBg);
 	},
-};
+}, {
+	getInstance: function() {
+		if (!(window.app instanceof this)) {
+			window.app = new(this)({
+				model: new AppState()
+			});
+		}
+		return window.app;
+	}
+});
 
 if (DEBUG) {
-	/** @type {module:app/debug/DebugToolbar} */
-	var DebugToolbar = require("app/debug/DebugToolbar");
+	module.exports = (function(AppView) {
+		/** @type {module:app/debug/DebugToolbar} */
+		var DebugToolbar = require("app/debug/DebugToolbar");
 
-	AppViewProto.initialize = (function(fn) {
-		return function() {
-			var retval;
-			var view = new DebugToolbar({
-				id: "debug-toolbar",
-				model: this.model
-			});
-			document.body.appendChild(view.render().el);
-			// this.listenTo(this.model, "change:layoutName", function() {
-			// 	this.requestRender(View.SIZE_INVALID); //.renderNow();
-			// });
-			retval = fn.apply(this, arguments);
-			this._logFlags["view.trace"] = true;
-			this.navigationView._logFlags["view.trace"] = true;
-			// this.navigationView.graph._logFlags["view.trace"] = true;
-			// this.navigationView.bundleList._logFlags["view.trace"] = true;
-			// this.navigationView.keywordList._logFlags["view.trace"] = true;
-			return retval;
-		};
-	})(AppViewProto.initialize);
+		return AppView.extend({
+			initialize: function() {
+				var retval;
+				var view = new DebugToolbar({
+					id: "debug-toolbar",
+					model: this.model
+				});
+				document.body.appendChild(view.render().el);
+				retval = AppView.prototype.initialize.apply(this, arguments);
+				this._logFlags["view.trace"] = true;
+				this.navigationView._logFlags["view.trace"] = true;
+				return retval;
+			},
+		})
+	})(module.exports);
 }
-
-/**
-/* @constructor
-/* @type {module:app/view/AppView}
-/*/
-module.exports = View.extend(AppViewProto, AppView);
 
 }).call(this,true)
 
-},{"app/control/Controller":34,"app/control/Globals":35,"app/debug/DebugToolbar":36,"app/model/AppState":39,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/ContentView":55,"app/view/NavigationView":56,"app/view/base/TouchManager":61,"app/view/base/View":62,"backbone":"backbone","hammerjs":"hammerjs","underscore":"underscore","utils/strings/stripTags":129}],55:[function(require,module,exports){
+},{"app/control/Controller":35,"app/control/Globals":36,"app/debug/DebugToolbar":37,"app/model/AppState":40,"app/model/collection/ArticleCollection":44,"app/model/collection/BundleCollection":45,"app/view/ContentView":56,"app/view/NavigationView":57,"app/view/base/TouchManager":62,"app/view/base/View":63,"backbone":"backbone","hammerjs":"hammerjs","underscore":"underscore","utils/strings/stripTags":132}],56:[function(require,module,exports){
 /**
  * @module app/view/ContentView
  */
@@ -4293,7 +4304,7 @@ var tx = Globals.transitions;
  * @constructor
  * @type {module:app/view/ContentView}
  */
-var ContentView = View.extend({
+module.exports = View.extend({
 
 	/** @override */
 	cidPrefix: "contentView",
@@ -4802,9 +4813,7 @@ var ContentView = View.extend({
 	// },
 });
 
-module.exports = ContentView;
-
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":100,"./template/CollectionStack.Media.hbs":101,"app/control/Controller":34,"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/view/base/View":62,"app/view/component/ArticleView":66,"app/view/component/Carousel":68,"app/view/component/CollectionStack":70,"app/view/component/SelectableListView":75,"app/view/render/CarouselRenderer":85,"app/view/render/DotNavigationRenderer":90,"app/view/render/ImageRenderer":92,"app/view/render/SequenceRenderer":97,"app/view/render/VideoRenderer":99,"underscore":"underscore","utils/TransformHelper":106}],56:[function(require,module,exports){
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":101,"./template/CollectionStack.Media.hbs":102,"app/control/Controller":35,"app/control/Globals":36,"app/model/collection/ArticleCollection":44,"app/model/collection/BundleCollection":45,"app/view/base/View":63,"app/view/component/ArticleView":67,"app/view/component/Carousel":69,"app/view/component/CollectionStack":71,"app/view/component/SelectableListView":76,"app/view/render/CarouselRenderer":86,"app/view/render/DotNavigationRenderer":91,"app/view/render/ImageRenderer":93,"app/view/render/SequenceRenderer":98,"app/view/render/VideoRenderer":100,"underscore":"underscore","utils/TransformHelper":107}],57:[function(require,module,exports){
 /* global MutationObserver */
 /**
 /* @module app/view/NavigationView
@@ -4861,10 +4870,10 @@ txNow.easing = "ease";
 // hTx.easing = "ease";
 
 /**
-/* @constructor
-/* @type {module:app/view/NavigationView}
-/*/
-var NavigationView = View.extend({
+ * @constructor
+ * @type {module:app/view/NavigationView}
+ */
+module.exports = View.extend({
 
 	// /** @override */
 	// tagName: "div",
@@ -5076,13 +5085,13 @@ var NavigationView = View.extend({
 		if ((flags & View.MODEL_INVALID) && this.model.hasChanged("collapsed")) {
 			p = p.then(toggleGraph);
 		}
-		p = Promise.all([p, this.transforms.whenAllTransitionsEnd()]);
-		p = p.then(whenCollapsedChangeDone);
-
-		p.catch(function(r) {
-			console.warn("%s::renderFrame promise rejected", this.cid, r);
-			return r;
-		}.bind(this));
+		p
+			.then(this.transforms.whenAllTransitionsEnd())
+			.then(whenCollapsedChangeDone)
+			.catch(function(reason) {
+				console.error("%s::renderFrame promise rejected", this.cid, reason);
+				return reason;
+			}.bind(this));
 
 		/*
 		var whenListsRendered = Promise.all([
@@ -5206,7 +5215,7 @@ var NavigationView = View.extend({
 	_whenTransitionsEnd: function(result) {
 		console.info("%s::_whenTransitionsEnd", this.cid);
 		this.el.classList.remove("container-changing");
-		// if (!Globals.BREAKPOINTS["desktop-small"].matches)
+		// if (!Globals.BREAKPOINTS["medium-wide"].matches)
 		// 	return;
 		// if (!this.model.get("collapsed")) {
 		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
@@ -5217,7 +5226,7 @@ var NavigationView = View.extend({
 	_whenTransitionsAbort: function(reason) {
 		console.warn("%s::_whenTransitionsAbort %o", this.cid, reason);
 		this.el.classList.remove("container-changing");
-		// if (!Globals.BREAKPOINTS["desktop-small"].matches)
+		// if (!Globals.BREAKPOINTS["medium-wide"].matches)
 		// 	return;
 		// if (!this.model.get("collapsed")) {
 		// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
@@ -5291,7 +5300,7 @@ var NavigationView = View.extend({
 		 *		bundleList.wrapper,
 		 *		hGroupings
 		 */
-		if (Globals.BREAKPOINTS["desktop-small"].matches) {
+		if (Globals.BREAKPOINTS["medium-wide"].matches) {
 			/* HORIZONTAL: keywordList.wrapper */
 			tf = this.transforms.get(this.keywordList.wrapper);
 			if (collapsedChanged && !withArticleChanged) {
@@ -5338,7 +5347,7 @@ var NavigationView = View.extend({
 			// 		this.transforms.runTransition(withArticle ? tx.BETWEEN : tx.LAST, this.bundleList.wrapper);
 			// 	}
 			// }
-		} else if (Globals.BREAKPOINTS["fullwidth"].matches) {
+		} else if (Globals.BREAKPOINTS["small-stretch"].matches) {
 			// if (collapsedChanged ) {
 			if (collapsedChanged ^ withArticleChanged) {
 				this.transforms.runTransition(collapsed ? tx.FIRST : tx.LAST,
@@ -5401,7 +5410,7 @@ var NavigationView = View.extend({
 				this.hpan.on("hpanstart", this._onHPanStart);
 				// this.hpan.on("tap", this._onTap);
 			} else {
-				this.el.removeEventListener("click", this._onNavigationClick);
+				this.el.removeEventListener(View.CLICK_EVENT, this._onNavigationClick);
 				this.vpan.off("vpanstart", this._onVPanStart);
 				this.hpan.off("hpanstart", this._onHPanStart);
 				keywords.deselect();
@@ -5483,7 +5492,7 @@ var NavigationView = View.extend({
 		// 	&& this.model.get("layoutName") != "default-layout") {
 		// 	return;
 		// }
-		if (Globals.BREAKPOINTS["desktop-small"].matches
+		if (Globals.BREAKPOINTS["medium-wide"].matches
 			&& this.model.get("bundle").get("media").selectedIndex <= 0
 			&& this.model.get("collapsed")) {
 			this.transforms.get(this.keywordList.wrapper).clearCapture();
@@ -5782,7 +5791,7 @@ var NavigationView = View.extend({
 
 	/*
 	_beginTransformObserve: function() {
-		if (!(Globals.BREAKPOINTS["desktop-small"].matches && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed"))) {
+		if (!(Globals.BREAKPOINTS["medium-wide"].matches && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed"))) {
 			return;
 		}
 		var target = document.querySelector(".carousel > .empty-item");
@@ -5834,9 +5843,7 @@ var NavigationView = View.extend({
 	*/
 });
 
-module.exports = NavigationView;
-
-},{"app/control/Controller":34,"app/control/Globals":35,"app/model/collection/ArticleCollection":43,"app/model/collection/BundleCollection":44,"app/model/collection/KeywordCollection":45,"app/model/collection/TypeCollection":46,"app/view/base/View":62,"app/view/component/ArticleButton":65,"app/view/component/FilterableListView":71,"app/view/component/GraphView":72,"app/view/component/GroupingListView":73,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":106}],57:[function(require,module,exports){
+},{"app/control/Controller":35,"app/control/Globals":36,"app/model/collection/ArticleCollection":44,"app/model/collection/BundleCollection":45,"app/model/collection/KeywordCollection":46,"app/model/collection/TypeCollection":47,"app/view/base/View":63,"app/view/component/ArticleButton":66,"app/view/component/FilterableListView":72,"app/view/component/GraphView":73,"app/view/component/GroupingListView":74,"hammerjs":"hammerjs","underscore":"underscore","utils/TransformHelper":107}],58:[function(require,module,exports){
 var PriorityQueue = function(offset) {
 	this._offset = offset | 0;
 	this._items = [];
@@ -6041,7 +6048,7 @@ CallbackQueue.prototype = Object.create({
 
 module.exports = CallbackQueue;
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function (DEBUG){
 /* global Path2D */
 /**
@@ -6117,11 +6124,13 @@ var CanvasView = View.extend({
 		maxValues: {
 			value: 1
 		},
+		paused: false,
+		useOpaque: false,
 	},
 
 	/* --------------------------- *
-	/* children/layout
-	/* --------------------------- */
+	 * children/layout
+	 * --------------------------- */
 
 	/** @override */
 	initialize: function(options) {
@@ -6131,9 +6140,9 @@ var CanvasView = View.extend({
 		options.maxValues = _.defaults(options.maxValues || {}, this.defaults.maxValues);
 
 		this._interpolator = new Interpolator(options.values, options.maxValues);
-		this._interpolator.paused = options.paused || false;
+		this._interpolator.paused = options.paused;
 
-		this._useOpaque = options.useOpaque || true;
+		this._useOpaque = options.useOpaque;
 		this._options = _.pick(options, "color", "backgroundColor");
 
 		// opaque background
@@ -6278,7 +6287,18 @@ var CanvasView = View.extend({
 		};
 	},
 
-	_clearCanvas: function(x, y, w, h) {
+	_clearCanvas: function() {
+		if (arguments.length == 4) {
+			this._clearCanvasRect.apply(this, arguments);
+		} else {
+			this._ctx.save();
+			this._ctx.setTransform(1, 0, 0, 1, 0, 0);
+			this._clearCanvasRect(0, 0, this.el.width, this.el.height);
+			this._ctx.restore();
+		}
+	},
+
+	_clearCanvasRect: function(x, y, w, h) {
 		this._ctx.clearRect(x, y, w, h);
 		if (this._useOpaque) {
 			this._ctx.save();
@@ -6293,8 +6313,8 @@ var CanvasView = View.extend({
 	},
 
 	/* --------------------------- *
-	/* render
-	/* --------------------------- */
+	 * render
+	 * --------------------------- */
 
 	/** @override */
 	render: function() {
@@ -6388,7 +6408,7 @@ module.exports = CanvasView;
 
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/base/Interpolator":59,"app/view/base/View":62,"underscore":"underscore","utils/css/getBoxEdgeStyles":116}],59:[function(require,module,exports){
+},{"app/control/Globals":36,"app/view/base/Interpolator":60,"app/view/base/View":63,"underscore":"underscore","utils/css/getBoxEdgeStyles":119}],60:[function(require,module,exports){
 /**
  * @module app/view/base/Interpolator
  */
@@ -6664,7 +6684,7 @@ Interpolator.prototype = Object.create({
 
 module.exports = Interpolator;
 
-},{"underscore":"underscore","utils/ease/fn/linear":119}],60:[function(require,module,exports){
+},{"underscore":"underscore","utils/ease/fn/linear":122}],61:[function(require,module,exports){
 (function (DEBUG){
 /** @type {module:utils/prefixedEvent} */
 var prefixedEvent = require("utils/prefixedEvent");
@@ -6706,7 +6726,7 @@ module.exports = eventMap;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":122}],61:[function(require,module,exports){
+},{"utils/prefixedEvent":125}],62:[function(require,module,exports){
 /**
  * @module app/view/base/TouchManager
  */
@@ -6780,7 +6800,7 @@ touchHandlers["vpanstart vpanend vpancancel"] =
 	touchHandlers["hpanstart hpanend hpancancel"] = saveTimeStamp;
 
 var preventSrcEvent = function(hev) {
-	console.log(hev.type, "preventDefault");
+	//console.log(hev.type, "preventDefault");
 	hev.srcEvent.preventDefault();
 };
 touchHandlers["vpanmove vpanend vpancancel"] =
@@ -6927,7 +6947,7 @@ function createInstance(el) {
 }
 */
 
-},{"app/control/Globals":35,"hammerjs":"hammerjs"}],62:[function(require,module,exports){
+},{"app/control/Globals":36,"hammerjs":"hammerjs"}],63:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, MutationObserver */
 /**
@@ -7286,6 +7306,8 @@ var ViewProto = {
 		}
 	},
 
+	$: Backbone.$,
+
 	/**
 	 * @constructor
 	 * @type {module:app/view/base/View}
@@ -7501,23 +7523,48 @@ var ViewProto = {
 	/* event helpers
 	/* --------------------------- */
 
-	addListener: function(target, events, handler, useCapture) {
-		(typeof events === "string") && (events = events.split(" "));
+	addListeners: function(target, events, handler, useCapture) {
+		if (!_.isObject(useCapture)) useCapture = !!useCapture;
+		if (typeof events === "string") { events = events.split(" "); }
 		for (var i = 0; i < events.length; i++) {
-			target.addEventListener(events[i], handler, !!useCapture);
+			target.addEventListener(events[i], handler, useCapture);
 		}
 		return this;
 	},
 
-	removeListener: function(target, events, handler, useCapture) {
-		(typeof events === "string") && (events = events.split(" "));
+	removeListeners: function(target, events, handler, useCapture) {
+		if (!_.isObject(useCapture)) useCapture = !!useCapture;
+		if (typeof events === "string") { events = events.split(" "); }
 		for (var i = 0; i < events.length; i++) {
-			target.removeEventListener(events[i], handler, !!useCapture);
+			target.removeEventListener(events[i], handler, useCapture);
 		}
 		return this;
 	},
+
+	listenToElement: function(target, events, handler) {
+		target = Backbone.$(target);
+		if (typeof events === "string") { events = events.split(" "); }
+		for (var i = 0; i < events.length; i++) {
+			this.listenTo(target, events[i], handler);
+		}
+	},
+	stopListeningToElement: function(target, events, handler) {
+		target = Backbone.$(target);
+		if (typeof events === "string") { events = events.split(" "); }
+		for (var i = 0; i < events.length; i++) {
+			this.stopListening(target, events[i], handler);
+		}
+	},
+
+	// listenToElementOnce: function(target, event, handler, useCapture) {
+	// 	this.listenToOnce(this.$(target), event, handler);
+	// },
+	// stopListenToElement: function(target, event, handler, useCapture) {
+	// 	this.stopListening(Backbone.$(target), event, handler);
+	// },
 
 	listenToElementOnce: function(target, event, handler, useCapture) {
+		if (!_.isObject(useCapture)) useCapture = !!useCapture;
 		var cleanup, wrapper, ctx;
 		ctx = this;
 		cleanup = function() {
@@ -7772,7 +7819,7 @@ module.exports = Backbone.View.extend(ViewProto, View);
 
 }).call(this,true)
 
-},{"app/view/base/CallbackQueue":57,"app/view/base/PrefixedEvents":60,"app/view/base/ViewError":63,"app/view/promise/whenViewIsAttached":83,"app/view/promise/whenViewIsRendered":84,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":122,"utils/prefixedProperty":123,"utils/prefixedStyleName":124}],63:[function(require,module,exports){
+},{"app/view/base/CallbackQueue":58,"app/view/base/PrefixedEvents":61,"app/view/base/ViewError":64,"app/view/promise/whenViewIsAttached":84,"app/view/promise/whenViewIsRendered":85,"backbone":"backbone","underscore":"underscore","utils/prefixedEvent":125,"utils/prefixedProperty":126,"utils/prefixedStyleName":127}],64:[function(require,module,exports){
 function ViewError(view, err) {
 	this.view = view;
 	this.err = err;
@@ -7784,7 +7831,7 @@ ViewError.prototype.name = "ViewError";
 
 module.exports = ViewError;
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -7799,7 +7846,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</a>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],65:[function(require,module,exports){
+},{"hbsfy/runtime":20}],66:[function(require,module,exports){
 /**
 /* @module app/view/component/ArticleView
 /*/
@@ -7844,7 +7891,7 @@ var ArticleButton = View.extend({
 });
 module.exports = ArticleButton;
 
-},{"./ArticleButton.hbs":64,"app/view/base/View":62}],66:[function(require,module,exports){
+},{"./ArticleButton.hbs":65,"app/view/base/View":63}],67:[function(require,module,exports){
 /**
 /* @module app/view/component/ArticleView
 /*/
@@ -7891,7 +7938,7 @@ var ArticleView = View.extend({
 });
 module.exports = ArticleView;
 
-},{"app/view/base/View":62}],67:[function(require,module,exports){
+},{"app/view/base/View":63}],68:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/progress/CanvasProgressMeter
@@ -8368,7 +8415,8 @@ if (DEBUG) {
 
 }).call(this,true)
 
-},{"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":117,"utils/ease/fn/easeOutQuad":118}],68:[function(require,module,exports){
+},{"app/view/base/CanvasView":59,"underscore":"underscore","utils/ease/fn/easeInQuad":120,"utils/ease/fn/easeOutQuad":121}],69:[function(require,module,exports){
+(function (DEBUG){
 /**
 /* @module app/view/component/Carousel
 /*/
@@ -9059,8 +9107,8 @@ var CarouselProto = {
 		switch (ev.type) {
 			// case View.CLICK_EVENT:
 			// 	return this._onClick(ev);
-			case "tap":
-				return this._onTap(ev);
+			// case "tap":
+			// 	return this._onTap(ev);
 			case "hpanstart":
 				return this._onPanStart(ev);
 			case "hpanmove":
@@ -9169,6 +9217,11 @@ var CarouselProto = {
 		return (void 0);
 	},
 
+	_onClick: function(ev) {
+		console.log("%s::_onClick", this.cid, ev.type, ev);
+		this._onTap(ev);
+	},
+
 	_onTap: function(ev) {
 		if (ev.defaultPrevented) return;
 
@@ -9219,11 +9272,6 @@ var CarouselProto = {
 			this.triggerSelectionEvents(tapCandidate, true);
 			// this.renderNow();
 		}
-	},
-
-	_onClick: function(ev) {
-		console.log("%s::_onClick", this.cid, ev.type, ev);
-		this._onTap(ev);
 	},
 
 	/* --------------------------- *
@@ -9404,9 +9452,15 @@ var CarouselProto = {
 
 };
 
+if (DEBUG) {
+	CarouselProto._logFlags = "";
+}
+
 module.exports = Carousel = View.extend(CarouselProto, Carousel);
 
-},{"app/control/Globals":35,"app/view/base/View":62,"app/view/render/CarouselRenderer":85,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":123,"utils/prefixedStyleName":124,"utils/touch/SmoothPanRecognizer":130}],69:[function(require,module,exports){
+}).call(this,true)
+
+},{"app/control/Globals":36,"app/view/base/View":63,"app/view/render/CarouselRenderer":86,"backbone.babysitter":"backbone.babysitter","hammerjs":"hammerjs","underscore":"underscore","utils/prefixedProperty":126,"utils/prefixedStyleName":127,"utils/touch/SmoothPanRecognizer":133}],70:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -9415,7 +9469,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"id","hash":{},"data":data}) : helper)));
 },"useData":true});
 
-},{"hbsfy/runtime":20}],70:[function(require,module,exports){
+},{"hbsfy/runtime":20}],71:[function(require,module,exports){
 /**
  * @module app/view/component/CollectionStack
  */
@@ -9516,7 +9570,7 @@ module.exports = View.extend({
 	},
 });
 
-},{"./CollectionStack.hbs":69,"app/view/base/View":62}],71:[function(require,module,exports){
+},{"./CollectionStack.hbs":70,"app/view/base/View":63}],72:[function(require,module,exports){
 (function (DEBUG){
 /**
 /* @module app/view/component/FilterableListView
@@ -10128,7 +10182,7 @@ module.exports = FilterableListView;
 
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/base/View":62,"app/view/render/ClickableRenderer":86,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":108,"utils/css/getBoxEdgeStyles":116,"utils/prefixedProperty":123,"utils/promise/rejectAll":126,"utils/promise/resolveAll":127}],72:[function(require,module,exports){
+},{"app/control/Globals":36,"app/view/base/View":63,"app/view/render/ClickableRenderer":87,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","utils/array/difference":109,"utils/css/getBoxEdgeStyles":119,"utils/prefixedProperty":126,"utils/promise/rejectAll":129,"utils/promise/resolveAll":130}],73:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/component/GraphView
@@ -10182,8 +10236,8 @@ var paramsBase = {
 	radiusIncrement: 0.21, //3, //0.25,
 	/* uses lineWidth multiplier */
 	outlineWidth: 3,
-	/* uses lineWidth multiplier */
-	arrowSize: 0.3,
+	/* factored to rem unit */
+	arrowSize: 0.4, //0.3,
 };
 
 // var overlayStyleBase = {
@@ -10663,7 +10717,7 @@ var GraphView = CanvasView.extend({
 				// p.cx1 = sMin + (rMax0 * qx);
 				// p.cx2 = dMin;
 
-				tx = calcArcHConnector(p.cx1, p.cy1, p.r1, p.cx2, p.cy2, p.r2, 1);
+				tx = calcArcHConnector(p.cx1, p.cy1, p.r1, p.cx2, p.cy2, p.r2, 0.9);
 				if (tx) {
 					p.tx1 = tx[0];
 					p.tx2 = tx[1];
@@ -10744,8 +10798,7 @@ var GraphView = CanvasView.extend({
 				}
 				this._drawConnector(p, i, pp);
 				if (lVal == 1) {
-					CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra2, ta);
-					this._ctx.fill();
+					this._drawArrowhead(p.x2, p.y2, ra2, dir * ta);
 				}
 			}
 			this._ctx.restore();
@@ -10759,11 +10812,36 @@ var GraphView = CanvasView.extend({
 			}
 			this._drawConnector(p, i, pp);
 			if (lVal == 1) {
-				CanvasHelper.arrowhead(this._ctx, p.x2, p.y2, ra1, dir * ta);
-				this._ctx.fill();
+				this._drawArrowhead(p.x2, p.y2, ra1, dir * ta);
 			}
 		}
 	},
+
+	_drawArrowhead: function(x, y, r, t) {
+		// this._ctx.save();
+		// this._ctx.lineDashOffset = 0;
+		// this._ctx.setLineDash([]);
+		CanvasHelper.arrowhead2(this._ctx, x, y, r, t);
+		this._ctx.stroke();
+		// this._ctx.restore();
+	},
+
+	_drawArrowhead2: function(x, y, r, t) {
+		CanvasHelper.arrowhead(this._ctx, x, y, r, t);
+		this._ctx.fill();
+	},
+
+	// _drawArrowheadH: function(x, y, r, a) {
+	// 	this._ctx.save();
+	// 	this._ctx.lineDashOffset = 0;
+	// 	this._ctx.setLineDash([]);
+	// 	this._ctx.beginPath();
+	// 	this._ctx.moveTo(x + r * 1 / dir, y - r);
+	// 	this._ctx.lineTo(x, y);
+	// 	this._ctx.lineTo(x + r * 1 / dir, y + r);
+	// 	this._ctx.stroke();
+	// 	this._ctx.restore();
+	// },
 
 	_drawConnector: function(p, i, pp) {
 		this._ctx.beginPath();
@@ -11013,7 +11091,7 @@ module.exports = GraphView;
 
 }).call(this,true)
 
-},{"app/control/Globals":35,"app/view/base/CanvasView":58,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":109,"utils/canvas/calcArcHConnector":115,"utils/geom/inflateRect":121}],73:[function(require,module,exports){
+},{"app/control/Globals":36,"app/view/base/CanvasView":59,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":110,"utils/canvas/calcArcHConnector":118,"utils/geom/inflateRect":124}],74:[function(require,module,exports){
 /**
  * @module app/view/component/GroupingListView
  */
@@ -11227,7 +11305,7 @@ var GroupingListView = FilterableListView.extend({
 
 module.exports = GroupingListView;
 
-},{"app/view/component/FilterableListView":71,"app/view/render/ClickableRenderer":86,"app/view/render/LabelRenderer":93,"underscore":"underscore"}],74:[function(require,module,exports){
+},{"app/view/component/FilterableListView":72,"app/view/render/ClickableRenderer":87,"app/view/render/LabelRenderer":94,"underscore":"underscore"}],75:[function(require,module,exports){
 /**
  * @module app/view/component/PlayToggleSymbol
  */
@@ -11239,6 +11317,19 @@ var _ = require("underscore");
 /** @type {module:app/view/base/CanvasView} */
 var CanvasView = require("app/view/base/CanvasView");
 
+/** @type {Function} */
+var Color = require("color");
+/** @type {module:utils/canvas/bitmap/stackBlurRGB} */
+var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
+/** @type {module:utils/canvas/bitmap/getAverageRGB} */
+var getAverageRGB = require("utils/canvas/bitmap/getAverageRGB");
+/** @type {module:utils/canvas/bitmap/multiply} */
+var multiply = require("utils/canvas/bitmap/multiply");
+/** @type {module:utils/canvas/bitmap/desaturate} */
+var desaturate = require("utils/canvas/bitmap/desaturate");
+/** @type {module:utils/canvas/CanvasHelper} */
+var roundRect = require("utils/canvas/CanvasHelper").roundRect;
+
 /** @type {module:utils/ease/fn/easeInQuad} */
 var easeIn = require("utils/ease/fn/easeInQuad");
 /** @type {module:utils/ease/fn/easeOutQuad} */
@@ -11247,6 +11338,10 @@ var easeOut = require("utils/ease/fn/easeOutQuad");
 var PI2 = Math.PI * 2;
 var LOOP_OFFSET = 1.833333;
 var INTEP_MS = require("app/control/Globals").TRANSITION_DURATION;
+var FILTER_REFRESH_THRESHOLD = 0.5; //seconds elapsed
+var FILTER_SCALE = 1.5;
+var FILTER_RADIUS = 30; //pixels
+var FILTER_MULTIPLY = 0.1;
 
 var PlayToggleSymbol = {
 	PLAY: "playing",
@@ -11270,7 +11365,12 @@ module.exports = CanvasView.extend({
 			maxValues: {
 				_loop: 1
 			},
-			symbolName: "play",
+			color: "rgba(255,255,255,1.0)",
+			backgroundColor: "rgba(0,0,0,0.25)",
+			paused: true,
+			symbolName: "",
+			// borderRadius: 3,
+			// borderWidth: 3,
 		},
 
 		properties: {
@@ -11288,84 +11388,190 @@ module.exports = CanvasView.extend({
 		initialize: function(options) {
 			// TODO: cleanup options mess in CanvasView
 			CanvasView.prototype.initialize.apply(this, arguments);
-			this._options = _.extend(this._options, _.pick(options, "symbolName"));
+			this._options = _.extend(this._options, _.pick(options, "symbolName", "borderRadius", "borderWidth"));
 			this.symbolName = this._options.symbolName;
 		},
 
-		_symbolName: "",
-
-		_setSymbolName: function(value) {
-			if (this._symbolName !== value) {
-				this._lastSymbolName = this._symbolName;
-				this._symbolName = value;
-				this.requestRender(CanvasView.LAYOUT_INVALID);
-				console.log("%s::[set] symbol %o (from %o)", this.cid, this._symbolName, this._lastSymbolName, this.paused ? "paused" : "");
-			}
-		},
-
-		setBackgroundData: function(imageData) {
-			this._backgroundData = imageData;
-		},
-
+		/** @override */
 		measureCanvas: function(w, h, s) {
 			// make canvas square
 			this._canvasHeight = this._canvasWidth = Math.min(w, h);
 		},
 
-		updateCanvas: function(ctx, style) {
+		/** @override */
+		updateCanvas: function(ctx, s) {
 			var mObj = this._getFontMetrics(this._fontFamily);
 			this._baselineShift = mObj ? (mObj.ascent + mObj.descent) / mObj.unitsPerEm : 0.7; // default value
 			this._baselineShift *= this._fontSize * 0.5; // apply to font-size, halve it
 			this._baselineShift = Math.round(this._baselineShift);
-			// double SQRT1_2: square within circle within square
 
 			this._canvasOffsetX = this._canvasOffsetY = this._canvasWidth / 2;
-			this._radius = (this._canvasWidth / 2) * Math.SQRT1_2 * Math.SQRT1_2;
-			this._side = this._radius * Math.SQRT1_2; // * Math.SQRT1_2;
+			// double SQRT1_2: square within circle within square
+			this._radius = (this._canvasWidth / 2) * Math.SQRT1_2 * Math.SQRT1_2 * Math.SQRT1_2;
+			this._side = this._radius; // * Math.SQRT1_2; // * Math.SQRT1_2;
+			// this._borderWidth = this._options.borderWidth * this._canvasRatio;
+			// this._borderRadius = this._canvasWidth * this._canvasRatio / 2; //this._options.borderRadius * this._canvasRatio;
 
-			// this._ctx.restore();
-			// this._ctx.textBaseline = "middle";
-			this._ctx.lineWidth = 3 * this._canvasRatio;
-			this._ctx.shadowBlur = 0;
-			this._ctx.shadowColor = "#000000";
-			this._ctx.shadowOffsetX = 1;
-			this._ctx.shadowOffsetY = 1;
 			// reset matrix and translate 0,0 to center
 			this._ctx.setTransform(1, 0, 0, 1, this._canvasOffsetX, this._canvasOffsetY);
+			// this._ctx.restore();
+			// this._ctx.textBaseline = "middle";
+			this._ctx.lineWidth = this._radius * (1 - Math.SQRT1_2);
+			// this._ctx.fillStyle = "#FFF";
+			this._ctx.shadowColor = "rgba(0,0,0,0.75)";
+			this._ctx.shadowBlur = 1;
+			this._ctx.shadowOffsetX = 2;
+			this._ctx.shadowOffsetY = 2;
 			// this._ctx.save();
+
+			this._isImageDataInvalid = true;
+			//console.log("%s::updateCanvas %s", this.cid, this._backgroundColor);
 		},
 
-		redraw: function(ctx, intrp, flags) {
-			this._clearCanvas(
-				-this._canvasOffsetX, -this._canvasOffsetY,
-				this._canvasWidth, this._canvasHeight
+		/* --------------------------- *
+		 * symbolName
+		 * --------------------------- */
+
+		_symbolName: "",
+		_setSymbolName: function(value) {
+			if (this._symbolName !== value) {
+				this._lastSymbolName = this._symbolName;
+				this._symbolName = value;
+
+				this.refreshImageSource();
+				this.requestRender(CanvasView.LAYOUT_INVALID);
+				console.log("%s::[set] symbol %o (from %o)", this.attached ? this.parentView.cid : this.cid, this._symbolName, this._lastSymbolName, this.paused ? "paused" : "");
+			}
+		},
+
+		/* --------------------------- *
+		 * setImageSource/refreshImageSource
+		 * --------------------------- */
+
+		_imageSource: null,
+		setImageSource: function(imageSource) {
+			if (this._imageSource !== imageSource) {
+				this._imageSource = imageSource;
+				this._isImageDataInvalid = true;
+				this.requestRender(CanvasView.SIZE_INVALID);
+			}
+		},
+
+		_imageDataTC: null,
+		refreshImageSource: function(threshold) {
+			if (this._isImageDataInvalid || !(this._imageSource instanceof HTMLVideoElement)) {
+				return; // data is marked for refresh already, or not a video
+			}
+			if (!_.isNumber(threshold)) {
+				threshold = FILTER_REFRESH_THRESHOLD;
+			}
+			if (threshold < Math.abs(this._imageDataTC - this._imageSource.currentTime)) {
+				this._isImageDataInvalid = true;
+				this.requestRender(CanvasView.SIZE_INVALID);
+			}
+		},
+
+		_imageData: null,
+		_updateImageData: function() {
+			if (this._imageSource === null) {
+				this._imageData = null;
+				this._imageDataTC = null;
+				return;
+			}
+			// source scale, source rect, dest scale, dest rect, current timecode
+			var s, sr, d, dr, tc;
+
+			// Get source/dest offsets, intrinsic scale and timecode
+			// ---------------------------------
+			sr = this._imageSource.getBoundingClientRect();
+			dr = this.el.getBoundingClientRect();
+
+			if (this._imageSource instanceof HTMLVideoElement) {
+				s = this._imageSource.videoWidth / sr.width;
+				tc = this._imageSource.currentTime;
+			} else {
+				s = this._imageSource.naturalWidth / sr.width;
+				tc = 0;
+			}
+			d = s * FILTER_SCALE;
+
+			// draw source canvas maintaining position
+			// ---------------------------------
+			this._ctx.save();
+			this._ctx.setTransform(1, 0, 0, 1, 0, 0);
+			this._ctx.drawImage(this._imageSource,
+				(dr.left - sr.left) * s + (dr.width / 2) * s - (dr.width / 2) * d,
+				(dr.top - sr.top) * s + (dr.height / 2) * s - (dr.height / 2) * d,
+				dr.width * d, dr.height * d,
+				0, 0, this.el.width, this.el.height
 			);
-			// if (this._backgroundData) {
-			// 	ctx.save();
-			// 	ctx.transform(1, 0, 0, 1, -this._canvasRatio, -this._canvasRatio);
-			// 	// ctx.setTransform(1 / this._canvasRatio, 0, 0, 1 / this._canvasRatio, 0, 0);
-			// 	ctx.putImageData(this._backgroundData,
-			// 		(this._backgroundData.width / this._canvasRatio),
-			// 		(this._backgroundData.height / this._canvasRatio)
-			// 	);
-			// 	ctx.restore();
-			// } else {
-			ctx.save();
-			ctx.fillStyle = "rgba(0,0,0,0.2)";
-			this.drawRoundRect(ctx,
-				-this._canvasOffsetX, -this._canvasOffsetY,
-				this._canvasWidth, this._canvasHeight, 3 * this._canvasRatio);
-			ctx.fill();
-			ctx.restore();
-			// }
+			// if (d == s)
+			// this._ctx.drawImage(this._imageSource,
+			// 	(dr.left - sr.left) * s, (dr.top - sr.top) * s,
+			// 	dr.width * s, dr.height * s,
+			// 	0, 0, this.el.width, this.el.height
+			// );
+
+			// get ImageData
+			// find luminosity threshold form average color
+			// ---------------------------------
+			var imgdata, isDark;
+
+			imgdata = this._ctx.getImageData(0, 0, this.el.width, this.el.height);
+			// isDark = !Color().rgb(getAverageRGB(imgdata)).dark();
+
+			// this._ctx.globalCompositeOperation = "luminosity";
+			// this._ctx.globalAlpha = 0.25;
+			// this._ctx.fillStyle = (isDark ? "black" : "white");
+			// this._ctx.fillRect(0, 0, this.el.width, this.el.height);
+
+			this._ctx.clearRect(0, 0, this.el.width, this.el.height);
+			this._ctx.restore();
+
+			// Store appropiate color values
+			// ---------------------------------
+			this._color = isDark ? "white" : "black";
+			// this._color = isDark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.75)";
+			// this._backgroundColor = isDark ? "rgba(0,0,0,0.75)" : "rgba(255,255,255,0.74)";
+
+			// this.el.style.color =
+			// 	this._ctx.fillStyle =
+			// 	this._ctx.strokeStyle =
+			// 	this._color;
+			// this.el.style.backgroundColor =
+			// 	this._ctx.shadowColor =
+			// 	this._backgroundColor;
+
+			// this.el.classList.toggle("lod", isDark);
+			// this.el.classList.toggle("dol", !isDark);
+
+			// Apply filters and save results
+			// ---------------------------------
+			// imgdata = this._ctx.getImageData(0, 0, this.el.width, this.el.height);
+			// imgdata = multiply(imgdata, (isDark ? 1 - FILTER_MULTIPLY : 1 + FILTER_MULTIPLY));
+			// imgdata = desaturate(imgdata, 0.5);
+
+			imgdata = multiply(imgdata, 1 + FILTER_MULTIPLY);
+			imgdata = stackBlurRGB(imgdata, FILTER_RADIUS);
+			// imgdata = null;
+
+			this._imageData = imgdata;
+			this._imageDataTC = tc;
+		},
+
+		/** @override */
+		redraw: function(ctx, intrp, flags) {
+			this._clearCanvas();
 
 			if (this._symbolName === 'waiting') {
 				if (intrp.getTargetValue('_arc') === 0) {
-					intrp.valueTo('_arc', 1, 0 * INTEP_MS, easeIn).updateValue('_arc');
+					intrp.valueTo('_arc', 1, 0 * INTEP_MS, easeIn)
+						.updateValue('_arc');
 				}
 			} else {
 				if (intrp.getTargetValue('_arc') === 1) {
-					intrp.valueTo('_arc', 0, 0 * INTEP_MS, easeOut).updateValue('_arc');
+					intrp.valueTo('_arc', 0, 0 * INTEP_MS, easeOut)
+						.updateValue('_arc');
 				}
 			}
 			var a = intrp.getRenderedValue("_arc");
@@ -11381,6 +11587,15 @@ module.exports = CanvasView.extend({
 				}
 			}
 			var l = intrp.getRenderedValue("_loop");
+
+			// if (this._isImageDataInvalid) {
+			// 	this._isImageDataInvalid = false;
+			// 	this._updateImageData();
+			// }
+			// if (this._imageData !== null) {
+			// 	ctx.putImageData(this._imageData, 0, 0);
+			// }
+
 			// always render while arc is > 0
 			if (a > 0) {
 				// arc span bounce
@@ -11429,20 +11644,6 @@ module.exports = CanvasView.extend({
 			}
 		},
 
-		drawRoundRect: function(ctx, x, y, w, h, r) {
-			ctx.beginPath();
-			ctx.moveTo(x, y + r);
-			ctx.quadraticCurveTo(x, y, x + r, y);
-			ctx.lineTo(x + w - r, y);
-			ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-			ctx.lineTo(x + w, y + h - r);
-			ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-			ctx.lineTo(x + r, y + h);
-			ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-			ctx.closePath();
-			// ctx.fill();
-		},
-
 		drawPlay: function(ctx, r) {
 			var tx = (1 - Math.SQRT1_2) * r;
 			ctx.beginPath();
@@ -11471,7 +11672,7 @@ module.exports = CanvasView.extend({
 	},
 	PlayToggleSymbol);
 
-},{"app/control/Globals":35,"app/view/base/CanvasView":58,"underscore":"underscore","utils/ease/fn/easeInQuad":117,"utils/ease/fn/easeOutQuad":118}],75:[function(require,module,exports){
+},{"app/control/Globals":36,"app/view/base/CanvasView":59,"color":"color","underscore":"underscore","utils/canvas/CanvasHelper":110,"utils/canvas/bitmap/desaturate":112,"utils/canvas/bitmap/getAverageRGB":113,"utils/canvas/bitmap/multiply":115,"utils/canvas/bitmap/stackBlurRGB":117,"utils/ease/fn/easeInQuad":120,"utils/ease/fn/easeOutQuad":121}],76:[function(require,module,exports){
 /**
  * @module app/view/component/SelectableListView
  */
@@ -11642,7 +11843,7 @@ var SelectableListView = View.extend({
 
 module.exports = SelectableListView;
 
-},{"app/view/base/View":62,"app/view/render/ClickableRenderer":86,"app/view/render/DefaultSelectableRenderer":88,"backbone.babysitter":"backbone.babysitter"}],76:[function(require,module,exports){
+},{"app/view/base/View":63,"app/view/render/ClickableRenderer":87,"app/view/render/DefaultSelectableRenderer":89,"backbone.babysitter":"backbone.babysitter"}],77:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {Function} */
@@ -11865,7 +12066,7 @@ module.exports = function() {
 	});
 };
 
-},{"app/control/Globals":35,"app/model/collection/BundleCollection":44,"color":"color","underscore":"underscore"}],77:[function(require,module,exports){
+},{"app/control/Globals":36,"app/model/collection/BundleCollection":45,"color":"color","underscore":"underscore"}],78:[function(require,module,exports){
 /*global XMLHttpRequest */
 
 // var _ = require("underscore");
@@ -11945,7 +12146,7 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 	};
 }
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 module.exports = function(image, resolveEmpty) {
 	return new Promise(function(resolve, reject) {
 		if (!(image instanceof window.HTMLImageElement)) {
@@ -11989,7 +12190,7 @@ module.exports = function(image, resolveEmpty) {
 	});
 };
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {module:app/view/promise/_whenImageLoads} */
@@ -12063,7 +12264,7 @@ module.exports = function(view) {
 	});
 };
 
-},{"app/view/promise/_loadImageAsObjectURL":77,"app/view/promise/_whenImageLoads":78,"underscore":"underscore"}],80:[function(require,module,exports){
+},{"app/view/promise/_loadImageAsObjectURL":78,"app/view/promise/_whenImageLoads":79,"underscore":"underscore"}],81:[function(require,module,exports){
 /* global Promise */
 /** @type {module:app/view/base/ViewError} */
 var ViewError = require("app/view/base/ViewError");
@@ -12145,7 +12346,7 @@ module.exports = function(view) {
 };
 */
 
-},{"app/view/base/ViewError":63,"app/view/promise/whenViewIsAttached":83}],81:[function(require,module,exports){
+},{"app/view/base/ViewError":64,"app/view/promise/whenViewIsAttached":84}],82:[function(require,module,exports){
 /** @type {module:app/view/base/ViewError} */
 var ViewError = require("app/view/base/ViewError");
 
@@ -12193,7 +12394,7 @@ module.exports = function(view, distance) {
 	});
 };
 
-},{"app/view/base/ViewError":63}],82:[function(require,module,exports){
+},{"app/view/base/ViewError":64}],83:[function(require,module,exports){
 // /** @type {module:app/view/base/ViewError} */
 // var ViewError = require("app/view/base/ViewError");
 
@@ -12205,7 +12406,7 @@ module.exports = function(view) {
 	return whenSelectionDistanceIs(view, 1);
 };
 
-},{"app/view/promise/whenSelectionDistanceIs":81}],83:[function(require,module,exports){
+},{"app/view/promise/whenSelectionDistanceIs":82}],84:[function(require,module,exports){
 module.exports = function(view) {
 	return new Promise(function(resolve, reject) {
 		if (view.attached) {
@@ -12218,7 +12419,7 @@ module.exports = function(view) {
 	});
 };
 
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 module.exports = function(view) {
 	return new Promise(function(resolve, reject) {
 		if (!view.invalidated) {
@@ -12231,7 +12432,7 @@ module.exports = function(view) {
 	});
 };
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /**
  * @module app/view/render/CarouselRenderer
  */
@@ -12348,7 +12549,7 @@ var CarouselRenderer = View.extend({
 
 module.exports = CarouselRenderer;
 
-},{"app/view/base/View":62,"underscore":"underscore","utils/css/getBoxEdgeStyles":116}],86:[function(require,module,exports){
+},{"app/view/base/View":63,"underscore":"underscore","utils/css/getBoxEdgeStyles":119}],87:[function(require,module,exports){
 /**
  * @module app/view/render/ClickableRenderer
  */
@@ -12403,7 +12604,7 @@ var ClickableRenderer = LabelRenderer.extend({
 
 module.exports = ClickableRenderer;
 
-},{"app/view/render/LabelRenderer":93}],87:[function(require,module,exports){
+},{"app/view/render/LabelRenderer":94}],88:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12416,7 +12617,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</span></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],88:[function(require,module,exports){
+},{"hbsfy/runtime":20}],89:[function(require,module,exports){
 /**
  * @module app/view/render/DefaultSelectableRenderer
  */
@@ -12456,7 +12657,7 @@ var DefaultSelectableRenderer = ClickableRenderer.extend({
 
 module.exports = DefaultSelectableRenderer;
 
-},{"./DefaultSelectableRenderer.hbs":87,"app/view/render/ClickableRenderer":86}],89:[function(require,module,exports){
+},{"./DefaultSelectableRenderer.hbs":88,"app/view/render/ClickableRenderer":87}],90:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12469,7 +12670,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\"><b> </b></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],90:[function(require,module,exports){
+},{"hbsfy/runtime":20}],91:[function(require,module,exports){
 /**
  * @module app/view/render/DotNavigationRenderer
  */
@@ -12533,7 +12734,7 @@ var DotNavigationRenderer = View.extend({
 
 module.exports = DotNavigationRenderer;
 
-},{"./DotNavigationRenderer.hbs":89,"app/view/base/View":62}],91:[function(require,module,exports){
+},{"./DotNavigationRenderer.hbs":90,"app/view/base/View":63}],92:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -12546,7 +12747,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],92:[function(require,module,exports){
+},{"hbsfy/runtime":20}],93:[function(require,module,exports){
 /**
  * @module app/view/render/ImageRenderer
  */
@@ -12576,7 +12777,7 @@ var ImageRenderer = MediaRenderer.extend({
 	/** @type {string} */
 	cidPrefix: "imageRenderer",
 	/** @type {string} */
-	className: MediaRenderer.prototype.className + " image-renderer",
+	className: MediaRenderer.prototype.className + " image-item",
 	/** @type {Function} */
 	template: viewTemplate,
 
@@ -12651,7 +12852,7 @@ var ImageRenderer = MediaRenderer.extend({
 
 module.exports = ImageRenderer;
 
-},{"./ImageRenderer.hbs":91,"./MediaRenderer":94}],93:[function(require,module,exports){
+},{"./ImageRenderer.hbs":92,"./MediaRenderer":95}],94:[function(require,module,exports){
 /**
  * @module app/view/render/LabelRenderer
  */
@@ -12697,7 +12898,7 @@ var LabelRenderer = View.extend({
 
 module.exports = LabelRenderer;
 
-},{"app/view/base/View":62}],94:[function(require,module,exports){
+},{"app/view/base/View":63}],95:[function(require,module,exports){
 (function (DEBUG){
 /*global XMLHttpRequest, HTMLMediaElement, MediaError*/
 /**
@@ -12716,7 +12917,7 @@ var MediaItem = require("app/model/item/MediaItem");
 /** @type {module:app/view/CarouselRenderer} */
 var CarouselRenderer = require("app/view/render/CarouselRenderer");
 
-var errorTemplate = require("../template/ErrorBlock.hbs");
+// var errorTemplate = require("../template/ErrorBlock.hbs");
 
 var MediaRenderer = CarouselRenderer.extend({
 
@@ -12775,7 +12976,7 @@ var MediaRenderer = CarouselRenderer.extend({
 	},
 
 	whenInitialized: function(view) {
-		console.log("%s::whenInitialized [%s]", view.cid, "resolved");
+		// console.log("%s::whenInitialized [%s]", view.cid, "resolved");
 		view.mediaState = "ready";
 		view.placeholder.removeAttribute("data-progress");
 		return view;
@@ -13019,7 +13220,7 @@ if (DEBUG) {
 					// console.warn("%s::whenInitializeError ", err.view.cid, err.message);
 					return;
 				} else if (err instanceof Error) {
-					console.error(err.stack);
+					console.warn(err.stack);
 				}
 				// this.placeholder.innerHTML = err ? errorTemplate(err) : "";
 				this.placeholder.removeAttribute("data-progress");
@@ -13077,7 +13278,7 @@ module.exports = MediaRenderer;
 
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":102,"app/model/item/MediaItem":51,"app/view/promise/whenDefaultImageLoads":79,"app/view/promise/whenScrollingEnds":80,"app/view/promise/whenSelectionDistanceIs":81,"app/view/promise/whenSelectionIsContiguous":82,"app/view/render/CarouselRenderer":85,"color":"color","underscore":"underscore","underscore.string/lpad":29}],95:[function(require,module,exports){
+},{"app/model/item/MediaItem":52,"app/view/promise/whenDefaultImageLoads":80,"app/view/promise/whenScrollingEnds":81,"app/view/promise/whenSelectionDistanceIs":82,"app/view/promise/whenSelectionIsContiguous":83,"app/view/render/CarouselRenderer":86,"color":"color","underscore":"underscore","underscore.string/lpad":29}],96:[function(require,module,exports){
 (function (DEBUG,GA){
 /**
  * @module app/view/render/PlayableRenderer
@@ -13091,7 +13292,7 @@ var MediaRenderer = require("app/view/render/MediaRenderer");
 // /** @type {module:app/view/component/CanvasProgressMeter} */
 // var ProgressMeter = require("app/view/component/CanvasProgressMeter");
 
-var WAIT_DEBOUNCE_MS = require("app/control/Globals").TRANSITION_DURATION;
+// var WAIT_DEBOUNCE_MS = require("app/control/Globals").TRANSITION_DURATION;
 
 /** @type {Function} */
 var prefixedProperty = require("utils/prefixedProperty");
@@ -13104,27 +13305,26 @@ var visibilityStateProp = prefixedProperty("visibilityState", document);
 /** @type {String} */
 var visibilityChangeEvent = prefixedEvent("visibilitychange", document, "hidden");
 
-/** @type {Function} */
-var Color = require("color");
-
-/** @type {Function} */
-// var duotone = require("utils/canvas/bitmap/duotone");
-// var stackBlurMono = require("utils/canvas/bitmap/stackBlurMono");
-var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
-// var getAverageRGBA = require("utils/canvas/bitmap/getAverageRGBA");
-var getAverageRGB = require("utils/canvas/bitmap/getAverageRGB");
-// var inflateRect = require("utils/geom/inflateRect");
-
-/** @type {HTMLCanvasElement} */
-var _sharedCanvas = null;
-/** @return {HTMLCanvasElement} */
-var getSharedCanvas = function() {
-	if (_sharedCanvas === null) {
-		_sharedCanvas = document.createElement("canvas");
-	}
-	return _sharedCanvas;
-};
-
+// /** @type {Function} */
+// var Color = require("color");
+//
+// /** @type {Function} */
+// // var duotone = require("utils/canvas/bitmap/duotone");
+// // var stackBlurMono = require("utils/canvas/bitmap/stackBlurMono");
+// var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
+// // var getAverageRGBA = require("utils/canvas/bitmap/getAverageRGBA");
+// var getAverageRGB = require("utils/canvas/bitmap/getAverageRGB");
+// // var inflateRect = require("utils/geom/inflateRect");
+//
+// /** @type {HTMLCanvasElement} */
+// var _sharedCanvas = null;
+// /** @return {HTMLCanvasElement} */
+// var getSharedCanvas = function() {
+// 	if (_sharedCanvas === null) {
+// 		_sharedCanvas = document.createElement("canvas");
+// 	}
+// 	return _sharedCanvas;
+// };
 
 // var SVG_NS = "http://www.w3.org/2000/svg";
 // var XLINK_NS = "http://www.w3.org/1999/xlink";
@@ -13137,7 +13337,6 @@ var getSharedCanvas = function() {
 // 	svgEl.setAttributeNS(XLINK_NS, "xlink:href", "#" + name);
 // 	return svgEl;
 // };
-
 
 // function logAttachInfo(view, name, level) {
 // 	if (["log", "info", "warn", "error"].indexOf(level) != -1) {
@@ -13156,7 +13355,7 @@ var PlayableRenderer = MediaRenderer.extend({
 	cidPrefix: "playableRenderer",
 
 	/** @type {string|Function} */
-	className: MediaRenderer.prototype.className + " playable-renderer",
+	className: MediaRenderer.prototype.className + " playable-item",
 
 	properties: {
 		mediaPaused: {
@@ -13271,11 +13470,11 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* selection handlers
 	/* --------------------------- */
 
-	addSelectionListeners: function() {
+	listenToSelection: function() {
 		if (this._viewPhase != "initialized")
-			throw new Error(this.cid + "::addSelectionListeners called while " + this._viewPhase);
+			throw new Error(this.cid + "::listenToSelection called while " + this._viewPhase);
 
-		// logAttachInfo(this, "addSelectionListeners", "log");
+		// logAttachInfo(this, "listenToSelection", "log");
 		// this.listenTo(this, "view:removed", this.removeSelectionListeners);
 		this.listenTo(this.model, "selected", this._onModelSelected);
 		this.listenTo(this.model, "deselected", this._onModelDeselected);
@@ -13308,7 +13507,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// this.enabled = true;
 		this._playToggleSymbol.paused = !this.enabled;
 
-		this._addDOMListeners();
+		this._listenWhileSelected();
 		this._validatePlayback();
 	},
 
@@ -13321,7 +13520,7 @@ var PlayableRenderer = MediaRenderer.extend({
 
 		this._playToggleSymbol.paused = true;
 
-		this._removeDOMListeners();
+		this._stopListeningWhileSelected();
 		this._validatePlayback(false);
 		// this._togglePlayback(false);
 	},
@@ -13394,16 +13593,16 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* listen to DOM events
 	/* --------------------------- */
 
-	_addDOMListeners: function() {
-		this.listenTo(this, "view:removed", this._removeDOMListeners);
+	_listenWhileSelected: function() {
+		this.listenTo(this, "view:removed", this._stopListeningWhileSelected);
 		document.addEventListener(visibilityChangeEvent, this._onVisibilityChange, false);
-		this.playToggleHitarea.addEventListener(this._toggleEvent, this._onPlaybackToggle, true);
+		this.playToggleHitarea.addEventListener(this._toggleEvent, this._onPlaybackToggle, false);
 	},
 
-	_removeDOMListeners: function() {
-		this.stopListening(this, "view:removed", this._removeDOMListeners);
+	_stopListeningWhileSelected: function() {
+		this.stopListening(this, "view:removed", this._stopListeningWhileSelected);
 		document.removeEventListener(visibilityChangeEvent, this._onVisibilityChange, false);
-		this.playToggleHitarea.removeEventListener(this._toggleEvent, this._onPlaybackToggle, true);
+		this.playToggleHitarea.removeEventListener(this._toggleEvent, this._onPlaybackToggle, false);
 	},
 
 	/* visibility dom event
@@ -13437,6 +13636,8 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* --------------------------- *
 	/* playbackRequested
 	/* --------------------------- */
+
+	_playbackCount: 0,
 
 	/** @type {Boolean?} */
 	_playbackRequested: null,
@@ -13478,6 +13679,7 @@ var PlayableRenderer = MediaRenderer.extend({
 			newPlayState = this._isMediaPaused();
 		}
 		if (newPlayState) { // changing to what?
+			// this._playbackCount++;
 			this._playMedia();
 		} else {
 			this._pauseMedia();
@@ -13502,7 +13704,7 @@ var PlayableRenderer = MediaRenderer.extend({
 	_validatePlayback: function(shortcircuit) {
 		// a 'shortcircuit' boolean argument can be passed, and if false,
 		// skip _canResumePlayback and pause playback right away
-		if (arguments.length != 0 && !shortcircuit) {
+		if (arguments.length !== 0 && !shortcircuit) {
 			this._togglePlayback(false);
 		} else {
 			this._togglePlayback(this._canResumePlayback());
@@ -13515,6 +13717,9 @@ var PlayableRenderer = MediaRenderer.extend({
 	/* --------------------------- */
 
 	_renderPlaybackState: function() {
+		if (!this.attached) {
+			return;
+		}
 		if (this.progressMeter) {
 			this.progressMeter.stalled = this._isMediaWaiting();
 		}
@@ -13524,9 +13729,10 @@ var PlayableRenderer = MediaRenderer.extend({
 		// if (!this.content.classList.contains("started")) {
 		// 	this._setPlayToggleSymbol("play");
 		// } else
+		var waiting = !this.parentView.scrolling && this._isMediaWaiting();
 
 		if (this.playbackRequested) {
-			if (this._isMediaWaiting()) {
+			if (waiting) {
 				this._setPlayToggleSymbol("waiting");
 			} else {
 				this._setPlayToggleSymbol("play");
@@ -13541,7 +13747,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		var cls = this.content.classList;
 		cls.toggle("playing", this.playbackRequested);
 		cls.toggle("paused", !this.playbackRequested);
-		cls.toggle("waiting", this._isMediaWaiting());
+		cls.toggle("waiting", waiting);
 
 		//console.log("%s::_renderPlaybackState [play: %s] [wait: %s] [symbol: %s]", this.cid, this.playbackRequested, this._isMediaWaiting(), this._playToggleSymbol.symbolName);
 	},
@@ -13551,7 +13757,7 @@ var PlayableRenderer = MediaRenderer.extend({
 
 		// this._playToggleSymbol.paused = !(this.attached && this.enabled && !!(this.model.selected));
 		this._playToggleSymbol.symbolName = symbolName;
-		if (this._playToggleSymbol.renderFlags) {
+		if (this.mediaState === "ready") { //this._playToggleSymbol.renderFlags) {
 			this._playToggleSymbol.renderNow();
 		}
 	},
@@ -13627,6 +13833,7 @@ var PlayableRenderer = MediaRenderer.extend({
 		// }
 	},
 
+	/**\/
 	_drawMediaElement: function(ctx, mediaEl, dest) {
 		// destination rect
 		// NOTE: mediaEl is expected to have the same dimensions in this.metrics.media
@@ -13671,7 +13878,6 @@ var PlayableRenderer = MediaRenderer.extend({
 		return ctx;
 	},
 
-	/**/
 	_getImageData: function(mediaEl, targetEl, rectEl) {
 		// src/dest rects
 		// ------------------------------
@@ -13865,9 +14071,9 @@ if (GA) {
 
 module.exports = PlayableRenderer;
 
-}).call(this,true,true)
+}).call(this,true,false)
 
-},{"app/control/Globals":35,"app/view/render/MediaRenderer":94,"color":"color","underscore":"underscore","underscore.string/dasherize":24,"utils/canvas/bitmap/getAverageRGB":111,"utils/canvas/bitmap/stackBlurRGB":114,"utils/prefixedEvent":122,"utils/prefixedProperty":123}],96:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":95,"underscore":"underscore","underscore.string/dasherize":24,"utils/prefixedEvent":125,"utils/prefixedProperty":126}],97:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -13880,7 +14086,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<canvas class=\"play-toggle\"/>\n	</div>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],97:[function(require,module,exports){
+},{"hbsfy/runtime":20}],98:[function(require,module,exports){
 (function (DEBUG){
 /**
  * @module app/view/render/SequenceRenderer
@@ -13922,8 +14128,8 @@ var Timer = require("utils/Timer");
 var _whenImageLoads = require("app/view/promise/_whenImageLoads");
 /** @type {module:app/view/promise/_loadImageAsObjectURL} */
 var _loadImageAsObjectURL = require("app/view/promise/_loadImageAsObjectURL");
-/** @type {Function} */
-var whenSelectionDistanceIs = require("app/view/promise/whenSelectionDistanceIs");
+// /** @type {Function} */
+// var whenSelectionDistanceIs = require("app/view/promise/whenSelectionDistanceIs");
 // var whenSelectTransitionEnds = require("app/view/promise/whenSelectTransitionEnds");
 // var whenDefaultImageLoads = require("app/view/promise/whenDefaultImageLoads");
 
@@ -14124,7 +14330,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 	/** @type {string} */
 	cidPrefix: "sequenceRenderer",
 	/** @type {string} */
-	className: PlayableRenderer.prototype.className + " sequence-renderer",
+	className: PlayableRenderer.prototype.className + " sequence-item",
 	/** @type {Function} */
 	template: require("./SequenceRenderer.hbs"),
 
@@ -14146,7 +14352,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 			.then(function(view) {
 				view.initializePlayable();
 				view.updateOverlay(view.defaultImage, view.playToggle); //view.overlay);
-				view.addSelectionListeners();
+				view.listenToSelection();
 				return view;
 			});
 	},
@@ -14473,9 +14679,12 @@ var SequenceRenderer = PlayableRenderer.extend({
 		this.content.classList.toggle("playback-error", item.has("error"));
 
 		currView = this.itemViews.findByModel(item);
-		if (!item.has("error") && currView !== null) {
-			this.updateOverlay(currView.el, this.playToggle);
-		}
+		// if (!item.has("error") && currView !== null) {
+		// 	this._playToggleSymbol.setImageSource(currView.el);
+		// 	// this.updateOverlay(currView.el, this.playToggle);
+		// } else {
+		// 	this._playToggleSymbol.setImageSource(null);
+		// }
 
 		// init next renderer now to have smoother transitions
 		this._getItemRenderer(this.sources.followingOrFirst());
@@ -14540,7 +14749,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 			// this._renderPlaybackState();
 			// this.content.classList.add("waiting");
 			/* TODO: add ga event 'media-waiting' */
-			// window.ga("send", "event", "sequence-renderer", "waiting", this.model.get("text"));
+			// window.ga("send", "event", "sequence-item", "waiting", this.model.get("text"));
 
 			this.listenToOnce(nextSource, "change:prefetched change:error", function(model) {
 				// this.stopListening(nextSource, "change:prefetched change:error");
@@ -14549,7 +14758,7 @@ var SequenceRenderer = PlayableRenderer.extend({
 				// this._renderPlaybackState();
 				// this.content.classList.add("waiting");
 				/* TODO: add ga event 'media-playing' */
-				// window.ga("send", "event", "sequence-renderer", "playing", this.model.get("text"));
+				// window.ga("send", "event", "sequence-item", "playing", this.model.get("text"));
 
 				_whenImageLoads(nextView.el)
 					.then(showNextView, showNextView);
@@ -14739,7 +14948,7 @@ module.exports = SequenceRenderer;
 
 }).call(this,true)
 
-},{"../template/ErrorBlock.hbs":102,"./SequenceRenderer.hbs":96,"app/control/Globals":35,"app/view/base/View":62,"app/view/component/CanvasProgressMeter":67,"app/view/component/PlayToggleSymbol":74,"app/view/promise/_loadImageAsObjectURL":77,"app/view/promise/_whenImageLoads":78,"app/view/promise/whenSelectionDistanceIs":81,"app/view/render/PlayableRenderer":95,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/capitalize":23,"underscore.string/lpad":29,"utils/Timer":105}],98:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":103,"./SequenceRenderer.hbs":97,"app/control/Globals":36,"app/view/base/View":63,"app/view/component/CanvasProgressMeter":68,"app/view/component/PlayToggleSymbol":75,"app/view/promise/_loadImageAsObjectURL":78,"app/view/promise/_whenImageLoads":79,"app/view/render/PlayableRenderer":96,"backbone.babysitter":"backbone.babysitter","underscore":"underscore","underscore.string/capitalize":23,"underscore.string/lpad":29,"utils/Timer":106}],99:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 var partial$0 = require('../template/svg/FullscreenSymbol.hbs');
@@ -14747,14 +14956,14 @@ HandlebarsCompiler.registerPartial('../template/svg/FullscreenSymbol.hbs', parti
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper;
 
-  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<canvas class=\"progress-meter\"></canvas>\n		<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n"
-    + ((stack1 = container.invokePartial(partials["../template/svg/FullscreenSymbol.hbs"],depth0,{"name":"../template/svg/FullscreenSymbol.hbs","data":data,"indent":"\t\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
-    + "		</a>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video width=\"240\" height=\"180\" muted playsinline></video>\n		<img class=\"poster default\" alt=\""
+  return "<div class=\"placeholder sizing\"></div>\n<div class=\"content media-border\">\n	<div class=\"controls content-size\">\n		<canvas class=\"progress-meter\"></canvas>\n	</div>\n	<div class=\"crop-box media-size\">\n		<video width=\"240\" height=\"180\" muted playsinline></video>\n		<img class=\"poster default\" alt=\""
     + container.escapeExpression(((helper = (helper = helpers.text || (depth0 != null ? depth0.text : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : {},{"name":"text","hash":{},"data":data}) : helper)))
-    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<canvas class=\"play-toggle\"/>\n	</div>\n</div>\n";
+    + "\" width=\"240\" height=\"180\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n			<canvas class=\"play-toggle\"></canvas>\n		<a class=\"fullscreen-toggle\" href=\"javascript:(void 0)\">\n"
+    + ((stack1 = container.invokePartial(partials["../template/svg/FullscreenSymbol.hbs"],depth0,{"name":"../template/svg/FullscreenSymbol.hbs","data":data,"indent":"\t\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
+    + "		</a>\n	</div>\n</div>\n";
 },"usePartial":true,"useData":true});
 
-},{"../template/svg/FullscreenSymbol.hbs":104,"hbsfy/runtime":20}],99:[function(require,module,exports){
+},{"../template/svg/FullscreenSymbol.hbs":105,"hbsfy/runtime":20}],100:[function(require,module,exports){
 (function (DEBUG){
 /*global HTMLMediaElement, MediaError*/
 /**
@@ -14784,7 +14993,7 @@ var ProgressMeter = require("app/view/component/CanvasProgressMeter");
 var PlayToggleSymbol = require("app/view/component/PlayToggleSymbol");
 
 // var stackBlurMono = require("utils/canvas/bitmap/stackBlurMono");
-var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
+// var stackBlurRGB = require("utils/canvas/bitmap/stackBlurRGB");
 
 // /** @type {module:utils/prefixedStyleName} */
 // var prefixedStyleName = require("utils/prefixedStyleName");
@@ -14823,7 +15032,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	/** @type {string} */
 	cidPrefix: "videoRenderer",
 	/** @type {string} */
-	className: PlayableRenderer.prototype.className + " video-renderer",
+	className: PlayableRenderer.prototype.className + " video-item",
 	/** @type {Function} */
 	template: require("./VideoRenderer.hbs"),
 
@@ -14983,7 +15192,7 @@ var VideoRenderer = PlayableRenderer.extend({
 			.then(PlayableRenderer.whenViewIsAttached)
 			.then(
 				function(view) {
-					console.log("%s::initializeAsync [attached, scrollend, selected > %o, preload:%s] ('%o')", view.cid, view.model.getDistanceToSelected(), view.video.preload, view.model.get("name"));
+					// console.log("%s::initializeAsync [attached, scrollend, selected > %o, preload:%s] ('%o')", view.cid, view.model.getDistanceToSelected(), view.video.preload, view.model.get("name"));
 					return Promise.all([
 						PlayableRenderer.whenDefaultImageLoads(view),
 						view.whenVideoHasMetadata(view),
@@ -14993,10 +15202,10 @@ var VideoRenderer = PlayableRenderer.extend({
 				})
 			.then(
 				function(view) {
-					console.log("%s::initializeAsync [defaultImage, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
+					// console.log("%s::initializeAsync [defaultImage, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
 					view.initializePlayable();
 					view.updateOverlay(view.defaultImage, view.playToggle); //view.overlay);
-					view.addSelectionListeners();
+					view.listenToSelection();
 					return view;
 				});
 
@@ -15010,19 +15219,27 @@ var VideoRenderer = PlayableRenderer.extend({
 			.then(function(view) {
 				view.video.setAttribute("preload", "auto");
 				view.video.preload = "auto";
-				console.log("%s::initializeAsync [selected, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
+				// console.log("%s::initializeAsync [selected, preload:%s] ('%o')", view.cid, view.video.preload, view.model.get("name"));
 				return view;
+			})
+			.catch(function(reason) {
+				if (reason instanceof PlayableRenderer.ViewError) {
+					console.log("%s::%s", reason.view.cid, reason.message);
+				} else {
+					console.warn(reason);
+					// return Promise.reject(reason);
+				}
 			});
 		// play-toggle-symbol
 		// ---------------------------------
-		var view = new PlayToggleSymbol(_.extend({
+		this._playToggleSymbol = new PlayToggleSymbol(_.extend({
 			el: this.el.querySelector(".play-toggle")
 		}, this._playToggleSymbol || {}));
 
-		// var imageData = stackBlurRGB(this._getImageData(this.defaultImage, view.el), { radius: 5 });
-		// view.setBackgroundData(imageData);
-
-		this._playToggleSymbol = view;
+		// this._playToggleSymbol.setImageSource(this.defaultImage, 0, 0);
+		// this.listenToElementOnce(this.video, "timeupdate", function(ev) {
+		// 	this._playToggleSymbol.setImageSource(this.video);
+		// });
 
 		// progress-meter
 		// ---------------------------------
@@ -15070,7 +15287,7 @@ var VideoRenderer = PlayableRenderer.extend({
 			var eventHandlers = {
 				loadedmetadata: function(ev) {
 					if (ev) removeEventListeners();
-					console.log("%s::whenVideoHasMetadata [%s] %s", view.cid, "resolved", ev ? ev.type : "sync");
+					// console.log("%s::whenVideoHasMetadata [%s] %s", view.cid, "resolved", ev ? ev.type : "sync");
 					resolve(view);
 				},
 				abort: function(ev) {
@@ -15130,7 +15347,7 @@ var VideoRenderer = PlayableRenderer.extend({
 				// videoEl.src = view.findPlayableSource(videoEl);
 				// videoEl.load();
 
-				console.log("%s::whenVideoHasMetadata [preload:%s]", view.cid, videoEl.preload);
+				// console.log("%s::whenVideoHasMetadata [preload:%s]", view.cid, videoEl.preload);
 			}
 		});
 	},
@@ -15167,71 +15384,36 @@ var VideoRenderer = PlayableRenderer.extend({
 			if (_.isFunction(this.video.load)) {
 				this.video.load();
 			}
-			// this.video.currentTime = 0;
-		} else if (this.video.ended) {
+		}
+		/* NOTE: loop is false, restart from end on request */
+		else if (this.video.ended) {
 			this.video.currentTime = this.video.seekable.start(0);
 		}
-
-		/* Change the preload attr */
-		// if (this.video.preload !== "auto") {
-		// 	this.video.preload = "auto";
-		// }
-		// if (this.video.getAttribute("preload") !== "auto") {
-		// 	this.video.setAttribute("preload", "auto");
-		// }
-
-		/* */
-		// if (this.video.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA && this.video.networkState === HTMLMediaElement.NETWORK_IDLE && (this.video.buffered.end(0) < this.video.duration)) {
-		// 	this._toggleWaiting(true);
-		// 	// this.video.load();
-		// 	this.video.addEventListener("canplaythrough", handler, false);
-		// }
-
-		// if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
-		// 	var handler = function(ev) {
-		// 		this.video.removeEventListener("canplaythrough", handler, false);
-		// 		this.video.play();
-		// 	}.bind(this);
-		// 	this.video.addEventListener("canplaythrough", handler, false);
-		//
-		// 	if (this.video.readyState < 2 && this.video.networkState < 2 && _.isFunction(this.video.load)) {
-		// 		this.video.load();
-		// 	}
-		// 	this._toggleWaiting(true);
-		// }
 
 		/* if not enough data */
 		if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
 			if (this.video.networkState == HTMLMediaElement.NETWORK_IDLE) {
 				this.video.load();
 			} //else {
-			this._toggleWaiting(true);
-			this.listenToElementOnce(this.video, "canplaythrough", function() {
-				this._toggleWaiting(false);
-				this.playbackRequested && this.video.play();
-			});
+			// var _playStamp = this._playbackCount;
+			// console.log("%s::_playMedia %s waiting [#%s]", this.cid, this._isMediaWaiting() ? "continue" : "begin", _playStamp);
+			//
+			// this.listenToElementOnce(this.video, "canplaythrough", function(ev) {
+			// 	console.log("%s::_playMedia end waiting [#%s]", this.cid, _playStamp);
+			//
+			// 	this._toggleWaiting(false);
+			// 	// this.playbackRequested && this.video.play();
+			// 	this._validatePlayback();
+			// });
 			//}
+			/* NOTE: on "canplaythrough" _playMedia() will be called again if still required */
+			this._toggleWaiting(true);
 		}
-		/* play*/
+		/* play */
 		else {
+			/* NOTE: current browsers return a promise */
 			this.video.play();
 		}
-
-		// this._setPlayToggleSymbol("pause-symbol");
-		// this._renderPlaybackState();
-
-		// var p = this.video.play();
-		// if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
-		// 	if (p) {
-		// 		p.then(function() {
-		// 			this.video.pause();
-		// 			this.content.classList.add("waiting");
-		// 		}.bind(this));
-		// 	} else {
-		// 		this.video.pause();
-		// 		this.content.classList.add("waiting");
-		// 	}
-		// }
 	},
 
 	/** @override */
@@ -15245,16 +15427,16 @@ var VideoRenderer = PlayableRenderer.extend({
 	/* DOM events
 	/* --------------------------- */
 
-	_addDOMListeners: function() {
-		PlayableRenderer.prototype._addDOMListeners.apply(this, arguments);
+	_listenWhileSelected: function() {
+		PlayableRenderer.prototype._listenWhileSelected.apply(this, arguments);
 		this.fullscreenToggle.addEventListener(
-			this._toggleEvent, this._onFullscreenToggle, true);
+			this._toggleEvent, this._onFullscreenToggle, false);
 	},
 
-	_removeDOMListeners: function() {
-		PlayableRenderer.prototype._removeDOMListeners.apply(this, arguments);
+	_stopListeningWhileSelected: function() {
+		PlayableRenderer.prototype._stopListeningWhileSelected.apply(this, arguments);
 		this.fullscreenToggle.removeEventListener(
-			this._toggleEvent, this._onFullscreenToggle, true);
+			this._toggleEvent, this._onFullscreenToggle, false);
 	},
 
 	/* ---------------------------
@@ -15263,11 +15445,11 @@ var VideoRenderer = PlayableRenderer.extend({
 
 	addMediaListeners: function() {
 		// if (!this._started) {
-		// 	this.addListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
+		// 	this.addListeners(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
 		// }
-		this.addListener(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
-		this.addListener(this.video, this.updateBufferedEvents, this._updateBufferedValue);
-		this.addListener(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
+		this.addListeners(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
+		this.addListeners(this.video, this.updateBufferedEvents, this._updateBufferedValue);
+		this.addListeners(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
 		this.video.addEventListener("ended", this._onMediaEnded, false);
 		this.video.addEventListener("error", this._onMediaError, true);
 
@@ -15278,11 +15460,11 @@ var VideoRenderer = PlayableRenderer.extend({
 		this.off("view:removed", this.removeMediaListeners, this);
 
 		// if (!this._started) {
-		// 	this.removeListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
+		// 	this.removeListeners(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
 		// }
-		this.removeListener(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
-		this.removeListener(this.video, this.updateBufferedEvents, this._updateBufferedValue);
-		this.removeListener(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
+		this.removeListeners(this.video, this.updatePlaybackEvents, this._updatePlaybackState);
+		this.removeListeners(this.video, this.updateBufferedEvents, this._updateBufferedValue);
+		this.removeListeners(this.video, this.updateCurrTimeEvents, this._updateCurrTimeValue);
 		this.video.removeEventListener("ended", this._onMediaEnded, false);
 		this.video.removeEventListener("error", this._onMediaError, true);
 	},
@@ -15327,7 +15509,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	// playingOnceEvents: "playing waiting",
 	//
 	// _onMediaPlayingOnce: function(ev) {
-	// 	this.removeListener(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
+	// 	this.removeListeners(this.video, this.playingOnceEvents, this._onMediaPlayingOnce);
 	// 	if (!this._started) {
 	// 		this._started = true;
 	// 		this.content.classList.add("started");
@@ -15353,15 +15535,15 @@ var VideoRenderer = PlayableRenderer.extend({
 	/* _updatePlaybackState
 	/* --------------------------- */
 
-	// updatePlaybackEvents: "play playing waiting pause seeking seeked ended",
-	updatePlaybackEvents: "playing waiting pause timeupdate seeked", //.split(" "),
+	// updatePlaybackEvents: "playing play waiting pause seeking seeked ended",
+	updatePlaybackEvents: "timeupdate playing pause waiting canplaythrough seeked",
 
 	_isPlaybackWaiting: false,
 	_playbackStartTS: -1,
 	_playbackStartTC: -1,
 
 	_updatePlaybackState: function(ev) {
-		var isWaiting = false;
+		// var isWaiting = false;
 		// var symbolName = "play-symbol";
 
 		// NOTE: clearTimeout will cancel both setTimeout and setInterval IDs
@@ -15381,50 +15563,62 @@ var VideoRenderer = PlayableRenderer.extend({
 						this._playbackStartTC = this.video.currentTime;
 						this._playbackTimeoutID =
 							window.setTimeout(this._playbackTimeoutFn_waiting, SYNC_TIMEOUT_MS);
-						isWaiting = true;
-						// symbolName = "waiting-symbol";
+						this._toggleWaiting(true);
 						// break;
 					} else {
 						this._playbackTimeoutID =
 							window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
-						isWaiting = false;
-						// symbolName = "pause-symbol";
+						this._toggleWaiting(false);
 					}
-					break
+					break;
 
-				case "seeked":
 				case "playing":
 					this._playbackStartTS = ev.timeStamp;
 					this._playbackStartTC = this.video.currentTime;
-					this._playbackTimeoutID =
-						window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
-					/* continue */
+					this._playbackTimeoutID = window.setTimeout(this._playbackTimeoutFn_playing, SYNC_TIMEOUT_MS);
+					this._toggleWaiting(false);
+					break;
+
 				case "pause":
-					isWaiting = false;
-					// symbolName = (this.video.paused && !this.video.ended) ? "pause-symbol" : "play-symbol";
+					/* NOTE: this.playbackRequested is true, the pause wasn't triggered
+					 * from UI, but by the waiting handler below, so we treat it as
+					 * waiting */
+					// if (!this.playbackRequested) {
+					// 	this._toggleWaiting(false);
+					// }
+					this._toggleWaiting(this.playbackRequested);
+					break;
+
+				case "canplaythrough":
+					this._toggleWaiting(false);
+					this._validatePlayback();
 					break;
 
 				case "waiting":
-					isWaiting = true;
-					// symbolName = "waiting-symbol";
+					/* NOTE: if the video is seeking, give it a chance to resume, so do
+					 * nothing, and handle things on seeked/playing */
+					if (!this.video.seeking) {
+						/* if not enough data */
+						if (this.video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) {
+							this.video.pause();
+
+							// this.listenToElementOnce(this.video, "canplaythrough", function() {
+							// 	this._toggleWaiting(false);
+							// 	this._validatePlayback();
+							// this.playbackRequested && this.video.play();
+							// });
+						}
+						this._toggleWaiting(true);
+					}
+					break;
+
+				default:
+					this._toggleWaiting(false);
 					break;
 			}
 		} else {
-			isWaiting = false;
-			// symbolName = "play-symbol";
+			this._toggleWaiting(false);
 		}
-
-		this._toggleWaiting(isWaiting);
-		// this._renderPlaybackState();
-
-		// this.progressMeter.stalled = isWaiting;
-		// this.content.classList.toggle("ended", this.video.ended);
-		// this.content.classList.toggle("waiting", isWaiting);
-		// this._setPlayToggleSymbol(symbolName);
-		// this._isPlaybackWaiting = isWaiting;
-
-		// this._currTimeTS = ev.timeStamp;
-		// this._currTimeVal = this.video.currentTime;
 	},
 
 	_playbackTimeoutID: -1,
@@ -15466,17 +15660,20 @@ var VideoRenderer = PlayableRenderer.extend({
 
 	/** @override */
 	_renderPlaybackState: function() {
-		this.__logMessage([
-			"mediaState:", this.mediaState,
-			"played:", this.video.played.length,
-			"ended:", this.video.ended,
-			"playToggleSymbol.paused:", this._playToggleSymbol.paused
-		].join(" "), "_renderPlaybackState");
-		console.log("%s::_renderPlaybackState mediaState:%s played:%o ended: %o", this.cid, this.mediaState, this.video.played.length, this.video.ended);
-
-		if (this.mediaState === "ready") {
-			this.updateOverlay(this.video, this.playToggle);
-		}
+		// if (DEBUG) {
+		// 	this.__logMessage([
+		// 	"mediaState:", this.mediaState,
+		// 	"played:", this.video.played.length,
+		// 	"ended:", this.video.ended,
+		// 	"toggle.paused:", this._playToggleSymbol.paused
+		// ].join(" "), "_renderPlaybackState");
+		// }
+		// console.log("%s::_renderPlaybackState mediaState:%s played:%o ended:%o",
+		// 	this.cid, this.mediaState, this.video.played.length, this.video.ended);
+		//
+		// if (this.mediaState === "ready") {
+		// 	this.updateOverlay(this.video, this.playToggle);
+		// }
 
 		var cls = this.content.classList;
 		// if (!this._started && this.playbackRequested &&
@@ -15486,12 +15683,21 @@ var VideoRenderer = PlayableRenderer.extend({
 		// }
 		// cls.toggle("started", (this.video.played.length > 0));
 		cls.toggle("ended", this.video.ended);
+
 		PlayableRenderer.prototype._renderPlaybackState.apply(this, arguments);
 	},
 
 	_setPlayToggleSymbol: function(symbolName) {
 		// if (this.video.ended) {
 		// 	console.log("%s::_setPlayToggleSymbol %s -> ended", this.cid, symbolName);
+		// }
+		// if (this.mediaState === "ready") {
+		// 	if (this.playbackRequested && !this._isMediaWaiting()) {
+		// 		this._playToggleSymbol.setImageSource(null);
+		// 	} else {
+		// 		this._playToggleSymbol.setImageSource(this.video);
+		// 	}
+		// 	this._playToggleSymbol.refreshImageSource();
 		// }
 		return PlayableRenderer.prototype._setPlayToggleSymbol.call(this, this.video.ended ? "ended" : symbolName);
 	},
@@ -15522,7 +15728,7 @@ var VideoRenderer = PlayableRenderer.extend({
 	_onFullscreenToggle: function(ev) {
 		// NOTE: Ignore if MouseEvent.button is 0 or undefined (0: left-button)
 		if (!ev.defaultPrevented && !ev.button && this.model.selected) {
-			// ev.preventDefault();
+			ev.preventDefault();
 			try {
 				if (document.hasOwnProperty("fullscreenElement") &&
 					document.fullscreenElement !== this.video) {
@@ -15562,13 +15768,13 @@ var VideoRenderer = PlayableRenderer.extend({
 		}
 	},
 });
+module.exports = VideoRenderer;
 
 /* ---------------------------
 /* log to screen
 /* --------------------------- */
 if (DEBUG) {
-
-	VideoRenderer = (function(VideoRenderer) {
+	module.exports = (function(VideoRenderer) {
 		if (!VideoRenderer.LOG_TO_SCREEN) return VideoRenderer;
 
 		/** @type {Function} */
@@ -15726,26 +15932,26 @@ if (DEBUG) {
 				this.video.removeEventListener("error", this.__handleMediaEvent, true);
 			},
 
-			/** @override */
-			_onVisibilityChange: function(ev) {
-				VideoRenderer.prototype._onVisibilityChange.apply(this, arguments);
-				var stateVal = Modernizr.prefixed("visibilityState", document);
-				this.__logEvent("visibilityState:" + stateVal, ev.type + ":" + stateVal);
-			},
-
-			/** @override */
-			_onFullscreenChange: function(ev) {
-				VideoRenderer.prototype._onFullscreenChange.apply(this, arguments);
-				var logtype = (document.fullscreenElement === this.video ? "enter:" : "exit:") + ev.type;
-				this.__logEvent("document.fullscreenElement: " + this.cid, logtype);
-			},
+			// /** @override */
+			// _onVisibilityChange: function(ev) {
+			// 	VideoRenderer.prototype._onVisibilityChange.apply(this, arguments);
+			// 	var stateVal = Modernizr.prefixed("visibilityState", document);
+			// 	this.__logEvent("visibilityState:" + stateVal, ev.type + ":" + stateVal);
+			// },
+			//
+			// /** @override */
+			// _onFullscreenChange: function(ev) {
+			// 	VideoRenderer.prototype._onFullscreenChange.apply(this, arguments);
+			// 	var logtype = (document.fullscreenElement === this.video ? "enter:" : "exit:") + ev.type;
+			// 	this.__logEvent("document.fullscreenElement: " + this.cid, logtype);
+			// },
 
 			/** @override */
 			_onFullscreenToggle: function(ev) {
-				VideoRenderer.prototype._onFullscreenToggle.apply(this, arguments);
 				if (!ev.defaultPrevented && this.model.selected) {
 					this.__logEvent("fullscreen-toggle", ev.type);
 				}
+				VideoRenderer.prototype._onFullscreenToggle.apply(this, arguments);
 			},
 
 			/** @override */
@@ -15781,12 +15987,12 @@ if (DEBUG) {
 					evmsg.push("(--)");
 				}
 
-				if (this._playbackTimeoutID !== -1) {
-					evmsg.push(this.playbackRequested ? "-" : "!");
+				if (this.playbackRequested) {
+					evmsg.push(this._playbackTimeoutID !== -1 ? "W" : "-");
 				} else {
-					evmsg.push(this.playbackRequested ? "W" : "-");
+					evmsg.push(this._playbackTimeoutID !== -1 ? "?" : "!");
 				}
-				evmsg.push(this._playToggleSymbol.symbolName);
+				// evmsg.push(this._playToggleSymbol.symbolName);
 
 				var ts, tc;
 				if ((this.updatePlaybackEvents.indexOf(ev.type) > -1) || ev.isTimeout) {
@@ -15827,15 +16033,12 @@ if (DEBUG) {
 				return getVideoStatsCols();
 			},
 		});
-	})(VideoRenderer);
-
+	})(module.exports);
 }
-
-module.exports = VideoRenderer;
 
 }).call(this,true)
 
-},{"./VideoRenderer.hbs":98,"app/control/Globals":35,"app/view/component/CanvasProgressMeter":67,"app/view/component/PlayToggleSymbol":74,"app/view/render/PlayableRenderer":95,"color":"color","underscore":"underscore","underscore.string/lpad":29,"underscore.string/rpad":31,"utils/canvas/bitmap/stackBlurRGB":114,"utils/event/mediaEventsEnum":120,"utils/prefixedEvent":122}],100:[function(require,module,exports){
+},{"./VideoRenderer.hbs":99,"app/control/Globals":36,"app/view/component/CanvasProgressMeter":68,"app/view/component/PlayToggleSymbol":75,"app/view/render/PlayableRenderer":96,"color":"color","underscore":"underscore","underscore.string/lpad":29,"underscore.string/rpad":31,"utils/event/mediaEventsEnum":123,"utils/prefixedEvent":125}],101:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -15848,7 +16051,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],101:[function(require,module,exports){
+},{"hbsfy/runtime":20}],102:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -15863,7 +16066,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],102:[function(require,module,exports){
+},{"hbsfy/runtime":20}],103:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
@@ -15886,7 +16089,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],103:[function(require,module,exports){
+},{"hbsfy/runtime":20}],104:[function(require,module,exports){
 // var Handlebars = require("handlebars")["default"];
 var Handlebars = require("hbsfy/runtime");
 /** @type {Function} */
@@ -15983,14 +16186,14 @@ for (var helper in helpers) {
 
 // module.exports = Handlebars;
 
-},{"app/control/Globals":35,"color":"color","hbsfy/runtime":20}],104:[function(require,module,exports){
+},{"app/control/Globals":36,"color":"color","hbsfy/runtime":20}],105:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<svg class=\"fullscreen-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\" style=\"max-width:14px;max-height:14px\">\n	<path d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"stroke-width:1;fill:none;\" vector-effect=\"non-scaling-stroke\" />\n</svg>\n";
+    return "<svg class=\"fullscreen-symbol\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"-21 -21 42 42\">\n	<path id=\"fullscreen-shadow\" d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"bg-color-stroke\" style=\"fill:none\" vector-effect=\"non-scaling-stroke\" transform=\"translate(2 2)\"/>\n	<path id=\"fullscreen-path\" d=\"M-5,5 L-20,20 M-7,20 L-20,20 L-20,7 M5,-5 L20,-20 M7,-20 L20,-20 L20,-7\" class=\"color-stroke\" style=\"fill:none\" vector-effect=\"non-scaling-stroke\" />\n</svg>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":20}],105:[function(require,module,exports){
+},{"hbsfy/runtime":20}],106:[function(require,module,exports){
 /** @type {module:underscore} */
 var _ = require("underscore");
 /** @type {module:backbone} */
@@ -16134,7 +16337,7 @@ Object.defineProperties(Timer, {
 
 module.exports = Timer;
 
-},{"backbone":"backbone","underscore":"underscore"}],106:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],107:[function(require,module,exports){
 /* -------------------------------
 /* Imports
 /* ------------------------------- */
@@ -16396,7 +16599,7 @@ TransformHelper.prototype = Object.create({
 
 module.exports = TransformHelper;
 
-},{"./TransformItem":107}],107:[function(require,module,exports){
+},{"./TransformItem":108}],108:[function(require,module,exports){
 (function (DEBUG){
 /* -------------------------------
  * Imports
@@ -16961,7 +17164,7 @@ module.exports = TransformItem;
 
 }).call(this,true)
 
-},{"app/control/Globals":35,"underscore":"underscore","utils/prefixedEvent":122,"utils/prefixedProperty":123,"utils/prefixedStyleName":124,"utils/strings/camelToDashed":128}],108:[function(require,module,exports){
+},{"app/control/Globals":36,"underscore":"underscore","utils/prefixedEvent":125,"utils/prefixedProperty":126,"utils/prefixedStyleName":127,"utils/strings/camelToDashed":131}],109:[function(require,module,exports){
 module.exports = function(a1, a2, dest) {
 	return a1.reduce(function(res, o, i, a) {
 		if (a2.indexOf(o) == -1) res.push(o);
@@ -16969,12 +17172,20 @@ module.exports = function(a1, a2, dest) {
 	}, (dest !== void 0) ? dest : []);
 };
 
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 var PI2 = Math.PI * 2;
 
 var splice = Array.prototype.splice;
 // var concat = Array.prototype.concat;
 
+/*
+ *	Using javascript to convert radians to degrees with positive and
+ *	negative values [https://stackoverflow.com/questions/29588404/]
+ *	`(((r * (180/Math.PI)) % 360) + 360) % 360;`
+ *	`function mod(n, m) {
+ *		return ((n % m) + m) % m;
+ *	}`
+ */
 var _mod = function(n, m) {
 	return ((n % m) + m) % m;
 };
@@ -16986,8 +17197,11 @@ var setStyle = function(ctx, s) {
 			case "undefined":
 				break;
 			case "function":
-				if (Array.isArray(s[p])) ctx[p].apply(ctx, s[p]);
-				else ctx[p].call(ctx, s[p]);
+				if (Array.isArray(s[p])) {
+					ctx[p].apply(ctx, s[p]);
+				} else {
+					ctx[p].call(ctx, s[p]);
+				}
 				break;
 			default:
 				ctx[p] = s[p];
@@ -16997,10 +17211,16 @@ var setStyle = function(ctx, s) {
 
 var _drawShape = function(fn, s, ctx) {
 	ctx.save();
-	if (s) setStyle(ctx, s);
+	if (s) {
+		setStyle(ctx, s);
+	}
 	fn.apply(null, splice.call(arguments, 2));
-	if (ctx.lineWidth !== "transparent") ctx.stroke();
-	if (ctx.fillStyle !== "transparent") ctx.fill();
+	if ('strokeStyle' in s) { /* ctx.lineWidth > 0 */
+		ctx.stroke();
+	}
+	if ('fillStyle' in s) { /* ctx.fillStyle !== "transparent" */
+		ctx.fill();
+	}
 	ctx.restore();
 };
 
@@ -17057,13 +17277,6 @@ module.exports = {
 		_drawShape(this.square, s, ctx, x, y, r);
 	},
 
-	/* https://stackoverflow.com/questions/29588404/using-javascript-to-convert-radians-to-degrees-with-positive-and-negative-values
-		(((r * (180/Math.PI)) % 360) + 360) % 360;
-		function mod(n, m) {
-  return ((n % m) + m) % m;
-}
-	*/
-
 	arrowhead: function(ctx, x, y, r, t) {
 		ctx.save();
 		ctx.translate(x, y);
@@ -17084,21 +17297,67 @@ module.exports = {
 		_drawShape(this.arrowhead, s, ctx, x, y, r, t);
 	},
 
-	rect: function(ctx, a1, a2, a3, a4) {
-
+	arrowhead2: function(ctx, x, y, r, t) {
+		ctx.save();
+		ctx.translate(x, y);
+		ctx.rotate(_mod(t, PI2));
 		ctx.beginPath();
-		if (isNaN(a1)) {
-			ctx.rect(a1.left, a1.top, a1.width, a1.height);
-		} else {
-			ctx.rect(a1, a2, a3, a4);
+		ctx.moveTo(-r, r * Math.SQRT1_2);
+		ctx.lineTo(0, 0);
+		ctx.lineTo(-r, -r * Math.SQRT1_2);
+		ctx.restore();
+	},
+	drawArrowhead2: function(ctx, s, x, y, r, t) {
+		_drawShape(this.arrowhead, s, ctx, x, y, r, t);
+	},
+
+	rect: function(ctx, a1, a2, a3, a4) {
+		if (typeof a1 === "object") {
+			a4 = a1.height;
+			a3 = a1.width;
+			a2 = a1.top;
+			a1 = a1.left;
 		}
+		ctx.beginPath();
+		ctx.rect(a1, a2, a3, a4);
 	},
 	drawRect: function(ctx, s, a1, a2, a3, a4) {
 		_drawShape(this.rect, s, ctx, a1, a2, a3, a4);
 	},
+
+	roundRect: function(ctx, x, y, w, h, r) {
+		if (w < 2 * r) r = w / 2;
+		if (h < 2 * r) r = h / 2;
+		ctx.beginPath();
+		ctx.moveTo(x + r, y);
+		ctx.arcTo(x + w, y, x + w, y + h, r);
+		ctx.arcTo(x + w, y + h, x, y + h, r);
+		ctx.arcTo(x, y + h, x, y, r);
+		ctx.arcTo(x, y, x + w, y, r);
+		ctx.closePath();
+	},
+	drawRoundRect: function(ctx, s, x, y, w, h, r) {
+		_drawShape(this.roundRect, s, ctx, x, y, h, r);
+	},
+
+	quadRoundRect: function(ctx, x, y, w, h, r) {
+		ctx.beginPath();
+		ctx.moveTo(x, y + r);
+		ctx.quadraticCurveTo(x, y, x + r, y);
+		ctx.lineTo(x + w - r, y);
+		ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+		ctx.lineTo(x + w, y + h - r);
+		ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+		ctx.lineTo(x + r, y + h);
+		ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+		ctx.closePath();
+	},
+	drawQuadRoundRect: function(ctx, s, x, y, w, h, r) {
+		_drawShape(this.quadRoundRect, s, ctx, x, y, h, r);
+	},
 };
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -17148,7 +17407,84 @@ module.exports = function() {
 	this.next = null;
 };
 
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
+module.exports = function(imageData, adj) {
+	var pixels = imageData.data;
+	var r, g, b, s;
+	var i, ii;
+
+	if (arguments.length === 1) {
+		for (i = 0, ii = pixels.length; i < ii; i += 4) {
+			pixels[i] = (pixels[i] * 299 + pixels[i + 1] * 587 + pixels[i + 2] * 144) / 1000;
+		}
+	} else
+	if (arguments.length === 2) {
+		if (0 >= adj > 1) {
+			console.warn("argument out of range (1-0)", adj);
+			return imageData;
+		}
+		for (i = 0, ii = pixels.length; i < ii; i += 4) {
+			r = pixels[i];
+			g = pixels[i + 1];
+			b = pixels[i + 2];
+			// s = ((r * 299 + g * 587 + b * 144) / 1000) * (1 - adj);
+			// pixels[i] = r * adj + s;
+			// pixels[i + 1] = g * adj + s;
+			// pixels[i + 2] = b * adj + s;
+			s = Math.max(r, g, b);
+			if (s === 0) {
+				pixels[i] = Math.round(255 * adj);
+				pixels[i + 1] = Math.round(255 * adj);
+				pixels[i + 2] = Math.round(255 * adj);
+			} else {
+				s = 255 * adj / s;
+				pixels[i] = Math.round(r * s);
+				pixels[i + 1] = Math.round(g * s);
+				pixels[i + 2] = Math.round(b * s);
+			}
+		}
+	}
+	return imageData;
+};
+
+// function saturation(r,g,b, s) {
+//     var min = rgb.indexOf(Math.min.apply(null, rgb)), // index of min
+//         max = rgb.indexOf(Math.max.apply(null, rgb)), // index of max
+//         mid = [0, 1, 2].filter(function (i) {return i !== min && i !== max;})[0],
+//         a = rgb[max] - rgb[min],
+//         b = rgb[mid] - rgb[min],
+//         x = rgb[max],
+//         arr = [x, x, x];
+//     if (min === max) {
+//         min = 2; // both max = min = 0, => mid = 1, so set min = 2
+//         a = 1;   // also means a = b = 0, don't want division by 0 in `b / a`
+//     }
+//
+//     arr[max] = x;
+//     arr[min] = Math.round(x * (1 - s));
+//     arr[mid] = Math.round(x * ((1 - s) + s * b / a));
+//
+//     return arr;
+// }
+
+
+// function nvalue(rgb, v) {
+//     var x = Math.max.apply(null, rgb);
+//     if (x === 0)
+//         return [
+//             Math.round(255 * v),
+//             Math.round(255 * v),
+//             Math.round(255 * v)
+//         ];
+//     x = 255 * v / x;
+//     return [
+//         Math.round(rgb[0] * x),
+//         Math.round(rgb[1] * x),
+//         Math.round(rgb[2] * x)
+//     ];
+// }
+
+},{}],113:[function(require,module,exports){
 module.exports = function(imageData, opts) {
 	var pixels = imageData.data;
 	var pixelsNum = pixels.length;
@@ -17166,7 +17502,7 @@ module.exports = function(imageData, opts) {
 	return rgbAvg;
 };
 
-},{}],112:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -17226,7 +17562,18 @@ module.exports = [
 		332, 329, 326, 323, 320, 318, 315, 312, 310, 307, 304, 302, 299, 297, 294, 292,
 		289, 287, 285, 282, 280, 278, 275, 273, 271, 269, 267, 265, 263, 261, 259];
 
-},{}],113:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
+module.exports = function(pixels, adjustment) {
+	var d = pixels.data;
+	for (var i = 0; i < d.length; i += 4) {
+		d[i] *= adjustment;
+		d[i + 1] *= adjustment;
+		d[i + 2] *= adjustment;
+	}
+	return pixels;
+};
+
+},{}],116:[function(require,module,exports){
 /*
 
 StackBlur - a fast almost Gaussian Blur For Canvas
@@ -17286,7 +17633,7 @@ module.exports = [
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
 		24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24];
 
-},{}],114:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 /* jshint ignore:start */
 /*
 
@@ -17334,13 +17681,17 @@ var shg_table = require("./shg_table");
 var BlurStack = require("./BlurStack");
 
 module.exports = function(imageData, opts) {
+	if ((typeof opts === "object") && opts.hasOwnProperty("radius")) {
+		opts = opts.radius;
+	}
+	if ((typeof opts !== "number") || isNaN(opts) || (1 > opts)) {
+		// no valid argument value do nothing
+		return imageData;
+	}
+	var radius = opts | 0;
 	var pixels = imageData.data,
 		width = imageData.width,
 		height = imageData.height;
-	// var radius = opts.radius;
-
-	if (!opts.hasOwnProperty("radius") || isNaN(opts.radius) || opts.radius < 1) return;
-	var radius = opts.radius | 0;
 
 	var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum,
 		r_out_sum, g_out_sum, b_out_sum,
@@ -17528,7 +17879,7 @@ module.exports = function(imageData, opts) {
 
 /* jshint ignore:end */
 
-},{"./BlurStack":110,"./mul_table":112,"./shg_table":113}],115:[function(require,module,exports){
+},{"./BlurStack":111,"./mul_table":114,"./shg_table":116}],118:[function(require,module,exports){
 /**
  * @module utils/canvas/calcArcHConnector
  */
@@ -17673,7 +18024,7 @@ var drawArcConnector1 = function(ctx, x1, y1, x2, y2, r) {
 };
 */
 
-},{}],116:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 (function (DEBUG){
 /* global HTMLElement, CSSStyleDeclaration */
 
@@ -17747,19 +18098,19 @@ module.exports = function(s, m, includeSizePos) {
 
 }).call(this,true)
 
-},{}],117:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /* easeInQuad */
 module.exports = function(x, t, b, c, d) {
 	return c * (t /= d) * t + b;
 };
 
-},{}],118:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 /* easeOutQuad */
 module.exports = function(t, b, c, d) {
 	return -c * (t /= d) * (t - 2) + b;
 };
 
-},{}],119:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 /**
  * @param {number} i current iteration
  * @param {number} s start value
@@ -17773,7 +18124,7 @@ var linear = function(i, s, d, t) {
 
 module.exports = linear;
 
-},{}],120:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 /* https://html.spec.whatwg.org/multipage/media.html#event-media-canplay
  */
 module.exports = [
@@ -17808,7 +18159,7 @@ module.exports = [
 	"volumechange",
 ];
 
-},{}],121:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 /**
  * @module app/view/component/GraphView
  */
@@ -17846,7 +18197,7 @@ module.exports = function(rect, dx, dy) {
 	return r;
 };
 
-},{}],122:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 /** @type {Array} lowercase prefixes */
 var lcPrefixes = [""].concat(require("./prefixes"));
 
@@ -17944,7 +18295,7 @@ var proxyTest = function(name, obj, testProp) {
 };
 */
 
-},{"./prefixes":125}],123:[function(require,module,exports){
+},{"./prefixes":128}],126:[function(require,module,exports){
 /**
 /* @module utils/prefixedProperty
 /*/
@@ -17985,7 +18336,7 @@ module.exports = function(prop, obj) {
 	return _cache[prop] || (_cache[prop] = _prefixedProperty(prop, obj || document.body.style));
 };
 
-},{"./prefixes":125}],124:[function(require,module,exports){
+},{"./prefixes":128}],127:[function(require,module,exports){
 /**
 /* @module utils/prefixedStyleName
 /*/
@@ -18041,10 +18392,10 @@ module.exports = function(style, styleObj) {
 // 	return prefixedProp? (camelProp === prefixedProp? "" : "-") + camelToDashed(prefixedProp) : null;
 // };
 
-},{"./prefixes":125}],125:[function(require,module,exports){
+},{"./prefixes":128}],128:[function(require,module,exports){
 module.exports = ["webkit", "moz", "ms", "o"];
 
-},{}],126:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports = function(pp, reason) {
 	if (pp.length > 0) {
 		pp.forEach(function(p, i, a) {
@@ -18056,7 +18407,7 @@ module.exports = function(pp, reason) {
 	return pp;
 };
 
-},{}],127:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 module.exports = function(pp, result) {
 	if (pp.length != 0) {
 		pp.forEach(function(p, i, a) {
@@ -18068,19 +18419,19 @@ module.exports = function(pp, result) {
 	return pp;
 };
 
-},{}],128:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 module.exports = function(str) {
 	return str.replace(/[A-Z]/g, function($0) {
 		return "-" + $0.toLowerCase();
 	});
 };
 
-},{}],129:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 module.exports = function(s) {
 	return s.replace(/<[^>]+>/g, "");
 };
 
-},{}],130:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 /** @type {module:hammerjs} */
 var Hammer = require("hammerjs");
 
@@ -18245,7 +18596,7 @@ Hammer.inherit(SmoothPan, Hammer.Pan, {
 
 module.exports = SmoothPan;
 
-},{"hammerjs":"hammerjs"}],131:[function(require,module,exports){
+},{"hammerjs":"hammerjs"}],134:[function(require,module,exports){
 module.exports={
 	"video_crop_px": "0",
 	"transform_type": "3d",
@@ -18258,12 +18609,12 @@ module.exports={
 	"breakpoints": {
 		"landscape": "'(orientation: landscape)'",
 		"portrait": "'(orientation: portrait)'",
-		"fullwidth-small": "'not screen and (min-width: 460px)'",
-		"fullwidth": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
+		"xsmall-stretch": "'not screen and (min-width: 460px), not screen and (min-height: 420px)'",
+		"small-stretch": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 		"default":"'only screen and (min-width: 704px) and (min-height: 540px)'",
-		"desktop-small": "'only screen and (min-width: 1024px) and (min-height: 540px)'",
-		"desktop-medium": "'only screen and (min-width: 1224px) and (min-height: 704px)'",
-		"desktop-large": "'only screen and (min-width: 1824px) and (min-height: 1024px)'"
+		"medium-wide": "'only screen and (min-width: 1024px) and (min-height: 540px)'",
+		"large-wide": "'only screen and (min-width: 1224px) and (min-height: 704px)'",
+		"xlarge-wide": "'only screen and (min-width: 1824px) and (min-height: 1024px)'"
 	},
 	"default_colors": {
 		"color": "hsl(47, 5%, 15%)",

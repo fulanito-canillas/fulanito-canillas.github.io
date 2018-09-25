@@ -71,23 +71,27 @@ module.exports = function(grunt) {
 	 * grunt-http
 	 * -------------------------------- */
 
+	var httpAssetTasks = [];
+
 	grunt.loadNpmTasks("grunt-http");
 	grunt.config("http", [
-		// "css/folio.css",
-		// "js/folio.js",
+		"css/folio.css",
 		"css/folio-debug.css",
 		"css/folio-debug.css.map",
 		"css/folio-ie.css",
 		// "css/folio-ie.css.map",
+		"js/folio.js",
 		"js/folio-debug-client.js",
 		"js/folio-debug-client.js.map",
 		"js/folio-debug-vendor.js",
 		"js/folio-debug-vendor.js.map",
 	].reduce(function(o, s, i, a) {
-		o[s.replace(/[\/\.]/g, "-")] = {
+		var task = s.replace(/[\/\.]/g, "-");
+		o[task] = {
 			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/" + s },
 			dest: "<%= paths.destAssets %>/" + s
 		}
+		httpAssetTasks.push("http:" + task);
 		return o;
 	}, {
 		options: {
@@ -97,10 +101,10 @@ module.exports = function(grunt) {
 			options: { url: "<%= paths.srcRoot %>/?force-debug=yes" },
 			dest: "index.html"
 		},
-		// "index-dist": {
-		// 	options: { url: "<%= paths.srcRoot %>/?force-nodebug=yes" },
-		// 	dest: "index.dist.html"
-		// },
+		"index-dist": {
+			options: { url: "<%= paths.srcRoot %>/?force-nodebug=yes" },
+			dest: "index.html"
+		},
 		// "data-json": {
 		// 	options: { url: "<%= paths.srcRoot %>/json" },
 		// 	dest: "<%= paths.destAssets %>/js/data.json"
@@ -110,6 +114,7 @@ module.exports = function(grunt) {
 		// 	dest: "<%= paths.destAssets %>/js/data.js"
 		// },
 	}));
+	grunt.registerTask("http-assets", httpAssetTasks);
 
 	/* --------------------------------
 	 * copy/process
@@ -170,6 +175,7 @@ module.exports = function(grunt) {
 		},
 	});
 
-	grunt.registerTask("build", ["clean:resources", "clean:scripts", "copy", "http", "string-replace", "htmlmin"]);
-	grunt.registerTask("default", ["build"]);
+	grunt.registerTask("build-dev", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dev", "string-replace", "htmlmin"]);
+	grunt.registerTask("build-dist", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dist", "string-replace", "htmlmin"]);
+	grunt.registerTask("default", ["build-dev"]);
 };
