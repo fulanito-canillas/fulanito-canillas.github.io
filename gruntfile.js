@@ -81,10 +81,10 @@ module.exports = function(grunt) {
 		"css/folio-ie.css",
 		// "css/folio-ie.css.map",
 		"js/folio.js",
-		"js/folio-debug-client.js",
-		"js/folio-debug-client.js.map",
-		"js/folio-debug-vendor.js",
-		"js/folio-debug-vendor.js.map",
+		"js/folio-dev-main.js",
+		"js/folio-dev-main.js.map",
+		"js/folio-dev-vendor.js",
+		"js/folio-dev-vendor.js.map",
 	].reduce(function(o, s, i, a) {
 		var task = s.replace(/[\/\.]/g, "-");
 		o[task] = {
@@ -175,7 +175,7 @@ module.exports = function(grunt) {
 		},
 	});
 
-	grunt.registerTask("build-dev", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dev", "string-replace", "htmlmin"]);
-	grunt.registerTask("build-dist", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dist", "string-replace", "htmlmin"]);
-	grunt.registerTask("default", ["build-dev"]);
+	grunt.registerTask("dev", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dev", "string-replace", "htmlmin"]);
+	grunt.registerTask("dist", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dist", "string-replace", "htmlmin"]);
+	grunt.registerTask("default", ["dist"]);
 };
