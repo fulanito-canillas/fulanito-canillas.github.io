@@ -809,82 +809,97 @@ body {
     margin-top: -1em;
     top: 50%;
     border-radius: 4px; }
-  .playable-item .play-toggle {
+  .playable-item .overlay .fullscreen-toggle, .playable-item .overlay .play-toggle {
     opacity: 1; }
   .playable-item .started {
     /* using progress*/ }
-    .playable-item .started .play-toggle {
+    .playable-item .started .overlay .fullscreen-toggle, .playable-item .overlay .started .fullscreen-toggle, .playable-item .started .overlay .play-toggle, .playable-item .overlay .started .play-toggle {
       opacity: 0; }
-    .playable-item .started.playing.waiting .play-toggle {
+    .playable-item .started.playing.waiting .overlay .fullscreen-toggle, .playable-item .overlay .started.playing.waiting .fullscreen-toggle, .playable-item .started.playing.waiting .overlay .play-toggle, .playable-item .overlay .started.playing.waiting .play-toggle {
       opacity: 1; }
-    .playable-item .started.paused.ended .play-toggle {
+    .playable-item .started.paused.ended .overlay .fullscreen-toggle, .playable-item .overlay .started.paused.ended .fullscreen-toggle, .playable-item .started.paused.ended .overlay .play-toggle, .playable-item .overlay .started.paused.ended .play-toggle {
       opacity: 1; }
-    :not(.scrolling) .playable-item .started.paused .play-toggle {
+    :not(.scrolling) .playable-item .started.paused .overlay .fullscreen-toggle, :not(.scrolling) .playable-item .overlay .started.paused .fullscreen-toggle, :not(.scrolling) .playable-item .started.paused .overlay .play-toggle, :not(.scrolling) .playable-item .overlay .started.paused .play-toggle {
       -webkit-animation: 0.7s ease-in-out flashEven;
               animation: 0.7s ease-in-out flashEven; }
-    :not(.scrolling) .playable-item .started.paused.ended .play-toggle {
+    :not(.scrolling) .playable-item .started.paused.ended .overlay .fullscreen-toggle, :not(.scrolling) .playable-item .overlay .started.paused.ended .fullscreen-toggle, :not(.scrolling) .playable-item .started.paused.ended .overlay .play-toggle, :not(.scrolling) .playable-item .overlay .started.paused.ended .play-toggle {
       -webkit-animation: none;
               animation: none; }
-    :not(.scrolling) .playable-item .started.playing:not(.waiting) .play-toggle {
+    :not(.scrolling) .playable-item .started.playing:not(.waiting) .overlay .fullscreen-toggle, :not(.scrolling) .playable-item .overlay .started.playing:not(.waiting) .fullscreen-toggle, :not(.scrolling) .playable-item .started.playing:not(.waiting) .overlay .play-toggle, :not(.scrolling) .playable-item .overlay .started.playing:not(.waiting) .play-toggle {
       -webkit-animation: 0.525s ease-in-out flashOdd;
               animation: 0.525s ease-in-out flashOdd; }
 
-.playable-item .controls {
-  position: absolute; }
-.playable-item .controls > * {
-  opacity: 0;
-  visibility: hidden;
-  -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s ease-in-out 0.034s;
-          transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s ease-in-out 0.034s; }
-.playable-item.ready.selected .controls > * {
-  opacity: 1;
-  visibility: visible; }
-  .panning .playable-item.ready.selected .controls > *, .scrolling .playable-item.ready.selected .controls > * {
+.playable-item {
+  	/*
+  	.overlay:hover  .fullscreen-toggle {
+  		// opacity: 1;
+  		animation: 0.7s $ease flashEven;
+  		&:hover, &:active {
+  			opacity: 1;
+  		}
+  
+  		// background-color: hsla(0,0,100%,0.25);
+  		// @at-root .color-dark & {
+  			background-color: hsla(0,0,0%,0.25);
+  		// }
+  		&:active {
+  			// background-color: hsla(0,0,100%,0.5);
+  			// @at-root .color-dark & {
+  				background-color: hsla(0,0,0%,0.5);
+  			// }
+  		}
+  	}
+  	*/ }
+  .playable-item .controls {
+    position: absolute; }
+  .playable-item .controls > * {
     opacity: 0;
-    visibility: hidden; }
-.playable-item .fullscreen-toggle {
-  line-height: 0;
-  cursor: pointer; }
-  .playable-item .fullscreen-toggle svg.fullscreen-symbol {
-    width: 1em;
-    height: 1em;
-    padding: 0.5em; }
-.playable-item .controls .fullscreen-toggle {
-  font-size: 14px;
-  border-radius: 0.2rem; }
-  .playable-item .controls .fullscreen-toggle svg.fullscreen-symbol {
-    stroke-width: 1px; }
-  .playable-item .controls .fullscreen-toggle:hover {
-    background-color: rgba(255, 255, 255, 0.25); }
-    .color-dark .playable-item .controls .fullscreen-toggle:hover {
+    visibility: hidden;
+    -webkit-transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s ease-in-out 0.034s;
+            transition: opacity 0.316s ease-in-out 0.034s, visibility 0.316s ease-in-out 0.034s; }
+  .playable-item.ready.selected .controls > * {
+    opacity: 1;
+    visibility: visible; }
+    .panning .playable-item.ready.selected .controls > *, .scrolling .playable-item.ready.selected .controls > * {
+      opacity: 0;
+      visibility: hidden; }
+  .playable-item .fullscreen-toggle {
+    line-height: 0;
+    cursor: pointer; }
+    .playable-item .fullscreen-toggle svg.fullscreen-symbol {
+      width: 1em;
+      height: 1em;
+      padding: 0.5em; }
+  .playable-item .controls .fullscreen-toggle {
+    font-size: 14px;
+    border-radius: 0.2rem; }
+    .playable-item .controls .fullscreen-toggle svg.fullscreen-symbol {
+      stroke-width: 1px; }
+    .playable-item .controls .fullscreen-toggle:hover {
+      background-color: rgba(255, 255, 255, 0.25); }
+      .color-dark .playable-item .controls .fullscreen-toggle:hover {
+        background-color: rgba(0, 0, 0, 0.25); }
+    .playable-item .controls .fullscreen-toggle:active {
+      background-color: rgba(255, 255, 255, 0.5); }
+      .color-dark .playable-item .controls .fullscreen-toggle:active {
+        background-color: rgba(0, 0, 0, 0.5); }
+  .playable-item .overlay .fullscreen-toggle {
+    font-size: 18px;
+    margin: 0.5em;
+    padding: 0.125em;
+    border-radius: 0.125em; }
+    .playable-item .overlay .fullscreen-toggle svg.fullscreen-symbol {
+      stroke-width: 2px;
+      padding: 0.35em; }
+    .playable-item .overlay .fullscreen-toggle:hover {
+      opacity: 1;
       background-color: rgba(0, 0, 0, 0.25); }
-  .playable-item .controls .fullscreen-toggle:active {
-    background-color: rgba(255, 255, 255, 0.5); }
-    .color-dark .playable-item .controls .fullscreen-toggle:active {
-      background-color: rgba(0, 0, 0, 0.5); }
-.playable-item .overlay .fullscreen-toggle {
-  font-size: 21px;
-  margin: 1rem;
-  padding: 0.25em;
-  border-radius: 50%;
-  opacity: 0; }
-  .playable-item .overlay .fullscreen-toggle svg.fullscreen-symbol {
-    stroke-width: 2px;
-    padding: 1rem; }
-.playable-item .overlay:hover .fullscreen-toggle {
-  -webkit-animation: 0.7s ease-in-out flashEven;
-          animation: 0.7s ease-in-out flashEven;
-  background-color: rgba(0, 0, 0, 0.25); }
-  .playable-item .overlay:hover .fullscreen-toggle:hover, .playable-item .overlay:hover .fullscreen-toggle:active {
-    opacity: 1; }
-  .playable-item .overlay:hover .fullscreen-toggle:active {
-    background-color: rgba(0, 0, 0, 0.5); }
-.playable-item .progress-meter {
-  font-family: "FolioFigures", monospace;
-  font-weight: normal;
-  box-sizing: content-box;
-  width: 2.8rem;
-  height: 2.8rem; }
+  .playable-item .progress-meter {
+    font-family: "FolioFigures", monospace;
+    font-weight: normal;
+    box-sizing: content-box;
+    width: 2.8rem;
+    height: 2.8rem; }
 
 .video-item {
   -webkit-transform-style: flat;
