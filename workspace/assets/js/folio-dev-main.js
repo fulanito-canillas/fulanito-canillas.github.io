@@ -13715,14 +13715,7 @@ if (DEBUG) {// /** @type {module:underscore} */
 
 }).call(this,true,require("underscore"))
 
-},{"Backbone.Mutators":1,"Modernizr":"Modernizr","app/model/helper/bootstrap":68,"app/view/AppView":75,"app/view/helper/createColorStyleSheet":97,"app/view/template/_helpers":124,"backbone":5,"backbone.babysitter":3,"backbone.native":4,"classlist-polyfill":6,"es6-promise/auto":13,"fullscreen-polyfill":"fullscreen-polyfill","hammerjs":15,"matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-observer":36,"raf-polyfill":"raf-polyfill","setimmediate":38,"underscore":51,"webfontloader":52}],54:[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<svg class=\"cog-symbol icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\">\n	<path d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n</svg>\n";
-},"useData":true});
-
-},{"hbsfy/runtime":35}],55:[function(require,module,exports){
+},{"Backbone.Mutators":1,"Modernizr":"Modernizr","app/model/helper/bootstrap":67,"app/view/AppView":74,"app/view/helper/createColorStyleSheet":96,"app/view/template/_helpers":123,"backbone":5,"backbone.babysitter":3,"backbone.native":4,"classlist-polyfill":6,"es6-promise/auto":13,"fullscreen-polyfill":"fullscreen-polyfill","hammerjs":15,"matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-observer":36,"raf-polyfill":"raf-polyfill","setimmediate":38,"underscore":51,"webfontloader":52}],54:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -13968,7 +13961,7 @@ module.exports = new Controller();
 
 }).call(this,true,require("underscore"))
 
-},{"app/model/collection/ArticleCollection":64,"app/model/collection/BundleCollection":65,"backbone":5,"underscore":51}],56:[function(require,module,exports){
+},{"app/model/collection/ArticleCollection":63,"app/model/collection/BundleCollection":64,"backbone":5,"underscore":51}],55:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -14196,7 +14189,7 @@ module.exports = function () {
 
 }).call(this,true,require("underscore"))
 
-},{"../../../sass/variables.json":154,"underscore":51}],57:[function(require,module,exports){
+},{"../../../sass/variables.json":154,"underscore":51}],56:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -14409,18 +14402,18 @@ module.exports.prototype._logFlags = "";
 
 }).call(this,require("underscore"))
 
-},{"./template/DebugToolbar.SVGGrid.hbs":58,"./template/DebugToolbar.hbs":59,"Modernizr":"Modernizr","app/control/Globals":56,"app/view/base/View":83,"cookies-js":"cookies-js","underscore":51}],58:[function(require,module,exports){
+},{"./template/DebugToolbar.SVGGrid.hbs":57,"./template/DebugToolbar.hbs":58,"Modernizr":"Modernizr","app/control/Globals":55,"app/view/base/View":82,"cookies-js":"cookies-js","underscore":51}],57:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     return "<svg id=\"debug-grid\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" preserveAspectRatio=\"xMaxYMid slice\" viewport-fill=\"hsl(0,0%,100%)\" viewport-fill-opacity=\"1\" style=\"fill:none;stroke:none;stroke-width:1px;fill:none;fill-rule:evenodd;\">\n<defs>\n	<pattern id=\"pat-baseline-12px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"12\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"3\" y2=\"3\" stroke-opacity=\"0.125\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"6\" y2=\"6\" stroke-opacity=\"0.375\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"9\" y2=\"9\" stroke-opacity=\"0.125\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-24px\" class=\"baseline base12\" x=\"0\" y=\"0\" width=\"20\" height=\"24\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n\n	<pattern id=\"pat-baseline-10px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"10\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.00\"/>\n		<line x1=\"0\" x2=\"100%\" y1=\"5\" y2=\"5\" stroke-opacity=\"0.75\"/>\n	</pattern>\n	<pattern id=\"pat-baseline-20px\" class=\"baseline base10\" x=\"0\" y=\"0\" width=\"20\" height=\"20\" patternUnits=\"userSpaceOnUse\">\n		<line x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\" stroke-opacity=\"1.0\"/>\n	</pattern>\n	<pattern id=\"pat-cols-220px\" x=\"0\" y=\"0\" width=\"220\" height=\"36\" patternUnits=\"userSpaceOnUse\">\n		<rect transform=\"translate(0,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<rect transform=\"translate(200,0)\" x=\"0\" y=\"0\" width=\"20\" height=\"100%\" fill=\"hsl(336,50%,40%)\" fill-opacity=\"0.1\"/>\n		<line transform=\"translate(20 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,60%)\" stroke-opacity=\"0.2\"/>\n		<line transform=\"translate(200 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.2\"/>\n\n		<line transform=\"translate(140 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n		<line transform=\"translate(80 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(336,50%,40%)\" stroke-opacity=\"0.3\"/>\n\n		<line transform=\"translate(0 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n		<line transform=\"translate(220 0)\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\" stroke=\"hsl(236,50%,40%)\" stroke-opacity=\"0.4\" stroke-width=\"1\"/>\n	</pattern>\n</defs>\n<g id=\"debug-grid-body\" transform=\"translate(0 0.5)\">\n	<rect id=\"baseline\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	<g id=\"debug-grid-container\">\n		<g id=\"debug-grid-content\">\n			<rect id=\"baseline-content\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n			<line id=\"gct0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n			<line id=\"gct1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		</g>\n		<line id=\"gnv0\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n		<line id=\"gnv1\" class=\"hguide\" x1=\"0\" x2=\"100%\" y1=\"0\" y2=\"0\"/>\n	</g>\n\n	<g id=\"abs-cols\">\n		<rect id=\"columns\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\"/>\n	</g>\n\n	<g id=\"rel-cols\">\n		<line id=\"le\" class=\"vguide edge\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"re\" class=\"vguide edge\" x1=\"100%\" x2=\"100%\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gl0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"gl1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gr0\" class=\"vguide margin\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n		<line id=\"gr1\" class=\"vguide gutter\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n\n		<line id=\"gm\" class=\"vguide\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"100%\"/>\n	</g>\n</g>\n</svg>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],59:[function(require,module,exports){
+},{"hbsfy/runtime":35}],58:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-var partial$0 = require('../../View/template/svg/CogSymbol.hbs');
-HandlebarsCompiler.registerPartial('../../View/template/svg/CogSymbol.hbs', partial$0);
+var partial$0 = require('../../view/template/svg/CogSymbol.hbs');
+HandlebarsCompiler.registerPartial('../../view/template/svg/CogSymbol.hbs', partial$0);
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -14451,7 +14444,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=container.escapeExpression;
 
   return "<dl class=\"debug-links color-bg\">\n	<dt id=\"links-toggle\">\n"
-    + ((stack1 = container.invokePartial(partials["../../View/template/svg/CogSymbol.hbs"],depth0,{"name":"../../View/template/svg/CogSymbol.hbs","data":data,"indent":"\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
+    + ((stack1 = container.invokePartial(partials["../../view/template/svg/CogSymbol.hbs"],depth0,{"name":"../../view/template/svg/CogSymbol.hbs","data":data,"indent":"\t\t","helpers":helpers,"partials":partials,"decorators":container.decorators})) != null ? stack1 : "")
     + "	</dt>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.layouts : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "	<dd id=\"edit-backend\">\n		<a href=\""
@@ -14463,7 +14456,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + "	</ul>\n</div>\n";
 },"usePartial":true,"useData":true});
 
-},{"../../View/template/svg/CogSymbol.hbs":54,"hbsfy/runtime":35}],60:[function(require,module,exports){
+},{"../../view/template/svg/CogSymbol.hbs":124,"hbsfy/runtime":35}],59:[function(require,module,exports){
 "use strict";
 
 /**
@@ -14578,7 +14571,7 @@ module.exports = BaseModel.extend({
 
 });
 
-},{"backbone":5}],61:[function(require,module,exports){
+},{"backbone":5}],60:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -14681,7 +14674,7 @@ module.exports = BaseModel.extend({
 
 }).call(this,require("underscore"))
 
-},{"app/model/BaseModel":62,"underscore":51}],62:[function(require,module,exports){
+},{"app/model/BaseModel":61,"underscore":51}],61:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -14764,7 +14757,7 @@ module.exports = Backbone.Model.extend.call(Backbone.Model, BaseModelProto, Base
 
 }).call(this,require("underscore"))
 
-},{"backbone":5,"underscore":51}],63:[function(require,module,exports){
+},{"backbone":5,"underscore":51}],62:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -14911,7 +14904,7 @@ module.exports = SelectableCollection;
 
 }).call(this,require("underscore"))
 
-},{"backbone":5,"underscore":51}],64:[function(require,module,exports){
+},{"backbone":5,"underscore":51}],63:[function(require,module,exports){
 "use strict";
 
 /**
@@ -14936,7 +14929,7 @@ var ArticleCollection = SelectableCollection.extend({
 });
 module.exports = new ArticleCollection();
 
-},{"app/model/SelectableCollection":63,"app/model/item/ArticleItem":69}],65:[function(require,module,exports){
+},{"app/model/SelectableCollection":62,"app/model/item/ArticleItem":68}],64:[function(require,module,exports){
 "use strict";
 
 /**
@@ -14978,7 +14971,7 @@ var BundleCollection = SelectableCollection.extend({
 });
 module.exports = new BundleCollection();
 
-},{"app/model/SelectableCollection":63,"app/model/item/BundleItem":70}],66:[function(require,module,exports){
+},{"app/model/SelectableCollection":62,"app/model/item/BundleItem":69}],65:[function(require,module,exports){
 "use strict";
 
 /**
@@ -15004,7 +14997,7 @@ var KeywordCollection = SelectableCollection.extend({
 });
 module.exports = new KeywordCollection();
 
-},{"app/model/SelectableCollection":63,"app/model/item/KeywordItem":71}],67:[function(require,module,exports){
+},{"app/model/SelectableCollection":62,"app/model/item/KeywordItem":70}],66:[function(require,module,exports){
 "use strict";
 
 /**
@@ -15030,7 +15023,7 @@ var TypeCollection = Backbone.Collection.extend({
 });
 module.exports = new TypeCollection();
 
-},{"app/model/item/TypeItem":74,"backbone":5}],68:[function(require,module,exports){
+},{"app/model/item/TypeItem":73,"backbone":5}],67:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -15100,7 +15093,7 @@ module.exports = function (bootstrap) {
 
 }).call(this,require("underscore"))
 
-},{"app/control/Globals":56,"app/model/collection/ArticleCollection":64,"app/model/collection/BundleCollection":65,"app/model/collection/KeywordCollection":66,"app/model/collection/TypeCollection":67,"underscore":51}],69:[function(require,module,exports){
+},{"app/control/Globals":55,"app/model/collection/ArticleCollection":63,"app/model/collection/BundleCollection":64,"app/model/collection/KeywordCollection":65,"app/model/collection/TypeCollection":66,"underscore":51}],68:[function(require,module,exports){
 "use strict";
 
 /**
@@ -15128,7 +15121,7 @@ module.exports = BaseItem.extend({
   }
 });
 
-},{"app/model/BaseItem":61}],70:[function(require,module,exports){
+},{"app/model/BaseItem":60}],69:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -15250,7 +15243,7 @@ module.exports = BaseItem.extend({
 
 }).call(this,require("underscore"))
 
-},{"app/control/Globals":56,"app/model/BaseItem":61,"app/model/SelectableCollection":63,"app/model/item/MediaItem":72,"color":12,"underscore":51,"utils/strings/stripTags":152}],71:[function(require,module,exports){
+},{"app/control/Globals":55,"app/model/BaseItem":60,"app/model/SelectableCollection":62,"app/model/item/MediaItem":71,"color":12,"underscore":51,"utils/strings/stripTags":152}],70:[function(require,module,exports){
 "use strict";
 
 /**
@@ -15291,7 +15284,7 @@ module.exports = BaseItem.extend({
 
 });
 
-},{"app/model/BaseItem":61}],72:[function(require,module,exports){
+},{"app/model/BaseItem":60}],71:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -15444,7 +15437,7 @@ module.exports = BaseItem.extend({
 
 }).call(this,require("underscore"))
 
-},{"app/control/Globals":56,"app/model/BaseItem":61,"app/model/SelectableCollection":63,"app/model/item/SourceItem":73,"color":12,"underscore":51,"utils/strings/stripTags":152}],73:[function(require,module,exports){
+},{"app/control/Globals":55,"app/model/BaseItem":60,"app/model/SelectableCollection":62,"app/model/item/SourceItem":72,"color":12,"underscore":51,"utils/strings/stripTags":152}],72:[function(require,module,exports){
 (function (DEBUG){
 "use strict";
 
@@ -15543,7 +15536,7 @@ module.exports = BaseItem.extend({
 
 }).call(this,true)
 
-},{"app/model/BaseItem":61}],74:[function(require,module,exports){
+},{"app/model/BaseItem":60}],73:[function(require,module,exports){
 "use strict";
 
 /**
@@ -15572,7 +15565,7 @@ module.exports = BaseItem.extend({
   }
 });
 
-},{"app/model/BaseItem":61}],75:[function(require,module,exports){
+},{"app/model/BaseItem":60}],74:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -15873,14 +15866,16 @@ module.exports = View.extend({
     this.el.addEventListener("touchstart", onTouchStart);
 
     var onMeasured = function onMeasured(view) {
-      _this.requestAnimationFrame(function () {
-        if (_this.el.scrollHeight - 1 <= _this.el.clientHeight) {
-          _this.el.style.overflowY = "hidden";
-        } else {
-          _this.el.style.overflowY = "";
-        }
+      _this.setImmediate(function () {
+        _this.requestAnimationFrame(function () {
+          if (_this.el.scrollHeight - 1 <= _this.el.clientHeight) {
+            _this.el.style.overflowY = "hidden";
+          } else {
+            _this.el.style.overflowY = "";
+          }
 
-        _this.el.scrollTop = 1; //traceTouchEvent("view:collapsed:measured");
+          _this.el.scrollTop = 1; //traceTouchEvent("view:collapsed:measured");
+        });
       });
     };
 
@@ -16173,7 +16168,7 @@ if (DEBUG) {
 
 }).call(this,true,require("underscore"))
 
-},{"app/control/Controller":55,"app/control/Globals":56,"app/debug/DebugToolbar":57,"app/model/AppState":60,"app/model/collection/ArticleCollection":64,"app/model/collection/BundleCollection":65,"app/view/ContentView":76,"app/view/NavigationView":77,"app/view/base/TouchManager":82,"app/view/base/View":83,"backbone":5,"underscore":51,"utils/strings/stripTags":152}],76:[function(require,module,exports){
+},{"app/control/Controller":54,"app/control/Globals":55,"app/debug/DebugToolbar":56,"app/model/AppState":59,"app/model/collection/ArticleCollection":63,"app/model/collection/BundleCollection":64,"app/view/ContentView":75,"app/view/NavigationView":76,"app/view/base/TouchManager":81,"app/view/base/View":82,"backbone":5,"underscore":51,"utils/strings/stripTags":152}],75:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -16698,7 +16693,10 @@ module.exports = View.extend({
       touch: this.hpan
     });
     controller.listenTo(view, {
-      "view:select:one": controller.selectMedia,
+      "view:select:one": function viewSelectOne(model) {
+        console.log("%s:[view:select:one] %s", view.cid, model.cid);
+        controller.selectMedia(model);
+      },
       "view:select:none": controller.deselectMedia // "view:removed": controller.stopListening
 
     });
@@ -16770,7 +16768,7 @@ module.exports = View.extend({
 
 }).call(this,require("underscore"))
 
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":121,"./template/CollectionStack.Media.hbs":122,"app/control/Controller":55,"app/control/Globals":56,"app/model/collection/ArticleCollection":64,"app/model/collection/BundleCollection":65,"app/view/base/View":83,"app/view/component/ArticleView":87,"app/view/component/Carousel":89,"app/view/component/CollectionStack":91,"app/view/component/SelectableListView":96,"app/view/render/CarouselRenderer":106,"app/view/render/DotNavigationRenderer":111,"app/view/render/ImageRenderer":113,"app/view/render/SequenceRenderer":118,"app/view/render/VideoRenderer":120,"underscore":51,"utils/TransformHelper":127}],77:[function(require,module,exports){
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":120,"./template/CollectionStack.Media.hbs":121,"app/control/Controller":54,"app/control/Globals":55,"app/model/collection/ArticleCollection":63,"app/model/collection/BundleCollection":64,"app/view/base/View":82,"app/view/component/ArticleView":86,"app/view/component/Carousel":88,"app/view/component/CollectionStack":90,"app/view/component/SelectableListView":95,"app/view/render/CarouselRenderer":105,"app/view/render/DotNavigationRenderer":110,"app/view/render/ImageRenderer":112,"app/view/render/SequenceRenderer":117,"app/view/render/VideoRenderer":119,"underscore":51,"utils/TransformHelper":127}],76:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -17749,7 +17747,7 @@ module.exports = View.extend({
 
 }).call(this,require("underscore"))
 
-},{"app/control/Controller":55,"app/control/Globals":56,"app/model/collection/ArticleCollection":64,"app/model/collection/BundleCollection":65,"app/model/collection/KeywordCollection":66,"app/model/collection/TypeCollection":67,"app/view/base/View":83,"app/view/component/ArticleButton":86,"app/view/component/FilterableListView":92,"app/view/component/GraphView":93,"app/view/component/GroupingListView":94,"hammerjs":15,"underscore":51,"utils/TransformHelper":127}],78:[function(require,module,exports){
+},{"app/control/Controller":54,"app/control/Globals":55,"app/model/collection/ArticleCollection":63,"app/model/collection/BundleCollection":64,"app/model/collection/KeywordCollection":65,"app/model/collection/TypeCollection":66,"app/view/base/View":82,"app/view/component/ArticleButton":85,"app/view/component/FilterableListView":91,"app/view/component/GraphView":92,"app/view/component/GroupingListView":93,"hammerjs":15,"underscore":51,"utils/TransformHelper":127}],77:[function(require,module,exports){
 "use strict";
 
 var PriorityQueue = function PriorityQueue(offset) {
@@ -17951,7 +17949,7 @@ CallbackQueue.prototype = Object.create({
 });
 module.exports = CallbackQueue;
 
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -18316,7 +18314,7 @@ module.exports = CanvasView;
 
 }).call(this,true,require("underscore"))
 
-},{"app/control/Globals":56,"app/view/base/Interpolator":80,"app/view/base/View":83,"underscore":51,"utils/css/getBoxEdgeStyles":139}],80:[function(require,module,exports){
+},{"app/control/Globals":55,"app/view/base/Interpolator":79,"app/view/base/View":82,"underscore":51,"utils/css/getBoxEdgeStyles":139}],79:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -18588,7 +18586,7 @@ module.exports = Interpolator;
 
 }).call(this,require("underscore"))
 
-},{"underscore":51,"utils/ease/fn/linear":142}],81:[function(require,module,exports){
+},{"underscore":51,"utils/ease/fn/linear":142}],80:[function(require,module,exports){
 (function (DEBUG){
 "use strict";
 
@@ -18631,7 +18629,8 @@ module.exports = eventMap; // module.exports = eventNum > 0? eventMap : null;
 
 }).call(this,true)
 
-},{"utils/prefixedEvent":145}],82:[function(require,module,exports){
+},{"utils/prefixedEvent":145}],81:[function(require,module,exports){
+(function (DEBUG){
 "use strict";
 
 /**
@@ -18644,7 +18643,7 @@ var Globals = require("app/control/Globals");
 
 
 var Hammer = require("hammerjs"); // /** @type {module:hammerjs.Tap} */
-// var Tap = Hammer.Tap;
+// const Tap = Hammer.Tap;
 
 /** @type {module:utils/touch/SmoothPanRecognizer} */
 
@@ -18665,7 +18664,7 @@ var Pan = require("utils/touch/SmoothPanRecognizer");
 
 function createInstance(el) {
   var manager = new Hammer.Manager(el); // manager.set({ domevents: true });
-  // var tap = new Hammer.Tap({
+  // let tap = new Hammer.Tap({
   // 	threshold: Globals.PAN_THRESHOLD - 1
   // });
   // manager.add(tap);
@@ -18676,7 +18675,7 @@ function createInstance(el) {
     threshold: Globals.PAN_THRESHOLD // touchAction: "pan-y",
 
   });
-  manager.add(hpan); // var vpan = new Pan({
+  manager.add(hpan); // let vpan = new Pan({
   // 	event: "vpan",
   // 	direction: Hammer.DIRECTION_VERTICAL,
   // 	// threshold: Globals.PAN_THRESHOLD,
@@ -18688,14 +18687,23 @@ function createInstance(el) {
   return manager;
 }
 /* -------------------------------
-/* Global hammer handlers
-/* ------------------------------- */
+ * hammerjs fixup handlers
+ * ------------------------------- */
+
+/* eslint-disable no-unused-vars */
 
 
+var PANEND_THRES_MS = 300; // millisecs
+
+var PANEND_THRES_PX = 25; // pixels
+
+var UP_EVENT = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
 var touchHandlers = {};
+var captureHandlers = {};
+var bubblingHandlers = {};
 /*https://gist.githubusercontent.com/jtangelder/361052976f044200ea17/raw/f54c2cef78d59da3f38286fad683471e1c976072/PreventGhostClick.js*/
 
-var lastTimeStamp = -1;
+var lastTimeStamp = NaN;
 var panSessionOpened = false;
 
 var saveTimeStamp = function saveTimeStamp(hev) {
@@ -18704,29 +18712,41 @@ var saveTimeStamp = function saveTimeStamp(hev) {
   if (hev.isFinal) {
     lastTimeStamp = hev.srcEvent.timeStamp;
   }
-};
 
-touchHandlers["vpanstart vpanend vpancancel"] = saveTimeStamp;
-touchHandlers["hpanstart hpanend hpancancel"] = saveTimeStamp;
-
-var preventSrcEvent = function preventSrcEvent(hev) {
-  //console.log(hev.type, "preventDefault");
-  hev.srcEvent.preventDefault();
-};
-
-touchHandlers["vpanmove vpanend vpancancel"] = preventSrcEvent;
-touchHandlers["hpanmove hpanend hpancancel"] = preventSrcEvent; // var logHammerEvent = function(hev) {
-// 	var msgs = [];
-// 	var domev = hev.srcEvent;
-// 	msgs.push(panSessionOpened ? "panning" : "pan: " + lastTimeStamp.toFixed(3));
-// 	if (domev.defaultPrevented) msgs.push("prevented");
-// 	console.log("TouchManager %s [%s] [%o]",
-// 		domev.timeStamp.toFixed(3),
-// 		domev.type,
-// 		hev.type,
-// 		msgs.join(", ")
-// 	);
+  if (DEBUG) {
+    logPanEvent(hev);
+  }
+}; // let preventSrcEvent = function(hev) {
+// 	//console.log(hev.type, "preventDefault");
+// 	hev.srcEvent.preventDefault();
 // };
+// let preventWhilePanning = function(domev) {
+// 	panSessionOpened && domev.preventDefault();
+// };
+// let preventWhileNotPanning = function(domev) {
+// 	!panSessionOpened && domev.preventDefault();
+// };
+
+
+var stopEventAfterPan = function stopEventAfterPan(domev) {
+  if (domev.timeStamp - lastTimeStamp < PANEND_THRES_MS) {
+    // domev.defaultPrevented ||
+    domev.preventDefault();
+    domev.stopPropagation();
+  }
+
+  if (DEBUG) {
+    logEvent(domev, (domev.timeStamp - lastTimeStamp).toFixed(3));
+  }
+
+  lastTimeStamp = NaN;
+};
+
+touchHandlers["hpanstart hpanend hpancancel"] = saveTimeStamp; // touchHandlers["vpanstart vpanend vpancancel"] = saveTimeStamp;
+// touchHandlers["hpanmove hpanend hpancancel"] = preventSrcEvent;
+// touchHandlers["vpanmove vpanend vpancancel"] = preventSrcEvent;
+
+captureHandlers["click"] = stopEventAfterPan; // bubblingHandlers["click"] = stopEventAfterPan;
 // touchHandlers[[
 // 	"vpanstart", "vpanend", "vpancancel", "vpanmove",
 // 	"hpanstart", "hpanend", "hpancancel", "hpanmove"
@@ -18735,40 +18755,31 @@ touchHandlers["hpanmove hpanend hpancancel"] = preventSrcEvent; // var logHammer
 /* -------------------------------
 /* DOM event handlers
 /* ------------------------------- */
+// captureHandlers[UP_EVENT] = preventWhilePanning;
+// captureHandlers["touchmove"] = captureHandlers["mousemove"] = logDOMEvent;
 
-var captureHandlers = {};
-var bubblingHandlers = {}; // var upEventName = window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
+if (DEBUG) {
+  var logPanEvent = function logPanEvent(hev) {
+    logEvent(hev.srcEvent, "[".concat(hev.type, "]"));
+  };
 
-/* eslint-disable-next-line */
-
-var logDOMEvent = function logDOMEvent(domev, msg) {
-  var msgs = [];
-  if (domev.defaultPrevented) msgs.push("prevented");
-  if (msg) msgs.push(msg);
-  console.log("TouchManager %s [%o]", domev.timeStamp.toFixed(3), domev.type, msgs.join(", "));
-}; // var preventWhilePanning = function(domev) {
-// panSessionOpened && domev.preventDefault();
-// };
-// var preventWhileNotPanning = function(domev) {
-// 	!panSessionOpened && domev.preventDefault();
-// };
-// captureHandlers[upEventName] = preventWhilePanning;
-
-
-captureHandlers["click"] = function (domev) {
-  if (lastTimeStamp === domev.timeStamp) {
-    lastTimeStamp = -1;
-    domev.defaultPrevented || domev.preventDefault();
-  }
-}; // captureHandlers["touchmove"] = captureHandlers["mousemove"] = logDOMEvent;
+  var logEvent = function logEvent(domev, msg) {
+    var msgs = [];
+    if (domev.defaultPrevented) msgs.push("prevented");
+    if (msg) msgs.push(msg);
+    msgs.push("".concat(panSessionOpened ? "panning" : "pan ended", " ").concat((domev.timeStamp - lastTimeStamp).toFixed(3)));
+    console.log("TouchManager %s [%s]", domev.timeStamp.toFixed(3), domev.type, msgs.join(", "));
+  };
+}
+/* eslint-enable no-unsused-vars */
 // -------------------------------
 //
 // -------------------------------
 
 
 function addHandlers() {
-  var eventName,
-      el = instance.element;
+  var eventName;
+  var el = instance.element;
 
   for (eventName in touchHandlers) {
     if (touchHandlers.hasOwnProperty(eventName)) instance.on(eventName, touchHandlers[eventName]);
@@ -18785,8 +18796,8 @@ function addHandlers() {
 }
 
 function removeHandlers() {
-  var eventName,
-      el = instance.element;
+  var eventName;
+  var el = instance.element;
 
   for (eventName in captureHandlers) {
     if (captureHandlers.hasOwnProperty(eventName)) el.removeEventListener(eventName, captureHandlers[eventName], true);
@@ -18855,7 +18866,9 @@ function createInstance(el) {
 }
 */
 
-},{"app/control/Globals":56,"hammerjs":15,"utils/touch/SmoothPanRecognizer":153}],83:[function(require,module,exports){
+}).call(this,true)
+
+},{"app/control/Globals":55,"hammerjs":15,"utils/touch/SmoothPanRecognizer":153}],82:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -19455,6 +19468,11 @@ var ViewProto = {
     _viewsByCid[this.cid] = this;
     this.el.cid = this.cid;
     this.el.setAttribute("data-cid", this.cid);
+
+    if (this.model) {
+      this.el.setAttribute("data-mcid", this.model.cid);
+    }
+
     return this;
   },
 
@@ -19758,7 +19776,7 @@ module.exports = Backbone.View.extend(ViewProto, View);
 
 }).call(this,true,require("underscore"))
 
-},{"app/view/base/CallbackQueue":78,"app/view/base/PrefixedEvents":81,"app/view/base/ViewError":84,"app/view/promise/whenViewIsAttached":104,"app/view/promise/whenViewIsRendered":105,"backbone":5,"setimmediate":38,"underscore":51,"utils/prefixedEvent":145,"utils/prefixedProperty":146,"utils/prefixedStyleName":147}],84:[function(require,module,exports){
+},{"app/view/base/CallbackQueue":77,"app/view/base/PrefixedEvents":80,"app/view/base/ViewError":83,"app/view/promise/whenViewIsAttached":103,"app/view/promise/whenViewIsRendered":104,"backbone":5,"setimmediate":38,"underscore":51,"utils/prefixedEvent":145,"utils/prefixedProperty":146,"utils/prefixedStyleName":147}],83:[function(require,module,exports){
 "use strict";
 
 function ViewError(view, err) {
@@ -19772,7 +19790,7 @@ ViewError.prototype.constructor = ViewError;
 ViewError.prototype.name = "ViewError";
 module.exports = ViewError;
 
-},{}],85:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -19787,7 +19805,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</a>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],86:[function(require,module,exports){
+},{"hbsfy/runtime":35}],85:[function(require,module,exports){
 "use strict";
 
 /**
@@ -19836,7 +19854,7 @@ var ArticleButton = View.extend({
 });
 module.exports = ArticleButton;
 
-},{"./ArticleButton.hbs":85,"app/view/base/View":83}],87:[function(require,module,exports){
+},{"./ArticleButton.hbs":84,"app/view/base/View":82}],86:[function(require,module,exports){
 "use strict";
 
 /**
@@ -19884,7 +19902,7 @@ var ArticleView = View.extend({
 });
 module.exports = ArticleView;
 
-},{"app/view/base/View":83}],88:[function(require,module,exports){
+},{"app/view/base/View":82}],87:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -20354,7 +20372,7 @@ if (DEBUG) {
 
 }).call(this,true,require("underscore"))
 
-},{"app/view/base/CanvasView":79,"underscore":51,"utils/ease/fn/easeInQuad":140,"utils/ease/fn/easeOutQuad":141}],89:[function(require,module,exports){
+},{"app/view/base/CanvasView":78,"underscore":51,"utils/ease/fn/easeInQuad":140,"utils/ease/fn/easeOutQuad":141}],88:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -20462,10 +20480,12 @@ var dirToStr = function dirToStr(dir) {
   if (dir === Hammer.DIRECTION_RIGHT) return 'RIGHT';
   if (dir === Hammer.DIRECTION_UP) return 'UP';
   if (dir === Hammer.DIRECTION_DOWN) return 'DOWN';
-  if (dir === Hammer.DIRECTION_HORIZONTAL) return 'HORIZONTAL';
-  if (dir === Hammer.DIRECTION_VERTICAL) return 'VERTICAL';
+  if (dir === Hammer.DIRECTION_HORIZONTAL) return 'HOR'; //IZONTAL';
+
+  if (dir === Hammer.DIRECTION_VERTICAL) return 'VER'; //TICAL';
+
   if (dir === Hammer.DIRECTION_ALL) return 'ALL';
-  return 'UNRECOGNIZED';
+  return 'UNREC'; //OGNIZED';
 };
 
 var isValidTouchManager = function isValidTouchManager(touch, direction) {
@@ -20996,20 +21016,16 @@ var CarouselProto = {
 
     if (enable) {
       this.touch.on("hpanstart hpanmove hpanend hpancancel", this._onPointerEvent);
-      this.el.addEventListener(View.CLICK_EVENT, this._onClick, false); //true);
+      this.el.addEventListener(View.CLICK_EVENT, this._onClick, true);
     } else {
       this.touch.off("hpanstart hpanmove hpanend hpancancel", this._onPointerEvent);
-      this.el.removeEventListener(View.CLICK_EVENT, this._onClick, false); //true);
+      this.el.removeEventListener(View.CLICK_EVENT, this._onClick, true);
     }
   },
   _onPointerEvent: function _onPointerEvent(ev) {
     // NOTE: https://github.com/hammerjs/hammer.js/pull/1118
-    if (ev.srcEvent.type === 'pointercancel') return; // console.log("%s::_onPointerEvent", this.cid, ev.type,
-    // 	dirToStr(ev.direction),
-    // 	dirToStr(ev.offsetDirection),
-    // 	dirToStr(this.direction),
-    // 	dirToStr(ev.direction | this.direction));
-    // if (ev.direction & this.direction) {
+    if (ev.srcEvent.type === 'pointercancel') return;
+    console.log("%s:[%s (%s)]:_onPointerEvent offs:%s [%s|%s==%s] [%s]", this.cid, ev.type, ev.srcEvent.type, dirToStr(ev.offsetDirection), dirToStr(ev.direction), dirToStr(this.direction), dirToStr(ev.direction | this.direction), ev.srcEvent.defaultPrevented ? "prevented" : "-"); // if (ev.direction & this.direction) {
 
     switch (ev.type) {
       // case View.CLICK_EVENT:
@@ -21080,7 +21096,7 @@ var CarouselProto = {
 
     var delta = this.direction & HORIZONTAL ? ev.deltaX : ev.deltaY;
 
-    if (ev.type === "hpanend" &&
+    if (ev.type == "hpanend" &&
     /* pan direction (current event) and offsetDirection (whole gesture) must match */
     ev.direction ^ ev.offsetDirection ^ this.direction // && (ev.direction & ev.offsetDirection & this.direction)
 
@@ -21098,8 +21114,8 @@ var CarouselProto = {
 
     this._panCandidateView = void 0;
     this.el.classList.remove("panning");
-    console.log("%s::_onPanFinal %s thres:(%s %s) dir:(%s o:%s c:%s)=%s", this.cid, ev.type, Math.abs(delta), this.selectThreshold, dirToStr(ev.direction), dirToStr(ev.offsetDirection), dirToStr(this.direction), dirToStr(ev.direction ^ ev.offsetDirection ^ this.direction));
-    console.log("%s::_onPanFinal", this.cid, ev);
+    console.log("%s:[%s]:_onPanFinal thres:(%s>%s) dir:(e:%s o:%s c:%s)=%s\n", this.cid, ev.type, Math.abs(delta), this.selectThreshold, dirToStr(ev.direction), dirToStr(ev.offsetDirection), dirToStr(this.direction), dirToStr(ev.direction ^ ev.offsetDirection ^ this.direction), scrollCandidate ? scrollCandidate.cid + ":" + scrollCandidate.model.cid : "none"); // console.log("%s::_onPanFinal", this.cid, ev);
+
     this.scrollBy(0, Carousel.ANIMATED);
     this.selectFromView(); // if (this._renderRafId !== -1) {
     // 	this.scrollBy(0, Carousel.ANIMATED);
@@ -21127,7 +21143,7 @@ var CarouselProto = {
     return void 0;
   },
   _onClick: function _onClick(ev) {
-    console.log("%s::_onClick", this.cid, ev.type, ev.defaultPrevented ? "prevented" : "");
+    console.log("%s::_onClick [%s]", this.cid, ev.type, ev.defaultPrevented ? "prevented" : "not-prevented");
 
     this._onTap(ev);
   },
@@ -21197,7 +21213,12 @@ var CarouselProto = {
   selectFromView: function selectFromView() {
     if (this._scrollCandidateView) {
       this.triggerSelectionEvents(this._scrollCandidateView, true);
-    }
+    } // if (this._scrollCandidateView === (void 0)) {
+    // 	return;
+    // }
+    // var view = this._scrollCandidateView;
+    // this.triggerSelectionEvents(view, true);
+
   },
   adjustToSelection: function adjustToSelection() {
     var m,
@@ -21356,7 +21377,7 @@ module.exports = Carousel = View.extend(CarouselProto, Carousel);
 
 }).call(this,true,require("underscore"))
 
-},{"app/control/Globals":56,"app/view/base/View":83,"app/view/render/CarouselRenderer":106,"backbone.babysitter":3,"hammerjs":15,"underscore":51,"utils/prefixedProperty":146,"utils/prefixedStyleName":147,"utils/touch/SmoothPanRecognizer":153}],90:[function(require,module,exports){
+},{"app/control/Globals":55,"app/view/base/View":82,"app/view/render/CarouselRenderer":105,"backbone.babysitter":3,"hammerjs":15,"underscore":51,"utils/prefixedProperty":146,"utils/prefixedStyleName":147,"utils/touch/SmoothPanRecognizer":153}],89:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -21365,7 +21386,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
   return container.escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"id","hash":{},"data":data}) : helper)));
 },"useData":true});
 
-},{"hbsfy/runtime":35}],91:[function(require,module,exports){
+},{"hbsfy/runtime":35}],90:[function(require,module,exports){
 "use strict";
 
 /**
@@ -21462,7 +21483,7 @@ module.exports = View.extend({
   }
 });
 
-},{"./CollectionStack.hbs":90,"app/view/base/View":83}],92:[function(require,module,exports){
+},{"./CollectionStack.hbs":89,"app/view/base/View":82}],91:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -22060,7 +22081,7 @@ module.exports = FilterableListView;
 
 }).call(this,true,require("underscore"))
 
-},{"app/control/Globals":56,"app/view/base/View":83,"app/view/render/ClickableRenderer":107,"backbone.babysitter":3,"underscore":51,"utils/array/difference":129,"utils/css/getBoxEdgeStyles":139,"utils/prefixedProperty":146,"utils/promise/rejectAll":149,"utils/promise/resolveAll":150}],93:[function(require,module,exports){
+},{"app/control/Globals":55,"app/view/base/View":82,"app/view/render/ClickableRenderer":106,"backbone.babysitter":3,"underscore":51,"utils/array/difference":129,"utils/css/getBoxEdgeStyles":139,"utils/prefixedProperty":146,"utils/promise/rejectAll":149,"utils/promise/resolveAll":150}],92:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -22912,7 +22933,7 @@ module.exports = GraphView;
 
 }).call(this,true,require("underscore"))
 
-},{"app/control/Globals":56,"app/view/base/CanvasView":79,"color":12,"underscore":51,"utils/canvas/CanvasHelper":130,"utils/canvas/calcArcHConnector":138,"utils/geom/inflateRect":144}],94:[function(require,module,exports){
+},{"app/control/Globals":55,"app/view/base/CanvasView":78,"color":12,"underscore":51,"utils/canvas/CanvasHelper":130,"utils/canvas/calcArcHConnector":138,"utils/geom/inflateRect":144}],93:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -23129,7 +23150,7 @@ module.exports = GroupingListView;
 
 }).call(this,require("underscore"))
 
-},{"app/view/component/FilterableListView":92,"app/view/render/ClickableRenderer":107,"app/view/render/LabelRenderer":114,"underscore":51}],95:[function(require,module,exports){
+},{"app/view/component/FilterableListView":91,"app/view/render/ClickableRenderer":106,"app/view/render/LabelRenderer":113,"underscore":51}],94:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -23496,7 +23517,7 @@ module.exports = CanvasView.extend({
 
 }).call(this,require("underscore"))
 
-},{"app/control/Globals":56,"app/view/base/CanvasView":79,"color":12,"underscore":51,"utils/canvas/CanvasHelper":130,"utils/canvas/bitmap/desaturate":132,"utils/canvas/bitmap/getAverageRGB":133,"utils/canvas/bitmap/multiply":135,"utils/canvas/bitmap/stackBlurRGB":137,"utils/ease/fn/easeInQuad":140,"utils/ease/fn/easeOutQuad":141}],96:[function(require,module,exports){
+},{"app/control/Globals":55,"app/view/base/CanvasView":78,"color":12,"underscore":51,"utils/canvas/CanvasHelper":130,"utils/canvas/bitmap/desaturate":132,"utils/canvas/bitmap/getAverageRGB":133,"utils/canvas/bitmap/multiply":135,"utils/canvas/bitmap/stackBlurRGB":137,"utils/ease/fn/easeInQuad":140,"utils/ease/fn/easeOutQuad":141}],95:[function(require,module,exports){
 "use strict";
 
 /**
@@ -23662,7 +23683,7 @@ var SelectableListView = View.extend({
 });
 module.exports = SelectableListView;
 
-},{"app/view/base/View":83,"app/view/render/ClickableRenderer":107,"app/view/render/DefaultSelectableRenderer":109,"backbone.babysitter":3}],97:[function(require,module,exports){
+},{"app/view/base/View":82,"app/view/render/ClickableRenderer":106,"app/view/render/DefaultSelectableRenderer":108,"backbone.babysitter":3}],96:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -23866,7 +23887,7 @@ module.exports = function () {
 
 }).call(this,require("underscore"))
 
-},{"app/control/Globals":56,"app/model/collection/BundleCollection":65,"color":12,"underscore":51}],98:[function(require,module,exports){
+},{"app/control/Globals":55,"app/model/collection/BundleCollection":64,"color":12,"underscore":51}],97:[function(require,module,exports){
 "use strict";
 
 /*global XMLHttpRequest */
@@ -23945,7 +23966,7 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
   };
 }
 
-},{}],99:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 "use strict";
 
 module.exports = function (image, resolveEmpty) {
@@ -23993,7 +24014,7 @@ module.exports = function (image, resolveEmpty) {
   });
 };
 
-},{}],100:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -24068,7 +24089,7 @@ module.exports = function (view) {
 
 }).call(this,require("underscore"))
 
-},{"app/view/promise/_loadImageAsObjectURL":98,"app/view/promise/_whenImageLoads":99,"underscore":51}],101:[function(require,module,exports){
+},{"app/view/promise/_loadImageAsObjectURL":97,"app/view/promise/_whenImageLoads":98,"underscore":51}],100:[function(require,module,exports){
 "use strict";
 
 /* global Promise */
@@ -24155,7 +24176,7 @@ module.exports = function(view) {
 };
 */
 
-},{"app/view/base/ViewError":84,"app/view/promise/whenViewIsAttached":104}],102:[function(require,module,exports){
+},{"app/view/base/ViewError":83,"app/view/promise/whenViewIsAttached":103}],101:[function(require,module,exports){
 "use strict";
 
 /** @type {module:app/view/base/ViewError} */
@@ -24209,7 +24230,7 @@ module.exports = function (view, distance) {
   });
 };
 
-},{"app/view/base/ViewError":84}],103:[function(require,module,exports){
+},{"app/view/base/ViewError":83}],102:[function(require,module,exports){
 "use strict";
 
 // /** @type {module:app/view/base/ViewError} */
@@ -24224,7 +24245,7 @@ module.exports = function (view) {
   return whenSelectionDistanceIs(view, 1);
 };
 
-},{"app/view/promise/whenSelectionDistanceIs":102}],104:[function(require,module,exports){
+},{"app/view/promise/whenSelectionDistanceIs":101}],103:[function(require,module,exports){
 "use strict";
 
 module.exports = function (view) {
@@ -24239,7 +24260,7 @@ module.exports = function (view) {
   });
 };
 
-},{}],105:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 "use strict";
 
 module.exports = function (view) {
@@ -24254,7 +24275,7 @@ module.exports = function (view) {
   });
 };
 
-},{}],106:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -24370,7 +24391,7 @@ module.exports = CarouselRenderer;
 
 }).call(this,require("underscore"))
 
-},{"app/view/base/View":83,"underscore":51,"utils/css/getBoxEdgeStyles":139}],107:[function(require,module,exports){
+},{"app/view/base/View":82,"underscore":51,"utils/css/getBoxEdgeStyles":139}],106:[function(require,module,exports){
 "use strict";
 
 /**
@@ -24422,7 +24443,7 @@ var ClickableRenderer = LabelRenderer.extend({
 });
 module.exports = ClickableRenderer;
 
-},{"app/view/render/LabelRenderer":114}],108:[function(require,module,exports){
+},{"app/view/render/LabelRenderer":113}],107:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -24435,7 +24456,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</span></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],109:[function(require,module,exports){
+},{"hbsfy/runtime":35}],108:[function(require,module,exports){
 "use strict";
 
 /**
@@ -24479,7 +24500,7 @@ var DefaultSelectableRenderer = ClickableRenderer.extend({
 });
 module.exports = DefaultSelectableRenderer;
 
-},{"./DefaultSelectableRenderer.hbs":108,"app/view/render/ClickableRenderer":107}],110:[function(require,module,exports){
+},{"./DefaultSelectableRenderer.hbs":107,"app/view/render/ClickableRenderer":106}],109:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -24492,7 +24513,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\"><b> </b></a>";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],111:[function(require,module,exports){
+},{"hbsfy/runtime":35}],110:[function(require,module,exports){
 "use strict";
 
 /**
@@ -24556,7 +24577,7 @@ var DotNavigationRenderer = View.extend({
 });
 module.exports = DotNavigationRenderer;
 
-},{"./DotNavigationRenderer.hbs":110,"app/view/base/View":83}],112:[function(require,module,exports){
+},{"./DotNavigationRenderer.hbs":109,"app/view/base/View":82}],111:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -24569,7 +24590,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],113:[function(require,module,exports){
+},{"hbsfy/runtime":35}],112:[function(require,module,exports){
 "use strict";
 
 /**
@@ -24660,7 +24681,7 @@ var ImageRenderer = MediaRenderer.extend({
 });
 module.exports = ImageRenderer;
 
-},{"./ImageRenderer.hbs":112,"./MediaRenderer":115}],114:[function(require,module,exports){
+},{"./ImageRenderer.hbs":111,"./MediaRenderer":114}],113:[function(require,module,exports){
 "use strict";
 
 /**
@@ -24705,7 +24726,7 @@ var LabelRenderer = View.extend({
 });
 module.exports = LabelRenderer;
 
-},{"app/view/base/View":83}],115:[function(require,module,exports){
+},{"app/view/base/View":82}],114:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -25059,7 +25080,7 @@ module.exports = MediaRenderer;
 
 }).call(this,true,require("underscore"))
 
-},{"app/model/item/MediaItem":72,"app/view/promise/whenDefaultImageLoads":100,"app/view/promise/whenScrollingEnds":101,"app/view/promise/whenSelectionDistanceIs":102,"app/view/promise/whenSelectionIsContiguous":103,"app/view/render/CarouselRenderer":106,"color":12,"underscore":51,"underscore.string/lpad":47}],116:[function(require,module,exports){
+},{"app/model/item/MediaItem":71,"app/view/promise/whenDefaultImageLoads":99,"app/view/promise/whenScrollingEnds":100,"app/view/promise/whenSelectionDistanceIs":101,"app/view/promise/whenSelectionIsContiguous":102,"app/view/render/CarouselRenderer":105,"color":12,"underscore":51,"underscore.string/lpad":47}],115:[function(require,module,exports){
 (function (DEBUG,GA,_){
 "use strict";
 
@@ -25717,7 +25738,7 @@ module.exports = PlayableRenderer;
 
 }).call(this,true,false,require("underscore"))
 
-},{"app/view/render/MediaRenderer":115,"underscore":51,"underscore.string/dasherize":42,"utils/prefixedEvent":145,"utils/prefixedProperty":146}],117:[function(require,module,exports){
+},{"app/view/render/MediaRenderer":114,"underscore":51,"underscore.string/dasherize":42,"utils/prefixedEvent":145,"utils/prefixedProperty":146}],116:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -25730,7 +25751,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "\" />\n	</div>\n	<div class=\"overlay media-size play-toggle-hitarea\">\n		<canvas class=\"play-toggle\"/>\n	</div>\n</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],118:[function(require,module,exports){
+},{"hbsfy/runtime":35}],117:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -26513,7 +26534,7 @@ module.exports = SequenceRenderer;
 
 }).call(this,true,require("underscore"))
 
-},{"../template/ErrorBlock.hbs":123,"./SequenceRenderer.hbs":117,"app/control/Globals":56,"app/view/base/View":83,"app/view/component/CanvasProgressMeter":88,"app/view/component/PlayToggleSymbol":95,"app/view/promise/_loadImageAsObjectURL":98,"app/view/promise/_whenImageLoads":99,"app/view/render/PlayableRenderer":116,"backbone.babysitter":3,"underscore":51,"underscore.string/capitalize":41,"underscore.string/lpad":47,"utils/Timer":126}],119:[function(require,module,exports){
+},{"../template/ErrorBlock.hbs":122,"./SequenceRenderer.hbs":116,"app/control/Globals":55,"app/view/base/View":82,"app/view/component/CanvasProgressMeter":87,"app/view/component/PlayToggleSymbol":94,"app/view/promise/_loadImageAsObjectURL":97,"app/view/promise/_whenImageLoads":98,"app/view/render/PlayableRenderer":115,"backbone.babysitter":3,"underscore":51,"underscore.string/capitalize":41,"underscore.string/lpad":47,"utils/Timer":126}],118:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 var partial$0 = require('../template/svg/FullscreenSymbol.hbs');
@@ -26528,7 +26549,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "		</a>\n	</div>\n</div>\n";
 },"usePartial":true,"useData":true});
 
-},{"../template/svg/FullscreenSymbol.hbs":125,"hbsfy/runtime":35}],120:[function(require,module,exports){
+},{"../template/svg/FullscreenSymbol.hbs":125,"hbsfy/runtime":35}],119:[function(require,module,exports){
 (function (DEBUG,_){
 "use strict";
 
@@ -27526,7 +27547,7 @@ if (DEBUG) {
 
 }).call(this,true,require("underscore"))
 
-},{"./VideoRenderer.hbs":119,"app/control/Globals":56,"app/view/component/CanvasProgressMeter":88,"app/view/component/PlayToggleSymbol":95,"app/view/render/PlayableRenderer":116,"color":12,"underscore":51,"underscore.string/lpad":47,"underscore.string/rpad":49,"utils/event/mediaEventsEnum":143,"utils/prefixedEvent":145}],121:[function(require,module,exports){
+},{"./VideoRenderer.hbs":118,"app/control/Globals":55,"app/view/component/CanvasProgressMeter":87,"app/view/component/PlayToggleSymbol":94,"app/view/render/PlayableRenderer":115,"color":12,"underscore":51,"underscore.string/lpad":47,"underscore.string/rpad":49,"utils/event/mediaEventsEnum":143,"utils/prefixedEvent":145}],120:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -27539,7 +27560,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],122:[function(require,module,exports){
+},{"hbsfy/runtime":35}],121:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -27554,7 +27575,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],123:[function(require,module,exports){
+},{"hbsfy/runtime":35}],122:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(container,depth0,helpers,partials,data) {
@@ -27577,7 +27598,7 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
     + "</div>\n";
 },"useData":true});
 
-},{"hbsfy/runtime":35}],124:[function(require,module,exports){
+},{"hbsfy/runtime":35}],123:[function(require,module,exports){
 "use strict";
 
 // var Handlebars = require("handlebars")["default"];
@@ -27681,7 +27702,14 @@ for (var helper in helpers) {
 } // })();
 // module.exports = Handlebars;
 
-},{"app/control/Globals":56,"color":12,"hbsfy/runtime":35}],125:[function(require,module,exports){
+},{"app/control/Globals":55,"color":12,"hbsfy/runtime":35}],124:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+    return "<svg class=\"cog-symbol icon\" viewBox=\"-100 -100 200 200\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" preserveAspectRatio=\"xMidYMid meet\">\n	<path d=\"M11.754,-99.307c-7.809,-0.924 -15.699,-0.924 -23.508,0l-3.73,20.82c-6.254,1.234 -12.338,3.21 -18.123,5.888l-15.255,-14.651c-6.861,3.842 -13.244,8.48 -19.018,13.818l9.22,19.036c-4.335,4.674 -8.095,9.849 -11.201,15.416l-20.953,-2.886c-3.292,7.141 -5.731,14.645 -7.265,22.357l18.648,9.981c-0.759,6.329 -0.759,12.727 0,19.056l-18.648,9.981c1.534,7.712 3.973,15.216 7.265,22.357l20.953,-2.886c3.106,5.567 6.866,10.742 11.201,15.416l-9.22,19.036c5.774,5.338 12.157,9.976 19.018,13.818l15.255,-14.651c5.785,2.678 11.869,4.654 18.123,5.888l3.73,20.82c7.809,0.924 15.699,0.924 23.508,0l3.73,-20.82c6.254,-1.234 12.338,-3.21 18.123,-5.888l15.255,14.651c6.861,-3.842 13.244,-8.48 19.018,-13.818l-9.22,-19.036c4.335,-4.674 8.095,-9.849 11.201,-15.416l20.953,2.886c3.292,-7.141 5.731,-14.645 7.265,-22.357l-18.648,-9.981c0.759,-6.329 0.759,-12.727 0,-19.056l18.648,-9.981c-1.534,-7.712 -3.973,-15.216 -7.265,-22.357l-20.953,2.886c-3.106,-5.567 -6.866,-10.742 -11.201,-15.416l9.22,-19.036c-5.774,-5.338 -12.157,-9.976 -19.018,-13.818l-15.255,14.651c-5.785,-2.678 -11.869,-4.654 -18.123,-5.888l-3.73,-20.82ZM0,-33c18.213,0 33,14.787 33,33c0,18.213 -14.787,33 -33,33c-18.213,0 -33,-14.787 -33,-33c0,-18.213 14.787,-33 33,-33Z\" style=\"fill:currentColor;fill-rule:evenodd;\"/>\n</svg>\n";
+},"useData":true});
+
+},{"hbsfy/runtime":35}],125:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
@@ -28643,7 +28671,7 @@ module.exports = TransformItem;
 
 }).call(this,true,require("underscore"))
 
-},{"app/control/Globals":56,"underscore":51,"utils/prefixedEvent":145,"utils/prefixedProperty":146,"utils/prefixedStyleName":147,"utils/strings/camelToDashed":151}],129:[function(require,module,exports){
+},{"app/control/Globals":55,"underscore":51,"utils/prefixedEvent":145,"utils/prefixedProperty":146,"utils/prefixedStyleName":147,"utils/strings/camelToDashed":151}],129:[function(require,module,exports){
 "use strict";
 
 module.exports = function (a1, a2, dest) {

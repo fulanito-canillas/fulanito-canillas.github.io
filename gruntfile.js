@@ -76,11 +76,12 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-http");
 	grunt.config("http", [
 		"css/folio.css",
-		"css/folio-debug.css",
-		"css/folio-debug.css.map",
+		"css/folio-dev.css",
+		"css/folio-dev.css.map",
 		"css/folio-ie.css",
 		// "css/folio-ie.css.map",
 		"js/folio.js",
+		"js/folio.js.map",
 		"js/folio-dev-main.js",
 		"js/folio-dev-main.js.map",
 		"js/folio-dev-vendor.js",
