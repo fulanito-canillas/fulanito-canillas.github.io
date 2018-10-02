@@ -15800,18 +15800,28 @@ module.exports = View.extend({
     });
     /* TouchEvents fixups
      * ------------------------------- */
-
-    var traceTouchEvent = function traceTouchEvent(msg, traceObj) {
-      if (msg.hasOwnProperty("type")) {
-        msg = msg.type + " : " + (msg.defaultPrevented ? "prevented" : "not prevented");
-      }
-
-      var sy, sh, ch;
-      sy = _this.el.scrollTop;
-      sh = _this.el.scrollHeight - 1;
-      ch = _this.el.clientHeight;
-      console.log("%s:[%s] " + "sy:[1>%o>=%s = %o] " + "sh:[%o<=%o = %o] " + "nav:[css:%o val:%o]", _this.cid, msg, sy, sh - ch, 1 <= sy <= sh - ch, sh, ch, sh <= ch, _this.navigationView.el.style.height, _this.navigationView.el.scrollHeight, traceObj || "");
-    }; // var scrolltouch = new Hammer.Manager(this.el);
+    // var traceTouchEvent = (msg, traceObj) => {
+    // 	if (msg.hasOwnProperty("type")) {
+    // 		msg = msg.type + " : " +
+    // 			(msg.defaultPrevented ? "prevented" : "not prevented");
+    // 	}
+    // 	var sy, sh, ch;
+    // 	sy = this.el.scrollTop;
+    // 	sh = this.el.scrollHeight - 1;
+    // 	ch = this.el.clientHeight;
+    // 	console.log("%s:[%s] " +
+    // 		"sy:[1>%o>=%s = %o] " +
+    // 		"sh:[%o<=%o = %o] " +
+    // 		"nav:[css:%o val:%o]",
+    // 		this.cid, msg,
+    // 		sy, sh - ch, (1 <= sy <= (sh - ch)),
+    // 		sh, ch, (sh <= ch),
+    // 		this.navigationView.el.style.height,
+    // 		this.navigationView.el.scrollHeight,
+    // 		traceObj || ""
+    // 	);
+    // };
+    // var scrolltouch = new Hammer.Manager(this.el);
     // scrolltouch.add(new Hammer.Pan({ direction: Hammer.DIRECTION_VERTICAL, threshold: 0 }));
     // scrolltouch.on("panmove", function(ev) {
     //
@@ -15833,7 +15843,6 @@ module.exports = View.extend({
     // 	}
     // 	// traceTouchEvent(ev);
     // }.bind(this));
-
 
     var touchOpts = {
       capture: false,
@@ -22240,7 +22249,8 @@ var GraphView = CanvasView.extend({
       srcView: options.listA,
       destView: options.listB,
       s: _.defaults({
-        lineWidth: 1.25 // radiusIncrement: 0.25,
+        lineWidth: 0.7 //1.25
+        // radiusIncrement: 0.25,
 
       }, styleBase, paramsBase),
       p: _.defaults({}, paramsBase),
@@ -23723,8 +23733,8 @@ var rootStyles = ["color", "background", "background-color"];
 function initRootStyles(sheet, rootSelector, attrs, fgColor, bgColor, lnColor, hasDarkBg) {
   var s, revSelector, fgColorVal, bgColorVal; // var revFgColorVal, revBgColorVal;
 
-  s = _.pick(attrs, rootStyles);
-  s["-webkit-font-smoothing"] = hasDarkBg ? "antialiased" : "auto";
+  s = _.pick(attrs, rootStyles); // s["-webkit-font-smoothing"] = (hasDarkBg ? "antialiased" : "auto");
+
   /* NOTE: In Firefox '-moz-osx-font-smoothing: grayscale;'
   /* works both in light over dark and dark over light, hardcoded in _base.scss */
   //s["-moz-osx-font-smoothing"] = (hasDarkBg? "grayscale" : "auto");
@@ -23825,8 +23835,8 @@ function initCarouselStyles(sheet, carouselSelector, attrs, fgColor, bgColor, ln
   insertCSSRule(sheet, carouselSelector + " .media-item .color-bg09", s); // .media-item .placeholder
   // - - - - - - - - - - - - - - - -
 
-  s = {};
-  s["-webkit-font-smoothing"] = hasDarkBg ? "auto" : "antialiased"; // text color luminosity is inverse from body, apply oposite rendering mode
+  s = {}; // s["-webkit-font-smoothing"] = (hasDarkBg ? "auto" : "antialiased");
+  // text color luminosity is inverse from body, apply oposite rendering mode
 
   s["color"] = bgColor.rgb().string(); // s["color"] = Color(bgColor)[hasDarkBg ? "darken" : "lighten"](0.045).rgb().string();
 

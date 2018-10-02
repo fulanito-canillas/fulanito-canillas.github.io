@@ -1,21 +1,23 @@
 {
-  "name": "@folio/fulanito-canillas.github.io",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {},
-  "devDependencies": {
-    "@folio/workspace-uploads": "file:../folio-workspace-uploads",
-    "grunt": "^1.0.0",
-    "grunt-contrib-clean": "^1.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-htmlmin": "^2.4.0",
-    "grunt-http": "^2.0.0",
-    "grunt-string-replace": "^1.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://fulanito-canillas@github.com/fulanito-canillas/fulanito-canillas.github.io.git"
-  },
-  "scripts": {},
-  "author": "Pablo Canillas"
+	"name": "@folio/fulanito-canillas.github.io",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {},
+	"devDependencies": {
+		"@folio/workspace-uploads": "file:../folio-workspace-uploads",
+		"@folio/workspace-assets": "file:../folio-workspace-assets",
+		"grunt": "^1.0.0",
+		"grunt-contrib-clean": "^1.1.0",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-contrib-htmlmin": "^2.4.0",
+		"grunt-http": "^2.0.0",
+		"grunt-string-replace": "^1.0.0",
+		"underscore": "^1.9.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://fulanito-canillas@github.com/fulanito-canillas/fulanito-canillas.github.io.git"
+	},
+	"scripts": {},
+	"author": "Pablo Canillas"
 }

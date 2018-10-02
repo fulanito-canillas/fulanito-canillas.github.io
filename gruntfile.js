@@ -2,6 +2,8 @@
 module.exports = function(grunt) {
 	"use strict";
 
+	const _ = require("underscore");
+
 	grunt.config("pkg", grunt.file.readJSON("package.json"));
 	grunt.config("properties", grunt.file.readJSON("properties.json"));
 	grunt.config("CNAME", grunt.file.read("CNAME", { encoding: 'utf8' }));
@@ -71,28 +73,23 @@ module.exports = function(grunt) {
 	 * grunt-http
 	 * -------------------------------- */
 
-	var httpAssetTasks = [];
-
 	grunt.loadNpmTasks("grunt-http");
 	grunt.config("http", [
 		"css/folio.css",
+		"css/folio.css.map",
 		"css/folio-dev.css",
 		"css/folio-dev.css.map",
-		"css/folio-ie.css",
-		// "css/folio-ie.css.map",
 		"js/folio.js",
 		"js/folio.js.map",
 		"js/folio-dev-main.js",
 		"js/folio-dev-main.js.map",
 		"js/folio-dev-vendor.js",
 		"js/folio-dev-vendor.js.map",
-	].reduce(function(o, s, i, a) {
-		var task = s.replace(/[\/\.]/g, "-");
-		o[task] = {
-			options: { url: "<%= paths.srcRoot %>/<%= paths.srcAssets %>/" + s },
-			dest: "<%= paths.destAssets %>/" + s
-		}
-		httpAssetTasks.push("http:" + task);
+	].reduce((o, s, i, a) => {
+		o[s.replace(/[\/\.]/g, "-")] = {
+			options: { url: `<%= paths.srcRoot %>/<%= paths.srcAssets %>/${s}` },
+			dest: `<%= paths.destAssets %>/${s}`
+		};
 		return o;
 	}, {
 		options: {
@@ -115,7 +112,12 @@ module.exports = function(grunt) {
 		// 	dest: "<%= paths.destAssets %>/js/data.js"
 		// },
 	}));
-	grunt.registerTask("http-assets", httpAssetTasks);
+
+	grunt.registerTask("http-assets",
+		Object.keys(grunt.config("http"))
+		.filter(key => key !== "options")
+		.map(key => `http:${key}`)
+	);
 
 	/* --------------------------------
 	 * copy/process
@@ -176,7 +178,8 @@ module.exports = function(grunt) {
 		},
 	});
 
-	grunt.registerTask("dev", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dev", "string-replace", "htmlmin"]);
-	grunt.registerTask("dist", ["clean:resources", "clean:scripts", "copy", "http-assets", "http:index-dist", "string-replace", "htmlmin"]);
+	grunt.registerTask("build-resources", ["clean:resources", "clean:scripts", "copy", "http-assets"])
+	grunt.registerTask("dev", ["build-resources", "http:index-dev", "string-replace", "htmlmin"]);
+	grunt.registerTask("dist", ["build-resources", "http:index-dist", "string-replace", "htmlmin"]);
 	grunt.registerTask("default", ["dist"]);
 };
