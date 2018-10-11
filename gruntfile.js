@@ -2,8 +2,6 @@
 module.exports = function(grunt) {
 	"use strict";
 
-	const _ = require("underscore");
-
 	grunt.config("pkg", grunt.file.readJSON("package.json"));
 	grunt.config("properties", grunt.file.readJSON("properties.json"));
 	grunt.config("CNAME", grunt.file.read("CNAME", { encoding: 'utf8' }));
@@ -55,7 +53,7 @@ module.exports = function(grunt) {
 				cwd: "node_modules/@folio/workspace-assets/",
 				src: [
 					"fonts/**/*.<%= paths.fontFiles %>",
-					"images/**/*.<%= paths.mediaFiles %>",
+					"images/{debug,mockup,symbols,favicons/black,favicons/white}/*.<%= paths.mediaFiles %>",
 				]
 			}]
 		},
@@ -77,10 +75,10 @@ module.exports = function(grunt) {
 	grunt.config("http", [
 		"css/folio.css",
 		"css/folio.css.map",
-		"css/folio-dev.css",
-		"css/folio-dev.css.map",
 		"js/folio.js",
 		"js/folio.js.map",
+		"css/folio-dev.css",
+		"css/folio-dev.css.map",
 		"js/folio-dev-main.js",
 		"js/folio-dev-main.js.map",
 		"js/folio-dev-vendor.js",
