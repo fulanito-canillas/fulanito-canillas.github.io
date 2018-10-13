@@ -13794,7 +13794,11 @@ var Controller = Backbone.Router.extend({
     this._goToLocation(media.get("bundle"), media);
   },
   selectBundle: function selectBundle(bundle) {
-    this._goToLocation(bundle);
+    if (bundle.attr("@no-desc")) {
+      this._goToLocation(bundle, bundle.get("media").at(0));
+    } else {
+      this._goToLocation(bundle);
+    }
   },
   deselectMedia: function deselectMedia() {
     this._goToLocation(bundles.selected);
@@ -13885,10 +13889,11 @@ var Controller = Backbone.Router.extend({
     });
 
     if (!bundle) {
-      throw new Error("Cannot find bundle with handle \"" + bundleHandle + "\"");
+      throw new Error("Cannot find bundle with handle \"" + bundleHandle + "\""); // } else if (bundle.attr("@no-desc")) {
+      // 	this.navigate(this._getLocation(bundle, bundle.get("media").at(0)), { trigger: false, replace: true });
+    } else {
+      this._changeSelection(bundle);
     }
-
-    this._changeSelection(bundle);
   },
   toMediaItem: function toMediaItem(bundleHandle, mediaIndex) {
     var bundle, media; // if (bundleHandle) {
@@ -13943,7 +13948,12 @@ var Controller = Backbone.Router.extend({
   _changeSelection: function _changeSelection(bundle, media) {
     var lastBundle, lastMedia;
     if (bundle === void 0) bundle = null;
-    if (media === void 0) media = null;
+    if (media === void 0) media = null; // if (bundle !== null && media === null && bundle.attr("@no-desc")) {
+    // 	media = bundle.get("media").at(0);
+    // 	this._goToLocation(bundle, media);
+    // 	return;
+    // }
+
     lastBundle = bundles.selected;
     lastMedia = lastBundle ? lastBundle.get("media").selected : null;
     console.log("controller::_changeSelection bundle:[%s -> %s] media:[%s -> %s]", lastBundle ? lastBundle.cid : lastBundle, bundle ? bundle.cid : bundle, lastMedia ? lastMedia.cid : lastMedia, media ? media.cid : media);
@@ -16701,7 +16711,7 @@ module.exports = View.extend({
       className: "media-carousel " + bundle.get("domid"),
       collection: bundle.get("media"),
       rendererFunction: rendererFunction,
-      requireSelection: false,
+      requireSelection: !!bundle.attr("@no-desc"),
       // direction: Carousel.DIRECTION_HORIZONTAL,
       touch: this.hpan
     });
