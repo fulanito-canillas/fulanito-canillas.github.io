@@ -13778,9 +13778,13 @@ var Controller = Backbone.Router.extend({
     this.route(/^([a-z][a-z0-9\-]*)\/?$/, "article-item", this.toArticleItem);
     this.route(/^(?:bundles)?\/?$/, "root", this.toRoot); // this.route(/^bundles\/?$/,
     // 	"bundle-list", this.toBundleList);
+    // this.route(/^bundles\/([^\/]+)\/?$/,
+    // 	"bundle-item", this.toBundleItem);
+    // this.route(/^bundles\/([^\/]+)\/(\d+)\/?$/,
+    // 	"media-item", this.toMediaItem);
+    // this.route(/^bundles(?:\/([^\/]+)(?:\/(\d+))?)?\/?$/,
 
-    this.route(/^bundles\/([^\/]+)\/?$/, "bundle-item", this.toBundleItem);
-    this.route(/^bundles\/([^\/]+)\/(\d+)\/?$/, "media-item", this.toMediaItem);
+    this.route(/^bundles\/([^\/]+)(?:\/(\d+)?)?\/?$/, "media-item", this.toMediaItem);
 
     if (DEBUG) {
       console.log("%s::initialize routes: %o", "controller", this._routeNames);
@@ -13860,8 +13864,8 @@ var Controller = Backbone.Router.extend({
   },
 
   /* --------------------------- *
-  /* URL to JS: router handlers
-  /* --------------------------- */
+   * URL to JS: router handlers
+   * --------------------------- */
   toRoot: function toRoot() {
     this.trigger("change:before");
 
@@ -13890,7 +13894,8 @@ var Controller = Backbone.Router.extend({
 
     if (!bundle) {
       throw new Error("Cannot find bundle with handle \"" + bundleHandle + "\""); // } else if (bundle.attr("@no-desc")) {
-      // 	this.navigate(this._getLocation(bundle, bundle.get("media").at(0)), { trigger: false, replace: true });
+      // this._changeSelection(bundle, bundle.get("media").at(0));
+      // this.navigate(this._getLocation(bundle, bundle.get("media").at(0)), { trigger: true, replace: false });
     } else {
       this._changeSelection(bundle);
     }
@@ -13904,10 +13909,9 @@ var Controller = Backbone.Router.extend({
 
     if (!bundle) {
       throw new Error("No bundle with handle \"" + bundleHandle + "\" found");
-    } // if (mediaIndex) {
+    }
 
-
-    media = bundle.get("media").at(mediaIndex);
+    media = bundle.get("media").at(mediaIndex ? mediaIndex : 0);
 
     if (!media) {
       throw new Error("No media at index " + mediaIndex + " in bundle with handle \"" + bundleHandle + "\" found");
@@ -15913,13 +15917,18 @@ module.exports = View.extend({
         if (/(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID == "UA-9123564-8") {
           window.ga("set", "sendHitTask", null);
         }
+
+        console.warn("GA enabled tag '%s'", window.GA_ID);
       }).on("route", function (name) {
         var page = Backbone.history.getFragment(); // Add a slash if neccesary
 
         page.replace(/^(?!\/)/, "/");
         window.ga("set", "page", page);
         window.ga("send", "pageview");
+        console.warn("GA page set to '%s'", page);
       });
+    } else {
+      console.warn("GA not enabled (LIB: %s, GA_ENABLED: %s, GA_ID: %s)", !!window.ga, window.GA_ENABLED, window.GA_ID);
     }
     /* Startup listener, added last */
 
@@ -25111,7 +25120,7 @@ module.exports = MediaRenderer;
 }).call(this,true,require("underscore"))
 
 },{"app/model/item/MediaItem":71,"app/view/promise/whenDefaultImageLoads":99,"app/view/promise/whenScrollingEnds":100,"app/view/promise/whenSelectionDistanceIs":101,"app/view/promise/whenSelectionIsContiguous":102,"app/view/render/CarouselRenderer":105,"color":12,"underscore":51,"underscore.string/lpad":47}],115:[function(require,module,exports){
-(function (DEBUG,GA,_){
+(function (DEBUG,_){
 "use strict";
 /**
  * @module app/view/render/PlayableRenderer
@@ -25689,7 +25698,7 @@ var PlayableRenderer = MediaRenderer.extend({
 /* Google Analytics
 /* --------------------------- */
 
-if (GA) {
+if (window.GA_ENABLED) {
   PlayableRenderer = function (PlayableRenderer) {
     /** @type {module:underscore.strings/dasherize} */
     var dasherize = require("underscore.string/dasherize"); // var readyEvents = ["playing", "waiting", "ended"];
@@ -25766,7 +25775,7 @@ if (GA) {
 
 module.exports = PlayableRenderer;
 
-}).call(this,true,false,require("underscore"))
+}).call(this,true,require("underscore"))
 
 },{"app/view/render/MediaRenderer":114,"underscore":51,"underscore.string/dasherize":42,"utils/prefixedEvent":145,"utils/prefixedProperty":146}],116:[function(require,module,exports){
 "use strict";
