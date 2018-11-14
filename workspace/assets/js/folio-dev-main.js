@@ -15909,89 +15909,77 @@ module.exports = View.extend({
     this.listenTo(this.navigationView, "view:collapsed:measured", onMeasured);
     /* Google Analytics
      * ------------------------------- */
-
-    if (window.GA_ID) {
-      var gaPageviewDisable = /(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID === "UA-9123564-8";
-
-      if (window.gtag) {
-        controller.once("route", function () {
-          // if localhost or dummy ID, disable analytics
-          if (gaPageviewDisable) {
-            // window.gtag("set", "sendHitTask", null);
-            window.gtag('config', window.GA_ID, {
-              'send_page_view': false
-            });
-            console.warn("GTAG enabled tag '%s' (tracking disabled)", window.GA_ID);
-          } else {
-            console.warn("GTAG enabled tag '%s'", window.GA_ID);
-          }
-        }).on("route", function (name) {
-          var page = Backbone.history.getFragment(); // Add a slash if neccesary
-
-          if (page.charAt(0) !== '/') {
-            page = '/' + page;
-          } // page.replace(/^(?!\/)/, "/");
-
-
-          window.gtag('config', window.GA_ID, {
-            'page_title': page,
-            'page_path': page
-          });
-          console.warn("GTAG page set to '%s'", page);
-        }); // } else if (window.ga) {
-        // 	controller
-        // 		.once("route", () => {
-        // 			window.ga("create", window.GA_ID, "auto");
-        // 			// if localhost or dummy ID, disable analytics
-        // 			if (gaPageviewDisable) {
-        // 				window.ga("set", "sendHitTask", null);
-        // 			}
-        // 			console.warn("GA enabled tag '%s'", window.GA_ID);
-        // 		})
-        // 		.on("route", (name) => {
-        // 			var page = Backbone.history.getFragment();
-        // 			// Add a slash if neccesary
-        // 			if (page.charAt(0) !== '/') {
-        // 				page = '/' + page;
-        // 			}
-        // 			// page.replace(/^(?!\/)/, "/");
-        // 			window.ga("set", "page", page);
-        // 			window.ga("send", "pageview");
-        //
-        // 			console.warn("GA page set to '%s'", page);
-        // 		});
-      } else {
-        console.warn("GA/GTAG not loaded (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GA_ID);
-      }
-    } else {
-      console.warn("GA/GTAG not enabled (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GA_ID);
-    } // if (window.ga && window.GA_ID) {
-    // 	controller
-    // 		.once("route", () => {
-    // 			window.ga("create", window.GA_ID, "auto");
-    // 			// if localhost or dummy ID, disable analytics
-    // 			if (/(?:(localhost|\.local))$/.test(location.hostname)
-    // 				|| window.GA_ID == "UA-0000000-0") {
-    // 				window.ga("set", "sendHitTask", null);
-    // 			}
-    // 			console.warn("GA enabled tag '%s'", window.GA_ID);
-    // 		})
-    // 		.on("route", (name) => {
-    // 			var page = Backbone.history.getFragment();
-    // 			// Add a slash if neccesary
-    // 			if (page.charAt(0) !== '/') {
-    // 				page = '/' + page;
-    // 			}
-    // 			// page.replace(/^(?!\/)/, "/");
-    // 			window.ga("set", "page", page);
-    // 			window.ga("send", "pageview");
-    //
-    // 			console.warn("GA page set to '%s'", page);
-    // 		});
+    // if (window.GA_ID) {
+    // 	// let gaPageviewDisable = /(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID === "UA-9123564-8";
+    // 	if (window.gtag) {
+    // 		controller
+    // 			.on("route", (name) => {
+    // 				var page = Backbone.history.getFragment();
+    // 				// Add a slash if neccesary
+    // 				if (page.charAt(0) !== '/') {
+    // 					page = '/' + page;
+    // 				}
+    // 				// page.replace(/^(?!\/)/, "/");
+    // 				window.gtag('config', window.GA_ID, {
+    // 					'page_title': page,
+    // 					'page_path': page
+    // 				});
+    // 				console.warn("GTAG page set to '%s'", page);
+    // 			});
+    // 		// } else
+    // 		// if (window.ga) {
+    // 		// 	controller
+    // 		// 		.once("route", () => {
+    // 		// 			window.ga("create", window.GA_ID, "auto");
+    // 		// 			// if localhost or dummy ID, disable analytics
+    // 		// 			if (gaPageviewDisable) {
+    // 		// 				window.ga("set", "sendHitTask", null);
+    // 		// 			}
+    // 		// 			console.warn("GA enabled tag '%s'", window.GA_ID);
+    // 		// 		})
+    // 		// 		.on("route", (name) => {
+    // 		// 			var page = Backbone.history.getFragment();
+    // 		// 			// Add a slash if neccesary
+    // 		// 			if (page.charAt(0) !== '/') {
+    // 		// 				page = '/' + page;
+    // 		// 			}
+    // 		// 			// page.replace(/^(?!\/)/, "/");
+    // 		// 			window.ga("set", "page", page);
+    // 		// 			window.ga("send", "pageview");
+    // 		//
+    // 		// 			console.warn("GA page set to '%s'", page);
+    // 		// 		});
+    // 	} else {
+    // 		console.warn("GA/GTAG not loaded (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GA_ID);
+    // 	}
     // } else {
-    // 	console.warn("GA not enabled (LIB: %s, GA_ENABLED: %s, GA_ID: %s)", !!window.ga, window.GA_ENABLED, window.GA_ID);
+    // 	console.warn("GA/GTAG not enabled (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GA_ID);
     // }
 
+    if (window.ga && window.GA_ID) {
+      controller.once("route", function () {
+        window.ga("create", window.GA_ID, "auto"); // if localhost or dummy ID, disable analytics
+        // if (/(?:(localhost|\.local))$/.test(location.hostname)
+        // 	|| window.GA_ID == "UA-9123564-8") {
+        // 	window.ga("set", "sendHitTask", null);
+        // }
+
+        console.warn("GA enabled tag '%s'", window.GA_ID);
+      }).on("route", function (name) {
+        var page = Backbone.history.getFragment(); // Add a slash if neccesary
+
+        if (page.charAt(0) !== '/') {
+          page = '/' + page;
+        } // page.replace(/^(?!\/)/, "/");
+
+
+        window.ga("set", "page", page);
+        window.ga("send", "pageview");
+        console.warn("GA page set to '%s'", page);
+      });
+    } else {
+      console.warn("GA not enabled (LIB: %s, GA_ENABLED: %s, GA_ID: %s)", !!window.ga, window.GA_ENABLED, window.GA_ID);
+    }
     /* Startup listener, added last */
 
 
