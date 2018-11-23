@@ -15959,12 +15959,11 @@ module.exports = View.extend({
     if (window.ga && window.GA_ID) {
       controller.once("route", function () {
         window.ga("create", window.GA_ID, "auto"); // if localhost or dummy ID, disable analytics
-        // if (/(?:(localhost|\.local))$/.test(location.hostname)
-        // 	|| window.GA_ID == "UA-9123564-8") {
-        // 	window.ga("set", "sendHitTask", null);
-        // }
 
-        console.warn("GA enabled tag '%s'", window.GA_ID);
+        if (/(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID == "UA-9123564-8") {
+          window.ga("set", "sendHitTask", null);
+          console.warn("GA disabled for localhost", window.GA_ID);
+        }
       }).on("route", function (name) {
         var page = Backbone.history.getFragment(); // Add a slash if neccesary
 
@@ -19953,6 +19952,14 @@ var View = require("app/view/base/View"); // /** @type {module:utils/net/toAbsol
 // /** @type {string} */
 // var ABS_APP_ROOT = toAbsoluteURL(require("app/control/Globals").APP_ROOT);
 
+
+var RECAPTCHA_KEYS = {
+  'canillas.name': '6LcaPHwUAAAAAAfzEnqRchIx8jY1YkUEpuswJDHx'
+};
+
+var RECAPTCHA_URL = function RECAPTCHA_URL(key) {
+  return "https://www.google.com/recaptcha/api.js?render=".concat(RECAPTCHA_KEYS[key]);
+};
 /**
 /* @constructor
 /* @type {module:app/view/component/ArticleView}
@@ -19976,7 +19983,13 @@ var ArticleView = View.extend({
   /* Render
   /* --------------------------- */
   renderFrame: function renderFrame(tstamp, flags) {
-    this.el.innerHTML = this.model.get("text"); // FIXME: now done in xslt
+    this.el.innerHTML = this.model.get("text"); // let linkEls = this.el.querySelectorAll("a[href]");
+    // if (linkEls.length) {
+    // 	RECAPTCHA_URL('canillas.name');
+    // }
+    // linkEls.forEach(el => {
+    // });
+    // FIXME: now done in xslt
     // this.el.querySelectorAll("a[href]").forEach(function(el) {
     // 	var url = toAbsoluteURL(el.getAttribute("href"));
     // 	if (url.indexOf(ABS_APP_ROOT) !== 0) {
