@@ -15956,7 +15956,7 @@ module.exports = View.extend({
       controller.once("route", function () {
         window.ga("create", window.GA_ID, "auto"); // if localhost or dummy ID, disable analytics
 
-        if (/(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID == "UA-9123564-8") {
+        if (/(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID == "XX-0000000-0") {
           window.ga("set", "sendHitTask", null);
           console.warn("GA disabled for localhost", window.GA_ID);
         }
