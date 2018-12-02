@@ -17500,7 +17500,7 @@ module.exports = View.extend({
     // 	return;
     // }
 
-    if ((Globals.BREAKPOINTS["medium-wide"].matches || Globals.BREAKPOINTS["medium-wide-stretch"].matches) && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed")) {
+    if ((Globals.BREAKPOINTS["medium-wide"].matches || Globals.BREAKPOINTS["medium-wide-stretch"].matches) && this.model.get("routeName") === "bundleItem" && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed")) {
       this.transforms.get(this.keywordList.wrapper).clearCapture();
 
       this._onHPanMove(ev);
@@ -19881,9 +19881,9 @@ module.exports = HandlebarsCompiler.template({"compiler":[7,">= 4.0.0"],"main":f
     + alias3((helpers.global || (depth0 && depth0.global) || alias2).call(alias1,"APP_ROOT",{"name":"global","hash":{},"data":data}))
     + "#"
     + alias3(((helper = (helper = helpers.handle || (depth0 != null ? depth0.handle : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"handle","hash":{},"data":data}) : helper)))
-    + "\">"
+    + "\"><span class=\"label\">"
     + ((stack1 = ((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : alias2),(typeof helper === alias4 ? helper.call(alias1,{"name":"name","hash":{},"data":data}) : helper))) != null ? stack1 : "")
-    + "</a>\n";
+    + "</span></a>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/pablo/Work/projects/folio/folio-workspace-assets/node_modules/hbsfy/runtime.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/ArticleButton.js":[function(require,module,exports){
@@ -23993,7 +23993,6 @@ module.exports = function () {
 },{"app/control/Globals":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Globals.js","app/model/collection/BundleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/BundleCollection.js","color":"/Users/pablo/Work/projects/folio/folio-workspace-assets/node_modules/color/index.js","underscore":"/Users/pablo/Work/projects/folio/folio-workspace-assets/node_modules/underscore/underscore.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/promise/_loadImageAsObjectURL.js":[function(require,module,exports){
 "use strict";
 
-/*global XMLHttpRequest */
 // /** @type {module:underscore.string/lpad} */
 // var classify = require("underscore.string/classify");
 // var statusMsg = _.template("<%= status %> received from <%= url %> (<%= statusText %>)");
@@ -24008,10 +24007,10 @@ if (window.XMLHttpRequest && window.URL && window.Blob) {
 
       var errorFromEvent = function errorFromEvent(ev) {
         var err = new Error((ev.target.status > 0 ? "http_" + request.statusText.replace(/\s/g, "_") : ev.type + "_event").toUpperCase());
+        err.logMessage = "_loadImageAsObjectURL::" + ev.type + " [reject]";
         err.infoCode = ev.target.status;
         err.infoSrc = url;
         err.logEvent = ev;
-        err.logMessage = "_loadImageAsObjectURL::" + ev.type + " [reject]";
         return err;
       }; // if progressFn is supplied
       // - - - - - - - - - - - - - - - - - -
@@ -24138,7 +24137,6 @@ module.exports = function (view) {
       view.defaultImage.src = source.get("prefetched");
 
       _whenImageLoads(view.defaultImage).then(function (targetEl) {
-        // console.log(logMessage, view.cid, "resolved", "prefetched");
         resolve(view);
       });
     } else {
@@ -24160,11 +24158,9 @@ module.exports = function (view) {
           source.set("prefetched", url);
         }
 
-        view.defaultImage.src = url; // URL.revokeObjectURL(url);
-
+        view.defaultImage.src = url;
         return view.defaultImage;
       }).then(_whenImageLoads).then(function (targetEl) {
-        // console.log(logMessage, view.cid, "resolved", targetEl.src);
         view.on("view:removed", function () {
           var prefetched = source.get("prefetched");
 
@@ -24174,16 +24170,9 @@ module.exports = function (view) {
             });
             URL.revokeObjectURL(prefetched);
           }
-        }); // view.placeholder.removeAttribute("data-progress");
-        // view.updateMediaProgress(imageUrl, "complete");
-
+        });
         resolve(view);
-      }, // 	})
-      // .catch(
-      function (err) {
-        // console.warn(logMessage, view.cid, "rejected", err.message);
-        // view.placeholder.removeAttribute("data-progress");
-        // view.updateMediaProgress(imageUrl, progress);
+      }, function (err) {
         reject(err);
       });
     }
@@ -26303,10 +26292,13 @@ var SequenceRenderer = PlayableRenderer.extend({
         // view.stopListening(item, "change:progress");
         var prefetched = item.get("prefetched");
 
-        if (prefetched && /^blob\:/.test(prefetched)) {
+        if (prefetched) {
           item.set("progress", 0, silent);
           item.unset("prefetched", silent);
-          URL.revokeObjectURL(prefetched);
+
+          if (/^blob\:/.test(prefetched)) {
+            URL.revokeObjectURL(prefetched);
+          }
         }
       });
     });
@@ -26328,6 +26320,7 @@ var SequenceRenderer = PlayableRenderer.extend({
           view.once("view:remove", function (view) {
             view.stopListening(item, "change:progress", onItemProgress);
           });
+          console.log("%s:_preloadAllItems", view.cid, item.get("original"), item.get("mime"));
           return _loadImageAsObjectURL(item.get("original"), function (progress, request) {
             /* NOTE: Since we are calling URL.revokeObjectURL when view is removed, also abort incomplete requests. Otherwise, clear the callback reference from XMLHttpRequest.onprogress  */
             if (view._viewPhase === "disposed") {
@@ -30224,8 +30217,8 @@ module.exports={
 		"xsmall-stretch": "'not screen and (min-width: 460px), not screen and (min-height: 420px)'",
 		"small-stretch": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 		"default":"'only screen and (min-width: 704px) and (min-height: 540px)'",
-		"medium-wide": "'only screen and (min-width: 1024px) and (max-width: 1100px) and (min-height: 540px)'",
-		"medium-wide-stretch": "'only screen and (min-width: 1100px) and (min-height: 540px)'"
+		"medium-wide": "'only screen and (min-width: 1024px) and (max-width: 1223px) and (min-height: 420px)'",
+		"medium-wide-stretch": "'only screen and (min-width: 1224px) and (min-height: 420px)'"
 	},
 	"default_colors": {
 		"color": "hsl(47, 5%, 15%)",
@@ -30251,6 +30244,7 @@ module.exports={
 			"vu_px": "12"
 		},
 		"breakpoints": {
+			"medium-wide-stretch": "'only screen and (min-width: 1024px) and (min-height: 420px)'",
 			"large-wide": "'only screen and (min-width: 1824px) and (min-height: 1024px)'",
 			"mobile": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
 			"unsupported": "'not screen and (min-width: 704px)'",
