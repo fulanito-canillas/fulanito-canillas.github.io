@@ -354,16 +354,16 @@ var Controller = Backbone.Router.extend({
 			"root", this.toRoot);
 		// this.route(/^bundles\/?$/,
 		// 	"bundle-list", this.toBundleList);
-		this.route(/^bundles\/([^\/]+)\/?$/,
-			"bundle-item", this.toBundleItem);
-		this.route(/^bundles\/([^\/]+)\/(\d+)\/?$/,
-			"media-item", this.toMediaItem);
+		// this.route(/^bundles\/([^\/]+)\/?$/,
+		// 	"bundle-item", this.toBundleItem);
+		// this.route(/^bundles\/([^\/]+)\/(\d+)\/?$/,
+		// 	"media-item", this.toMediaItem);
 
 		// this.route(/^bundles(?:\/([^\/]+)(?:\/(\d+))?)?\/?$/,
 		// 	"media-item", this.toMediaItem);
 		//
-		// this.route(/^bundles\/([^\/]+)(?:\/(\d+)?)?\/?$/,
-		// 	"media-item", this.toMediaItem);
+		this.route(/^bundles\/([^\/]+)(?:\/(\d+)?)?\/?$/,
+			"media-item", this.toMediaItem);
 
 		if (DEBUG) {
 			console.log("%s::initialize routes: %o", "controller", this._routeNames);
