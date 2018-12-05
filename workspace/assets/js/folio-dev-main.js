@@ -115,7 +115,7 @@ module.exports = function trim(str, characters) {
  */
 "use strict";
 
-console.info("Portfolio App started ".concat(GIT_REV)); // if (!DEBUG) {
+console.info("Portfolio App started GIT:".concat(GIT_REV)); // if (!DEBUG) {
 // 	window.addEventListener("error", function(ev) {
 // 		console.error("Uncaught Error", ev);
 // 	});
@@ -354,6 +354,7 @@ var Controller = Backbone.Router.extend({
 			"root", this.toRoot);
 		// this.route(/^bundles\/?$/,
 		// 	"bundle-list", this.toBundleList);
+
 		// this.route(/^bundles\/([^\/]+)\/?$/,
 		// 	"bundle-item", this.toBundleItem);
 		// this.route(/^bundles\/([^\/]+)\/(\d+)\/?$/,
@@ -361,7 +362,7 @@ var Controller = Backbone.Router.extend({
 
 		// this.route(/^bundles(?:\/([^\/]+)(?:\/(\d+))?)?\/?$/,
 		// 	"media-item", this.toMediaItem);
-		//
+
 		this.route(/^bundles\/([^\/]+)(?:\/(\d+)?)?\/?$/,
 			"media-item", this.toMediaItem);
 
@@ -1062,35 +1063,43 @@ module.exports = HandlebarsCompiler.template({"1":function(container,depth0,help
 /**
  * @module app/model/BaseItem
  * @requires module:backbone
- *//** @type {module:backbone} */
+ */
+/** @type {module:backbone} */
 const BaseModel = require("backbone").Model;
 // /** @type {module:app/model/BaseModel} */
 // var BaseModel = require("app/model/BaseModel");
 
+// /** @type {module:utils/strings/stripTags} */
+// const stripTags = require("utils/strings/stripTags");
+// /** @type {module:app/control/Globals} */
+// const Globals = require("app/control/Globals");
+
 module.exports = BaseModel.extend({
 
 	defaults: {
-		collapsed: false,
 		routeName: "initial",
+		fromRouteName: "",
+		page: "",
 		article: null,
 		bundle: null,
 		media: null,
-		fromRouteName: "",
 		withArticle: false,
 		withBundle: false,
 		withMedia: false,
+		collapsed: false
 	},
 
 	getters: [
-		"collapsed",
+		"page",
 		"routeName",
+		"fromRouteName",
 		"article",
 		"bundle",
 		"media",
-		"fromRouteName",
 		"withArticle",
 		"withBundle",
-		"withMedia"
+		"withMedia",
+		"collapsed"
 	],
 
 	// mutators: {
@@ -1147,6 +1156,7 @@ module.exports = BaseModel.extend({
 			if (this.hasChanged("media")) {
 				this.set("withMedia", this.has("media"), opts);
 			}
+			// this.set("pageTitle", this._getDocumentTitle(), { silent: true });
 		});
 
 		this.listenTo(this, "change:routeName",
@@ -1177,7 +1187,21 @@ module.exports = BaseModel.extend({
 
 	hasAnyChanged: function(attr) {
 		return this.hasChanged(attr) && (this.has(attr) != this.hasAnyPrevious(attr));
-	}
+	},
+
+	// _getDocumentTitle: function() {
+	// 	let docTitle = [];
+	// 	docTitle.push(Globals.APP_NAME);
+	// 	if (this.get("bundle")) {
+	// 		docTitle.push(stripTags(this.get("bundle").get("name")));
+	// 		if (this.model.get("media")) {
+	// 			docTitle.push(stripTags(this.get("media").get("name")));
+	// 		}
+	// 	} else if (this.get("article")) {
+	// 		docTitle.push(stripTags(this.get("article").get("name")));
+	// 	}
+	// 	return _.unescape(docTitle.join(" / "));
+	// }
 
 	// constructor: function() {
 	// 	Object.keys(this.defaults).forEach(function(getterName) {
@@ -2164,7 +2188,7 @@ module.exports = BaseItem.extend({
 });
 
 },{"app/model/BaseItem":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/BaseItem.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/AppView.js":[function(require,module,exports){
-(function (DEBUG,_){
+(function (DEBUG,GTAG_ENABLED,_){
 /**
  * @module app/view/AppView
  */
@@ -2478,8 +2502,8 @@ module.exports = View.extend({
 
 		/* Google Analytics
 		 * ------------------------------- */
-		// if (window.GA_ID) {
-		// 	// let gaPageviewDisable = /(?:(localhost|\.local))$/.test(location.hostname) || window.GA_ID === "UA-9123564-8";
+		// if (window.GTAG_ID) {
+		// 	// let gaPageviewDisable = /(?:(localhost|\.local))$/.test(location.hostname) || window.GTAG_ID === "UA-9123564-8";
 		// 	if (window.gtag) {
 		// 		controller
 		// 			.on("route", (name) => {
@@ -2489,7 +2513,7 @@ module.exports = View.extend({
 		// 					page = '/' + page;
 		// 				}
 		// 				// page.replace(/^(?!\/)/, "/");
-		// 				window.gtag('config', window.GA_ID, {
+		// 				window.gtag('config', window.GTAG_ID, {
 		// 					'page_title': page,
 		// 					'page_path': page
 		// 				});
@@ -2499,12 +2523,12 @@ module.exports = View.extend({
 		// 		// if (window.ga) {
 		// 		// 	controller
 		// 		// 		.once("route", () => {
-		// 		// 			window.ga("create", window.GA_ID, "auto");
+		// 		// 			window.ga("create", window.GTAG_ID, "auto");
 		// 		// 			// if localhost or dummy ID, disable analytics
 		// 		// 			if (gaPageviewDisable) {
 		// 		// 				window.ga("set", "sendHitTask", null);
 		// 		// 			}
-		// 		// 			console.warn("GA enabled tag '%s'", window.GA_ID);
+		// 		// 			console.warn("GA enabled tag '%s'", window.GTAG_ID);
 		// 		// 		})
 		// 		// 		.on("route", (name) => {
 		// 		// 			var page = Backbone.history.getFragment();
@@ -2519,38 +2543,46 @@ module.exports = View.extend({
 		// 		// 			console.warn("GA page set to '%s'", page);
 		// 		// 		});
 		// 	} else {
-		// 		console.warn("GA/GTAG not loaded (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GA_ID);
+		// 		console.warn("GA/GTAG not loaded (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GTAG_ID);
 		// 	}
 		// } else {
-		// 	console.warn("GA/GTAG not enabled (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GA_ID);
+		// 	console.warn("GA/GTAG not enabled (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GTAG_ID);
 		// }
 
-		if (window.ga && window.GA_ID) {
-			controller
-				.once("route", () => {
-					window.ga("create", window.GA_ID, "auto");
-					// if localhost or dummy ID, disable analytics
-					if (/(?:(localhost|\.local))$/.test(location.hostname)
-						|| window.GA_ID == "XX-0000000-0") {
-						window.ga("set", "sendHitTask", null);
-						console.warn("GA disabled for localhost", window.GA_ID);
-					}
-				})
-				.on("route", (name) => {
-					var page = Backbone.history.getFragment();
-					// Add a slash if neccesary
-					if (page.charAt(0) !== '/') {
-						page = '/' + page;
-					}
-					// page.replace(/^(?!\/)/, "/");
-					window.ga("set", "page", page);
-					window.ga("send", "pageview");
-
-					console.warn("GA page set to '%s'", page);
-				});
-		} else {
-			console.warn("GA not enabled (LIB: %s, GA_ENABLED: %s, GA_ID: %s)", !!window.ga, window.GA_ENABLED, window.GA_ID);
-		}
+		// if (window.ga && window.GTAG_ID) {
+		// 	controller
+		// 		.once("route", () => {
+		// 			window.ga("create", window.GTAG_ID, "auto");
+		// 			// if localhost or dummy ID, disable analytics
+		// 			if (/(?:(localhost|\.local))$/.test(location.hostname)
+		// 				|| window.GTAG_ID == "XX-0000000-0") {
+		// 				window.ga("set", "sendHitTask", null);
+		// 				window.gtag('config', 'GA_TRACKING_ID', { 'send_page_view': false });
+		// 				console.warn("GA disabled for localhost", window.GTAG_ID);
+		// 			}
+		// 		})
+		// 		.on("route", (name) => {
+		// 			var page = Backbone.history.getFragment();
+		// 			// Add a slash if neccesary
+		// 			if (page.charAt(0) !== '/') {
+		// 				page = '/' + page;
+		// 			}
+		// 			// page.replace(/^(?!\/)/, "/");
+		// 			window.ga("set", "page", page);
+		// 			window.ga("send", "pageview");
+		//
+		// 			console.warn("GA page set to '%s'", page);
+		// 		});
+		// } else {
+		// 	console.warn("GA not enabled (LIB: %s, GA_ENABLED: %s, GA_ID: %s)", !!window.ga, window.GA_ENABLED, window.GTAG_ID);
+		// }
+		// if (window.ga && window.GTAG_ID) {
+		// 	controller.once("route", () => {
+		// 		window.ga("create", window.GTAG_ID, "auto");
+		// 	});
+		// }
+		// console.info("Git: %s", GIT_REV);
+		console.info("Analytics GTAG_ENABLED: %s, GTAG_ID: %s, GA_LIB: %s", GTAG_ENABLED, window.GTAG_ID, !!window.ga);
 
 		/* Startup listener, added last */
 		this.listenToOnce(controller, "route", this._appStart);
@@ -2570,6 +2602,10 @@ module.exports = View.extend({
 		console.info("%s::_appStart(%s, %s)", this.cid, name, args.join());
 		this.skipTransitions = true;
 		this.el.classList.add("skip-transitions");
+
+		if (window.ga && window.GTAG_ID) {
+			window.ga("create", window.GTAG_ID, "auto");
+		}
 
 		this.requestRender(View.MODEL_INVALID | View.SIZE_INVALID)
 			.requestChildrenRender(View.MODEL_INVALID | View.SIZE_INVALID)
@@ -2591,11 +2627,13 @@ module.exports = View.extend({
 	_onRoute: function(name, args) {
 		console.info("%s::_onRoute %o -> %o", this.cid, this.model.get("routeName"), name);
 		// var o = _.defaults({ routeName: name }, AppState.prototype.defaults);
+
 		var o = {
 			routeName: name,
 			bundle: null,
 			media: null,
-			article: null
+			article: null,
+			page: Backbone.history.getFragment().replace(/^(?!\/)/, "/"),
 		};
 		switch (name) {
 			case "media-item":
@@ -2734,11 +2772,10 @@ module.exports = View.extend({
 	/* ------------------------------- */
 
 	renderModelChange: function() {
-
-		var cls = this.el.classList;
-		var prevAttr = null;
-		var docTitle = [];
-		var hasDarkBg = false;
+		let cls = this.el.classList;
+		let prevAttr = null;
+		let hasDarkBg = false;
+		let docTitle = [];
 
 		docTitle.push(Globals.APP_NAME);
 		if (this.model.get("bundle")) {
@@ -2749,11 +2786,19 @@ module.exports = View.extend({
 		} else if (this.model.get("article")) {
 			docTitle.push(stripTags(this.model.get("article").get("name")));
 		}
-		document.title = _.unescape(docTitle.join(" / "));
+		docTitle = _.unescape(docTitle.join(" / "))
+		document.title = docTitle;
+
+		if (window.ga && window.GTAG_ID) {
+			window.ga('send', {
+				'hitType': 'pageview',
+				'page': this.model.get("page"),
+				'title': docTitle
+			});
+		}
 
 		/* Set route class */
 		if (this.model.hasChanged("routeName")) {
-
 			prevAttr = this.model.previous("fromRouteName");
 			if (prevAttr) {
 				cls.remove("from-route-" + prevAttr);
@@ -2822,7 +2867,7 @@ if (DEBUG) {
 	})(module.exports);
 }
 
-}).call(this,true,require("underscore"))
+}).call(this,true,false,require("underscore"))
 
 },{"app/control/Controller":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js","app/control/Globals":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Globals.js","app/debug/DebugToolbar":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/debug/DebugToolbar.js","app/model/AppState":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/AppState.js","app/model/collection/ArticleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/ArticleCollection.js","app/model/collection/BundleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/BundleCollection.js","app/view/ContentView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/ContentView.js","app/view/NavigationView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/NavigationView.js","app/view/base/TouchManager":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/base/TouchManager.js","app/view/base/View":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/base/View.js","backbone":"backbone","underscore":"underscore","utils/strings/stripTags":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/utils/strings/stripTags.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/ContentView.js":[function(require,module,exports){
 (function (_){
@@ -12508,7 +12553,8 @@ var PlayableRenderer = MediaRenderer.extend({
 /* ---------------------------
 /* Google Analytics
 /* --------------------------- */
-if (window.GA_ENABLED) {
+// if (window.GTAG_ENABLED && window.ga) {
+if (window.ga) {
 	PlayableRenderer = (function(PlayableRenderer) {
 
 		/** @type {module:underscore.strings/dasherize} */
