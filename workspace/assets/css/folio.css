@@ -633,11 +633,9 @@ body {
   .carousel-item .content {
     cursor: pointer; }
   .carousel-item.selected .content {
-    cursor: grab;
-    cursor: url("../images/cursors/openhand_0.cur"), grab; }
+    cursor: grab; }
   .carousel.panning .carousel-item .content {
-    cursor: grabbing;
-    cursor: url("../images/cursors/closedhand_0.cur"), grabbing; }
+    cursor: grabbing; }
   .carousel.disabled .carousel-item .content {
     cursor: default !important; }
 
