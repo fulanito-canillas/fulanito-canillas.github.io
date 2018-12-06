@@ -1,6 +1,7 @@
 /*global module*/
+"use strict";
+
 module.exports = function(grunt) {
-	"use strict";
 
 	grunt.config("pkg", grunt.file.readJSON("package.json"));
 	grunt.config("properties", grunt.file.readJSON("properties.json"));
@@ -12,7 +13,7 @@ module.exports = function(grunt) {
 		"destRoot": "",
 		"srcRoot": "http://localhost/projects/folio-sym",
 		"fontFiles": "{eot,otf,svg,ttf,woff,woff2}",
-		"mediaFiles": "{ico,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
+		"mediaFiles": "{ico,cur,gif,jpg,jpeg,mp4,png,svg,webp,webm}",
 	});
 
 	/* --------------------------------
@@ -53,7 +54,9 @@ module.exports = function(grunt) {
 				cwd: "node_modules/@folio/workspace-assets/",
 				src: [
 					"fonts/**/*.<%= paths.fontFiles %>",
-					"images/{debug,mockup,symbols,favicons/black,favicons/white}/*.<%= paths.mediaFiles %>",
+					"images/{mockup,symbols,cursors}/*.<%= paths.mediaFiles %>",
+					"images/favicons/black/*.<%= paths.mediaFiles %>",
+					"images/{debug,favicons/white}/*.<%= paths.mediaFiles %>",
 				]
 			}]
 		},
@@ -167,7 +170,7 @@ module.exports = function(grunt) {
 				removeComments: true,
 				collapseWhitespace: true,
 				// collapseInlineTagWhitespace: true,
-				preserveLineBreaks: true,
+				// preserveLineBreaks: true,
 				keepClosingSlash: true,
 			},
 			files: {
@@ -175,6 +178,33 @@ module.exports = function(grunt) {
 			}
 		},
 	});
+
+	/* --------------------------------
+	 * git
+	 * -------------------------------- */
+
+	grunt.loadNpmTasks('grunt-git');
+	grunt.config('gitadd.main', {
+		options: {
+			all: true,
+			force: false
+		}, // files: { src: ['*', 'workspace/**/*'] }
+	});
+	grunt.config('gitcommit.main', {
+		options: {
+			message: '---'
+		}
+	});
+	grunt.config('gitpush.main', {
+		options: {}
+	});
+
+	// grunt.registerTask('deploy', 'force git', function() {
+	//	let forced = ["gitadd:main", "gitcommit:main", "gitpush:main"]
+	// 	grunt.option('force', true);
+	// 	grunt.task.run(forced);
+	// });
+	grunt.registerTask("deploy", ["gitadd:main", "gitcommit:main", "gitpush:main"]);
 
 	grunt.registerTask("build-resources", ["clean:resources", "clean:scripts", "copy", "http-assets"])
 	grunt.registerTask("dev", ["build-resources", "http:index-dev", "string-replace", "htmlmin"]);
