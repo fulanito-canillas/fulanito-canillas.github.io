@@ -295,7 +295,7 @@ if (isIOS) {
 }*/
 // }
 
-}).call(this,true,'',require("underscore"))
+}).call(this,true,'65e3bc7',require("underscore"))
 
 },{"Backbone.Mutators":"Backbone.Mutators","Modernizr":"Modernizr","app/model/helper/bootstrap":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/helper/bootstrap.js","app/view/AppView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/AppView.js","app/view/helper/createColorStyleSheet":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/helper/createColorStyleSheet.js","app/view/template/_helpers":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/_helpers.js","backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","classlist-polyfill":"classlist-polyfill","es6-promise/auto":"es6-promise/auto","fullscreen-polyfill":"fullscreen-polyfill","hammerjs":"hammerjs","matches-polyfill":"matches-polyfill","math-sign-polyfill":"math-sign-polyfill","mutation-observer":"mutation-observer","raf-polyfill":"raf-polyfill","setimmediate":"setimmediate","underscore":"underscore","webfontloader":"webfontloader"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js":[function(require,module,exports){
 (function (DEBUG,_){
@@ -2467,21 +2467,18 @@ module.exports = View.extend({
 			this.el.addEventListener("touchend", onTouchEnd, touchOpts);
 			this.el.addEventListener("touchcancel", onTouchEnd, touchOpts);
 		};
-
 		var onTouchMove = (ev) => {
 			if (!ev.defaultPrevented && (this.el.scrollHeight - 1) <= this.el.clientHeight) {
 				ev.preventDefault();
 			}
 			//traceTouchEvent(ev);
 		};
-
 		var onTouchEnd = (ev) => {
 			this.el.removeEventListener("touchmove", onTouchMove, touchOpts);
 			this.el.removeEventListener("touchend", onTouchEnd, touchOpts);
 			this.el.removeEventListener("touchcancel", onTouchEnd, touchOpts);
 		};
-
-		this.el.addEventListener("touchstart", onTouchStart);
+		this.el.addEventListener("touchstart", onTouchStart, { passive: true });
 
 		var onMeasured = (view) => {
 			this.setImmediate(() => {
