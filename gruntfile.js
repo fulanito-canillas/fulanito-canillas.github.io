@@ -207,7 +207,10 @@ module.exports = function(grunt) {
 	grunt.registerTask("deploy", ["gitadd:main", "gitcommit:main", "gitpush:main"]);
 
 	grunt.registerTask("build-resources", ["clean:resources", "clean:scripts", "copy", "http-assets"])
-	grunt.registerTask("dev", ["build-resources", "http:index-dev", "string-replace", "htmlmin"]);
-	grunt.registerTask("dist", ["build-resources", "http:index-dist", "string-replace", "htmlmin"]);
-	grunt.registerTask("default", ["dist"]);
+	grunt.registerTask("build-dev", ["build-resources", "http:index-dev", "string-replace", "htmlmin"]);
+	grunt.registerTask("build-dist", ["build-resources", "http:index-dist", "string-replace", "htmlmin"]);
+
+	// build type alias
+	grunt.registerTask("build", ["build-dist"]);
+	grunt.registerTask("default", ["build"]);
 };
