@@ -192,7 +192,8 @@ module.exports = function(grunt) {
 	});
 	grunt.config('gitcommit.main', {
 		options: {
-			message: '---'
+			message: '---',
+			allowEmpty: true
 		}
 	});
 	grunt.config('gitpush.main', {
