@@ -39,25 +39,14 @@ var features = [
 	'setImmediate',
 ];
 
-// If any features need to be polyfilled, construct
-// a script tag to load the polyfills and append it
-// to the document
 if (features.length) {
   var s = document.createElement('script');
-
-  // Include a `ua` argument set to a supported browser to skip UA identification
-  // (improves response time) and avoid being treated as unknown UA (which would
-  // otherwise result in no polyfills, even with `always`, if UA is unknown)
   s.src = 'https://cdn.polyfill.io/v2/polyfill.min.js?features='+features.join(',')+'&callback=main';
-  // s.async = true;
+  s.async = true;
   document.head.appendChild(s);
 } else {
-
-	// If no polyfills are required, invoke the app
-	// without delay
 	main();
 }
-
 function main() {
 	console.log('Now to do the cool stuff...');
 }
@@ -229,7 +218,7 @@ if (isIOS) {
 }*/
 // }
 
-}).call(this,'65e3bc7',require("underscore"))
+}).call(this,'0cb9229',require("underscore"))
 
 },{"Backbone.Mutators":"Backbone.Mutators","app/model/helper/bootstrap":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/helper/bootstrap.js","app/view/AppView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/AppView.js","app/view/helper/createColorStyleSheet":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/helper/createColorStyleSheet.js","app/view/template/_helpers":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/_helpers.js","backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","hammerjs":"hammerjs","underscore":"underscore","webfontloader":"webfontloader"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js":[function(require,module,exports){
 (function (DEBUG,_){
@@ -2115,7 +2104,7 @@ module.exports = BaseItem.extend({
 });
 
 },{"app/model/BaseItem":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/BaseItem.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/AppView.js":[function(require,module,exports){
-(function (DEBUG,GTAG_ENABLED,_){
+(function (DEBUG,_){
 "use strict";
 
 /**
@@ -2163,18 +2152,7 @@ var ContentView = require("app/view/ContentView");
 /** @type {module:app/view/base/TouchManager} */
 
 
-var TouchManager = require("app/view/base/TouchManager"); // /** @type {module:hammerjs} */
-// const Hammer = require("hammerjs");
-// /** @type {module:utils/touch/SmoothPanRecognizer} */
-// const Pan = require("utils/touch/SmoothPanRecognizer");
-// /** @type {module:hammerjs.Tap} */
-// const Tap = Hammer.Tap;
-// /** @type {module:utils/debug/traceElement} */
-// const traceElement = require("utils/debug/traceElement");
-//
-// const vpanLogFn = _.debounce(console.log.bind(console), 100, false);
-// const hpanLogFn = _.debounce(console.log.bind(console), 100, false);
-
+var TouchManager = require("app/view/base/TouchManager");
 /**
  * @constructor
  * @type {module:app/view/AppView}
@@ -2239,75 +2217,21 @@ module.exports = View.extend({
     this.breakpointEl = this.el;
     /* init HammerJS handlers */
 
-    var vtouch, htouch, touchEl; // var vpan, hpan, tap;
-    // this._vpanEnableFn = function(mc, ev) {
+    var vtouch, htouch;
+    var touchEl = this.content; //document.body;
+
+    vtouch = htouch = TouchManager.init(touchEl); // this._vpanEnableFn = function(mc, ev) {
     // 	var retval = !this._hasOverflowY(this.container);
     // 	vpanLogFn("%s::_vpanEnableFn -> %o\n%o", this.cid, retval, arguments);
     // 	return retval;
     // }.bind(this);
-    //
+    // vtouch.get("vpan").set({ enable: this._vpanEnableFn });
     // this._hpanEnableFn = function(mc, ev) {
     // 	var retval = this.model.get("withBundle") && this.model.get("collapsed");
     // 	hpanLogFn("%s::_hpanEnableFn -> %o\n%o", this.cid, retval, arguments);
     // 	return !!retval;
     // }.bind(this);
-
-    touchEl = this.content; // touchEl = document.body;
-
-    vtouch = htouch = TouchManager.init(touchEl); // vtouch.get("vpan").set({ enable: this._vpanEnableFn });
     // htouch.get("hpan").set({ enable: this._hpanEnableFn });
-    // 		vtouch.set({
-    // 			enable: function() {
-    // 				console.log("app1::hammerjs enable", arguments);
-    // 				return true;
-    // 			}
-    // 		});
-    // hpan = vpan;
-    // this.el.style.touchAction = "none"; //"pan-x pan-y";
-    // tap = new Hammer.Tap();
-    // hpan = new Pan({
-    // 	event: "hpan",
-    // 	direction: Hammer.DIRECTION_HORIZONTAL
-    // });
-    // hpan.set({
-    // 	enable: this._hpanEnableFn
-    // });
-    // vpan = new Pan({
-    // 	event: "vpan",
-    // 	direction: Hammer.DIRECTION_VERTICAL
-    // });
-    // vpan.set({
-    // 	enable: this._vpanEnableFn
-    // });
-    // hpan.requireFailure(vpan);
-    // vpan.requireFailure(hpan);
-    // vtouch.add([]);
-    // htouch = vtouch = new Hammer.Manager(this.content);
-    // htouch.add([tap, hpan, vpan]);
-    // htouch.add([hpan, vpan]);
-    // htouch.set({ touchAction: "pan-x pan-y" });
-    // vpan = new Hammer(this.navigation, {
-    // 	recognizers: [
-    // 		[Pan, {
-    // 			event: 'vpan',
-    // 			touchAction: "pan-y",
-    // 			direction: Hammer.DIRECTION_VERTICAL,
-    // 			enable: vpanEnableFn
-    // 		}],
-    // 	]
-    // });
-    // hpan = new Hammer(this.content, {
-    // 	recognizers: [
-    // 		[Pan, {
-    // 			event: 'hpan',
-    // 			touchAction: "pan-x",
-    // 			direction: Hammer.DIRECTION_HORIZONTAL,
-    // 			enable: hpanEnableFn
-    // 		}],
-    // 		[Tap]
-    // 	]
-    // });
-    // hpan.get("hpan").requireFailure(vpan.get("vpan"));
     // this._afterRender = this._afterRender.bind(this);
 
     this._onResize = this._onResize.bind(this);
@@ -2349,49 +2273,6 @@ module.exports = View.extend({
     });
     /* TouchEvents fixups
      * ------------------------------- */
-    // var traceTouchEvent = (msg, traceObj) => {
-    // 	if (msg.hasOwnProperty("type")) {
-    // 		msg = msg.type + " : " +
-    // 			(msg.defaultPrevented ? "prevented" : "not prevented");
-    // 	}
-    // 	var sy, sh, ch;
-    // 	sy = this.el.scrollTop;
-    // 	sh = this.el.scrollHeight - 1;
-    // 	ch = this.el.clientHeight;
-    // 	console.log("%s:[%s] " +
-    // 		"sy:[1>%o>=%s = %o] " +
-    // 		"sh:[%o<=%o = %o] " +
-    // 		"nav:[css:%o val:%o]",
-    // 		this.cid, msg,
-    // 		sy, sh - ch, (1 <= sy <= (sh - ch)),
-    // 		sh, ch, (sh <= ch),
-    // 		this.navigationView.el.style.height,
-    // 		this.navigationView.el.scrollHeight,
-    // 		traceObj || ""
-    // 	);
-    // };
-    // var scrolltouch = new Hammer.Manager(this.el);
-    // scrolltouch.add(new Hammer.Pan({ direction: Hammer.DIRECTION_VERTICAL, threshold: 0 }));
-    // scrolltouch.on("panmove", function(ev) {
-    //
-    // 	// var sy, sh, ch;
-    // 	// sy = this.el.scrollTop;
-    // 	// sh = this.el.scrollHeight - 1;
-    // 	// ch = this.el.clientHeight;
-    // 	//
-    // 	// if ((1 > sy) && (ev.direction | Hammer.DIRECTION_DOWN)) {
-    // 	// 	ev.preventDefault();
-    // 	// 	console.log("%s:[panmove] %s", this.cid, "prevent at top");
-    // 	// } else
-    // 	// if ((sy > (sh - ch)) && (ev.direction | Hammer.DIRECTION_UP)) {
-    // 	// 	ev.preventDefault();
-    // 	// 	console.log("%s:[panmove] %s", this.cid, "prevent at bottom");
-    // 	// }
-    // 	if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
-    // 		ev.srcEvent.preventDefault();
-    // 	}
-    // 	// traceTouchEvent(ev);
-    // }.bind(this));
 
     var touchOpts = {
       capture: false,
@@ -2409,8 +2290,7 @@ module.exports = View.extend({
     var onTouchMove = function onTouchMove(ev) {
       if (!ev.defaultPrevented && _this.el.scrollHeight - 1 <= _this.el.clientHeight) {
         ev.preventDefault();
-      } //traceTouchEvent(ev);
-
+      }
     };
 
     var onTouchEnd = function onTouchEnd(ev) {
@@ -2434,95 +2314,12 @@ module.exports = View.extend({
             _this.el.style.overflowY = "";
           }
 
-          _this.el.scrollTop = 1; //traceTouchEvent("view:collapsed:measured");
+          _this.el.scrollTop = 1;
         });
       });
     };
 
     this.listenTo(this.navigationView, "view:collapsed:measured", onMeasured);
-    /* Google Analytics
-     * ------------------------------- */
-    // if (window.GTAG_ID) {
-    // 	// let gaPageviewDisable = /(?:(localhost|\.local))$/.test(location.hostname) || window.GTAG_ID === "UA-9123564-8";
-    // 	if (window.gtag) {
-    // 		controller
-    // 			.on("route", (name) => {
-    // 				var page = Backbone.history.getFragment();
-    // 				// Add a slash if neccesary
-    // 				if (page.charAt(0) !== '/') {
-    // 					page = '/' + page;
-    // 				}
-    // 				// page.replace(/^(?!\/)/, "/");
-    // 				window.gtag('config', window.GTAG_ID, {
-    // 					'page_title': page,
-    // 					'page_path': page
-    // 				});
-    // 				console.warn("GTAG page set to '%s'", page);
-    // 			});
-    // 		// } else
-    // 		// if (window.ga) {
-    // 		// 	controller
-    // 		// 		.once("route", () => {
-    // 		// 			window.ga("create", window.GTAG_ID, "auto");
-    // 		// 			// if localhost or dummy ID, disable analytics
-    // 		// 			if (gaPageviewDisable) {
-    // 		// 				window.ga("set", "sendHitTask", null);
-    // 		// 			}
-    // 		// 			console.warn("GA enabled tag '%s'", window.GTAG_ID);
-    // 		// 		})
-    // 		// 		.on("route", (name) => {
-    // 		// 			var page = Backbone.history.getFragment();
-    // 		// 			// Add a slash if neccesary
-    // 		// 			if (page.charAt(0) !== '/') {
-    // 		// 				page = '/' + page;
-    // 		// 			}
-    // 		// 			// page.replace(/^(?!\/)/, "/");
-    // 		// 			window.ga("set", "page", page);
-    // 		// 			window.ga("send", "pageview");
-    // 		//
-    // 		// 			console.warn("GA page set to '%s'", page);
-    // 		// 		});
-    // 	} else {
-    // 		console.warn("GA/GTAG not loaded (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GTAG_ID);
-    // 	}
-    // } else {
-    // 	console.warn("GA/GTAG not enabled (LIB: %s, GA_ID: %s)", !!(window.ga || window.gtag), window.GTAG_ID);
-    // }
-    // if (window.ga && window.GTAG_ID) {
-    // 	controller
-    // 		.once("route", () => {
-    // 			window.ga("create", window.GTAG_ID, "auto");
-    // 			// if localhost or dummy ID, disable analytics
-    // 			if (/(?:(localhost|\.local))$/.test(location.hostname)
-    // 				|| window.GTAG_ID == "XX-0000000-0") {
-    // 				window.ga("set", "sendHitTask", null);
-    // 				window.gtag('config', 'GA_TRACKING_ID', { 'send_page_view': false });
-    // 				console.warn("GA disabled for localhost", window.GTAG_ID);
-    // 			}
-    // 		})
-    // 		.on("route", (name) => {
-    // 			var page = Backbone.history.getFragment();
-    // 			// Add a slash if neccesary
-    // 			if (page.charAt(0) !== '/') {
-    // 				page = '/' + page;
-    // 			}
-    // 			// page.replace(/^(?!\/)/, "/");
-    // 			window.ga("set", "page", page);
-    // 			window.ga("send", "pageview");
-    //
-    // 			console.warn("GA page set to '%s'", page);
-    // 		});
-    // } else {
-    // 	console.warn("GA not enabled (LIB: %s, GA_ENABLED: %s, GA_ID: %s)", !!window.ga, window.GA_ENABLED, window.GTAG_ID);
-    // }
-    // if (window.ga && window.GTAG_ID) {
-    // 	controller.once("route", () => {
-    // 		window.ga("create", window.GTAG_ID, "auto");
-    // 	});
-    // }
-    // console.info("Git: %s", GIT_REV);
-
-    console.info("Analytics GTAG_ENABLED: %s, GTAG_ID: %s, GA_LIB: %s", GTAG_ENABLED, window.GTAG_ID, !!window.ga);
     /* Startup listener, added last */
 
     this.listenToOnce(controller, "route", this._appStart);
@@ -2684,26 +2481,6 @@ module.exports = View.extend({
     this.requestChildrenRender(flags, true);
     /* request children render:  set 'now' flag if size is invalid */
     // this.requestChildrenRender(flags, flags & View.SIZE_INVALID);
-    // if ((this.el.scrollHeight - 1) <= this.el.clientHeight) {
-    // 	this.el.scrollTop = 1;
-    // 	this.el.style.overflowY = "hidden";
-    // } else {
-    // 	this.el.style.overflowY = "";
-    // }
-    // this.navigationView.whenRendered().then(function(view) {
-    // 	this.requestAnimationFrame(function() {
-    // 		console.log("%s::renderFrame [raf] css:%o val:%o",
-    // 			this.cid,
-    // 			this.navigationView.el.style.height,
-    // 			this.navigationView.el.scrollHeight,
-    // 			this.el.scrollTop,
-    // 			this.el.scrollHeight - 1,
-    // 			this.el.clientHeight,
-    // 			(this.el.scrollHeight - 1) <= this.el.clientHeight,
-    // 			this.el.style.overflowY
-    // 		);
-    // 	});
-    // }.bind(this));
   },
 
   /* -------------------------------
@@ -2728,6 +2505,16 @@ module.exports = View.extend({
 
     docTitle = _.unescape(docTitle.join(" / "));
     document.title = docTitle;
+    /* meta update
+     * ------------------------------- */
+
+    var metaTitle = docTitle;
+    var metaUrl = document.location.origin + document.location.pathname + document.location.hash;
+    document.head.querySelector("meta[property='og:title']").setAttribute("content", metaTitle);
+    document.head.querySelector("meta[property='og:url']").setAttribute("content", metaUrl);
+    document.head.querySelector("link[rel='canonical']").setAttribute("href", metaUrl);
+    /* Google Analytics
+     * ------------------------------- */
 
     if (window.ga && window.GTAG_ID) {
       window.ga('send', {
@@ -2750,9 +2537,8 @@ module.exports = View.extend({
       prevAttr = this.model.previous("routeName");
 
       if (prevAttr) {
-        cls.remove("route-" + prevAttr); // this.el.setAttribute("from-route", prevAttr);
-      } // this.el.setAttribute("to-route", this.model.get("routeName"));
-
+        cls.remove("route-" + prevAttr);
+      }
 
       cls.add("route-" + this.model.get("routeName"));
     }
@@ -2816,7 +2602,7 @@ if (DEBUG) {
   }(module.exports);
 }
 
-}).call(this,true,false,require("underscore"))
+}).call(this,true,require("underscore"))
 
 },{"app/control/Controller":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js","app/control/Globals":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Globals.js","app/debug/DebugToolbar":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/debug/DebugToolbar.js","app/model/AppState":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/AppState.js","app/model/collection/ArticleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/ArticleCollection.js","app/model/collection/BundleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/BundleCollection.js","app/view/ContentView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/ContentView.js","app/view/NavigationView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/NavigationView.js","app/view/base/TouchManager":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/base/TouchManager.js","app/view/base/View":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/base/View.js","backbone":"backbone","underscore":"underscore","utils/strings/stripTags":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/utils/strings/stripTags.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/ContentView.js":[function(require,module,exports){
 (function (_){
@@ -5307,6 +5093,28 @@ var Pan = require("utils/touch/SmoothPanRecognizer");
 /* -------------------------------
 /* Static private
 /* ------------------------------- */
+// let vpan = new Hammer(this.navigation, {
+// 	recognizers: [
+// 		[Pan, {
+// 			event: 'vpan',
+// 			touchAction: "pan-y",
+// 			direction: Hammer.DIRECTION_VERTICAL,
+// 			enable: vpanEnableFn
+// 		}],
+// 	]
+// });
+// let hpan = new Hammer(this.content, {
+// 	recognizers: [
+// 		[Pan, {
+// 			event: 'hpan',
+// 			touchAction: "pan-x",
+// 			direction: Hammer.DIRECTION_HORIZONTAL,
+// 			enable: hpanEnableFn
+// 		}],
+// 		[Tap]
+// 	]
+// });
+// hpan.get("hpan").requireFailure(vpan.get("vpan"));
 
 /**
  * @param el HTMLElement
@@ -13139,7 +12947,7 @@ if (DEBUG) {
       // },
       __getHeaderText: function __getHeaderText() {
         return ["tstamp", "index", "duration", "playback", "media", "timer", "next"].map(function (s, i, a) {
-          return s.padStart(8).substr(0, 8).toUpperCase();
+          return String(s).padStart(8).substr(0, 8).toUpperCase();
         }).join(" ");
       },
       __logTimerEvent: function __logTimerEvent(evname, msg) {
