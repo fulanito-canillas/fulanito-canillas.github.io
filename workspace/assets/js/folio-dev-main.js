@@ -85,10 +85,8 @@ window.addEventListener("load", function (ev) {
     var el = document.querySelector(".app");
     el.classList.remove("app-initial");
     el.classList.add("app-error");
-    throw new Error("bootstrap data error (" + err.message + ")", err.fileName, err.lineNumber);
-  } finally {
-    // detele global var
-    delete window.bootstrap;
+    throw new Error("bootstrap data error (" + err.message + ")", err.fileName, err.lineNumber); // } finally { // detele global var
+    // 	delete window.bootstrap;
   }
 
   require("app/view/template/_helpers");
@@ -2623,15 +2621,11 @@ var TransformHelper = require("utils/TransformHelper"); // /** @type {module:app
 /** @type {module:app/control/Controller} */
 
 
-var controller = require("app/control/Controller");
-/** @type {module:app/model/collection/BundleCollection} */
-
-
-var bundles = require("app/model/collection/BundleCollection");
-/** @type {module:app/model/collection/ArticleCollection} */
-
-
-var articles = require("app/model/collection/ArticleCollection"); // /** @type {module:app/model/collection/BundleItem} */
+var controller = require("app/control/Controller"); // /** @type {module:app/model/collection/BundleCollection} */
+// const bundles = require("app/model/collection/BundleCollection");
+// /** @type {module:app/model/collection/ArticleCollection} */
+// const articles = require("app/model/collection/ArticleCollection");
+// /** @type {module:app/model/collection/BundleItem} */
 // var BundleItem = require("app/model/item/BundleItem");
 
 /** @type {module:app/view/base/View} */
@@ -2751,10 +2745,8 @@ module.exports = View.extend({
     if (childrenChanged) {
       this.removeChildren();
 
-      if (bundles.selected) {
-        this.createChildren(bundles.selected);
-      } else if (articles.selected) {
-        this.createChildren(articles.selected);
+      if (this.model.has("bundle") || this.model.has("article")) {
+        this.createChildren();
       }
     } // model:collapsed
     // - - - - - - - - - - - - - - - - -
@@ -2988,11 +2980,12 @@ module.exports = View.extend({
   /* ------------------------------- */
 
   /** Create children on bundle select */
-  createChildren: function createChildren(model) {
-    var view;
+  createChildren: function createChildren() {
+    var view, model;
 
-    if (model.__proto__.constructor === bundles.model) {
-      // will be attached to dom in this order
+    if (this.model.has("bundle")) {
+      model = this.model.get("bundle"); // will be attached to dom in this order
+
       view = this.createMediaCaptionStack(model);
       this.itemViews.push(view);
       this.transforms.add(view.el);
@@ -3001,9 +2994,12 @@ module.exports = View.extend({
       this.transforms.add(view.el);
       view = this.createMediaDotNavigation(model);
       this.itemViews.push(view);
-    } else if (model.__proto__.constructor === articles.model) {
+    } else if (this.model.has("article")) {
+      model = this.model.get("article");
       view = this.createArticleView(model);
       this.itemViews.push(view);
+    } else {
+      return;
     }
 
     this.itemViews.forEach(function (view) {
@@ -3204,7 +3200,7 @@ module.exports = View.extend({
 
 }).call(this,require("underscore"))
 
-},{"./template/Carousel.EmptyRenderer.Bundle.hbs":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/Carousel.EmptyRenderer.Bundle.hbs","./template/CollectionStack.Media.hbs":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/CollectionStack.Media.hbs","app/control/Controller":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js","app/control/Globals":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Globals.js","app/model/collection/ArticleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/ArticleCollection.js","app/model/collection/BundleCollection":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/collection/BundleCollection.js","app/view/base/View":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/base/View.js","app/view/component/ArticleView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/ArticleView.js","app/view/component/Carousel":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/Carousel.js","app/view/component/CollectionStack":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/CollectionStack.js","app/view/component/SelectableListView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/SelectableListView.js","app/view/render/CarouselRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/CarouselRenderer.js","app/view/render/DotNavigationRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/DotNavigationRenderer.js","app/view/render/ImageRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/ImageRenderer.js","app/view/render/SequenceRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/SequenceRenderer.js","app/view/render/VideoRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/VideoRenderer.js","underscore":"underscore","utils/TransformHelper":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/utils/TransformHelper.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/NavigationView.js":[function(require,module,exports){
+},{"./template/Carousel.EmptyRenderer.Bundle.hbs":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/Carousel.EmptyRenderer.Bundle.hbs","./template/CollectionStack.Media.hbs":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/CollectionStack.Media.hbs","app/control/Controller":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js","app/control/Globals":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Globals.js","app/view/base/View":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/base/View.js","app/view/component/ArticleView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/ArticleView.js","app/view/component/Carousel":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/Carousel.js","app/view/component/CollectionStack":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/CollectionStack.js","app/view/component/SelectableListView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/component/SelectableListView.js","app/view/render/CarouselRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/CarouselRenderer.js","app/view/render/DotNavigationRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/DotNavigationRenderer.js","app/view/render/ImageRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/ImageRenderer.js","app/view/render/SequenceRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/SequenceRenderer.js","app/view/render/VideoRenderer":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/render/VideoRenderer.js","underscore":"underscore","utils/TransformHelper":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/utils/TransformHelper.js"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/NavigationView.js":[function(require,module,exports){
 (function (_){
 "use strict";
 
@@ -5398,7 +5394,8 @@ var observer = new MutationObserver(function (mm) {
 
     if (m.type == "childList") {
       for (j = 0, jj = m.addedNodes.length; j < jj; j++) {
-        e = m.addedNodes.item(j);
+        e = m.addedNodes[j]; //.item(j);
+
         view = View.findByElement(e);
 
         if (view) {
@@ -5414,7 +5411,8 @@ var observer = new MutationObserver(function (mm) {
       }
 
       for (j = 0, jj = m.removedNodes.length; j < jj; j++) {
-        e = m.removedNodes.item(j); // console.log("View::[detached (childList)] %s", e.cid);
+        e = m.removedNodes[j]; //.item(j);
+        // console.log("View::[detached (childList)] %s", e.cid);
 
         view = View.findByElement(e);
 
