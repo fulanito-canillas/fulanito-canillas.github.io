@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 	grunt.config("paths", {
 		"destAssets": "workspace/assets",
 		"srcAssets": "workspace/assets",
-		"destRoot": "",
+		"destRoot": "http://fulanito.org/",
 		"srcRoot": "http://localhost/projects/folio-sym",
 		"fontFiles": "{eot,otf,svg,ttf,woff,woff2}",
 		"mediaFiles": "{ico,cur,gif,jpg,jpeg,mp4,png,svg,webp,webm}",

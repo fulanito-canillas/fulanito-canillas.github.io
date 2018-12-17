@@ -216,7 +216,7 @@ if (isIOS) {
 }*/
 // }
 
-}).call(this,'0cb9229',require("underscore"))
+}).call(this,'master@0cb9229',require("underscore"))
 
 },{"Backbone.Mutators":"Backbone.Mutators","app/model/helper/bootstrap":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/model/helper/bootstrap.js","app/view/AppView":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/AppView.js","app/view/helper/createColorStyleSheet":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/helper/createColorStyleSheet.js","app/view/template/_helpers":"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/view/template/_helpers.js","backbone":"backbone","backbone.babysitter":"backbone.babysitter","backbone.native":"backbone.native","hammerjs":"hammerjs","underscore":"underscore","webfontloader":"webfontloader"}],"/Users/pablo/Work/projects/folio/folio-workspace-assets/src/js/app/control/Controller.js":[function(require,module,exports){
 (function (DEBUG,_){
@@ -505,7 +505,7 @@ module.exports = function () {
 
   g.COLLAPSE_THRESHOLD = 75; // px
 
-  g.COLLAPSE_OFFSET = parseInt(sass.temp["collapse_offset"]); // g.CLICK_EVENT = "click"; //window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
+  g.COLLAPSE_OFFSET = parseInt(sass["collapse_offset"]); // g.CLICK_EVENT = "click"; //window.hasOwnProperty("onpointerup") ? "pointerup" : "mouseup";
 
   g.VIDEO_CROP_PX = parseInt(sass["video_crop_px"]); // breakpoints
   // - - - - - - - - - - - - - - - - -
@@ -1635,8 +1635,6 @@ module.exports = function (bootstrap) {
 /**
  * @module app/model/item/ArticleItem
  */
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");
 
 /** @type {module:app/model/item/SourceItem} */
 var BaseItem = require("app/model/BaseItem");
@@ -1665,8 +1663,7 @@ module.exports = BaseItem.extend({
  * @module app/model/item/BundleItem
  * @requires module:backbone
  */
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");/** @type {Function} */
+// /** @type {module:color} */
 var Color = require("color");
 /** @type {module:app/model/item/SourceItem} */
 
@@ -1689,16 +1686,17 @@ var Globals = require("app/control/Globals");
 
 var stripTags = require("utils/strings/stripTags"); // /** @type {module:app/utils/strings/parseTaglist} */
 // var parseSymAttrs = require("app/model/parseSymAttrs");
-// /** @type {module:app/model/collection/KeywordCollection} */
-// var keywords = require("app/model/collection/KeywordCollection");
-// Globals.DEFAULT_COLORS["color"];
-// Globals.DEFAULT_COLORS["background-color"];
+
+/** @private */
 
 
 var attrsDefault = _.defaults({
   "has-colors": "defaults"
 }, Globals.DEFAULT_COLORS);
-/** @private */
+/**
+ * @constructor
+ * @type {module:app/model/item/MediaItem.MediaCollection}
+ */
 
 
 var MediaCollection = SelectableCollection.extend({
@@ -1714,18 +1712,10 @@ module.exports = BaseItem.extend({
   _domPrefix: "b",
 
   /** @type {Object|Function} */
-  // defaults: function() {
-  // 	return {
-  // 		name: "",
-  // 		handle: "",
-  // 		desc: "",
-  // 		completed: 0,
-  // 		kIds: [],
-  // 	};
-  // },
   defaults: {
     name: "",
     handle: "",
+    sub: "",
     desc: "",
     completed: 0,
 
@@ -1739,17 +1729,6 @@ module.exports = BaseItem.extend({
     text: function text() {
       return stripTags(this.get("desc"));
     },
-    // kIds: {
-    // 	set: function (key, value, options, set) {
-    // 		if (Array.isArray(value)) {
-    // 			set("keywords", value.map(function(id) {
-    // 				var obj = keywords.get(id);
-    // 				return obj;
-    // 			}, this), options;
-    // 		}
-    // 		set(key, value, options);
-    // 	},
-    // },
     media: {
       transient: true,
       set: function set(key, value, options, _set) {
@@ -1788,9 +1767,7 @@ module.exports = BaseItem.extend({
  */
 
 /** @type {module:app/model/BaseItem} */
-var BaseItem = require("app/model/BaseItem"); // /** @type {module:app/model/collection/TypeCollection} */
-// var types = require("app/model/collection/TypeCollection");
-
+var BaseItem = require("app/model/BaseItem");
 /**
  * @constructor
  * @type {module:app/model/item/KeywordItem}
@@ -1828,8 +1805,7 @@ module.exports = BaseItem.extend({
  * @module app/model/item/MediaItem
  * @requires module:backbone
  */
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");/** @type {Function} */
+// /** @type {module:color} */
 var Color = require("color");
 /** @type {module:app/model/item/SourceItem} */
 
@@ -1852,7 +1828,8 @@ var Globals = require("app/control/Globals");
 
 var stripTags = require("utils/strings/stripTags"); // /** @type {module:app/model/parseSymAttrs} */
 // var parseSymAttrs = require("app/model/parseSymAttrs");
-// console.log(Globals.PARAMS);
+
+/** @private */
 
 
 var urlTemplates = {
@@ -1877,10 +1854,12 @@ var SourceCollection = SelectableCollection.extend({
 module.exports = BaseItem.extend({
   _domPrefix: "m",
 
-  /** @type {Object} */
+  /** @type {Object|Function} */
   defaults: {
-    name: "<p><em>Untitled</em></p>",
+    name: "",
+    handle: "",
     sub: "",
+    desc: "",
     o: 0,
     bId: -1,
     srcIdx: 0,
@@ -1896,12 +1875,6 @@ module.exports = BaseItem.extend({
   },
   getters: ["name", "bundle", "source", "sources"],
   mutators: {
-    // desc: function() {
-    // 	return this.get("name");
-    // },
-    handle: function handle() {
-      return this.get("src");
-    },
     text: function text() {
       if (!this.hasOwnProperty("_text")) this._text = _.unescape(stripTags(this.get("name")));
       return this._text;
@@ -1981,10 +1954,6 @@ module.exports = BaseItem.extend({
  * @module app/model/item/SourceItem
  * @requires module:backbone
  */
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");
-// /** @type {module:app/control/Globals} */
-// var Globals = require("app/control/Globals");
 
 /** @type {module:app/model/item/SourceItem} */
 var BaseItem = require("app/model/BaseItem");
@@ -1996,9 +1965,10 @@ var noCacheSuffix = "?" + Date.now();
  * @constructor
  * @type {module:app/model/item/SourceItem}
  */
-// module.exports = Backbone.Model.extend({
 
 module.exports = BaseItem.extend({
+  _domPrefix: "s",
+
   /** @type {Object} */
   defaults: {
     src: null,
@@ -2078,8 +2048,6 @@ module.exports = BaseItem.extend({
 /**
  * @module app/model/item/TypeItem
  */
-// /** @type {module:backbone} */
-// var Backbone = require("backbone");
 
 /** @type {module:app/model/item/SourceItem} */
 var BaseItem = require("app/model/BaseItem");
@@ -3588,7 +3556,7 @@ module.exports = View.extend({
   	_whenTransitionsEnd: function(result) {
   	console.info("%s::_whenTransitionsEnd", this.cid);
   	this.el.classList.remove("container-changing");
-  	// if (!Globals.BREAKPOINTS["medium-wide"].matches)
+  	// if (!Globals.BREAKPOINTS["wide"].matches)
   	// 	return;
   	// if (!this.model.get("collapsed")) {
   	// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
@@ -3598,7 +3566,7 @@ module.exports = View.extend({
   	_whenTransitionsAbort: function(reason) {
   	console.warn("%s::_whenTransitionsAbort %o", this.cid, reason);
   	this.el.classList.remove("container-changing");
-  	// if (!Globals.BREAKPOINTS["medium-wide"].matches)
+  	// if (!Globals.BREAKPOINTS["wide"].matches)
   	// 	return;
   	// if (!this.model.get("collapsed")) {
   	// 	this.graph.requestRender(View.SIZE_INVALID | View.LAYOUT_INVALID); //.renderNow();
@@ -3677,7 +3645,7 @@ module.exports = View.extend({
      */
 
 
-    if (Globals.BREAKPOINTS["medium-wide"].matches || Globals.BREAKPOINTS["medium-wide-stretch"].matches) {
+    if (Globals.BREAKPOINTS["wide"].matches || Globals.BREAKPOINTS["stretch-wide"].matches) {
       /* HORIZONTAL: keywordList.wrapper */
       tf = this.transforms.get(this.keywordList.wrapper);
 
@@ -3722,7 +3690,7 @@ module.exports = View.extend({
       // 	}
       // }
 
-    } else if (Globals.BREAKPOINTS["small-stretch"].matches) {
+    } else if (Globals.BREAKPOINTS["stretch-tall"].matches) {
       // if (collapsedChanged ) {
       if (collapsedChanged ^ withArticleChanged) {
         this.transforms.runTransition(collapsed ? tx.FIRST : tx.LAST, this.sitename.el, this.about.el);
@@ -3855,7 +3823,7 @@ module.exports = View.extend({
     // 	return;
     // }
 
-    if ((Globals.BREAKPOINTS["medium-wide"].matches || Globals.BREAKPOINTS["medium-wide-stretch"].matches) && this.model.get("routeName") === "bundleItem" && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed")) {
+    if ((Globals.BREAKPOINTS["wide"].matches || Globals.BREAKPOINTS["stretch-wide"].matches) && this.model.get("routeName") === "bundleItem" && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed")) {
       this.transforms.get(this.keywordList.wrapper).clearCapture();
 
       this._onHPanMove(ev);
@@ -4131,7 +4099,7 @@ module.exports = View.extend({
 
   /*
   _beginTransformObserve: function() {
-  	if (!(Globals.BREAKPOINTS["medium-wide"].matches && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed"))) {
+  	if (!(Globals.BREAKPOINTS["wide"].matches && this.model.get("bundle").get("media").selectedIndex <= 0 && this.model.get("collapsed"))) {
   		return;
   	}
   	var target = document.querySelector(".carousel > .empty-item");
@@ -16572,6 +16540,7 @@ module.exports = SmoothPan;
 module.exports={
 	"video_crop_px": "0",
 	"transform_type": "3d",
+	"collapse_offset": "360",
 	"transitions": {
 		"ease": "ease-in-out",
 		"duration_ms": "350",
@@ -16579,51 +16548,23 @@ module.exports={
 		"min_delay_ms": "34"
 	},
 	"breakpoints": {
-		"landscape": "'(orientation: landscape)'",
-		"portrait": "'(orientation: portrait)'",
-		"xsmall-stretch": "'not screen and (min-width: 460px), not screen and (min-height: 420px)'",
-		"small-stretch": "'not screen and (min-width: 704px), not screen and (min-height: 420px)'",
-		"default":"'only screen and (min-width: 704px) and (min-height: 420px)'",
-		"medium-wide": "'only screen and (min-width: 1024px) and (max-width: 1223px) and (min-height: 420px)'",
-		"medium-wide-stretch": "'only screen and (min-width: 1224px) and (min-height: 420px)'"
+		"default":
+			"'screen and (orientation: portrait)'",
+		"wide":
+			"'screen and (orientation: landscape) and (min-width: 1024px) and (max-width: 1223px)'",
+		"stretch-tall":
+			"'screen and (orientation: portrait) and (max-width: 704px)'",
+		"stretch-wide":
+			"'screen and (orientation: landscape) and (min-width: 1224px), screen and (orientation: landscape) and (max-width: 1023px)'",
+		"stretch-tall-xs":
+			"'screen and (orientation: portrait) and (max-width: 460px)'",
+		"stretch-wide-xs":
+			"'screen and (orientation: landscape) and (max-width: 704px)'"
 	},
 	"default_colors": {
 		"color": "hsl(47, 5%, 15%)",
-		"background-color": "hsl(47, 5%, 95%)",
-		"link-color": "hsl(10, 80%, 50%)"
-	},
-	"temp": {
-		"collapse_offset": "360"
-	},
-	"_ignore": {
-		"transitions": {
-			"ease": "cubic-bezier(0.42, 0.0, 0.58, 1.0)",
-			"duration_ms": "400",
-			"delay_interval_ms": "134",
-			"min_delay_ms": "34"
-		},
-		"default_colors": {
-			"--link-color": "hsl(10, 80%, 50%)",
-			"--alt-background-color": "unset"
-		},
-		"units": {
-			"hu_px": "20",
-			"vu_px": "12"
-		},
-		"breakpoints": {
-			"medium-wide-stretch": "'only screen and (min-width: 1024px) and (min-height: 420px)'",
-			"large-wide": "'only screen and (min-width: 1824px) and (min-height: 1024px)'",
-			"mobile": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
-			"unsupported": "'not screen and (min-width: 704px)'",
-			"unquoted": "only screen and (min-width: 1824px)",
-			"unquoted_neg": "not screen and (min-width: 704px)",
-			"quoted_combined": "'not screen and (min-width: 704px), not screen and (min-height: 540px)'",
-			"array": [
-				"only screen and (min-width: 704px)",
-				"not screen and (min-width: 704px)",
-				"not screen and (min-height: 540px)"
-			]
-		}
+		"link-color": "hsl(10, 80%, 50%)",
+		"background-color": "hsl(47, 5%, 95%)"
 	}
 }
 
